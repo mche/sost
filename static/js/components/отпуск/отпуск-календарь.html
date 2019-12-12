@@ -1,0 +1,31 @@
+@@@ компонент/отпуск/календарь
+
+<div>
+<v-progress-indeterminate v-show=" !ready " :color=" 'orange' " :message=" 'Загружается...' "></v-progress-indeterminate>
+<div v-if="ready">
+  
+  <ul class="tabs  tabs-transparent white" style="/*display: block; height: auto;*/">
+    <li v-for="y in Years" :key="y" class="tab chip" :class="{'noprint hover-orange-lighten-4': y != year}">
+      <h2><a @click="ChangeYear(y)" href="javascript:" :class="{'white grey-text ': y != year, 'active-000 fw500 teal-text-darken-3': y == year}" class-0000="hvr-overline-from-center  before-white" style="">
+        <span>{{ y }}</span>
+        <span v-show="y == year"> год</span>
+      </a></h2>
+    </li>
+  </ul>
+  <div v-if="year" class="container__year">
+    <h3>
+      <span>Отпускных дней: </span><span class="chip orange-text-darken-4">{{ profileData[year]['@отпускные даты'].length }}</span>
+    </h3>
+    <year-calendar
+      v-model="year"
+      :key="year"
+      :activeDates.sync="profileData[year]['@отпускные даты']"
+      prefixClass=" my_customized_wrapper_class"
+      :activeClass=" 'orange-text-darken-4 yellow circle padd-0-02' "
+      @toggleDate="ToggleDate"
+      :showYearSelector="false"
+    ></year-calendar>
+    <div class="fs8">{{ profileData[year]['@отпускные даты'] }}</div>
+  </div>
+</div>
+</div>

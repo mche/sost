@@ -5,9 +5,9 @@
 
 var moduleName = "Отпуск";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['TemplateCache', 'Util', 'Компонент::Сотрудники', 'Компонент::Календарь::Год', /*'EventBus', */ ]);
+var module = angular.module(moduleName, ['TemplateCache', 'Util', 'Компонент::Сотрудники', 'Компонент::Отпуск::Календарь', /*'EventBus', */ ]);
 
-module.controller('Controll', function  (/*$scope, $q,$timeout, */ $element, appRoutes,  /*$http ,*/ TemplateCache,  Util, $EventBus, $КомпонентСотрудники, $КомпонентКалендарьГод /**/) {
+module.controller('Controll', function  (/*$scope, $q,$timeout, */ $element, appRoutes,  /*$http ,*/ TemplateCache,  Util, $EventBus, $КомпонентСотрудники, $КомпонентОтпускКалендарь /**/) {
   var ctrl = this;
   var tCache = TemplateCache.split(appRoutes.urlFor('assets', 'отпуск.html'), 1);
   
@@ -56,7 +56,7 @@ module.controller('Controll', function  (/*$scope, $q,$timeout, */ $element, app
       mounted,
       "components": {
         'v-profiles': new $КомпонентСотрудники(),
-        'year-calendar': new $КомпонентКалендарьГод(),
+        'rest-calendar': new $КомпонентОтпускКалендарь(),
       },
     });
     

@@ -27,15 +27,15 @@ module
 const  props = {
   "activeDates": {
     "type": Array,
-    "default": () => [],
+    "default": function(){ return [];},
   },
   "month": {
     "type": [String, Number],
-    "default": () => dayjs().month() + 1,
+    "default": function(){ return dayjs().month() + 1; },
   },
   "year": {
     "type": [String, Number],
-    "default": () => dayjs().year(),
+    "default": function(){ return dayjs().year(); },
   },
   "lang": {
     "type": String,
@@ -43,17 +43,18 @@ const  props = {
   },
   "activeClass": {
     "type": String,
-    "default": () => "",
+    "default": function(){ return ''; },
   },
   "prefixClass": {
     "type": String,
-    "default": () => "calendar--active",
+    "default": function(){ return 'calendar--active'; },
   },
 };
 
-const  data = ()=>{
+const  data = function(){
   return {
     "showDays": [],
+    "weekRows": undefined,
     "isMouseDown": false,
   };
 };
@@ -68,7 +69,7 @@ const monthMapping = {
   //~ pl: [    "Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec", "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień" ]
 };
 const dayMapping = {
-  "ru": ["Пн", "Вт", "Ср", "Чт'", "Пт", "Сб", "Вс"],
+  "ru": ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"],
   //~ tw: ["一", "二", "三", "四", "五", "六", "日"],
   //~ en: ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
   //~ pt: ["2ª", "3ª", "4ª", "5ª", "6ª", "Sa", "Do"],
@@ -91,8 +92,11 @@ const dayMapping = {
     //~ },
   monthTitle() {
     return monthMapping[this.lang][this.month - 1];
-  }
+  },
 }; /*конец computed*/
+
+//~ const WEEK = 7;
+
 const  methods = {
   initCalendar() {
     if (!this.year || !this.month) return [];
@@ -102,20 +106,24 @@ const  methods = {
       .set("month", this.month - 1);
     let firstDay = activeMonth.startOf("month").day() - 1;
     if (firstDay < 0) firstDay += 7;
+    let startDate = activeMonth.startOf("month").add(-firstDay, 'day');/// сусама
     const lastDate = activeMonth.endOf("month").date();
-    const weekRow = firstDay >= 5 ? 6 : 5;
-    const WEEK = 7;
+    this.weekRows = firstDay >= 5 && activeMonth.endOf("month").day() > 0 ? 6 : 5;
+    
     let day = 0;
-    const fullCol = Array.from(Array(weekRow * WEEK).keys()).map(i => {
+    
+    this.showDays = Array.from(Array(this.weekRows * 7).keys()).map(i => {
       let value = firstDay <= i ? (day++ % lastDate) + 1 : "";
       return {
+        "date": startDate.add(i, 'day').format('YYYY-MM-DD'),/// сусама
         value,
-        active: false,
-        isOtherMonth: firstDay > i || day > lastDate
+        "active": false,
+        "className": this.activeClass,
+        "isOtherMonth": firstDay > i || day > lastDate
       };
     });
-    this.showDays = fullCol;
     // 把 toggleDate 的內容合併在 initCalendar 裡。
+    
     this.activeDates.forEach(date => {
       let oDate;
 
@@ -126,16 +134,18 @@ const  methods = {
         };
       } else if (typeof date === "object") {
         oDate = date;
+        if (!oDate.className) oDate.className = this.activeClass;
       }
 
       let dayjsObj = dayjs(oDate.date);
-      if (dayjsObj.year() !== this.year) return;
+      if (dayjsObj.year() !=  this.year) return;
       let activeDate = dayjsObj.date();
       let row = Math.floor(activeDate / 7);
       let activeArrayKey = (activeDate % 7) - 1 + firstDay + 7 * row;
       this.showDays[activeArrayKey].active = true; // to array index
       this.showDays[activeArrayKey].className = oDate.className;
     });
+    //~ console.log('initCalendar =showDays', this.month, this.showDays);
   },
   
   showDayTitle(day) {
@@ -144,12 +154,14 @@ const  methods = {
   
   toggleDay(dayObj) {
     if (dayObj.isOtherMonth) return;
-    this.$emit("toggleDate", {
-      "month": this.month,
-      "date": dayObj.value,
-      "selected": !dayObj.active,
-      "className": this.activeClass
-    });
+    dayObj.active = !dayObj.active;
+    this.$emit("toggleDate", dayObj);
+    //~ {
+      //~ "month": this.month,
+      //~ "date": dayObj.value,
+      //~ "selected": !dayObj.active,
+      //~ "className": this.activeClass
+    //~ });
   },
   
   dragDay(dayObj) {
@@ -171,8 +183,9 @@ const  methods = {
       [this.prefixClass]: dayObj.active
     };
 
-    if (dayObj.active) oClassList[dayObj.className] = true;
+    if (dayObj.active && dayObj.className) oClassList[dayObj.className] = true;
 
+    //~ console.log('classList', dayObj, oClassList);
     return oClassList;
   },
 }; /*конец methods*/
@@ -187,7 +200,7 @@ const  watch = {
   }
 };
 
-const  created = ()=>{
+const  created = function(){
   this.initCalendar();
 };
 

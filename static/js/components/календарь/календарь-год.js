@@ -24,18 +24,19 @@ module
 //~ import MonthCalendar from './MonthCalendar'
 //~ export default {
   ///name: 'year-calendar',
+var  monthLength = [ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 ];
  const props = {
   "showYearSelector": {
     "type": Boolean,
-    "default": () => true
+    "default": function(){ return true; },
   },
   "activeDates": {
     "type": Array,
-    "default": () => [],
-    "validator": (dateArray) => {
+    "default": function(){ return []; },
+    "validator": function(dateArray){
       let isGood = true;
       let curDate = null;
-      dateArray.forEach(date => {
+      dateArray.forEach(function(date){
         if (typeof date === 'string') {
           curDate = date;
         } else if (typeof date === 'object' && date.hasOwnProperty('date')) {
@@ -53,70 +54,78 @@ module
         var month = parseInt(parts[1], 10);
         var year = parseInt(parts[0], 10);
         if (year < 1000 || year > 3000 || month === 0 || month > 12) isGood = false;
-        let monthLength = [ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 ];
+
         if (year % 400 === 0 || (year % 100 !== 0 && year % 4 === 0)) monthLength[1] = 29;
+        else monthLength[1] = 28;
+        
         if (!(day > 0 && day <= monthLength[month - 1])) isGood = false;
       });
       return isGood;
-    }
+    },
   },
   // value 為從外層傳進來的 v-model="year"
   "value": {
     "type": [String, Number],
-    "default": dayjs().year(),
+    "default": function(){ return dayjs().year(); },
   },
   "lang": {
     "type": String,
-    "default": 'ru'
+    "default": function(){ return 'ru'; },
   },
   "activeClass": {
     "type": String,
-    "default": () => ''
+    "default": function(){ return ''; },
   },
   "prefixClass": {
     "type": String,
-    "default": () => 'calendar--active'
+    "default": function(){ return 'calendar--active'; },
   },
   "hideWeekend": {
     "type": Boolean,
-    "default": false
+    "default": function(){ return false; },
   },
   "hideSunday": {
     "type": Boolean,
-    "default": false
+    "default": function(){ return false; },
   }
 };
 
-const  data = ()=>{
+const  data = function(){
   return {
-    "isUsingString": true,
+    //~ "isUsingString": true,
   };
 };
 
 const  computed = {
-  month() {
-    const month = {};
-    this.activeDates.forEach(date => {
+  Month() {
+    var vm = this;
+    var month = {};
+    
+    vm.activeDates.forEach(function(date){
       let oDate;
       if (typeof date === 'string') {
         oDate = {
           "date": date,
-          "className": this.activeClass
+          "className": vm.activeClass
         };
       } else {
-        // 若 activeDate 裡的物件少了 className 屬性，就自動填入空字串。否則會變成undefined
+        // 若 date 裡的物件少了 className 屬性，就自動填入空字串。否則會變成undefined
         oDate = {
           "date": date.date,
           "className": date.className || '',
         };
       }
-      if (dayjs(oDate.date).year() !== this.value) return; // 讓2020年1月的資料，不會放到 2019年的1月資料裡
+      
+      if (dayjs(oDate.date).year() != vm.value) return; // 讓2020年1月的資料，不會放到 2019年的1月資料裡
       let m = (dayjs(oDate.date).month() + 1).toString();
+      //~ console.log("Month", oDate, m);
       if (!month[m]) month[m] = [];
       month[m].push(oDate);
     });
+    
     return month;
   },
+  
   activeYear: {
     get() {
       return parseInt(this.value); // this.value 為從外層傳進來的 v-model="year"
@@ -124,8 +133,8 @@ const  computed = {
     set(val) {
       this.$emit('input', val);
     }
-  }
-};/*конец computed]*/
+  },
+};/*конец computed*/
 
  const methods = {
    
@@ -134,54 +143,57 @@ const  computed = {
   },
   
   toggleDate(dateObj) {
-    const activeDate = dayjs()
-      .set('year', this.value)
-      .set('month', dateObj.month - 1)
-      .set('date', dateObj.date)
-      .format('YYYY-MM-DD');
-    this.$emit('toggleDate', {
-      "date": activeDate,
-      "selected": dateObj.selected,
-      "className": dateObj.className
-    });
-    let dateIndex;
+    const date = dateObj.date;///dayjs().set('year', this.value).set('month', dateObj.month - 1).set('date', dateObj.date)format('YYYY-MM-DD');
+    this.$emit('toggleDate', dateObj);
+    //~ {
+      //~ "date": date,
+      //~ "selected": dateObj.selected,
+      //~ "className": dateObj.className
+    //~ });
+    //~ let dateIndex;
     let newDates;
-    if (this.isUsingString) {
-      dateIndex = this.activeDates.indexOf(activeDate);
-      newDates = this.modifiedActiveDates(dateIndex, activeDate);
-    } else {
-      let oDate = {
-        "date": activeDate,
-        "className": dateObj.className // 原為 this.defaultClassName ，修正bug(丁丁)
-      };
-      dateIndex = this.activeDates.indexOf(this.activeDates.find((i) => i.date === activeDate));
-      newDates = this.modifiedActiveDates(dateIndex, oDate);
+    //~ if (this.isUsingString) {
+      //~ dateIndex = this.activeDates.indexOf(date);
+      //~ newDates = this.modifiedActiveDates(dateIndex, date);
+    //~ } else {
+      //~ let oDate = {
+        //~ "date": date,
+        //~ "className": dateObj.className // 原為 this.defaultClassName ，修正bug(丁丁)
+      //~ };
+      //~ dateIndex = this.activeDates.indexOf(this.activeDates.find((i) => i.date === date));
+      //~ newDates = this.modifiedActiveDates(dateIndex, oDate);
+    //~ }
+    let dateIndex = this.activeDates.indexOf(date);
+    if (dateIndex < 0) {
+      dateIndex = this.activeDates.findIndex((i) => i.date === date);
+      newDates = this.modifiedActiveDates(dateIndex, dateObj);
     }
+    else
+      newDates = this.modifiedActiveDates(dateIndex, date);
     this.$emit('update:activeDates', newDates);
   },
   
-  modifiedActiveDates(dateIndex, activeDate) {
+  modifiedActiveDates(dateIndex, date) {
     let newDates = [...this.activeDates];
     if (dateIndex === -1) {
-      newDates.push(activeDate);
+      newDates.push(date);
     } else {
       newDates.splice(dateIndex, 1);
     }
     return newDates;
-  }
+  },
 };/*конец methods*/
 
-const  created = ()=>{
-  this.isUsingString = this.activeDates.length && typeof this.activeDates[0] === 'string';
-};
-//~ }
+//~ const  created = function(){
+  //~ this.isUsingString = this.activeDates.length && typeof this.activeDates[0] === 'string';
+//~ };
   
 var $Компонент = {
   props,
   data,
   methods,
   computed,
-  created,
+  //~ created,
   components: {},
 };
 

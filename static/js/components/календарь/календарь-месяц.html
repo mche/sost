@@ -1,21 +1,42 @@
 @@@ компонент/календарь/месяц
 
 <div class="calendar" @mouseup="mouseUp" @mouseleave.stop="mouseUp">
-  <div class="calendar__title">{{ monthTitle }}</div>
-  <div class="calendar__body">
-    <div
-      v-for="(day, key) in 7"
-      :key="`title${day}`"
-      class="calendar__day day__weektitle"
-      style-0000="{fontSize: weekTitleFontSizeAdjustLang}"
-    >{{ showDayTitle(key) }}</div>
-    <div v-for="(dayObj, key) in showDays" class="calendar__day" :key="`day${key}`">
+  <div class="calendar__title">{{ monthTitle }} <sup v-show="activeDates.length" :class="activeClass">{{ activeDates.length }}</sup></div>
+    <!---div  class="calendar__weektitle">
       <div
-        @mouseover="dragDay(dayObj)"
-        @mousedown="mouseDown(dayObj)"
-        class="day"
-        :class="classList(dayObj)"
-      >{{ dayObj.value }}</div>
+        v-for="(day, key) in 7"
+        :key="`title${day}`"
+        class="calendar__day day__weektitle"
+      >{{ showDayTitle(key) }}</div>
     </div>
+    <div class="calendar__body">
+      <div v-for="(dayObj, key) in showDays" class="calendar__day" :key="`day${key}`">
+        <div
+          @mouseover="dragDay(dayObj)"
+          @mousedown="mouseDown(dayObj)"
+          class="day"
+          :class="classList(dayObj)"
+        >{{ dayObj.value }}</div>
+    </div--->
+    
+    <div class="calendar__body">
+      <table class="">
+        <thead>
+          <tr>
+            <th v-for="(day, key) in 7"  :key="`title${day}`">{{ showDayTitle(key) }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(week, key) in weekRows" :key="`week${key}`">
+            <td v-for="(dayObj, key) in showDays.slice((week-1)*7, week*7)">
+              <div @mouseover="dragDay(dayObj)"  @mousedown="mouseDown(dayObj)" class="center">
+                <a href="javascript:" :class="classList(dayObj)">{{ dayObj.value }}</a>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
   </div>
 </div>

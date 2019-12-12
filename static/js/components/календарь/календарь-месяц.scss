@@ -82,7 +82,7 @@
       background-color: transparent;
     }***/
 
-    /* **&.calendar--active:after {
+    /***&.calendar--active:after {
       background-image: url('../assets/baseline-remove_circle-24px.svg');
       background-size: 100% 100%;
     }***/
@@ -118,8 +118,8 @@
         }***/
   }
 
-  /***& .calendar__day--otherMonth {
+  & .calendar__day--otherMonth {
     color: #eaeaea;
     cursor: auto;
-  }***/
+  }
 }

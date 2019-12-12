@@ -362,6 +362,28 @@ where ---p.id=sum."профиль"
 END;
 $func$ LANGUAGE plpgsql;
 
+/****************************************************/
+CREATE OR REPLACE FUNCTION "табель/отпускные/ставка"()
+RETURNS TABLE("профиль/id" int,  "дата" date, "табель/id" int, "Ставка" numeric)
+AS $func$
+BEGIN
+--------Ставка по объектам-----------
+RETURN QUERY 
+select 
+  p.id as "профиль/id",
+  t."дата", t.id,
+  text2numeric(t."коммент") as "Ставка"
+  from 
+    "профили" p
+  join refs rp on p.id=rp.id1
+  join "табель" t on t.id=rp.id2
+where 
+    t."значение" = 'Отпускные/ставка'
+    and t."коммент" is not null
+;
+END;
+$func$ LANGUAGE plpgsql;
+
 /****************************************************************************/
 /******************************     ЗАПРОСЫ     *********************************/
 /****************************************************************************/
@@ -1020,7 +1042,7 @@ limit 1
 full outer join (
   select days.*,
     ----text2numeric(coalesce(st."коммент", st_prev."коммент")) as "Отпускные/ставка",
-    text2numeric(st."коммент") as "Отпускные/ставка",
+    st."Ставка" as "Отпускные/ставка",
     text2numeric(sum."коммент") as "Отпускные/сумма",
     text2numeric(money."коммент") as "Отпускные/начислено"
   from 
@@ -1036,42 +1058,40 @@ full outer join (
     ) days
   ----------------Отпускные/ставка заданный месяц или другой (не по объектам)---------------------
   left join lateral (
-  select * from(
-  select t.*, date_trunc('month', ?::date)=date_trunc('month', t."дата") as "в этом месяце"
-  from 
-    {%= $st->dict->render('табель/join', join_obj=>'left') %}
-  where p.id=days."профиль"
-    ---and  days."дата месяц"="формат месяц2"(t."дата") --- парам месяц 2
-    ---and date_trunc('month', ?::date)=date_trunc('month', t."дата")
-    and t."значение" = 'Отпускные/ставка'
-    and t."коммент" is not null
-  ) t
-  order by t."в этом месяце" desc, t."дата" desc
+  select * from "табель/отпускные/ставка"() st
+  ---select t.*, date_trunc('month', ?::date)=date_trunc('month', t."дата") as "в этом месяце"
+  where st."профиль/id"=days."профиль"
+  ---order by t."в этом месяце" desc, t."дата" desc
+  order by "формат месяц2"(st."дата")="формат месяц2"(?::date) desc, st."дата" desc, st."табель/id" desc
   limit 1
   ) st on true
   ----------------Отпускные/сумма (не по объектам)---------------------
   left join lateral (
   select t.*
   from 
-    {%= $st->dict->render('табель/join', join_obj=>'left') %}
+    "профили" p
+    join refs rp on p.id=rp.id1
+    join "табель" t on t.id=rp.id2
   where p.id=days."профиль"
     ---and  days."дата месяц"="формат месяц2"(t."дата") --- парам месяц 3
     and "формат месяц2"(t."дата")="формат месяц2"(?::date)
     and t."значение" = 'Отпускные/сумма'
     and t."коммент" is not null
-  order by t."дата" desc
+  order by t."дата" desc, t.id desc
   limit 1
   ) sum on true
   ----------------Отпускные/начислено (не по объектам)---------------------
   left join lateral (
   select t.*
   from 
-    {%= $st->dict->render('табель/join', join_obj=>'left') %}
+    "профили" p
+    join refs rp on p.id=rp.id1
+    join "табель" t on t.id=rp.id2
   where p.id=days."профиль"
     and "формат месяц2"(t."дата")="формат месяц2"(?::date)  --- парам месяц 4
     and t."значение" = 'Отпускные/начислено'
     and t."коммент" is not null
-  order by t."дата" desc
+  order by t."дата" desc, t.id desc
   limit 1
   ) money on true
 

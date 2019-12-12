@@ -21,5 +21,12 @@ sub init {
   
 }
 
+sub отпуск {
+  my ($self, $param) = (shift, ref $_[0] ? shift : {@_});
+  
+  $self->dbh->selectall_hashref($self->sth('отпускные дни'), 'year', undef, ($param->{id}) x 2);
+  
+}
+
 
 1;

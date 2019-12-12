@@ -18,4 +18,10 @@ sub index {
     );
 }
 
+sub отпуск {
+  my $c = shift;
+  my $param = $c->req->json;
+  $c->render(json=>$c->model->отпуск($param));
+}
+
 1;

@@ -4,7 +4,7 @@
 <div ng-app="Отпуск"  ng-controller="Controll as ctrl" class="row relative">
 <template>
 
-  <div class="col s12 m4 relative">
+  <div class="col s12 m4 relative noprint" :class="{'hide': !!selectedProfile}">
     <h2>
       <i class="material-icons fs18">group</i>
       <span>Сотрудники</span>
@@ -12,23 +12,19 @@
     <v-profiles :param="param"></v-profiles>
   </div>
 
-  <div class="col s12 m8 relative">
+  <h2 v-show="selectedProfile" style="position:absolute; left:-4rem; top:0.3rem;"><a @click="selectedProfile = undefined" href="javascript:void('закрыть календарь')" class="btn teal darken-3 hover-teal-lighten-3"><i class="material-icons fs18">group</i></a></h2>
+  <div class="col s12 relative" :class="{' m8': !selectedProfile,}">
+    <a v-show="selectedProfile" @click="selectedProfile = undefined" href="javascript:void('закрыть календарь')" class="btn white red-text" style="position: absolute; right:0; top:0;">Закрыть</a>
     <h2>
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="circle yellow red-fill fill-darken-1" style="height: 2rem;"><use xlink:href="/fonts/icons.svg#sun"></use></svg>
-      <span>Отпускные дни</span>
+      <span>Отпускной календарь</span>
       <span v-if="selectedProfile" class="chip blue-text text-darken-3 fw500">{{ selectedProfile.names.join(' ') }}</span>
     </h2>
     <!--div>{{ selectedProfile }}</div-->
     
-    <year-calendar
-      v-if="year"
-      v-model="year"
-      :activeDates.sync="selectedProfile.activeDates"
-      @toggleDate="ToggleDate"
-      prefixClass-0000="your_customized_wrapper_class"
-      :activeClass="param.activeClass"
-      :showYearSelector="false"
-    ></year-calendar>
+    <rest-calendar v-if="selectedProfile" :profile="selectedProfile" :key="selectedProfile.id"></rest-calendar>
+    
+
   </div>
   
 </template>
