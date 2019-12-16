@@ -21,7 +21,15 @@ sub index {
 sub отпуск {
   my $c = shift;
   my $param = $c->req->json;
-  $c->render(json=>$c->model->отпуск($param));
+  #~ $c->inactivity_timeout(10*60);
+  my @data = ();
+  $c->render_later;
+  my $render = sub { $c->render(json=>\@data) if scalar grep(exists $data[$_], (0..$#data)) eq 2 ; };
+  $c->model->расчет_ставки_отпускных($param, sub { $data[1] = $_[2]->hashes->[0]; $render->(); });
+  $c->model->отпуск($param, sub { $data[0] = $_[2]->sth->fetchall_hashref('year'); $render->(); });
+  Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
+  
+  #~ $c->render(json=>$c->model->отпуск($param));
 }
 
 1;

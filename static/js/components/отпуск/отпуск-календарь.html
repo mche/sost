@@ -3,6 +3,27 @@
 <div>
 <v-progress-indeterminate v-show=" !ready " :color=" 'orange' " :message=" 'Загружается...' "></v-progress-indeterminate>
 <div v-if="ready">
+  <div v-if="moneyData">
+    <div class="padd-0-05 left">
+      <h3>Расчет отпускной ставки</h3>
+      <div>
+        <i class="material-icons">looks_one</i>
+        <span class="chip">{{ sum[0].toLocaleString() }}</span> руб : <span class="chip">{{ moneyData.length }}</span> мес. : <span class="chip">28</span> дн. = <span class="chip bold">{{ Math.round(sum[0]/moneyData.length/28).toLocaleString() }}</span>  руб/день</div>
+      <div>
+        <i class="material-icons">looks_two</i>
+        <span class="chip">{{ sum[0].toLocaleString() }}</span> руб : <span class="chip">{{ sum[1] }}</span> дн. = <span class="chip bold">{{ Math.round(sum[0]/sum[1]).toLocaleString() }}</span>  руб/день</div>
+    </div>
+    <div class="card iblock left">
+      <table class="striped">
+        <tbody><tr v-for="m in moneyData">
+          <td class="right-align"><h5>{{ m['месяц'] }} {{ m.year }}</h5></td>
+          <td class="right-align"><span class="bold">{{ parseFloat(m['начислено']).toLocaleString() }}</span> руб.</td>
+          <td>{{ m['дней в месяце'] }} дн.</td>
+        </tr></tbody>
+      </table>
+    </div>
+  </div>
+  
   
   <ul class="tabs  tabs-transparent white" style="/*display: block; height: auto;*/">
     <li v-for="y in Years" :key="y" class="tab chip" :class="{'noprint hover-orange-lighten-4': y != year}">
@@ -13,21 +34,32 @@
     </li>
   </ul>
   <div v-if="year" class="container__year">
-    <h3>
-      <span>Отпускных дней: </span><span class="chip orange-text-darken-4 bold yellow">{{ profileData[year]['@отпускные даты'].length }}</span>
+    <h3 class="left padd-0-05">
+      <span>Использовано дней отпуска: </span><span class="chip orange-text-darken-4 bold yellow">{{ calendarData[year]['@отпускные даты'].length }}</span>
     </h3>
-    <div class="card teal lighten-5">
+    <div v-if="calendarData[year]['@отпускные начисления'] && calendarData[year]['@отпускные начисления'].length" class="card iblock left padd-0-05">
+      <h3>Отпускные начисления <sup class="chip">{{ calendarData[year]['@отпускные начисления'].length }}</sup></h3>
+      <table class="striped">
+        <tbody><tr v-for="n in calendarData[year]['@отпускные начисления']">
+          <td class="right-align"><h5>{{ n['месяц'] }} {{ n.year }}</h5></td>
+          <td class="right-align"><span class="bold">{{ parseFloat(n['начислено']).toLocaleString() }}</span> руб.</td>
+          <!--td>{{ n['дней в месяце'] }} дн.</td-->
+        </tr></tbody>
+      </table>
+    </div>
+    
+    <div class="card teal lighten-5 clearfix">
       <year-calendar
         v-model="year"
         :key="year"
-        :activeDates="profileData[year]['@отпускные даты']"
+        :activeDates="calendarData[year]['@отпускные даты']"
         nonActiveClass=" teal-text-darken-3 "
         :activeClass=" 'orange-text-darken-4 yellow circle-padd-0-02 bold' "
         @toggleDate="ToggleDate"
         :showYearSelector="false"
       ></year-calendar>
     </div>
-    <!--div class="fs8">{{ profileData[year]['@отпускные даты'] }}</div-->
+    <!--div class="fs8">{{ calendarData[year]['@отпускные даты'] }}</div-->
   </div>
 </div>
 </div>

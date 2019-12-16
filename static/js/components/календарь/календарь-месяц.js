@@ -149,7 +149,7 @@ const  methods = {
       this.showDays[activeArrayKey].active = true; // to array index
       this.showDays[activeArrayKey].className = oDate.className;
     });
-    console.log('initCalendar =showDays', this.month, this.showDays);
+    //~ console.log('initCalendar =showDays', this.month, this.showDays);
   },
   
   showDayTitle(day) {
@@ -194,15 +194,15 @@ const  methods = {
   },
 }; /*конец methods*/
   
-const  watch = {
-  year(val) {
-    this.initCalendar();
-  },
-  // 外層來的資料有變化時
-  activeDates(after, before) {
-    this.initCalendar();
-  }
-};
+//~ const  watch = {
+  //~ year(val) {
+    //~ this.initCalendar();
+  //~ },
+  //~ // 外層來的資料有變化時
+  //~ activeDates(after, before) {
+    //~ this.initCalendar();
+  //~ }
+//~ };
 
 const  created = function(){
   this.initCalendar();
@@ -214,7 +214,7 @@ var $Компонент = {
   data,
   methods,
   computed,
-  watch,
+  //~ watch,
   created,
   components: {},
 };

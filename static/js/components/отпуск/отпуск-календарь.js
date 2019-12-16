@@ -22,7 +22,8 @@ const data = function(){
   return {
     "ready": false,
     "year": undefined,
-    "profileData": {},
+    "calendarData": {},
+    "moneyData": [],
   };
 };
 
@@ -32,8 +33,10 @@ LoadData(){
   var vm = this;
   return $http.post(appRoutes.urlFor('отпуск сотрудника'), {"id": vm.profile.id}).then(
     function(resp){
-      vm.profileData = resp.data;
-      if (vm.profileData) vm.ChangeYear(Object.keys(vm.profileData).pop());
+      vm.calendarData = resp.data.shift();
+      vm.moneyData = resp.data.shift()['@суммы по месяцам'];
+      if (vm.calendarData) vm.ChangeYear(Object.keys(vm.calendarData).pop());
+      if (vm.moneyData) vm.sum = vm.moneyData.reduce((s,m)=>{ s[0]+=parseFloat(m['начислено']); s[1]+=parseFloat(m['дней в месяце']); return s;}, [0, 0]);/// две суммы
     }
   );
   
@@ -50,7 +53,7 @@ ToggleDate(dateInfo){
 
 const computed = {
   Years(){
-    return Object.keys(this.profileData);
+    return Object.keys(this.calendarData);
   }
   
 };

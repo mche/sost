@@ -22,10 +22,20 @@ sub init {
 }
 
 sub отпуск {
-  my ($self, $param) = (shift, ref $_[0] ? shift : {@_});
+  my $self = shift;
+  my $cb = ref $_[-1] eq 'CODE' && pop @_;
+  my $param = ref $_[0] ? shift : {@_};
   
-  $self->dbh->selectall_hashref($self->sth('отпускные дни'), 'year', undef, ($param->{id}) x 2);
+  #~ $self->dbh->selectall_hashref($self->sth('отпускные дни'), 'year', undef, ($param->{id}) x 1);
   
+  $self->dbh->pg->db->query($self->dict->render('отпускные дни'), (($param->{id}) x 2, ($self->uid) x 2), $cb // ());
+}
+
+sub расчет_ставки_отпускных {
+  my $self = shift;
+  my $cb = ref $_[-1] eq 'CODE' && pop @_;
+  my $param = ref $_[0] ? shift : {@_};
+  $self->dbh->pg->db->query($self->dict->render('начисления 12 месяцев'), ( ($param->{id}) x 2, ($self->uid) x 2), $cb // ());
 }
 
 

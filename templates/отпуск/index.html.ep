@@ -14,7 +14,7 @@
 
   <h2 v-show="selectedProfile" style="position:absolute; left:-4rem; top:0.3rem;"><a @click="selectedProfile = undefined" href="javascript:void('закрыть календарь')" class="btn teal darken-3 hover-teal-lighten-3"><i class="material-icons fs18">group</i></a></h2>
   <div class="col s12 relative" :class="{' m8': !selectedProfile,}">
-    <a v-show="selectedProfile" @click="selectedProfile = undefined" href="javascript:void('закрыть календарь')" class="btn white red-text" style="position: absolute; right:0; top:0;">Закрыть</a>
+    <a v-show="selectedProfile" @click="selectedProfile = undefined" href="javascript:void('закрыть календарь')" class="btn white red-text" style="position: absolute; right:0; top:0;">Другой сторудник</a>
     <h2>
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="circle yellow red-fill fill-darken-1" style="height: 3rem;"><use xlink:href="/fonts/icons.svg#sun"></use></svg>
       <span>Отпускной календарь</span>
