@@ -90,7 +90,7 @@
           </td>
         </tr>
         <!--- Строка суммы за помещения -->
-        <tr v-if="item['@помещения'].length > 1">
+        <tr v-if="item['@помещения'] && item['@помещения'].length > 1">
           <td class="right-align"><h5 class="lime-text-darken-4">
             <span class="fw500 nowrap">{{ RoomsSquare(item).toLocaleString().replace(/([.,]\d{2})\d+/, '$1') }}</span>
             <span class="fs8"> м²</span>
