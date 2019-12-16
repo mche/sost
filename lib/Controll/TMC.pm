@@ -43,7 +43,8 @@ sub index_sklad {
   my $c = shift;
   return $c->render('тмц/склад',
     handler=>'ep',
-    'header-title' => 'ТМЦ на складе',
+    title=>'ТМЦ на складе',
+    'header-title' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" style="height: 2.5rem;" class="white-fill"><use xlink:href="/fonts/icons.svg#warehouse"></use></svg> ТМЦ на складе',
     assets=>["тмц/склад.js",],
     );
 }
