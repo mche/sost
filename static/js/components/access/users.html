@@ -297,14 +297,15 @@
         
         <div class="input-field col s4">
           <h5>Пароль</h5>
-          <a ng-click="$c.ShowPass(user)" href="javascript:" class="hover-shadow3d" style="position: absolute; z-index: 1; right:0;"><i class="material-icons">visibility{{ user._edit._showPass ? '_off' : ''}}</i></a>
+          <a ng-click="$c.ShowPass(user)" href="javascript:" class="hover-shadow3d" style="position: absolute; z-index: 1; right:0.5rem;"><i class="material-icons">visibility{{ user._edit._showPass ? '_off' : ''}}</i></a>
+          <a ng-click=" user._edit.pass = 'задать пароль' " href="javascript:" class="hover-shadow3d" style="position: absolute; z-index: 1; right:-2rem;" title="принять любой пароль и сохранить"><i class="material-icons">keyboard</i></a>
           
           <input type="{{user._edit._showPass ? 'text' : 'password'}}" ng-model="user._edit.pass" placeholder="" class="">
           
         </div>
         
         <div class="center">
-          <a class="btn-flat red-text" href="javascript:" ng-click="$c.DeleteLogin(user)" ng-show="user._edit.login" ng-disabled000="!$c.SaveActive(user)">
+          <a class="btn-flat red-text" href="javascript:" ng-click="$c.DeleteLogin(user)" ng-show="user._edit.login.length" ng-disabled000="!$c.SaveActive(user)">
             <i class="material-icons">cancel</i>
             <span>Убрать логин</span>
           </a>
