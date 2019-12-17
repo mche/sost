@@ -107,7 +107,7 @@ sub сотрудники {
   #~ return sprintf("%s.%s.%s %s:%s:%s", length($mday) eq 1 ? "0$mday" : $mday, length($mon) eq 1 ? "0$mon" : $mon, $year, length($hour) eq 1 ? "0$hour" : $hour, length($min) eq 1 ? "0$min" : $min, length($sec) eq 1 ? "0$sec" : $sec );
 #~ }
 
-sub logout {# толлько для приложения, логаут из сайта в модулеMojolicious/Plugin/RoutesAuthDBI/OAuth.pm
+sub log_out {# толлько для приложения, логаут из сайта в модулеMojolicious/Plugin/RoutesAuthDBI/OAuth.pm
   my $c = shift;
   $c->logout;
   #~ $c->render(json=>{logout=>'ok'});
