@@ -3,7 +3,7 @@ update "разное"
     val='{"117873": " 50 days ", "132387": " 50 days ", "132389": " 50 days ", "211310": " 50 days ", "249240": " 50 days ", "455343": " 50 days ", "675138": " 50 days ", "827181": " 50 days ", "872426": " 50 days "}'::jsonb,
     uid=0,
     ts=default 
-where key='месяц табеля закрыт/interval' and (ts+'0 hour'::interval) < now()---12 hour
+where key='месяц табеля закрыт/interval' and (ts+'12 hour'::interval) < now()---12 hour
 ;
 
 /*
