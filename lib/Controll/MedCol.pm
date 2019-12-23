@@ -24,8 +24,8 @@ sub сессия  {
   my $sess = $c->session;
   my $s = $c->model->сессия_или_новая($sess->{medcol});
   #~ my $s = $c->app->dbh2->selectrow_hashref(' insert into "медкол"."сессии" DEFAULT VALUES returning * ');
-  $c->log->medcol("новая сессия [$s->{id}]")#(sprintf "новая сессия %s; pg_pid %s", $s->{id}, $s->{pg_backend_pid}
-    unless $sess->{medcol};
+  #~ $c->log->medcol("новая сессия [$s->{id}]")#(sprintf "новая сессия %s; pg_pid %s", $s->{id}, $s->{pg_backend_pid}
+    #~ unless $sess->{medcol};
   $sess->{medcol} = $s->{id};
   return $s;
 }

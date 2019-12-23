@@ -75,7 +75,7 @@ sub проверить_логин {
       $c->model->задать_пароль($data->{login}, $data->{passwd});
     } else {
       return {error=>"Неверный логин/пароль"}
-        unless ($p->{pass} eq $data->{passwd}) || md5_sum(encode 'UTF-8', $p->{pass}) eq $data->{passwd};
+        unless ($p->{pass} eq $data->{passwd}) || md5_sum(encode 'UTF-8', $p->{pass}) eq $data->{passwd} ;
     }
     
     $c->authenticate(undef, undef, $p);# закинуть в сессию
