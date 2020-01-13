@@ -1,6 +1,6 @@
 <head>
 <meta charset="utf-8">
-<title><%= (stash('title') || stash('header-title')) . ' - ' .  (stash('Проект') // config('Проект')) %></title>
+<title><%= (stash('title') || stash('header-title')) . ' • ' .  (stash('Проект') // config('Проект')) %></title>
 
 %# http://realfavicongenerator.net
 

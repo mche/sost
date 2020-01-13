@@ -8,7 +8,7 @@
         
           <h1 class="left-000 fw500 font-effect-3d-float">
             <span class="white-text"><%= stash('header-title') || title %></span>
-            <span class="green-text-darken-1"> 〉<%= (stash('Проект') // config('Проект')) %></span>
+            <span class="green-text-darken-1"> • <%= (stash('Проект') // config('Проект')) %></span><!-- 〉-->
           </h1>
         
       </div>
