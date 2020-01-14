@@ -1,6 +1,6 @@
 @@@ компонент/дерево/список
 
-<ul v-if="ready" v-show="!!childs.length" class="collection tree-list" style="overflow:auto; margin:0;" :style=" ULStyle ">
+<ul v-if="ready" class="collection tree-list" style="overflow:auto; margin:0;" :style=" ULStyle ">
 
 <!-- позиции -->
   <li class="collection-item hover-childs-show relative" style="cursor: default;" :class=" {'selected': it._selected, 'edit': it._edit} " v-for=" it in childs " :key=" it.id ">
