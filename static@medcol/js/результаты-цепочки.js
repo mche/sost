@@ -53,25 +53,24 @@ const data = function() {
   return {
     "ready": false,
     "тест": undefined,
-    "expanded": [],
+    //~ "selected": [],
   };
 };
 
-const findTestID  = function(t){return this.id == t.id;};
+//~ const findTestID  = function(t){return this.id == t.id;};
 
 const mounted = function(){
   var vm = this;
   var urlParam = Util.paramFromLocation();
   vm.LoadData().then(function(){
     
-    //~ console.log("paramFromLocation", urlParam['тест']);
     var test_id = urlParam['тест'] && urlParam['тест'][0];
-    var test = test_id && vm['тесты'].find(findTestID, {"id": test_id});
-    if (test) {
-      vm.expanded.unshift(test);
-      test.parents_id.map((id) => { vm.expanded.unshift( vm['тесты'].find( findTestID, {"id": id} )); });
-      //~ console.log("expanded", vm.expanded);
-    }
+    //~ var test = test_id && vm['тесты'].find(findTestID, {"id": test_id});
+    //~ if (test) {
+      //~ vm.expanded.unshift(test);
+      //~ test.parents_id.map((id) => { vm.expanded.unshift( vm['тесты'].find( findTestID, {"id": id} )); });
+    //~ }
+    if (test_id) vm['тест'] = test_id;
     
     vm.ready = true;
 

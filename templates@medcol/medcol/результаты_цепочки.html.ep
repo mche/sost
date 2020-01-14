@@ -27,7 +27,7 @@
     <div v-if="ready" class="row">
       <div class="col s12">
         <h3 class="fw500">Цепочки с тестом:</h3><input type="hidden" name="тест" v-model=" this['тест'] " />
-        <v-tree-list :param=" {selectItemEventName: 'Выбрана позиция',} " :_shared=" {'expanded': expanded} " :data=" this['тесты'] ">
+        <v-tree-list :param=" {selectItemEventName: 'Выбрана позиция',} " :selected-I-D=" parseInt(this['тест']) " :data=" this['тесты'] ">
           <template v-slot:item="{ item }">
             <h5 :class="{'checked': item._checked, 'selected bold fs14 row': item._expand, 'grey-text':item['отключить'], ' blue-text text-darken-3':!item['отключить']}" class="hover-shadow3d line-height-10">
               <i v-show="item.childs && !item._expand" class="material-icons">keyboard_arrow_down</i>
@@ -104,7 +104,7 @@
       <td class="padd-05 bold <%= $percent >= 70 ? 'green darken-1 white-text ' : 'white grey-text' %>" style="width:1%;">
         <span class=""><%= sprintf('%.1f', $percent)  %></span>
       </td>
-      <td class="navy-text right-align" style="width:1%;"><span style="width:2rem;"><%= substr($r->{'сессия/sha1'}[$i], 0,4) %></span></td>
+      <td class="navy-text right-align" style="width:1%;"><span class="fs14" style="width:2rem;"><%= substr($r->{'сессия/sha1'}[$i], 0,4) %></span></td>
       <td>
         <div class="input-field">
           <input type="checkbox" id="крыжик-дата проверки-<%= $r->{'сессия/id'}[$i] %>" name="дата проверки" value="<%= $r->{'сессия/sha1'}[$i] %>" <%= !!$r->{'сессия/дата проверки'}[$i] ? 'checked' : '' %> class="" style="height: auto;"  >

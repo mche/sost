@@ -28,6 +28,7 @@ const props = {
     },
   },
 "data": Array,
+"selectedID": Number, /// ид позиции развернуть
 "level": {/// рекурсия
     type: Number,
     "default": 0,
@@ -76,6 +77,10 @@ ExpandFalse(it){
   it._expand = false;
 },
 
+findItemByID(it){
+  return this.id == it.id;
+},
+
 };
 
 
@@ -96,14 +101,13 @@ Childs(){/// для parent с кэшированием
 },
   
 ToggleSelect(item, event){
-  //~
   let vm = this;
   vm.$set(item, '_expand', !item._expand);
-   //~ console.log("ToggleSelect", vm.param.parent);
+   //~ console.log("ToggleSelect", item);////vm.param.parent
   //~ var param = {"item": item, "parent": undefined, "expand": item._expand};
   //~ if (!item._expand) vm.data.some(util.SomeDataOnToggleSelect, param);
   //~ if (vm._shared.selected &&  !item.parents_id.some(function(pid){ return vm._shared.selected.id == pid; })) vm._shared.selected._expand = false;
-  if (!vm.parent || !vm.IsMyBranch()) ///перешел в другую цепочку-ветку
+  if (event && (!vm.parent || !vm.IsMyBranch())) ///перешел в другую цепочку-ветку
     vm.CollapseExpanded();
   if (item._expand) vm._shared.expanded.push(item);
   else vm._shared.expanded.removeOf(item);/// =  vm.parent;
@@ -214,6 +218,12 @@ const mounted = function(){///
   //~ if (vm.parent === undefined) vm.parent = vm.item.topParent || vm.default.parent;//!!!
   vm.Childs();
   vm.ready = true;
+  if (vm.selectedID) {/// props :selected-i-d="parseInt()"
+    var item = vm.data.find(util.findItemByID, {"id": vm.selectedID});
+    item.parents_id.slice().reverse().map((id) => { if (id) vm.ToggleSelect(vm.data.find( util.findItemByID, {"id": id} )); });
+    vm.ToggleSelect(item);
+    //~ item._expand = true;
+  }
   
 };
 
