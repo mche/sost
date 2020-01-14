@@ -1,33 +1,63 @@
 % layout 'medcol';
 % my $res = stash('результаты') || [];
 % my $param = stash('param');
-% my $tests = stash('список тестов') || [];
+%#% my $tests = stash('список тестов') || [];
 
-<form method="post" class="card green-lighten-4 padd-05">
-  <div class="row"><label class="padd-05"><h5 class="inline">Успехов в цепочке (⩾):</h5></label> <input type="text" name="успехов" value="<%= $param->{'успехов'} // '' %>" style="width:12rem;" placeholder="количество"/></div>
-  <div class="row input-field">
-    <label class="padd-05"><h5 class="inline">В цепочке есть тест:</h5></label>
-    <select name="тест" class="browser-default transparent hover-shadow3d blue-text text-darken-3" style="height: auto; width: auto; border: none; display: inline-block; border-bottom: 1px solid #aaa;">
-      <option value="" disabled-000 <%=  $param->{'тест'} ? '' : 'selected' %> >любой</option>
-      % for (@$tests) {
-      <option value="<%= $_->{id} %>" class="" <%=  $param->{'тест'} eq $_->{id} ? 'selected' : '' %> >
-% for (grep defined, @{$_->{'@название/родители'} || []}) {
-<%= $_ %> 〉
-% }
-<%= $_->{'название'} %>
-      </option>
-      % }
-    </select>
-    
+<form method="get" class="card green-lighten-4 padd-05">
+<h2 class="center">Форма фильтров результатов</h2>
+%#  <div class="row input-field">
+%#    <label class="padd-05"><h5 class="inline">В цепочке есть тест:</h5></label>
+%#    <select name="тест" class="browser-default transparent hover-shadow3d blue-text text-darken-3" style="height: auto; width: auto; border: none; display: inline-block; border-bottom: 1px solid #aaa;">
+%#      <option value="" disabled-000 <%=  $param->{'тест'} ? '' : 'selected' %> >любой</option>
+%#      % for (@$tests) {
+%#      <option value="<%= $_->{id} %>" class="" <%=  $param->{'тест'} eq $_->{id} ? 'selected' : '' %> >
+%#% for (grep defined, @{$_->{'@название/родители'} || []}) {
+%#<%= $_ %> 〉
+%#% }
+%#<%= $_->{'название'} %>
+%#      </option>
+%#      % }
+%#    </select>
+%#  </div>
+  
+  <div ng-app="Медкол::Результаты::Цепочки" ng-controller="Controll as ctrl">
+
+    <v-progress-indeterminate v-show=" !ready " :color=" 'green' " :message=" 'Загружается...' "></v-progress-indeterminate>
+
+    <div v-if="ready" class="row">
+      <div class="col s12">
+        <h3 class="fw500">Цепочки с тестом:</h3><input type="hidden" name="тест" v-model=" this['тест'] " />
+        <v-tree-list :param=" {selectItemEventName: 'Выбрана позиция',} " :_shared=" {'expanded': expanded} " :data=" this['тесты'] ">
+          <template v-slot:item="{ item }">
+            <h5 :class="{'checked': item._checked, 'selected bold fs14 row': item._expand, 'grey-text':item['отключить'], ' blue-text text-darken-3':!item['отключить']}" class="hover-shadow3d line-height-10">
+              <i v-show="item.childs && !item._expand" class="material-icons">keyboard_arrow_down</i>
+              <i v-show="item.childs && item._expand" class="material-icons">keyboard_arrow_up</i>
+              <i v-show="!item.childs " class="material-icons " :class="{'transparent-text': !item._expand}">keyboard_arrow_right</i>
+              <span class="" :title=" item._title ">{{ item['название'] }}</span>
+              <sup class="fs8">{{ item['всего вопросов'] }}</sup>
+            </h5>
+          </template>
+        </v-tree-list>
+      </div>
+    </div>
   </div>
   
-  <div class="row"><label class="padd-05"><h5 class="inline">Код результата:</h5></label> <input type="text" name="sha1" value="<%= $param->{'sha1'} // '' %>" class="navy-text" style="width:10rem;" placeholder="например 328e"/></div>
+  <div class="row">
+    <div class="col s12 m6 chip padd-05 transparent hoverable">
+      <label class="padd-05"><h5 class="inline fw500">Успехов в цепочке (⩾):</h5></label>
+      <input type="text" name="успехов" value="<%= $param->{'успехов'} // '' %>" style="width:12rem;" placeholder="количество"/>
+    </div>
+    <div class="col s12 m6 chip padd-05 transparent hoverable">
+      <label class="padd-05"><h5 class="inline fw500">Код результата:</h5></label>
+      <input type="text" name="sha1" value="<%= $param->{'sha1'} // '' %>" class="navy-text" style="width:10rem;" placeholder="например 328e"/>
+    </div>
+  </div>
   
   <div class="center card-action padd-05">
     % if ($param->{'offset'} ne 0) {
     <button type="submit" name="offset" value="<%= $param->{offset} - $param->{limit} %>" class="left orange-text-darken-4" title="следующие записи"><i class="material-icons">keyboard_arrow_left</i><span>-<%= $param->{limit} %></span></button>
     % }
-    <button type="submit" class="green-text-darken-4"><i class="material-icons">filter_list</i><span class="fs12">Готово</span></button>
+    <button type="submit" class="green-text-darken-4 hoverable"><i class="material-icons">filter_list</i><span class="fs12 uc">Готово</span></button>
     % if (@$res eq $param->{'limit'}) {
     <button type="submit" name="offset" value="<%= $param->{offset} + $param->{limit} %>" class="right orange-text-darken-4" title="предыдущие записи"><i class="material-icons">keyboard_arrow_right</i><span>+<%= $param->{limit} %></span></button>
     % }
@@ -142,5 +172,8 @@ function OnChange() {///крыжик
 
 document.querySelectorAll('table input[name="дата проверки"]')
   .forEach(function(chb) {chb.onchange = OnChange; });
+
+if (<%= @$res // 0 %>) document.getElementsByTagName('table')[0].scrollIntoView(); // эквивалентно element.scrollIntoView(true)
+
 });
 </script>

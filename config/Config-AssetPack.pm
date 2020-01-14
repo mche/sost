@@ -161,6 +161,15 @@ sub map_grep_mode {
       ../static@medcol/js/форма-теста-вопросы.html
       js/c/tree/v-tree-list.html
       )],
+      ['medcol/результаты-цепочки.js' => grep !/^--/, qw(
+      js/util.js
+      ../static@medcol/js/результаты-цепочки.js
+      js/c/tree/v-tree-list.js
+      js/util/debounce.js
+      )],
+      ['medcol/результаты-цепочки.html' => grep !/^--/, qw(
+      js/c/tree/v-tree-list.html
+      )],
       
       ['profile/form-auth.html'=>qw(
       js/c/profile/form-auth.html

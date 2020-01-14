@@ -348,10 +348,10 @@ sub результаты_цепочки {# все
     handler=>'ep',
     'header-title' => "Результаты тестирования",
     'Проект'=>$c->Проект,
-    assets=>["medcol/main.js", ],#datetime.picker.js
+    assets=>["medcol/main.js", "medcol/lib.js", "medcol/результаты-цепочки.js"],#datetime.picker.js
     'результаты'=>scalar grep(defined, @$param{qw(успехов тест sha1)}) ? $c->model->результаты_сессий_цепочки($param) : [],#
     param=>$param,
-    'список тестов' => $c->model->названия_тестов(),#where=>'where coalesce("задать вопросов", 1)>0 '
+    #~ 'список тестов' => $c->model->названия_тестов(),#where=>'where coalesce("задать вопросов", 1)>0 '
   );
   
 }

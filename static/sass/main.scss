@@ -481,7 +481,14 @@ sup.chip {
 
 .text-inherit {
   color: inherit !important;
+}
 
+.uc {
+  text-transform: uppercase;
+}
+
+.material-icons {
+  line-height: 0;
 }
 
 /***.scroll-smooth {

@@ -10,8 +10,8 @@ var module = angular.module(moduleName, ['TemplateCache', 'Компонент::�
 module.controller('Controll', function  (/*$scope, $q,*/ $timeout, $element, $http, TemplateCache, $КомпонентДеревоСписок, $КомпонентМедколФормаТеста, $EventBus) {
 var ctrl = this;
 
-$EventBus.$on('Выбрана позиция', function(item){
-  //~ console.log("Выбрана позиция", item)
+$EventBus.$on('Выбрана позиция', function(items){
+  //~ console.log("Выбрана позиция", items)
   
 });
 

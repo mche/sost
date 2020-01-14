@@ -1,6 +1,6 @@
 @@@ компонент/дерево/список
 
-<ul v-if="ready" class="collection tree-list" style="overflow:auto; margin:0;" :style=" ULStyle ">
+<ul v-if="ready" v-show="!!childs.length" class="collection tree-list" style="overflow:auto; margin:0;" :style=" ULStyle ">
 
 <!-- позиции -->
   <li class="collection-item hover-childs-show relative" style="cursor: default;" :class=" {'selected': it._selected, 'edit': it._edit} " v-for=" it in childs " :key=" it.id ">
@@ -17,7 +17,7 @@
       </slot>
     </a></div>
     
-    <a v-if=" it._childs" v-show="it._expand" click000=" foldChilds = !foldChilds " href="javascript:" class="btn-flat fs8 grey-text padd-0-05" style="position:absolute; top:0; right:0;" title="позиций"><i class="material-icons">unfold_less</i>{{ it._childs.length }}</a>
+    <a v-if=" it._childs" v-show="it._expand" click000=" foldChilds = !foldChilds " href="javascript:" class="btn-flat fs8 grey-text padd-0-05-000" style="position:absolute; top:0; right:0;" title="позиций"><i class="material-icons">unfold_less</i>{{ it._childs.length }}</a>
 
     <div v-if="it.id && hasForm" class="hover-parent-show-inline--000" style="position:absolute; top:0; right:0;">
       <a v-show="!it._edit && !it._expand && IsLastExpandedParent" @click=" EditNode(it)" href="javascript:void('Редактировать')" class="hover-blue-lighten-4 btn-flat  padd-05  hover-z-depth-1 " style="height: auto; line-height: initial;" title="редактирвать позицию"> <i class="material-icons blue-text fs10">edit</i> </a>
