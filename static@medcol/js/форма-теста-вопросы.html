@@ -6,22 +6,22 @@
     <span v-show="inputFilter" class="chip absolute chip padd-0-05 fs8" style="right:0.5rem; top:0.5rem;"><i class="material-icons fs8">filter_list</i><span>{{ questionsFiltered.length }}</span></span>
   </div>
   <ul class="width-100 max-height-30vh-over-000" style="max-height:50vh; overflow:auto; min-height: 20rem;">
-    <li v-for="(q, idx) in questionsFiltered" :key="q.id" class=" card hover-childs-show">
+    <li v-for="(q, idx) in questionsFiltered" :key="q.id" class=" card hover-childs-show" :title="ItemTitle(q)">
       <h4 class="green darken-3 padd-05">
         <!--span class="black-text">{{idx+1}}.</span-->
-        <span class="input-field chip hoverable right">
+        <span class="input-field right">
           <input type="checkbox" v-model="q._checked" @change=" ChangeChb(q) " :id=" 'chb-'+q.id ">
-          <label :for=" 'chb-'+q.id " class="green-text-darken-4 chb-yellow-lighten-4"></label>
+          <label :for=" 'chb-'+q.id " class="green-text-darken-4 chb-yellow-lighten-4 chip yellow lighten-4"  style="padding-left:17px;"></label>
           <span v-show=" q._http " style="position:absolute; top:0; left:0.5rem;"><v-preloader-circular-small :color=" 'red-darken-2' "></v-preloader-circular-small></span>
         </span>
         <span class="chip">{{ q['код'] }}</span> <span class="white-text">{{ q['вопрос'] }}</span>
       </h4>
-      <ul class="collection width-100 padd-0 hover-parent-show-block absolute z-index-1">
+      <!--ul class="collection width-100 padd-0 hover-parent-show-block absolute z-index-1">
         <li v-for="(ans, idx) in q['ответы']" :key="idx" class="collection-item line-height-10" :class="{'green lighten-4': idx === 0, 'red lighten-4': idx > 0,}">
           <input :name=" 'question-'+q.id " type="radio" :id=" q.id+'-ans-'+idx " :checked="idx === 0">
           <label class="before-white" :for=" q.id+'-ans-'+idx "><h5 :class="{'fw500 green-text-darken-4': idx === 0, 'red-text-darken-4': idx > 0,}" class="">{{ ans }}</h5></label>
         </li>
-      </ul>
+      </ul-->
     </li>
   </ul>
 </div>

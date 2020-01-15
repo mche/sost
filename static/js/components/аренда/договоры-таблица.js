@@ -100,6 +100,7 @@ OnSave(data){ ///  из события сохранения формы
 Edit(item){
   this.$set(item, '_edit', angular.copy(item));
 },
+
 }; ///конец methods
 
 //~ const comp = {/* computed */};

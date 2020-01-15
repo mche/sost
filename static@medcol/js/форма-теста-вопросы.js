@@ -58,6 +58,10 @@ InputFilter(){
   else  vm.questionsFiltered = [...vm.questions];
 },
 
+ItemTitle(q){
+  return q['ответы'].map((a,i)=>{ return (i ? '-- ' : '+ ')+a; }).join("\r\n");
+},
+
 };
 
 const data = function(){
