@@ -153,6 +153,7 @@ sub счет_оплата_docx {
   my ($where, @bind) = $self->SqlAb->where({
     ' d.id ' => \[ ' = any(?) ', $param->{"договоры"} ],
     });
+  unshift @bind, $param->{'месяц'};
   my $data = $self->dbh->selectrow_array($self->sth('счета', where=>$where), undef, @bind);
   my $r = {};
   #~ my @data = map {

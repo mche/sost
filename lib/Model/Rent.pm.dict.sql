@@ -133,6 +133,13 @@ from "аренда/договоры-помещения" r
 
 @@ счета
 --- для docx
+with mon as (
+  select *, to_char(d."дата", 'YYYY') as "год"
+  from (VALUES (1, 'январь'), (2, 'февраль'), (3, 'март'), (4, 'апрель'), (5, 'май'), (6, 'июнь'), (7, 'июль'), (8, 'август'), (9, 'сентябрь'), (10, 'октябрь'), (11, 'ноябрь'), (12, 'декабрь'))
+    m(num, "месяц")
+  join (VALUES (?::date)) d("дата") on m.num=date_part('month', d."дата")
+)
+
 select jsonb_agg(s) as "json" from (
 select 
   (random()*1000)::int as "номер",
@@ -142,12 +149,15 @@ select
   row_to_json(k) as "$контрагент",
   k.id as "контрагент/id",
   dp."оплата" as "сумма",
-  dp."оплата" as "сумма прописью",
-  /*'{}'::text[]*/ ARRAY(select (select to_json(a) from (select to_char(now(), '{\"Арендная плата за нежилое помещение  за январь YYYY г.\"}')::text[] as "номенклатура", dp."оплата" as "сумма") a)) as "@позиции"
+  firstCap(to_text(dp."оплата"::numeric, 'рубль', scale_mode => 'int')) as "сумма прописью",
+  /*'{}'::text[]*/ ARRAY(select (select to_json(a) from (select ('{"Арендная плата за нежилое помещение за '||mon."месяц"||' '||mon."год"||' г."}')::text[] as "номенклатура", dp."оплата" as "сумма" ) a)) as "@позиции",
+  1 as "всего позиций"
  --- dp."@кабинеты/id" as "@помещения/id"
-from 
+from
+  mon,
   (
     select d.*,
+      upper(replace(d."номер", '№', '')) as "номер",
       timestamp_to_json(d."дата1"::timestamp) as "$дата1",
       timestamp_to_json(d."дата2"::timestamp) as "$дата2"
     from "аренда/договоры" d

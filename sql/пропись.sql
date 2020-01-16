@@ -1,12 +1,12 @@
+DROP FUNCTION IF EXISTS to_text(numeric,text,text[]);
+DROP FUNCTION IF EXISTS to_text(numeric,text,text);
 create or replace function to_text (
    amount numeric,
    currency text,
    scale_mode text default 'text'
 ) returns text
 as $$
-/* 
-https://github.com/pluzanov/to_text
-Выводит денежную сумму прописью(словами).
+/* Выводит денежную сумму прописью(словами).
    Параметры:
       amount - сумма. Не должна превышать 999,999,999,999,999,999,999.99
       currency - валюта. Допустимые значения: 
@@ -97,9 +97,10 @@ https://github.com/pluzanov/to_text
              /* Если параметр scale_mode не запрещает, то нужны и копейки */
              or (t.triadnum = 8 and to_text.scale_mode <> 'none')
    )
+   
    select string_agg (
           /* Обработка триады */
-          case /* Если целая часть суммы равна 0, то можно пропустить
+         initcap(case /* Если целая часть суммы равна 0, то можно пропустить
                   всё кроме копеек */ 
                when t.triadnum = 7 and t.num = '000' and const.iszero
                then 'ноль '::text
@@ -201,7 +202,7 @@ https://github.com/pluzanov/to_text
                      end
              end 
           end
-          ||
+         ||
           /* Названия триад: тысячи, миллионы, и т.д. 
              и названия валют: рубли, копейки, пр.
              Здесь же нужно привязать дробную часть к валюте:
@@ -238,8 +239,7 @@ https://github.com/pluzanov/to_text
                        when t.int3 in (2,3,4)
                        then 2
                   end
-          )
-        , ' '::text) as retval
+         ), ' '::text) as retval
    from triads t, const;
 $$ strict immutable language sql;
 
@@ -295,3 +295,10 @@ begin
 end;
 $$ strict immutable language plpgsql;
 
+create or replace function firstCap(t text)
+returns text as
+$$
+begin
+   return upper(left(t,1))||substring(t,2);
+end;
+$$ strict immutable language plpgsql;
