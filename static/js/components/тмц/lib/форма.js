@@ -420,7 +420,7 @@ return function /*конструктор*/($c, $scope, $element){
     //~ $c.Save(event, true).then(function(data){
       //~ if(data.success) 
     $timeout(function(){
-      window.location.href = appRoutes.url_for('тмц/накладная.docx', $c.data.id);
+      window.location.href = appRoutes.urlFor('тмц/накладная.docx', $c.data.id);
       //~ $window.open(appRoutes.url_for('тмц/накладная.docx', $c.data.id), '_blank');
     });
   };

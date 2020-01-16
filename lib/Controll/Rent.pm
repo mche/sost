@@ -127,4 +127,50 @@ sub сохранить_договор {
   $c->render(json=>{success=>$r});
 }
 
+sub счет_оплата_docx {# сделать docx во врем папке и вернуть урл
+  my $c = shift;
+  
+  my $docx = $c->stash('docx'); # имя файла
+  #~ $c->app->log->error($docx);
+  return $c->render_file(
+    'filepath' => "static/tmp/$docx",
+    #~ 'format'   => 'pdf',                 # will change Content-Type "application/x-download" to "application/pdf"
+    #~ 'content_disposition' => 'inline',   # will change Content-Disposition from "attachment" to "inline"
+    'cleanup'  => 1,                     # delete file after completed
+  )  if $docx;
+  
+  my $param =  $c->req->json || {};
+  return $c->render(json=>{error=>'не указан месяц'})
+    unless $param->{'месяц'};
+  return $c->render(json=>{error=>'не указаны договоры'})
+    unless $param->{'договоры'};
+    
+  $param->{uid} = $c->auth_user->{id};
+  $param->{auth_user} = $c->auth_user;
+  my $data = $c->model->счет_оплата_docx($param);
+  $c->log->error($c->dumper($data))
+    and return $c->render(json=>{error=>$data})
+    unless ref $data;
+  
+  $c->log->error($c->dumper($data));
+  
+  #~ return $c->render(json=>{data=>$data});
+  
+  my $err_file = "$data->{docx_out_file}.error";
+  
+  open(PYTHON, "| python  2>'$err_file' ")
+    || die "can't fork: $!";
+  #~ ##local $SIG{PIPE} = sub { die "spooler pipe broke" };
+  say PYTHON $data->{python};
+  close PYTHON
+    #~ || die "bads: $! $?"
+    || return $c->render_file('filepath' => $err_file,  'format'   => 'txt', 'content_disposition' => 'inline', 'cleanup'  => 1,);
+  
+  unlink $err_file;
+  
+  #~ $c->render(json=>{data=>$data});
+  #~ $c->render(json=>{url=>$data->{docx_out_file}});
+  $c->render(json=>{docx=>$data->{docx_url}});
+}
+
 1;

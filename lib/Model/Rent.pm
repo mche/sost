@@ -1,5 +1,6 @@
 package Model::Rent;
 use Mojo::Base 'Model::Base';
+use Lingua::RU::Money::XS qw(rur2words);
 
 our $DATA = ['Rent.pm.dict.sql'];
 
@@ -145,6 +146,40 @@ sub удалить_объект {
   } @{ $r->{'@кабинеты/id'}};
   $self->_удалить_строку('аренда/объекты', $data->{id});
   return $r;
+}
+
+sub счет_оплата_docx {
+  my ($self, $param,)  =  @_;
+  my ($where, @bind) = $self->SqlAb->where({
+    ' d.id ' => \[ ' = any(?) ', $param->{"договоры"} ],
+    });
+  my $data = $self->dbh->selectrow_array($self->sth('счета', where=>$where), undef, @bind);
+  my $r = {};
+  #~ my @data = map {
+    #~ my $r = {};
+    #~ $r->{'номер'} = 123;# номер счета
+    #~ $r->{'дата'} = {"day"=>1, "месяц"=>"января", "year"=>"2019"}; # дата счета
+    #~ $r->{'контрагент'} = $_->{'$контрагент/json'}
+  #~ } @$data;
+  
+  $r->{docx_out_file} = "static/tmp/счет-$param->{uid}.docx";
+  $r->{docx_url} = "/tmp/счет-$param->{uid}.docx";
+  $r->{python} = $self->dict->{'счет.docx'}->render(
+    docx_template_file=>"static/аренда-счет.template.docx",
+    docx_out_file=>$r->{docx_out_file},
+    data=>$data,# $self->app->json->encode($data),
+    
+    #~ date=>$r->{'$дата1/json'}, #$JSON->decode(),
+    #~ profile=>$r->{'$снабженец/json'}, #$JSON->decode(),
+    #~ num=>$id,
+    #~ from=> $r->{'с объекта/id'} ? $self->model_obj->объекты_проекты($r->{'с объекта/id'})->[0] : $r->{'@грузоотправители/id'} && $r->{'@грузоотправители/id'}[0] ? $model_ka->позиция($r->{'@грузоотправители/id'}[0]) : {'title'=>'нет грузоотправителя?'},
+    #~ to=>$self->model_obj->объекты_проекты($r->{'на объект/id'} || $r->{'позиции тмц/на первый объект/id'})->[0] || {name=>'куда? ошибка'}, # ,
+    #~ pos=>$r->{pos},#{'@позиции тмц/json'},#$JSON->encode(
+    #~ len=>$r->{len},
+    #~ model=>$self,
+  );
+  
+  return $r;#для отладки - коммент линию
 }
 
 

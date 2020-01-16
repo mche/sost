@@ -35,7 +35,7 @@ const methods = {/*методы*/
 
 Ready(){/// метод
   var vm = this;
-  vm.LoadData().then(function(){
+  return vm.LoadData().then(function(){
     vm.ready = true;
     $EventBus.$emit('$КомпонентАрендаДоговорыТаблица - готов');
   });
@@ -101,9 +101,38 @@ Edit(item){
   this.$set(item, '_edit', angular.copy(item));
 },
 
+AllChbsChange(val){
+  var vm = this;
+  if (typeof val == 'boolean') vm.allChbs = val;
+  vm.data.map((item)=>{ item['крыжик'] =  vm.allChbs; });
+},
+
+PrintPay(month){
+  var vm = this;
+  var modal = $('#modal-pay', $(vm.$el));
+  if (!month) return modal.modal('open');
+  modal.modal('close');
+  var ids = vm.data.filter((item)=>{ return !!item['крыжик']; }).map((item)=>{ return item.id; });
+  //~ console.log("PrintPay", month, ids);
+  /// вернет урл для скачивания
+  return $http.post(appRoutes.urlFor('аренда/счет.docx'), {"месяц": month, "договоры": ids}).then(function(resp){
+    if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 border fw500  animated zoomInUp');
+    if (resp.data.docx) window.location.href = resp.data.docx;
+    if (resp.data.data) console.log("счет", resp.data.data);///отладка
+    //~ window.location.href = appRoutes.urlFor('тмц/накладная.docx', $c.data.id);
+  });
+},
+
 }; ///конец methods
 
-//~ const comp = {/* computed */};
+const computed = {
+//~ IsChbs(){
+  //~ console.log("IsChbs");
+  //~ return this.data.some((item)=>{ return !!item['крыжик']; });
+//~ },
+  
+  
+  /* computed */};
 
 const  data = function(){
   //~ console.log("on data item", this.item);
@@ -115,20 +144,39 @@ const  data = function(){
     "data": [],
     "newContract": undefined,
     "selectedContract": undefined,
+    "allChbs": false,
+    "payMonth":  new Date().toISOString().replace(/T.+/, ''),
     };
   //);
 };///конец data
+
+const mounted = function(){
+  //~ console.log('mounted', this);
+  var vm = this;
+  var $el = $(vm.$el);
+  vm.Ready().then(function(){
+    setTimeout(function(){
+      $('.modal', $el).modal( );// Callback for Modal close} {"complete": vm.ModalComplete}
+      
+      $('.datepicker.pay-month', $el).pickadate({// все настройки в файле русификации ru_RU.js
+        monthsFull: [ 'январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь' ],
+        format: 'mmmm yyyy',
+        monthOnly: 'OK',// кнопка
+        selectYears: true,
+        onSet: function (context) {var s = this.component.item.select; vm.$set(vm, "payMonth" , [s.year, s.month+1, s.date].join('-')); },//$(this._hidden).val().replace(/^\s*-/, this.component.item.select.year+'-'); },
+      });//{closeOnSelect: true,}
+    });
+    
+  });
+};
 
 var $Компонент = {
   props,
   data,
   methods,
-  //~ "computed":comp,
+  computed,
   //~ "created"() {  },
-  "mounted"() {
-    //~ console.log('mounted', this);
-    this.Ready();
-  },
+  mounted,
 };
 
 const $Конструктор = function (/*data, $c, $scope*/){

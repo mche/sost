@@ -130,3 +130,73 @@ from "аренда/договоры-помещения" r
   join "roles" ob on ob.id=ro.id1
 {%= $where || '' %}
 {%= $order_by || '' %}
+
+@@ счета
+--- для docx
+select jsonb_agg(s) as "json" from (
+select 
+  (random()*1000)::int as "номер",
+  timestamp_to_json(now()) as "$дата",
+  
+  row_to_json(d) as "$договор", 
+  row_to_json(k) as "$контрагент",
+  k.id as "контрагент/id",
+  dp."оплата" as "сумма",
+  dp."оплата" as "сумма прописью",
+  /*'{}'::text[]*/ ARRAY(select (select to_json(a) from (select to_char(now(), '{\"Арендная плата за нежилое помещение  за январь YYYY г.\"}')::text[] as "номенклатура", dp."оплата" as "сумма") a)) as "@позиции"
+ --- dp."@кабинеты/id" as "@помещения/id"
+from 
+  (
+    select d.*,
+      timestamp_to_json(d."дата1"::timestamp) as "$дата1",
+      timestamp_to_json(d."дата2"::timestamp) as "$дата2"
+    from "аренда/договоры" d
+  ) d
+  join refs r on d.id=r.id2
+  join "контрагенты" k on k.id=r.id1
+  left join (
+    select d.id as "договор/id",
+      jsonb_agg(dp order by dp.id) as "@помещения/json",
+      array_agg(dp."помещение/id" order by dp.id) as "@кабинеты/id",
+      array_agg(dp.id  order by dp.id) as "@договоры/помещения/id",
+      sum(dp."площадь помещения") as "площадь помещений",
+      sum(dp."оплата за помещение") as "оплата"
+    from "аренда/договоры" d 
+      join refs r on d.id=r.id1
+      join (
+        {%= $dict->render('договоры/помещения') %}
+      ) dp on dp.id=r.id2
+    group by d.id
+  ) dp on d.id=dp."договор/id"
+{%= $where || '' %}
+{%= $order_by || 'order by d."дата1" desc, d.id desc  ' %}
+) s
+
+@@ счет.docx
+# -*- coding: utf-8 -*-
+'''
+https://github.com/elapouya/python-docx-template
+http://docxtpl.readthedocs.io/en/latest/
+
+pip install docxtpl
+
+'''
+
+from docxtpl import DocxTemplate, InlineImage, R, Listing
+%#from docx.shared import Mm, Inches, Pt
+from docx.shared import Mm
+tpl=DocxTemplate(u'{%= $docx_template_file %}')
+%#logo=InlineImage(tpl,u'''{%= $logo_image %}''', width=Mm(70)) if u'''{%= $logo_image %}''' else ''
+%#logo_big=InlineImage(tpl,u'''{%= $logo_image_big %}''', width=Mm(187)) if u'''{%= $logo_image_big %}''' else ''
+%#'top_details': [{%= $top_details %}], # 
+
+undefined = ''
+true = ''
+false = ''
+null = ''
+context = {
+    'items' : {%= $data %},
+}
+
+tpl.render(context)
+tpl.save(u'{%= $docx_out_file %}')
