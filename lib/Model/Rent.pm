@@ -154,7 +154,7 @@ sub счет_оплата_docx {
     ' d.id ' => \[ ' = any(?) ', $param->{"договоры"} ],
     ' d.id ' => \[ ' = any(?) ', $param->{"договоры"} ],
     });
-  unshift @bind, $param->{'месяц'};
+  unshift @bind, $param->{'месяц'}, $param->{'присвоить номера счетов'} ? $param->{"договоры"} : [], $param->{uid};
   my $data = $self->dbh->selectrow_array($self->sth('счета', where=>$where), undef, @bind);
   my $r = {};
   #~ my @data = map {
@@ -165,7 +165,8 @@ sub счет_оплата_docx {
   #~ } @$data;
   
   $r->{docx_out_file} = "static/tmp/счет-$param->{uid}.docx";
-  $r->{docx_url} = "/tmp/счет-$param->{uid}.docx";
+  $r->{docx} = "счет-$param->{uid}.docx";
+  $r->{data} = $data;
   $r->{python} = $self->dict->{'счет.docx'}->render(
     docx_template_file=>"static/аренда-счет.template.docx",
     docx_out_file=>$r->{docx_out_file},

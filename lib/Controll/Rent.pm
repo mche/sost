@@ -151,8 +151,11 @@ sub счет_оплата_docx {# сделать docx во врем папке �
   $c->log->error($c->dumper($data))
     and return $c->render(json=>{error=>$data})
     unless ref $data;
+  return $c->render(json=>{error=>"Не найдено счетов"})
+    unless $data->{data};
   
-  $c->log->error($c->dumper($data));
+  
+  #~ $c->log->error($c->dumper($data));
   
   #~ return $c->render(json=>{data=>$data});
   
@@ -170,7 +173,7 @@ sub счет_оплата_docx {# сделать docx во врем папке �
   
   #~ $c->render(json=>{data=>$data});
   #~ $c->render(json=>{url=>$data->{docx_out_file}});
-  $c->render(json=>{docx=>$data->{docx_url}});
+  $c->render(json=>{docx=>$data->{docx}});
 }
 
 1;

@@ -117,7 +117,7 @@ PrintPay(month){
   /// вернет урл для скачивания
   return $http.post(appRoutes.urlFor('аренда/счет.docx'), {"месяц": month, "договоры": ids}).then(function(resp){
     if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 border fw500  animated zoomInUp');
-    if (resp.data.docx) window.location.href = resp.data.docx;
+    if (resp.data.docx) window.location.href = appRoutes.urlFor('аренда/счет/#docx', resp.data.docx);
     if (resp.data.data) console.log("счет", resp.data.data);///отладка
     //~ window.location.href = appRoutes.urlFor('тмц/накладная.docx', $c.data.id);
   });

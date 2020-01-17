@@ -58,6 +58,76 @@ id1("аренда/помещения")->id2("аренда/договоры-по�
 ALTER TABLE "аренда/договоры-помещения" ALTER COLUMN  "ставка" DROP NOT NULL;
 ALTER TABLE "аренда/договоры-помещения" ADD COLUMN IF NOT EXISTS  "сумма" money;
 
+CREATE SEQUENCE IF NOT EXISTS "счета";
+
+---DROP TABLE IF EXISTS "счета";
+
+create table IF NOT EXISTS "счета/аренда/помещения" ( ---- счета за помещения
+  id integer  NOT NULL DEFAULT nextval('{%= $sequence %}'::regclass) primary key,
+  ts  timestamp without time zone NOT NULL DEFAULT now(),
+  uid int, --- автор записи
+  "номер" text not null DEFAULT nextval('счета'::regclass)::text, --
+  "месяц" date not null -- дата выставления счета
+/* связи:
+id1("аренда/договоры")->id2("счета/аренда/помещения")
+*/
+);
+
+CREATE OR REPLACE FUNCTION "номера счетов/аренда помещений"(date/*месяц*/, int[]/*договоры*/,int/* uid */)
+RETURNS SETOF "счета/аренда/помещения"
+AS $func$
+/*
+** Присвоение номеров счетов
+** на входе:
+** 1 - дата месяца счетов
+** 2 - массив ид договоров, которым присвоить номера
+** 3 - ид профиля
+*/
+DECLARE
+  ---param record;
+  drec record;
+  ins "счета/аренда/помещения"%rowtype;
+BEGIN
+  ---select date_trunc('month', $1) as "месяц", $3 as uid into param;
+  
+  FOR drec IN
+    select d.id
+    from 
+      ---(select param.*) p
+      "аренда/договоры" d
+      left join (
+        select r.id1
+        from "счета/аренда/помещения" s 
+        join refs r  on s.id=r.id2 ---and date_trunc('month', s."месяц")=param."месяц"
+        where date_trunc('month', s."месяц")=date_trunc('month', $1) --- только счета этого мес
+      ) s on d.id=s.id1
+    where 
+      date_trunc('month', $1) between d."дата1" and d."дата2" ---только действующие договоры
+      and d.id=any($2)
+      and  s is null
+  LOOP
+    insert into "счета/аренда/помещения" ("месяц", uid) values ($1, $3) returning * into ins;
+    insert into "refs" (id1,id2) values (drec.id, ins.id);
+    ---RAISE NOTICE 'New id: %', ins.id;
+    ---RETURN NEXT ins;
+  END LOOP;
+
+--- возвращать все счета этого мес
+RETURN QUERY 
+select s.*
+from
+  /*"аренда/договоры" d
+  join "refs" r on d.id=r.id1
+  join*/ "счета/аренда/помещения" s ---on s.id=r.id2
+where 
+  date_trunc('month', $1)=date_trunc('month', s."месяц") --- between d."дата1" and d."дата2" ---только действующие договоры
+  ---and d.id=any($2)--- НЕТ! 
+;
+END;
+$func$ LANGUAGE plpgsql;
+
+/*конец схемы*/
+
 
 @@ объекты УК
 select {%= $select || '*' %}
@@ -133,35 +203,44 @@ from "аренда/договоры-помещения" r
 
 @@ счета
 --- для docx
-with mon as (
+with param as (
   select *, to_char(d."дата", 'YYYY') as "год"
   from (VALUES (1, 'январь'), (2, 'февраль'), (3, 'март'), (4, 'апрель'), (5, 'май'), (6, 'июнь'), (7, 'июль'), (8, 'август'), (9, 'сентябрь'), (10, 'октябрь'), (11, 'ноябрь'), (12, 'декабрь'))
     m(num, "месяц")
   join (VALUES (?::date)) d("дата") on m.num=date_part('month', d."дата")
+),
+num as (---нумерация счетов
+  select n.*, r.id1
+  from 
+    param,
+    "refs" r
+    join "номера счетов/аренда помещений"(param."дата", ?::int[]/*массив ид договоров для присвоения номеров*/,?/*uid*/) n on n.id=r.id2
+    --- если не нужно присвоение номеров - передать 2 параметр - пустой массив идов договоров []
 )
+---конец with
 
 select jsonb_agg(s) as "json" from (
 select 
-  (random()*1000)::int as "номер",
-  timestamp_to_json(now()) as "$дата",
+  coalesce(num."номер", '000')/*(random()*1000)::int*/ as "номер",
+  timestamp_to_json(coalesce(num."месяц"::timestamp, now())) as "$дата",
   
   row_to_json(d) as "$договор", 
   row_to_json(k) as "$контрагент",
   k.id as "контрагент/id",
   dp."оплата" as "сумма",
   firstCap(to_text(dp."оплата"::numeric, 'рубль', scale_mode => 'int')) as "сумма прописью",
-  /*'{}'::text[]*/ ARRAY(select (select to_json(a) from (select ('{"Арендная плата за нежилое помещение за '||mon."месяц"||' '||mon."год"||' г."}')::text[] as "номенклатура", dp."оплата" as "сумма" ) a)) as "@позиции",
+  /*'{}'::text[]*/ ARRAY(select (select to_json(a) from (select ('{"Арендная плата за нежилое помещение за '||param."месяц"||' '||param."год"||' г."}')::text[] as "номенклатура", dp."оплата" as "сумма" ) a)) as "@позиции",
   1 as "всего позиций"
  --- dp."@кабинеты/id" as "@помещения/id"
 from
-  mon
+  param
   join (
     select d.*,
       upper(replace(d."номер", '№', '')) as "номер",
       timestamp_to_json(d."дата1"::timestamp) as "$дата1",
       timestamp_to_json(d."дата2"::timestamp) as "$дата2"
     from "аренда/договоры" d
-  ) d on date_trunc('month', mon."дата") between d."дата1" and d."дата2" ---только действующие договоры
+  ) d on date_trunc('month', param."дата") between d."дата1" and d."дата2" ---только действующие договоры
   join refs r on d.id=r.id2
   join "контрагенты" k on k.id=r.id1
   left join (
@@ -178,6 +257,9 @@ from
       ) dp on dp.id=r.id2
     group by d.id
   ) dp on d.id=dp."договор/id"
+  
+  ---нумерация счетов (может быть отключена)
+  ---left join num on d.id=num.id1
 {%= $where || '' %}
 {%= $order_by || 'order by d."дата1" desc, d.id desc  ' %}
 ) s
@@ -211,3 +293,5 @@ context = {
 
 tpl.render(context)
 tpl.save(u'{%= $docx_out_file %}')
+
+
