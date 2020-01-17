@@ -115,7 +115,7 @@ PrintPay(month){
   var ids = vm.data.filter((item)=>{ return !!item['крыжик']; }).map((item)=>{ return item.id; });
   //~ console.log("PrintPay", month, ids);
   /// вернет урл для скачивания
-  return $http.post(appRoutes.urlFor('аренда/счет.docx'), {"месяц": month, "договоры": ids}).then(function(resp){
+  return $http.post(appRoutes.urlFor('аренда/счет.docx'), {"месяц": month, "договоры": ids, "присвоить номера": vm.payNums}).then(function(resp){
     if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 border fw500  animated zoomInUp');
     if (resp.data.docx) window.location.href = appRoutes.urlFor('аренда/счет/#docx', resp.data.docx);
     if (resp.data.data) console.log("счет", resp.data.data);///отладка
@@ -144,8 +144,9 @@ const  data = function(){
     "data": [],
     "newContract": undefined,
     "selectedContract": undefined,
-    "allChbs": false,
+    "allChbs": false, /// крыжик выбора всех договоров
     "payMonth":  new Date().toISOString().replace(/T.+/, ''),
+    "payNums": false, ///крыжик счета с номерами
     };
   //);
 };///конец data

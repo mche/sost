@@ -154,7 +154,6 @@ sub счет_оплата_docx {# сделать docx во врем папке �
   return $c->render(json=>{error=>"Не найдено счетов"})
     unless $data->{data};
   
-  
   #~ $c->log->error($c->dumper($data));
   
   #~ return $c->render(json=>{data=>$data});

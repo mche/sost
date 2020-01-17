@@ -150,20 +150,17 @@ sub удалить_объект {
 
 sub счет_оплата_docx {
   my ($self, $param,)  =  @_;
+  
+  # пришлось вынести вызов нумерации отдельно, функции чет косячно не возвращает строки
+  $self->dbh->do(qq|select "номера счетов/аренда помещений"(?::date, ?::int[], ?::int)|, undef, $param->{'месяц'}, $param->{"договоры"}, $param->{uid})
+    if ($param->{'присвоить номера'});
+  
   my ($where, @bind) = $self->SqlAb->where({
     ' d.id ' => \[ ' = any(?) ', $param->{"договоры"} ],
-    ' d.id ' => \[ ' = any(?) ', $param->{"договоры"} ],
-    });
-  unshift @bind, $param->{'месяц'}, $param->{'присвоить номера счетов'} ? $param->{"договоры"} : [], $param->{uid};
+  });
+  unshift @bind, $param->{'месяц'};#, $param->{'присвоить номера'} ? $param->{"договоры"} : [], $param->{uid};
   my $data = $self->dbh->selectrow_array($self->sth('счета', where=>$where), undef, @bind);
   my $r = {};
-  #~ my @data = map {
-    #~ my $r = {};
-    #~ $r->{'номер'} = 123;# номер счета
-    #~ $r->{'дата'} = {"day"=>1, "месяц"=>"января", "year"=>"2019"}; # дата счета
-    #~ $r->{'контрагент'} = $_->{'$контрагент/json'}
-  #~ } @$data;
-  
   $r->{docx_out_file} = "static/tmp/счет-$param->{uid}.docx";
   $r->{docx} = "счет-$param->{uid}.docx";
   $r->{data} = $data;
@@ -171,15 +168,7 @@ sub счет_оплата_docx {
     docx_template_file=>"static/аренда-счет.template.docx",
     docx_out_file=>$r->{docx_out_file},
     data=>$data,# $self->app->json->encode($data),
-    buyer=>$self->dbh->selectrow_array('select k."реквизиты" from "контрагенты" k  where id=123222'),
-    #~ date=>$r->{'$дата1/json'}, #$JSON->decode(),
-    #~ profile=>$r->{'$снабженец/json'}, #$JSON->decode(),
-    #~ num=>$id,
-    #~ from=> $r->{'с объекта/id'} ? $self->model_obj->объекты_проекты($r->{'с объекта/id'})->[0] : $r->{'@грузоотправители/id'} && $r->{'@грузоотправители/id'}[0] ? $model_ka->позиция($r->{'@грузоотправители/id'}[0]) : {'title'=>'нет грузоотправителя?'},
-    #~ to=>$self->model_obj->объекты_проекты($r->{'на объект/id'} || $r->{'позиции тмц/на первый объект/id'})->[0] || {name=>'куда? ошибка'}, # ,
-    #~ pos=>$r->{pos},#{'@позиции тмц/json'},#$JSON->encode(
-    #~ len=>$r->{len},
-    #~ model=>$self,
+    buyer=>$self->dbh->selectrow_array('select k."реквизиты" from "контрагенты" k  where id=123222'),# пока один датель
   );
   
   return $r;#для отладки - коммент линию
