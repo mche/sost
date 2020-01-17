@@ -170,7 +170,7 @@ sub счет_оплата_docx {
     docx_template_file=>"static/аренда-счет.template.docx",
     docx_out_file=>$r->{docx_out_file},
     data=>$data,# $self->app->json->encode($data),
-    buyer=>$self->dbh->selectrow_array('select to_json(k) from "контрагенты" k  where id=123222'),
+    buyer=>$self->dbh->selectrow_array('select k."реквизиты" from "контрагенты" k  where id=123222'),
     #~ date=>$r->{'$дата1/json'}, #$JSON->decode(),
     #~ profile=>$r->{'$снабженец/json'}, #$JSON->decode(),
     #~ num=>$id,
