@@ -1,5 +1,5 @@
-DROP FUNCTION IF EXISTS to_text(numeric,text,text[]);
 DROP FUNCTION IF EXISTS to_text(numeric,text,text);
+
 create or replace function to_text (
    amount numeric,
    currency text,
@@ -97,10 +97,9 @@ as $$
              /* Если параметр scale_mode не запрещает, то нужны и копейки */
              or (t.triadnum = 8 and to_text.scale_mode <> 'none')
    )
-   
-   select string_agg (
+   select string_agg(
           /* Обработка триады */
-         initcap(case /* Если целая часть суммы равна 0, то можно пропустить
+          case /* Если целая часть суммы равна 0, то можно пропустить
                   всё кроме копеек */ 
                when t.triadnum = 7 and t.num = '000' and const.iszero
                then 'ноль '::text
@@ -202,7 +201,7 @@ as $$
                      end
              end 
           end
-         ||
+          ||
           /* Названия триад: тысячи, миллионы, и т.д. 
              и названия валют: рубли, копейки, пр.
              Здесь же нужно привязать дробную часть к валюте:
@@ -239,9 +238,17 @@ as $$
                        when t.int3 in (2,3,4)
                        then 2
                   end
-         ), ' '::text) as retval
+          ), ' '::text)  as retval
    from triads t, const;
 $$ strict immutable language sql;
+
+create or replace function firstCap(t text)
+returns text as
+$$
+begin
+    return upper(left(t,1))||substring(t,2);
+end;
+$$ strict immutable language plpgsql;
 
 create or replace function uom2text (
    amount bigint,
@@ -284,7 +291,7 @@ begin
 
    if local.text_case = 'initcap' then
       /* не совсем initcap, заглавная толька первая буква */
-      local.retval := upper(left(local.retval,1))||substring(local.retval,2);
+      local.retval := firstCap(local.retval);----upper(left(local.retval,1))||substring(local.retval,2);
    elsif local.text_case = 'lower' then
       local.retval := lower(local.retval);
    elsif local.text_case = 'upper' then
@@ -295,10 +302,3 @@ begin
 end;
 $$ strict immutable language plpgsql;
 
-create or replace function firstCap(t text)
-returns text as
-$$
-begin
-   return upper(left(t,1))||substring(t,2);
-end;
-$$ strict immutable language plpgsql;

@@ -152,6 +152,7 @@ sub счет_оплата_docx {
   my ($self, $param,)  =  @_;
   my ($where, @bind) = $self->SqlAb->where({
     ' d.id ' => \[ ' = any(?) ', $param->{"договоры"} ],
+    ' d.id ' => \[ ' = any(?) ', $param->{"договоры"} ],
     });
   unshift @bind, $param->{'месяц'};
   my $data = $self->dbh->selectrow_array($self->sth('счета', where=>$where), undef, @bind);
@@ -169,7 +170,7 @@ sub счет_оплата_docx {
     docx_template_file=>"static/аренда-счет.template.docx",
     docx_out_file=>$r->{docx_out_file},
     data=>$data,# $self->app->json->encode($data),
-    
+    buyer=>$self->dbh->selectrow_array('select to_json(k) from "контрагенты" k  where id=123222'),
     #~ date=>$r->{'$дата1/json'}, #$JSON->decode(),
     #~ profile=>$r->{'$снабженец/json'}, #$JSON->decode(),
     #~ num=>$id,

@@ -154,14 +154,14 @@ select
   1 as "всего позиций"
  --- dp."@кабинеты/id" as "@помещения/id"
 from
-  mon,
-  (
+  mon
+  join (
     select d.*,
       upper(replace(d."номер", '№', '')) as "номер",
       timestamp_to_json(d."дата1"::timestamp) as "$дата1",
       timestamp_to_json(d."дата2"::timestamp) as "$дата2"
     from "аренда/договоры" d
-  ) d
+  ) d on date_trunc('month', mon."дата") between d."дата1" and d."дата2" ---только действующие договоры
   join refs r on d.id=r.id2
   join "контрагенты" k on k.id=r.id1
   left join (
@@ -206,6 +206,7 @@ false = ''
 null = ''
 context = {
     'items' : {%= $data %},
+    'buyer': {%= $buyer %},
 }
 
 tpl.render(context)
