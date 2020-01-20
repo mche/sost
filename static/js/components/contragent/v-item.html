@@ -13,8 +13,10 @@
       </h5>
     </template>
   </v-suggest>
-  <span  v-show="!form.id && form.title.length > 1" class="chip padd-0-05 red-text text-darken-2 fs8"  style="position: absolute; /*right:0;*/">* новый контрагент *</span>
-  <span  v-show="form.id" class="grey-text fs7 " style="position: absolute; right:0;">#{{form.id}}</span>
+  <slot name="form" :form=" form ">
+    <span  v-show="!form.id && form.title.length > 1" class="chip padd-0-05 red-text text-darken-2 fs8"  style="position: absolute; /*right:0;*/">* новый контрагент *</span>
+    <span  v-show="form.id" class="grey-text fs7 " style="position: absolute; right:0;">#{{form.id}}</span>
+  </slot>
 </div>
 
 

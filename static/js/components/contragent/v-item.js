@@ -107,8 +107,9 @@ Autocomplete(){// init input textfield
 
 SetItem(item, onSelect){
   var vm = this;
-  vm.form.title = item.title;
-  vm.$set(vm.form, 'id', item.id); /// не понятно
+  //~ vm.form.title = item.title;
+  //~ vm.$set(vm.form, 'id', item.id); /// не понятно
+  vm.$set(vm, 'form', item);
   if (onSelect) vm.$emit('on-select', vm.form);
 },
 

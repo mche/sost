@@ -30,9 +30,20 @@ sub позиция {
 
 sub сохранить_контрагент {
   my ($self, $data) = @_;
-  my $k = $self->_select($self->{template_vars}{schema}, $main_table, ["id"], $data);
-  return $k
-    if $k && $k->{id};
+  
+  if ($data->{id}) {# может без title
+     #~ $self->app->log->error($self->app->dumper($data));
+    my $k = $self->_select($self->{template_vars}{schema}, $main_table, ["id"], $data);
+    if ($k  && $k->{'реквизиты'} && $data->{'реквизиты'}) {
+      require Hash::Merge;
+      #~ $self->app->log->error($self->app->dumper($data->{'реквизиты'}));
+      $data->{'реквизиты'} = $self->app->json->encode(Hash::Merge::merge($self->app->json->decode($data->{'реквизиты'}), $self->app->json->decode($k->{'реквизиты'})));
+    }
+    $k = $self->_update($self->{template_vars}{schema}, $main_table, ["id"], $data); #|| 
+    return $k
+      if $k && $k->{id};
+  }
+  
   return $data #"Не указан контрагент"
     unless $data && $data->{'title'};
   

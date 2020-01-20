@@ -24,7 +24,7 @@
 
 <tbody>
   <tr v-for=" (item, item_idx) in filteredData " :key=" item.id " class="" :class="{'selected': item === selectedContract}">
-    <td class="vtop padd-05 relative">
+    <td class="vtop padd-05">
 
       <h5 class="truncate line-height-12" :class="{'bold': item._edit}" style="width:10rem; max-width:calc(10vw);" :title="item['$контрагент'].title">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#contragent"></use></svg>
