@@ -59,7 +59,7 @@ ALTER TABLE "аренда/договоры-помещения" ALTER COLUMN  "с
 ALTER TABLE "аренда/договоры-помещения" ADD COLUMN IF NOT EXISTS  "сумма" money;
 
 CREATE SEQUENCE IF NOT EXISTS "счета";
-
+CREATE SEQUENCE IF NOT EXISTS "акты";
 ---DROP TABLE IF EXISTS "счета";
 
 create table IF NOT EXISTS "счета/аренда/помещения" ( ---- счета за помещения
@@ -72,8 +72,20 @@ create table IF NOT EXISTS "счета/аренда/помещения" ( ---- �
 id1("аренда/договоры")->id2("счета/аренда/помещения")
 */
 );
-
 CREATE INDEX  IF NOT EXISTS "счета/аренда/помещения/idx/месяц" ON "счета/аренда/помещения" ("месяц");---date_trunc('month', "месяц")--- ERROR:  functions in index expression must be marked IMMUTABLE
+
+create table IF NOT EXISTS "акты/аренда/помещения" ( ---- акты вып за помещения
+  id integer  NOT NULL DEFAULT nextval('{%= $sequence %}'::regclass) primary key,
+  ts  timestamp without time zone NOT NULL DEFAULT now(),
+  uid int, --- автор записи
+  "номер" text not null DEFAULT nextval('акты'::regclass)::text, --
+  "месяц" date not null -- дата выставления счета
+/* связи:
+id1("аренда/договоры")->id2("счета/аренда/помещения")
+*/
+);
+CREATE INDEX  IF NOT EXISTS "акты/аренда/помещения/idx/месяц" ON "акты/аренда/помещения" ("месяц");---date_trunc('month', "месяц")--- ERROR:  functions in index expression must be marked IMMUTABLE
+
 
 CREATE OR REPLACE FUNCTION "номера счетов/аренда помещений"(date/*месяц*/, int[]/*договоры*/,int/* uid */)
 RETURNS SETOF "счета/аренда/помещения"
@@ -120,6 +132,58 @@ RETURN QUERY
   select s.*
   from
     "счета/аренда/помещения" s ---on s.id=r.id2
+  where 
+    date_trunc('month', $1)=s."месяц" --- between d."дата1" and d."дата2" ---только действующие договоры
+    ---and d.id=any($2)--- НЕТ! 
+  ;
+END;
+$func$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION "номера актов/аренда помещений"(date/*месяц*/, int[]/*договоры*/,int/* uid */)
+RETURNS SETOF "акты/аренда/помещения"
+AS $func$
+/*
+** Присвоение номеров счетов
+** на входе:
+** 1 - дата месяца счетов
+** 2 - массив ид договоров, которым присвоить номера
+** 3 - ид профиля
+*/
+DECLARE
+  ---param record;
+  drec record;
+  ins "акты/аренда/помещения"%rowtype;
+BEGIN
+  ---select date_trunc('month', $1) as "месяц", $3 as uid into param;
+  
+  FOR drec IN
+    select d.id
+    from 
+      ---(select param.*) p
+      "аренда/договоры" d
+      left join (
+        select r.id1
+        from "акты/аренда/помещения" s 
+        join refs r  on s.id=r.id2 
+        where  s."месяц"=date_trunc('month', $1) --- только счета этого мес
+      ) s on d.id=s.id1
+    where 
+      date_trunc('month', $1) between d."дата1" and d."дата2" ---только действующие договоры
+      and d.id=any($2)
+      and  s.id1 is null
+    order by d."дата1" desc, d.id desc
+  LOOP
+    insert into "акты/аренда/помещения" ("месяц", uid) values (date_trunc('month', $1), $3) returning * into ins;
+    insert into "refs" (id1,id2) values (drec.id, ins.id);
+    RAISE NOTICE 'New id: %', ins.id;
+    ---RETURN NEXT ins;
+  END LOOP;
+
+--- возвращать все счета этого мес
+RETURN QUERY 
+  select s.*
+  from
+    "акты/аренда/помещения" s ---on s.id=r.id2
   where 
     date_trunc('month', $1)=s."месяц" --- between d."дата1" and d."дата2" ---только действующие договоры
     ---and d.id=any($2)--- НЕТ! 
@@ -223,8 +287,11 @@ num as (---нумерация счетов
 
 select jsonb_agg(s) as "json" from (
 select 
-  coalesce(num."номер", '000')/*(random()*1000)::int*/ as "номер",
-  timestamp_to_json(coalesce(num.ts, now())) as "$дата",
+  coalesce(num1."номер", '000')/*(random()*1000)::int*/ as "номер счета",
+  timestamp_to_json(coalesce(num1.ts, now())) as "$дата счета",
+  
+  coalesce(num2."номер", '000')/*(random()*1000)::int*/ as "номер акта",
+  timestamp_to_json(coalesce(num2.ts, now())) as "$дата акта",
   
   row_to_json(d) as "$договор", 
   row_to_json(k) as "$контрагент",
@@ -266,7 +333,15 @@ from
     from 
       "refs" r
       join "счета/аренда/помещения" n on n.id=r.id2
-  ) num on d.id=num.id1 and num."месяц"=param."month"
+  ) num1 on d.id=num1.id1 and num1."месяц"=param."month"
+  
+  ---нумерация актов (может быть отключена)
+  left join (
+    select n.*, r.id1
+    from 
+      "refs" r
+      join "акты/аренда/помещения" n on n.id=r.id2
+  ) num2 on d.id=num2.id1 and num2."месяц"=param."month"
   
   ---left join num on d.id=num.id1
 {%= $where || '' %}

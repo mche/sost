@@ -96,6 +96,20 @@ ToggleRooms(item) {
 ParseNum(num){
   return parseFloat(Util.numeric(num));
 },
+
+ItemRooms(item){
+  var vm = this;
+  if (vm.sortItemRooms === undefined) return item['@кабинеты'];///без сортировки
+  return item['@кабинеты'].sort((a, b) => {
+    let v1 = a['номер-название'].toLowerCase();
+    let v2 = b['номер-название'].toLowerCase();
+    if (v1 > v2) return vm.sortItemRooms ? 1 : -1;
+    if (v1 < v2) return vm.sortItemRooms ? -1 : 1; 
+    return 0;
+  });
+  
+},
+
 }; /// конец methods
 
 const  data = function(){
@@ -109,18 +123,22 @@ const  data = function(){
     "data": [],
     "newObject": undefined,
     "selectedObject": undefined,
+    "sortItemRooms": undefined,
     };
   //);
 };///конец data
 
-//~ let comp = {/* computed */};
+const computed = {
+
+
+/* computed */};
 
 
 var $Компонент = {
   props,
   data,
   methods,
-  //~ "computed":comp,
+  computed,
   //~ "created"() {  },
   "mounted"() {
     //~ console.log('mounted', this);

@@ -36,6 +36,7 @@ const methods = {/*методы*/
 Ready(){/// метод
   var vm = this;
   return vm.LoadData().then(function(){
+    vm.FilterData();
     vm.ready = true;
     $EventBus.$emit('$КомпонентАрендаДоговорыТаблица - готов');
   });
@@ -87,13 +88,17 @@ OnSave(data){ ///  из события сохранения формы
   if (vm.newContract) vm.newContract = undefined;
   if (data) {
     var f = vm.data.find(util.IsEqualId, data);
-    if (data['удалить']) return vm.data.removeOf(f);
+    if (data['удалить']) {
+      vm.data.removeOf(f);
+      return vm.FilterData();
+    }
     if (f) { /// редакт
       if (f._edit) f._edit = undefined;
       Object.assign(f, data);
     } else {/// новая
       vm.data.push(data);
     }
+    vm.FilterData();
   }
 },
 
@@ -115,12 +120,38 @@ PrintPay(month){
   var ids = vm.data.filter((item)=>{ return !!item['крыжик']; }).map((item)=>{ return item.id; });
   //~ console.log("PrintPay", month, ids);
   /// вернет урл для скачивания
-  return $http.post(appRoutes.urlFor('аренда/счет.docx'), {"месяц": month, "договоры": ids, "присвоить номера": vm.payNums}).then(function(resp){
+  return $http.post(appRoutes.urlFor('аренда/счет.docx'), {"месяц": month, "договоры": ids, "присвоить номера": vm.payNums, "счет или акт": vm.radioSchetAkt}).then(function(resp){
     if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 border fw500  animated zoomInUp');
     if (resp.data.docx) window.location.href = appRoutes.urlFor('аренда/счет/#docx', resp.data.docx);
     if (resp.data.data) console.log("счет", resp.data.data);///отладка
     //~ window.location.href = appRoutes.urlFor('тмц/накладная.docx', $c.data.id);
   });
+},
+
+OnChangeFilter(event){
+  var vm = this;
+  //~ console.log("OnKeyDownFilter", event.target.name, event.target.value);
+  if (vm.filters.timeout) clearTimeout(vm.filters.timeout);
+  vm.filters.timeout = setTimeout(() => {
+    //~ vm.filters[event.target.name] = event.target.value;
+    vm.FilterData();
+  }, 700);
+  
+},
+
+FilterData(){
+  var vm = this;
+  //~ if (!vm.filters['арендаторы'].length) return vm.data;
+   vm.filteredData = vm.filters['арендаторы'] && vm.filters['арендаторы'].length ? vm.data.filter((item)=>{
+    return item['$контрагент'].title.toLowerCase().indexOf(vm.filters['арендаторы'].toLowerCase()) >= 0;
+  }) : vm.data;
+  return vm;
+},
+
+ClearFilter(name){
+  var vm = this;
+  vm.filters[name] = undefined;
+  vm.FilterData();
 },
 
 }; ///конец methods
@@ -130,23 +161,27 @@ const computed = {
   //~ console.log("IsChbs");
   //~ return this.data.some((item)=>{ return !!item['крыжик']; });
 //~ },
-  
+
   
   /* computed */};
 
 const  data = function(){
   //~ console.log("on data item", this.item);
   let vm = this;
+  vm.data = [];
   return {//angular.extend(// return dst
     //data,// dst
     //{/// src
     "ready": false,
-    "data": [],
+    //~ "data": [],
+    "filteredData":[],
     "newContract": undefined,
     "selectedContract": undefined,
     "allChbs": false, /// крыжик выбора всех договоров
     "payMonth":  new Date().toISOString().replace(/T.+/, ''),
     "payNums": false, ///крыжик счета с номерами
+    "radioSchetAkt": 'счет',/// или акт
+    "filters": {"арендаторы": ''},
     };
   //);
 };///конец data

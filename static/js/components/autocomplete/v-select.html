@@ -21,14 +21,14 @@
   <div  v-show=" dropDownShow " class="z-depth-1" style="position: absolute; z-index: 2; top:0; width:100%;">
     <div class="input-field padd-0-05 grey lighten-4 ">
       <a v-show=" inputQuery " @click=" ClearInput " href="javascript:" style="position: absolute; z-index: 1; right:0.5rem; top:0.3rem; "><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"  class="red-fill fill-darken-1" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#left-clear-fill"></use></svg></a>
-      <input type="text" v-model=" inputQuery "  @keydown=" OnKeyDown " :placeholder=" param.placeholder || 'поиск объекта' " class="" ></h4>
+      <input type="text" v-model=" inputQuery "  @keydown=" OnKeyDown " :placeholder=" param.placeholder || 'поиск объекта' " class="" >
     </div>
   
     <ul class=" dropdown-content select-dropdown z-depth-3 animated zoomInDown0000 fadeIn  fast " style="opacity: 1; display:block; width:100%;">
       
       <!--li><h4 class="input-field relative">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" v-show=" inputQuery " @click=" inputQuery = ''; ChangeInput(); " class="middle red-fill fill-darken-1" style="height: 1.5rem; position: absolute; z-index: 1; right:1rem; top:1rem; cursor:pointer;"><use xlink:href="/fonts/icons.svg#left-clear-fill"></use></svg>
-        <input type="text" v-model=" inputQuery "  @keydown=" ChangeInput " placeholder=" поиск объекта " class="padd-05 blue lighten-4 blue-text text-darken-4" ></h4>
+        <input type="text" v-model=" inputQuery "  @keydown=" ChangeInput " placeholder=" поиск объекта " class="padd-05 blue lighten-4 blue-text text-darken-4" >
       </li-->
 
       <li v-for="item in itemsPage" :key="item.id" class="animated fadeIn" :class=" {'active selected': item === selected || item === highlighted} ">

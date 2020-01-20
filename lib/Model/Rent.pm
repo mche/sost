@@ -148,12 +148,15 @@ sub удалить_объект {
   return $r;
 }
 
-sub счет_оплата_docx {
+sub счет_оплата_docx {# и акты
   my ($self, $param,)  =  @_;
   
   # пришлось вынести вызов нумерации отдельно, функции чет косячно не возвращает строки
   $self->dbh->do(qq|select "номера счетов/аренда помещений"(?::date, ?::int[], ?::int)|, undef, $param->{'месяц'}, $param->{"договоры"}, $param->{uid})
-    if ($param->{'присвоить номера'});
+    if $param->{'присвоить номера'} && $param->{'счет или акт'} eq 'счет';
+  $self->dbh->do(qq|select "номера актов/аренда помещений"(?::date, ?::int[], ?::int)|, undef, $param->{'месяц'}, $param->{"договоры"}, $param->{uid})
+    if $param->{'присвоить номера'} && $param->{'счет или акт'} eq 'акт';
+  
   
   my ($where, @bind) = $self->SqlAb->where({
     ' d.id ' => \[ ' = any(?) ', $param->{"договоры"} ],
@@ -161,11 +164,12 @@ sub счет_оплата_docx {
   unshift @bind, $param->{'месяц'};#, $param->{'присвоить номера'} ? $param->{"договоры"} : [], $param->{uid};
   my $data = $self->dbh->selectrow_array($self->sth('счета', where=>$where), undef, @bind);
   my $r = {};
-  $r->{docx_out_file} = "static/tmp/счет-$param->{uid}.docx";
-  $r->{docx} = "счет-$param->{uid}.docx";
+  $r->{docx} = $param->{docx} || "счет-$param->{uid}.docx";
+  $r->{docx_out_file} = "static/tmp/$r->{docx}";
+  
   $r->{data} = $data;
   $r->{python} = $self->dict->{'счет.docx'}->render(
-    docx_template_file=>"static/аренда-счет.template.docx",
+    docx_template_file=>$param->{docx_template_file} || "static/аренда-счет.template.docx",
     docx_out_file=>$r->{docx_out_file},
     data=>$data,# $self->app->json->encode($data),
     buyer=>$self->dbh->selectrow_array('select k."реквизиты" from "контрагенты" k  where id=123222'),# пока один датель

@@ -144,7 +144,9 @@ sub счет_оплата_docx {# сделать docx во врем папке �
     unless $param->{'месяц'};
   return $c->render(json=>{error=>'не указаны договоры'})
     unless $param->{'договоры'};
-    
+  
+  $param->{docx} = sprintf("%s-%s.docx", $param->{'счет или акт'}, $c->auth_user->{id});
+  $param->{docx_template_file} = sprintf("static/аренда-%s.template.docx", $param->{'счет или акт'},);
   $param->{uid} = $c->auth_user->{id};
   $param->{auth_user} = $c->auth_user;
   my $data = $c->model->счет_оплата_docx($param);
