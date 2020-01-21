@@ -36,8 +36,9 @@ sub сохранить_контрагент {
     my $k = $self->_select($self->{template_vars}{schema}, $main_table, ["id"], $data);
     if ($k  && $k->{'реквизиты'} && $data->{'реквизиты'}) {
       require Hash::Merge;
+      my $json = $self->app->json;
       #~ $self->app->log->error($self->app->dumper($data->{'реквизиты'}));
-      $data->{'реквизиты'} = $self->app->json->encode(Hash::Merge::merge($self->app->json->decode($data->{'реквизиты'}), $self->app->json->decode($k->{'реквизиты'})));
+      $data->{'реквизиты'} = $json->encode(Hash::Merge::merge($json->decode($data->{'реквизиты'}), $json->decode($k->{'реквизиты'})));
     }
     $k = $self->_update($self->{template_vars}{schema}, $main_table, ["id"], $data); #|| 
     return $k
