@@ -331,7 +331,7 @@ from
   ) dp on d.id=dp."договор/id"*/
   
   /*** Waltex/Report.pm.dict.sql ***/
-  left join "движение ДС/аренда/счета" dp on d.id=dp.id and param."month"=date_trunc('month', dp."дата")
+  left join "движение ДС/аренда/счета" dp on d.id=dp.id and param."month"=date_trunc('month', dp."дата") and dp."примечание"!~'предоплата'
   
   ---нумерация счетов (может быть отключена)
   left join (
