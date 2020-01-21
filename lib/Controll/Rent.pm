@@ -92,7 +92,7 @@ sub сохранить_договор {
     #~ if $data->{'контрагент/реквизиты'};
  
   my $k = $c->model_contragent->сохранить_контрагент($data->{'контрагент'});
-  #~ $c->log->error($c->dumper($k));
+  $c->log->error($c->dumper($k));
   
   return $c->render(json=>{error=>"Нет контрагента"})
     unless $k->{id};
