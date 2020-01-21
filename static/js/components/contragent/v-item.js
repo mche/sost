@@ -135,6 +135,7 @@ OnSuggestInputChange(query, vmSuggest){///из v-suggest
   if (vm.form.id && vm.form.title != query)  vm.form = {"title": query};
   vm.form.title = query;
   
+  /* крыжиком фиксируем ид для обновления названия контрагента */
   if (id && vm.chbEdit && vm.form.title) vm.form.id = id;
   else vm.chbEdit = false;
   
@@ -150,7 +151,7 @@ OnSuggestSelect(item, idx, vmSuggest){
   var vm = this;
   //~ var item = vm.lastItems[idx];
   //~ console.log("onSuggestSelect", item, vmSuggest.options);
-  //~ vm.chbEdit = false;
+  vm.chbEdit = false;
   if (!item) /*сброс*/ vm.SetItem({"title": ''}, true);
   else if (item.data) vm.SetItem(item.data, true);
   return item.title || '';/// !!! Вернуть строку
