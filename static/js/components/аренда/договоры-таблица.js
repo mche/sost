@@ -44,6 +44,7 @@ Ready(){/// метод
 
 LoadData(){
   var vm = this;
+  
   return $http.post(appRoutes.urlFor('аренда/договоры/список'), {})
     .then(function(resp){
       vm.data.push(...resp.data);

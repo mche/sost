@@ -307,7 +307,7 @@ const mounted = function(){
         //~ console.log("Дайте список объектов аренды", rentRoomsData);
         vm.Ready();
       });
-    //~ });
+    });
     //~ else  vm.Ready();
     
   });
