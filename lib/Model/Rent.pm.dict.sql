@@ -28,8 +28,9 @@ create table IF NOT EXISTS "аренда/договоры" (
   ts  timestamp without time zone NOT NULL DEFAULT now(),
   uid int, --- автор записи
   "номер" text not null, --
+  "дата договора" date, --- ALTER TABLE ниже
   "дата1" date not null, -- начало срока аренды
-  "дата2" date not null, -- конец
+  "дата2" date not null, -- конец  срока аренды
   "коммент" text,
   "оплата до числа" smallint, --- ALTER TABLE "аренда/договоры" ADD COLUMN IF NOT EXISTS "оплата до числа" smallint;
   "предоплата" boolean --- ALTER TABLE "аренда/договоры" ADD COLUMN IF NOT EXISTS "предоплата" boolean;
@@ -40,6 +41,7 @@ id1("аренда/договоры")->id2("аренда/договоры-пом�
 );
 ALTER TABLE "аренда/договоры" ADD COLUMN IF NOT EXISTS "оплата до числа" smallint;
 ALTER TABLE "аренда/договоры" ADD COLUMN IF NOT EXISTS "предоплата" boolean;
+ALTER TABLE "аренда/договоры" ADD COLUMN IF NOT EXISTS "дата договора" date;
 
 
 create table IF NOT EXISTS "аренда/договоры-помещения" (
@@ -306,6 +308,7 @@ from
   join (
     select d.*,
       upper(replace(d."номер", '№', '')) as "номер",
+      timestamp_to_json(coalesce(d."дата договора", d."дата1")::timestamp) as "$дата договора",
       timestamp_to_json(d."дата1"::timestamp) as "$дата1",
       timestamp_to_json(d."дата2"::timestamp) as "$дата2"
     from "аренда/договоры" d
