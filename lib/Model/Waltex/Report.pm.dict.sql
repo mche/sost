@@ -854,7 +854,7 @@ select ?::money + ?::money;
 DROP VIEW IF EXISTS "движение ДС/аренда/счета" CASCADE;--- расходные записи движения по аренде
 CREATE OR REPLACE VIEW "движение ДС/аренда/счета" as
 -- 
-select d.id, d.ts, /*d."дата1", */d1."дата"::date, -1::numeric*sum."сумма"*d1."доля дней",
+select d.id, d.ts, /*d."дата1", */d1."дата"::date, -1::numeric*sum."сумма"*d1."доля дней" as "сумма",
   -1::numeric as "sign", --- счет-расход
   ---"категории/родители узла/id"(c.id, true) as "категории",
   ---"категории/родители узла/title"(c.id, false) as "категория",

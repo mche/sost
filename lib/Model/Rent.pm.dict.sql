@@ -298,11 +298,11 @@ select
   row_to_json(d) as "$договор", 
   row_to_json(k) as "$контрагент",
   k.id as "контрагент/id",
-  dp."оплата" as "сумма",
-  firstCap(to_text(dp."оплата"::numeric, 'рубль', scale_mode => 'int')) as "сумма прописью",
-  /*'{}'::text[]*/ ARRAY(select (select to_json(a) from (select ('{"Арендная плата за нежилое помещение за '||param."месяц"||' '||param."год"||' г."}')::text[] as "номенклатура", dp."оплата" as "сумма" ) a)) as "@позиции",
+  -1::numeric*dp."сумма" as "сумма",
+  /*** хитрая функция sql/пропись.sql ***/
+  firstCap(to_text(-1::numeric*dp."сумма"::numeric, 'рубль', scale_mode => 'int')) as "сумма прописью",
+  /*'{}'::text[]*/ ARRAY(select (select to_json(a) from (select ('{"Арендная плата за нежилое помещение за '||param."месяц"||' '||param."год"||' г."}')::text[] as "номенклатура", -1::numeric*dp."сумма" as "сумма" ) a)) as "@позиции",
   1 as "всего позиций"
- --- dp."@кабинеты/id" as "@помещения/id"
 from
   param
   join (
@@ -312,10 +312,10 @@ from
       timestamp_to_json(d."дата1"::timestamp) as "$дата1",
       timestamp_to_json(d."дата2"::timestamp) as "$дата2"
     from "аренда/договоры" d
-  ) d on param."month" between d."дата1" and d."дата2" ---только действующие договоры
+  ) d on param."month" between date_trunc('month', d."дата1") and (date_trunc('month', d."дата2" + interval '1 month') - interval '1 day') ---только действующие договоры
   join refs r on d.id=r.id2
   join "контрагенты" k on k.id=r.id1
-  left join (
+  /*left join (
     select d.id as "договор/id",
       jsonb_agg(dp order by dp.id) as "@помещения/json",
       array_agg(dp."помещение/id" order by dp.id) as "@кабинеты/id",
@@ -328,7 +328,10 @@ from
         {%= $dict->render('договоры/помещения') %}
       ) dp on dp.id=r.id2
     group by d.id
-  ) dp on d.id=dp."договор/id"
+  ) dp on d.id=dp."договор/id"*/
+  
+  /*** Waltex/Report.pm.dict.sql ***/
+  left join "движение ДС/аренда/счета" dp on d.id=dp.id and param."month"=date_trunc('month', dp."дата")
   
   ---нумерация счетов (может быть отключена)
   left join (
