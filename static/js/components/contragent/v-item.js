@@ -131,8 +131,13 @@ OnSuggestInputChange(query, vmSuggest){///из v-suggest
   var vm = this;
   //~ console.log("onSuggestInputChange", query);
   if (query === null) return; ///vm.MapSuggest(vm.autocomplete);
+  var id = vm.form.id;
   if (vm.form.id && vm.form.title != query)  vm.form = {"title": query};
   vm.form.title = query;
+  
+  if (id && vm.chbEdit && vm.form.title) vm.form.id = id;
+  else vm.chbEdit = false;
+  
   vm.$emit('on-select', vm.form);/// потому что для нового контрагента передать title
   return util.CleanString(query); /// обязательно очищеннный запрос-строка
   //~ if (query == '') return null;
@@ -145,6 +150,7 @@ OnSuggestSelect(item, idx, vmSuggest){
   var vm = this;
   //~ var item = vm.lastItems[idx];
   //~ console.log("onSuggestSelect", item, vmSuggest.options);
+  //~ vm.chbEdit = false;
   if (!item) /*сброс*/ vm.SetItem({"title": ''}, true);
   else if (item.data) vm.SetItem(item.data, true);
   return item.title || '';/// !!! Вернуть строку
@@ -167,6 +173,7 @@ const data = function(){
   return {//angular.extend(// return dst
     "ready": false,
     "form": form,
+    "chbEdit": false, /// крыжик редактировать наименование
 
   };
 };

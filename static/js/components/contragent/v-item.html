@@ -17,6 +17,10 @@
     <span  v-show="!form.id && form.title.length > 1" class="chip padd-0-05 red-text text-darken-2 fs8"  style="position: absolute; /*right:0;*/">* новый контрагент *</span>
     <span  v-show="form.id" class="grey-text fs7 " style="position: absolute; right:0;">#{{form.id}}</span>
   </slot>
+  <div v-show="form.id" style="position:absolute; right:2rem;">
+    <input type="checkbox" id="крыжик-редактировать" v-model="chbEdit">
+    <label for="крыжик-редактировать" class="hover-shadow3d chb-yellow-lighten-4 orange-text chip yellow lighten-4" style="position:absolute; left:-2rem; bottom: 0; padding-left:17px;"  title="редактировать наименование"></label>
+  </div>
 </div>
 
 
