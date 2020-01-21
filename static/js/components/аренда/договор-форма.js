@@ -17,7 +17,7 @@ var module = angular.module(moduleName, ['Компонент::Контраген
 
 const Factory = function($templateCache, $http, $timeout, appRoutes, $КомпонентКонтрагент, $Контрагенты, $EventBus, /*$КомпонентПоискВСписке,*/ $КомпонентВыборВСписке, Util, $КомпонентФайлы /*$Uploader*/) {// factory
 
-var rentRoomsData;///синглетон для данных объектов аренды
+//~ var rentRoomsData;///синглетон для данных объектов аренды
 $Контрагенты.Load();
 
 const props = {
@@ -55,7 +55,7 @@ const methods = {/*методы*/
 Ready(){/// метод
   var vm = this;
   
-  vm.rentRooms = rentRoomsData;
+  //~ vm.rentRooms = rentRoomsData;
 
   vm.ready = true;
   $timeout(function(){
@@ -119,6 +119,7 @@ Save(){
       vm.$emit('on-save', resp.data.success);
       $Контрагенты.RefreshData();
       vm.ContragentData();
+      //~ rentRoomsData = undefined;
     },
     function(resp){
       console.log("Ошибка сохранения", resp);
@@ -293,19 +294,21 @@ const mounted = function(){
   //~ });
   var vm = this;
   vm.ContragentData().then(function(){
-    if (!rentRoomsData) $EventBus.$emit('Дайте список объектов аренды', function(loader){/// один раз выполнится
+    //~ if (!rentRoomsData) 
+    $EventBus.$emit('Дайте список объектов аренды', function(loader){/// один раз выполнится
       loader.then(function(data){
-        rentRoomsData = [];
+        //~ rentRoomsData = [];
+        vm.rentRooms = [];
         data.map(function(item){
           item['@кабинеты'].map(function(room){
-            rentRoomsData.push({"id": room.id, /*"объект-помещение": `${ item['$объект']['name']  }: №${ room['номер-название'] }, ${ room['этаж'] } эт., ${ room['площадь'] } м²`,*/ "_match": `${ item['$объект']['name']  } ${ room['номер-название'] } ${ room['этаж'] } ${ room['площадь'] }`.toLowerCase(), /*"адрес": item['адрес'],*/ "$помещение": room, "$объект": item['$объект'],/*"$item": angular.copy(item),*/});
+            /*rentRoomsData*/vm.rentRooms.push({"id": room.id, /*"объект-помещение": `${ item['$объект']['name']  }: №${ room['номер-название'] }, ${ room['этаж'] } эт., ${ room['площадь'] } м²`,*/ "_match": `${ item['$объект']['name']  } ${ room['номер-название'] } ${ room['этаж'] } ${ room['площадь'] }`.toLowerCase(), /*"адрес": item['адрес'],*/ "$помещение": room, "$объект": item['$объект'],/*"$item": angular.copy(item),*/});
           });
         });
         //~ console.log("Дайте список объектов аренды", rentRoomsData);
         vm.Ready();
       });
-    });
-    else  vm.Ready();
+    //~ });
+    //~ else  vm.Ready();
     
   });
 };/// конец mounted
