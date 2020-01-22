@@ -24,10 +24,10 @@
   
   <div v-if="param['реквизиты']" class="row">
     <div v-show="param['реквизиты'].hasOwnProperty('ИНН')" class="col s4 input-field">
-      <input type="text" v-model=" form['реквизиты']['ИНН'] " placeholder="ИНН" title="ИНН">
+      <input v-if=" form['реквизиты']" type="text" v-model=" form['реквизиты']['ИНН'] " placeholder="ИНН" title="ИНН">
     </div>
     <div v-show="param['реквизиты'].hasOwnProperty('юр. адрес')" class="col s8 input-field">
-      <textarea v-model.trim="form['реквизиты']['юр. адрес']" placeholder="юр. адрес" class="materialize-textarea padd-0 fs8" style="min-height: 3rem;" title="юр. адрес"></textarea>
+      <textarea v-if=" form['реквизиты']" v-model.trim="form['реквизиты']['юр. адрес']" placeholder="юр. адрес" class="materialize-textarea padd-0 fs8" style="min-height: 3rem;" title="юр. адрес"></textarea>
     </div>
   </div>
 

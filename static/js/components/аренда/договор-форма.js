@@ -81,11 +81,13 @@ ContragentData(){
 
 InitForm(item){/// обязательные реактивные поля
   var vm = this;
-  //~ console.log("InitForm", angular.copy(item['$контрагент']));
+  //~ 
   var d = new Date;
   item["дата1"] = item["дата1"] || d.toISOString().replace(/T.+/, '');
   item["дата2"] = item["дата2"] || (new Date(d.setMonth(d.getMonth() + 11))).toISOString().replace(/T.+/, '');
-  if (!item['контрагент']) item['контрагент'] = {"id": item['контрагент/id'],/*"реквизиты":{}*/};
+  if (!item['контрагент']) item['контрагент'] = {"id": item['контрагент/id'], /*"реквизиты":{},*/};
+  //~ if (!item['контрагент']['реквизиты']) item['контрагент']['реквизиты']={};
+  //~ console.log("InitForm", angular.copy(item['контрагент']));
   //~ vm.KontragentRecv(item);
   if (!item['@помещения']) item['@помещения'] = [];
   if (!item['@помещения'].length) item['@помещения'].push({"сумма": ''});/// это поле для компутед суммы!!!
@@ -152,7 +154,7 @@ CancelBtn(){
 
 SelectContragent(data){///из компонента
   var vm = this;
-  console.log("SelectContragent", data);
+  //~ console.log("SelectContragent", data);
   vm.form['контрагент'] = data;
   vm.form['$контрагент'] = data;
   //~ if (!data._isEdit) vm.KontragentRecv(vm.form);

@@ -118,8 +118,11 @@ SetItem(item, onSelect){
   var vm = this;
   //~ vm.form.title = item.title;
   //~ vm.$set(vm.form, 'id', item.id); /// не понятно
+  //~ console.log("SetItem", vm.form['реквизиты'], item['реквизиты'], vm.param['реквизиты']);
   vm.$set(vm, 'form', item);
   vm.form._isEdit = !!vm.chbEdit;
+  
+  if (vm.param['реквизиты'] && !vm.form['реквизиты']) vm.form['реквизиты'] = Object.assign({}, vm.param['реквизиты']);
   if (onSelect) vm.$emit('on-select', vm.form);
 },
 
