@@ -37,7 +37,7 @@
     </td>
     <td class="vtop padd-05 relative" style="width:1%;">
       <!-- все крыжики-->
-      <div  v-show=" item_idx === 0 "class="input-field" style="position:absolute; top:-2rem;">
+      <div  v-show=" item_idx === 0 "class="input-field nowrap" style="position:absolute; top:-2rem;">
         <input type="checkbox" id="все крыжики" v-model="allChbs" @change="AllChbsChange">
         <label for="все крыжики" class="hover-shadow3d chb-yellow-lighten-4 orange-text chip yellow lighten-4" style="position:absolute; left:-2rem; bottom: 0; padding-left:17px;" ></label>
         <a @click="AllChbsChange(!allChbs)" href="javascript:"><h5 class="orange-text text-darken-4"> все {{ allChbs ? 'снять' : 'отметить' }}</h5></a>
