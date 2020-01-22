@@ -4,12 +4,14 @@
 <v-progress-indeterminate v-show=" !ready " :color=" 'teal' " :message=" 'Загружается...' "></v-progress-indeterminate>
 
 <div v-if=" ready " class="">
-<div>
+<div><!--  новая форма --->
   <div style="position: absolute; top:0.3rem; right:1rem;">
     <a v-show=" !newContract " @click=" New " href="javascript:" class="btn-flat z-depth-1 green lighten-4 green-text text-darken-4"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="green-fill fill-darken-4" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#form-add" /></svg> Добавить договор</a>
     <a v000-show="IsChbs" @click="PrintPay()" disabled-000="!IsChbs" href="javascript:" class="btn-flat  z-depth-1 orange lighten-4 orange-text text-darken-4">Счета и акты</a>
   </div>
-  <v-rent-contract-form v-if=" newContract " :item=" newContract " @on-save=" OnSave "></v-rent-contract-form>
+  <div v-if=" newContract " style="margin-bottom:3rem;">
+    <v-rent-contract-form :item=" newContract " @on-save=" OnSave "></v-rent-contract-form>
+  </div>
 </div>
 
 <!-- фильтры -->

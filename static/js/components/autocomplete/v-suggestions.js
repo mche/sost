@@ -50,8 +50,8 @@ const  props =  {
     //~ default: []
   },
   "param": {
-    type: Object,
-    default: {}
+    "type": Object,
+    "default": function(){ return {}; },
   },
   "onInputChange": {
     type: Function,
@@ -65,8 +65,8 @@ const  props =  {
     required: true
   },
   "allLen":{/// количество всех записей в поиске
-    type: Number,
-    default: 0,
+    "type": Number,
+    "default": 0,
   },
 };
 

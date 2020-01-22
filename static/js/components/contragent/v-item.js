@@ -27,12 +27,12 @@ const  props  = {
 //~ },
 "data": Array,
 "param": {
-    type: Object,
-    default: function () {
+    "type": Object,
+    "default": function() {
       return {"suggest": {}};
     },
   },
-};
+};/*end props*/
 
 const util = {
 MapSuggest(item){
@@ -80,6 +80,15 @@ re: {
 
 const methods = {/*методы*/
 
+InitForm(){
+  var vm = this;
+  var form  = angular.copy(vm.item);
+  if (!form.title) form.title = '';
+  if (vm.param['реквизиты']) form['реквизиты'] = Object.assign(form['реквизиты'] || {}, vm.param['реквизиты']);
+    //~ console.log("InitForm", form, vm.param);
+  return form;
+},
+  
 Autocomplete(){// init input textfield
   var vm = this;
   //~ if(!vm.textField) vm.textField = $('input[type="text"]', $(vm.$el));
@@ -99,7 +108,7 @@ Autocomplete(){// init input textfield
   
   if(vm.form.id && !angular.isArray(vm.form.id)) {
     var item = vm.data.find(util.IsEqualId, {"id": vm.form.id});/*function(item){ return item.id == vm.form.id; }*/
-    if(item) vm.SetItem(item);//, $c.onSelect
+    if(item) vm.SetItem(item, true);//, $c.onSelect
   }
   
 },
@@ -110,6 +119,7 @@ SetItem(item, onSelect){
   //~ vm.form.title = item.title;
   //~ vm.$set(vm.form, 'id', item.id); /// не понятно
   vm.$set(vm, 'form', item);
+  vm.form._isEdit = !!vm.chbEdit;
   if (onSelect) vm.$emit('on-select', vm.form);
 },
 
@@ -131,14 +141,21 @@ OnSuggestInputChange(query, vmSuggest){///из v-suggest
   var vm = this;
   //~ console.log("onSuggestInputChange", query);
   if (query === null) return; ///vm.MapSuggest(vm.autocomplete);
-  var id = vm.form.id;
+  //~ var id = vm.form.id;
+  var form = angular.copy( vm.form);
   if (vm.form.id && vm.form.title != query)  vm.form = {"title": query};
   vm.form.title = query;
   
+  if (vm.param['реквизиты']) vm.form['реквизиты'] = vm.chbEdit ? form['реквизиты'] : Object.assign(form['реквизиты'] || {}, vm.param['реквизиты']);
   /* крыжиком фиксируем ид для обновления названия контрагента */
-  if (id && vm.chbEdit && vm.form.title) vm.form.id = id;
+  if (form.id && vm.chbEdit && vm.form.title) {
+    vm.form.id = form.id;
+  }
   else vm.chbEdit = false;
   
+  
+  
+  vm.form._isEdit = !!vm.chbEdit;
   vm.$emit('on-select', vm.form);/// потому что для нового контрагента передать title
   return util.CleanString(query); /// обязательно очищеннный запрос-строка
   //~ if (query == '') return null;
@@ -165,9 +182,7 @@ var computed = {
 
 const data = function(){
   let vm = this;
-  var form  = angular.copy(vm.item);
-  if (!form.title) form.title = '';
-  //~ if (!form.id) form.id=undefined;
+  var form  = vm.InitForm();
   //~ console.log("data", form);
   if (!vm.param.suggest) vm.param.suggest = {};
   vm.param.suggest.placeholder = vm.param.suggest.placeholder || vm.param.placeholder || 'выбрать или новый контрагент';

@@ -32,18 +32,19 @@
     </div>
     <div class="col s8  row">
       <!--div class="border fs8">{{ form['контрагент'] }}</div-->
-      <v-contragent :item=" form['контрагент'] " :data=" contragentData " @on-select=" SelectContragent ">
+      <v-contragent :item=" form['контрагент'] " :param=" {'редактировать':true, 'реквизиты': {'ИНН':'', 'юр. адрес': ''}} " :data=" contragentData " @on-select=" SelectContragent ">
         <template v-slot:form=" { form } ">
           <span  v-show="!form.id && form.title.length > 1" class="chip padd-0-05 red-text text-darken-2 fs8"  style="">* новый контрагент *</span>
           <span  v-show="form.id" class="grey-text fs7 " style="position: absolute; right:0;">#{{form.id}}</span>
         </template>
       </v-contragent>
-      <div class="col s4 input-field">
+      <!--div class="col s4 input-field">
         <input type="text" v-model=" form['контрагент/ИНН'] " placeholder="ИНН" title="ИНН">
       </div>
       <div class="col s8 input-field">
         <textarea v-model.trim="form['контрагент/юр. адрес']" placeholder="юр. адрес" class="materialize-textarea padd-0 fs8" style="min-height: 3rem;" title="юр. адрес"></textarea>
-      </div>
+      </div-->
+      <!--div class="fs8">{{ form['контрагент'] }}</div-->
     </div>
   </div><!-- row -->
 
@@ -108,9 +109,10 @@
       </div>
     </div>
     <div class="col s4 ">
-      <div class="input-field">
+      <div class="input-field chip">
         <input :id=" 'chb_pay' + form._id " name="" type="checkbox" class="" v-model=" form['предоплата'] " >
-        <label :for="'chb_pay' + form._id " class="before-yellow before-lighten-4 brown-text text-darken-3"><span class="" style="">Предоплата</span></label>
+        <label :for="'chb_pay' + form._id " class="before-yellow before-lighten-4 brown-text text-darken-3 chip yellow lighten-4" style="padding-left:16px;"></label>
+        <label :for="'chb_pay' + form._id " class=""><h5 class="inline" style="">Предоплата</h5></label>
       </div>
     </div>
   </div><!-- row -->
@@ -237,7 +239,7 @@
   
 </div>
 
-<div class="card-action center">
+<div class="card-action center grey lighten-2">
   <v-progress-indeterminate v-show=" cancelerHttp " :color=" 'teal' " :message=" 'Сохраняется...' "></v-progress-indeterminate>
       <div v-show="!cancelerHttp">
         <a @click=" Save() " href="javascript:" :disabled="!Valid()" class="btn" >

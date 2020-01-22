@@ -30,16 +30,23 @@ sub позиция {
 
 sub сохранить_контрагент {
   my ($self, $data) = @_;
+  my $json = $self->app->json;
   
   if ($data->{id}) {# может без title
      #~ $self->app->log->error($self->app->dumper($data));
     my $k = $self->_select($self->{template_vars}{schema}, $main_table, ["id"], $data);
     if ($k  && $k->{'реквизиты'} && $data->{'реквизиты'}) {
       require Hash::Merge;
-      my $json = $self->app->json;
+      
       #~ $self->app->log->error($self->app->dumper($data->{'реквизиты'}));
-      $data->{'реквизиты'} = $json->encode(Hash::Merge::merge($json->decode($data->{'реквизиты'}), $json->decode($k->{'реквизиты'})));
+      $data->{'реквизиты'} = $json->encode(Hash::Merge::merge(
+        ref $data->{'реквизиты'} eq 'HASH' ? $data->{'реквизиты'} : $json->decode($data->{'реквизиты'}),
+        $json->decode($k->{'реквизиты'})
+      ));
     }
+    $data->{'реквизиты'} = $json->encode($data->{'реквизиты'})
+      if ref $data->{'реквизиты'} eq 'HASH';
+    
     $k = $self->_update($self->{template_vars}{schema}, $main_table, ["id"], $data); #|| 
     return $k
       if $k && $k->{id};
@@ -47,6 +54,9 @@ sub сохранить_контрагент {
   
   return $data #"Не указан контрагент"
     unless $data && $data->{'title'};
+  
+  $data->{'реквизиты'} = $json->encode($data->{'реквизиты'})
+    if ref $data->{'реквизиты'} eq 'HASH';
   
   $data->{new} = eval {$self->сохранить($data)};# || $@;
   $self->app->log->error($@)
