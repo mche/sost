@@ -369,7 +369,7 @@ from docxtpl import DocxTemplate, InlineImage, R, Listing
 from docx.shared import Mm
 tpl=DocxTemplate(u'{%= $docx_template_file %}')
 %#logo=InlineImage(tpl,u'''{%= $logo_image %}''', width=Mm(70)) if u'''{%= $logo_image %}''' else ''
-%#logo_big=InlineImage(tpl,u'''{%= $logo_image_big %}''', width=Mm(187)) if u'''{%= $logo_image_big %}''' else ''
+sign_image=InlineImage(tpl,u'''{%= $sign_image %}''', width=Mm(40)) if u'''{%= $sign_image %}''' else ''
 %#'top_details': [{%= $top_details %}], # 
 
 undefined = ''
@@ -378,7 +378,8 @@ false = ''
 null = ''
 context = {
     'items' : {%= $data %},
-    'buyer': {%= $buyer %},
+    'seller': {%= $seller %},
+    'sign_image': sign_image,
 }
 
 tpl.render(context)

@@ -173,7 +173,8 @@ sub счет_оплата_docx {# и акты
     docx_template_file=>$param->{docx_template_file} || "static/аренда-счет.template.docx",
     docx_out_file=>$r->{docx_out_file},
     data=>$data,# $self->app->json->encode($data),
-    buyer=>$self->dbh->selectrow_array('select k."реквизиты" from "контрагенты" k  where id=123222'),# пока один датель
+    seller=>$self->dbh->selectrow_array('select k."реквизиты" from "контрагенты" k  where id=123222'),# пока один датель
+    sign_image=>-f "static/i/logo/sign-123222.png" && "static/i/logo/sign-123222.png",#
   );
   
   return $r;#для отладки - коммент линию
