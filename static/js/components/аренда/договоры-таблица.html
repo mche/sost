@@ -60,7 +60,7 @@
       <div style="max-height:10rem; overflow:auto;"><table class="bordered highlight lime000 lighten-4-000">
       <thead v-show=" item_idx === 0 " ><tr class="line-height-10">
         <th style-000="width:calc(30vw);"></th>
-        <th></th>
+        <th><h6 class="bold">Площадь</h6></th>
         <th class="vbottom right-align"><h6 class="bold">₽ за м²/мес.</h6></th>
         <th class="vbottom right-align"><h6 class="bold">₽/мес.</h6></th>
         <th></th>
@@ -155,11 +155,21 @@
         <!-- крыжик -->
         <div class="input-field chip">
           <input type="checkbox" id="крыжик-нумеровать-счета" v-model="payNums">
-          <label for="крыжик-нумеровать-счета" class="hover-shadow3d chb-yellow-lighten-4 orange-text chip yellow lighten-4 middle" style="padding-left:17px;" ></label><!-- это лабел квадратика крыжика -->
+          <label for="крыжик-нумеровать-счета" class="hover-shadow3d chb-yellow-lighten-4 orange-text chip yellow lighten-4 middle" style="padding-left:16px;" ></label><!-- это лабел квадратика крыжика -->
           <label for="крыжик-нумеровать-счета" class="middle"><h5 class="hover-shadow3d chb-yellow-lighten-4 orange-text inline">Присвоить номера счетам/актам</h5></label>
         </div>
       </div>
-    </div>
+      
+      <ul>
+        <li v-for="(ob, idx) in rentObjects" :key="ob.id">
+          <div class="input-field chip">
+            <input type="checkbox" :id=" `крыжик-объекта-печати-${ ob.id }` " v-model="ob['крыжик печати']">
+            <label :for=" `крыжик-объекта-печати-${ ob.id }` " class="hover-shadow3d chb-yellow-lighten-4 blue-text text-darken-3 chip yellow lighten-4 middle" style="padding-left:16px;" ></label><!-- это лабел квадратика крыжика -->
+            <label :for=" `крыжик-объекта-печати-${ ob.id }` " class="middle"><h5 class="hover-shadow3d chb-yellow-lighten-4 blue-text text-darken-3 inline">{{ob['$объект'].name}}</h5></label>
+          </div>
+        </li>
+      </ul>
+    </div><!-- col -->
   </div>
   <div class="modal-footer center">
     <a @click=" PrintPay(payMonth) " href="javascript:" class="modal-action waves-effect waves-green btn-flat z-depth-1 green lighten-4 green-text text-darken-4" style="float:none;"><svg ng-hide="$c.cancelerHttp" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="blue-fill " style="height: 1.7rem;"><use xlink:href="/fonts/icons.svg#ms-word" class=""></use></svg><span>Получить распечатку</span></a>

@@ -39,6 +39,12 @@ Ready(){/// метод
     vm.FilterData();
     vm.ready = true;
     $EventBus.$emit('$КомпонентАрендаДоговорыТаблица - готов');
+    $EventBus.$emit('Дайте список объектов аренды', function(loader){/// один раз выполнится
+      loader.then(function(data){
+        vm.rentObjects.push(...data);
+        console.log("Объекты аренды",  vm.rentObjects);
+      });
+    });
   });
 },
 
@@ -117,11 +123,15 @@ PrintPay(month){
   var vm = this;
   var modal = $('#modal-pay', $(vm.$el));
   if (!month) return modal.modal('open');
-  modal.modal('close');
+  
   var ids = vm.data.filter((item)=>{ return !!item['крыжик']; }).map((item)=>{ return item.id; });
+  var obs = vm.rentObjects.filter((ob)=>{ return !!ob['крыжик печати']; }).map((ob)=>{ return ob['$объект'].id; });
+  if (!ids.length) return Materialize.toast("не указаны договоры", 3000, 'red-text text-darken-3 red lighten-3 border fw500  animated zoomInUp');
+  if (!obs.length) return Materialize.toast("не указан объект", 3000, 'red-text text-darken-3 red lighten-3 border fw500  animated zoomInUp');
+  modal.modal('close');
   //~ console.log("PrintPay", month, ids);
   /// вернет урл для скачивания
-  return $http.post(appRoutes.urlFor('аренда/счет.docx'), {"месяц": month, "договоры": ids, "присвоить номера": vm.payNums, "счет или акт": vm.radioSchetAkt}).then(function(resp){
+  return $http.post(appRoutes.urlFor('аренда/счет.docx'), {"месяц": month, "договоры": ids, "присвоить номера": vm.payNums, "счет или акт": vm.radioSchetAkt, "объекты":obs}).then(function(resp){
     if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 border fw500  animated zoomInUp');
     if (resp.data.docx) window.location.href = appRoutes.urlFor('аренда/счет/#docx', resp.data.docx);
     if (resp.data.data) console.log("счет", resp.data.data);///отладка
@@ -170,6 +180,7 @@ const  data = function(){
   //~ console.log("on data item", this.item);
   let vm = this;
   vm.data = [];
+  vm.rentObjects = [];
   return {//angular.extend(// return dst
     //data,// dst
     //{/// src

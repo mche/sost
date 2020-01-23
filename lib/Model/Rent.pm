@@ -160,6 +160,7 @@ sub счет_оплата_docx {# и акты
   
   my ($where, @bind) = $self->SqlAb->where({
     ' d.id ' => \[ ' = any(?) ', $param->{"договоры"} ],
+    ' dp."объект/id" ' => \[ ' = any(?) ', $param->{"объекты"} ],
   });
   unshift @bind, $param->{'месяц'};#, $param->{'присвоить номера'} ? $param->{"договоры"} : [], $param->{uid};
   my $data = $self->dbh->selectrow_array($self->sth('счета', where=>$where), undef, @bind);

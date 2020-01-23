@@ -118,14 +118,14 @@ BEGIN
         where  s."месяц"=date_trunc('month', $1) --- только счета этого мес
       ) s on d.id=s.id1
     where 
-      date_trunc('month', $1) between d."дата1" and d."дата2" ---только действующие договоры
+      date_trunc('month', $1) between date_trunc('month', d."дата1") and (date_trunc('month', d."дата2" + interval '1 month') - interval '1 day') ---только действующие договоры
       and d.id=any($2)
       and  s.id1 is null
     order by d."дата1" desc, d.id desc
   LOOP
     insert into "счета/аренда/помещения" ("месяц", uid) values (date_trunc('month', $1), $3) returning * into ins;
     insert into "refs" (id1,id2) values (drec.id, ins.id);
-    RAISE NOTICE 'New id: %', ins.id;
+    ---RAISE NOTICE 'New id: %', ins.id;
     ---RETURN NEXT ins;
   END LOOP;
 
@@ -331,7 +331,7 @@ from
   ) dp on d.id=dp."договор/id"*/
   
   /*** Waltex/Report.pm.dict.sql ***/
-  left join "движение ДС/аренда/счета" dp on d.id=dp.id and param."month"=date_trunc('month', dp."дата") and dp."примечание"!~'предоплата'
+  join "движение ДС/аренда/счета" dp on d.id=dp.id and param."month"=date_trunc('month', dp."дата") and dp."примечание"!~'предоплата'
   
   ---нумерация счетов (может быть отключена)
   left join (
