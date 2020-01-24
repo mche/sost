@@ -354,11 +354,11 @@ sub ask_docx {
   my $contragent0_TopList = join '\n', map { ref $_->[1] ? $_->[0].join(', ', @{$_->[1]}) : $_->[0].$_->[1] } grep {$_->[1]} (['Почт. адрес: '=>$r->{'посредник'}{'реквизиты'}{'почт. адрес'},], ['тел./факс ', $r->{'посредник'}{'реквизиты'}{'тел'}], ['', $r->{'посредник'}{'реквизиты'}{'email'}]);
   
   #~ $self->app->log->error();
-  #~ my $template_file = sprintf("static/transport-ask%s.template.docx", ($r->{'посредник/id'} || $r->{заказчик}{id}) ~~ [qw(971 1393 16404 16307 ) ] ? ".".($r->{'посредник/id'} || $r->{заказчик}{id}) : "");
+  my $template_file = sprintf("static/transport-ask%s.template.docx", ($r->{'посредник/id'} || $r->{заказчик}{id}) ~~ [qw(971 1393 16404 16307 ) ] ? ".".($r->{'посредник/id'} || $r->{заказчик}{id}) : "");
   my $sign_image = sprintf("static/i/logo/sign-%s.png", $r->{'посредник/id'} || $r->{заказчик}{id});
   
   $r->{python} = $self->dict->{'заявка.docx'}->render(#$self->sth('заявка.docx',
-    docx_template_file=>"static/transport-ask.template.docx",#$template_file, # 
+    docx_template_file=>$template_file, # "static/transport-ask.template.docx",#
     sign_image=>-f $sign_image && $sign_image,#подпись печать
     sign_id=>$r->{'посредник/id'} || $r->{заказчик}{id},# для размера картинки печати
     docx_out_file=>$r->{docx_out_file},
