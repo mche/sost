@@ -843,6 +843,8 @@ from docx.shared import Mm
 tpl=DocxTemplate(u'{%= $docx_template_file %}')#/home/guest/Ostanin-dev/static/transport-ask-ostanina.template.docx
 logo=InlineImage(tpl,u'''{%= $logo_image %}''', width=Mm(70)) if u'''{%= $logo_image %}''' else ''
 logo_big=InlineImage(tpl,u'''{%= $logo_image_big %}''', width=Mm(187)) if u'''{%= $logo_image_big %}''' else ''
+sign_id={%= $sign_id %}
+sign_image=InlineImage(tpl,u'''{%= $sign_image %}''', width=Mm(45 if (sign_id != 1393 and sign_id != 971) else 30)) if u'''{%= $sign_image %}''' else ''
 #'top_details': [{%= $top_details %}], # шапка реквизитов
 
 undefined = ''
@@ -852,6 +854,7 @@ null = ''
 context = {
     'logo': logo,
     'logo_big': logo_big,
+    'sign_image': sign_image,
     'contragent3_title': u'''{%= $contragent3_title %}''',
     'contragent3_name': u'''{%= $contragent3_name %}''',
     'contragent0_title': u'''{%= $contragent0_title %}''',
