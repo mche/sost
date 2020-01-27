@@ -29,6 +29,7 @@ create table IF NOT EXISTS "аренда/договоры" (
   uid int, --- автор записи
   "номер" text not null, --
   "дата договора" date, --- ALTER TABLE ниже
+  "дата расторжения" date, --- ALTER TABLE ниже
   "дата1" date not null, -- начало срока аренды
   "дата2" date not null, -- конец  срока аренды
   "коммент" text,
@@ -42,6 +43,7 @@ id1("аренда/договоры")->id2("аренда/договоры-пом�
 ALTER TABLE "аренда/договоры" ADD COLUMN IF NOT EXISTS "оплата до числа" smallint;
 ALTER TABLE "аренда/договоры" ADD COLUMN IF NOT EXISTS "предоплата" boolean;
 ALTER TABLE "аренда/договоры" ADD COLUMN IF NOT EXISTS "дата договора" date;
+ALTER TABLE "аренда/договоры" ADD COLUMN IF NOT EXISTS "дата расторжения" date;
 
 
 create table IF NOT EXISTS "аренда/договоры-помещения" (
@@ -118,7 +120,7 @@ BEGIN
         where  s."месяц"=date_trunc('month', $1) --- только счета этого мес
       ) s on d.id=s.id1
     where 
-      date_trunc('month', $1) between date_trunc('month', d."дата1") and (date_trunc('month', d."дата2" + interval '1 month') - interval '1 day') ---только действующие договоры
+      date_trunc('month', $1) between date_trunc('month', d."дата1") and (date_trunc('month', coalesce(d."дата расторжения", d."дата2") + interval '1 month') - interval '1 day') ---только действующие договоры
       and d.id=any($2)
       and  s.id1 is null
     order by d."дата1" desc, d.id desc
@@ -170,7 +172,7 @@ BEGIN
         where  s."месяц"=date_trunc('month', $1) --- только счета этого мес
       ) s on d.id=s.id1
     where 
-      date_trunc('month', $1) between date_trunc('month', d."дата1") and (date_trunc('month', d."дата2" + interval '1 month') - interval '1 day') ---только действующие договоры
+      date_trunc('month', $1) between date_trunc('month', d."дата1") and (date_trunc('month', coalesce(d."дата расторжения", d."дата2") + interval '1 month') - interval '1 day') ---только действующие договоры
       and d.id=any($2)
       and  s.id1 is null
     order by d."дата1" desc, d.id desc
@@ -298,11 +300,12 @@ select
   row_to_json(d) as "$договор", 
   row_to_json(k) as "$контрагент",
   k.id as "контрагент/id",
-  -1::numeric*dp."сумма" as "сумма",
+  dp."сумма",
   /*** хитрая функция sql/пропись.sql ***/
-  firstCap(to_text(-1::numeric*dp."сумма"::numeric, 'рубль', scale_mode => 'int')) as "сумма прописью",
-  /*'{}'::text[]*/ ARRAY(select (select to_json(a) from (select ('{"Арендная плата за нежилое помещение за '||param."месяц"||' '||param."год"||' г."}')::text[] as "номенклатура", -1::numeric*dp."сумма" as "сумма" ) a)) as "@позиции",
-  1 as "всего позиций"
+  firstCap(to_text(dp."сумма"::numeric, 'рубль', scale_mode => 'int')) as "сумма прописью",
+  ---ARRAY(select (select to_json(a) from (select ('{"Арендная плата за нежилое помещение за '||param."месяц"||' '||param."год"||' г."}')::text[] as "номенклатура", -1::numeric*dp."сумма" as "сумма" ) a)) as "@позиции",
+  dp."@позиции",
+  dp."всего позиций"
 from
   param
   join (
@@ -312,7 +315,7 @@ from
       timestamp_to_json(d."дата1"::timestamp) as "$дата1",
       timestamp_to_json(d."дата2"::timestamp) as "$дата2"
     from "аренда/договоры" d
-  ) d on param."month" between date_trunc('month', d."дата1") and (date_trunc('month', d."дата2" + interval '1 month') - interval '1 day') ---только действующие договоры
+  ) d on param."month" between date_trunc('month', d."дата1") and (date_trunc('month', coalesce(d."дата расторжения", d."дата2") + interval '1 month') - interval '1 day') ---только действующие договоры
   join refs r on d.id=r.id2
   join "контрагенты" k on k.id=r.id1
   /*left join (
@@ -331,7 +334,26 @@ from
   ) dp on d.id=dp."договор/id"*/
   
   /*** Waltex/Report.pm.dict.sql ***/
-  join "движение ДС/аренда/счета" dp on d.id=dp.id and param."month"=date_trunc('month', dp."дата") and dp."примечание"!~'предоплата'
+  ---join "движение ДС/аренда/счета" dp on d.id=dp.id and param."month"=date_trunc('month', dp."дата") and dp."примечание"!~'предоплата'
+  join lateral (
+    select
+      sum(dp."сумма") as "сумма",
+      array_agg(row_to_json(dp) order by dp."order_by") as "@позиции",
+      count(dp) as "всего позиций"
+    from (
+      select
+        -1::numeric*dp."сумма" as "сумма",
+        not 929979=any(dp."категории") as "order_by",
+        case when 929979=any(dp."категории")---ид категории
+          then ('{"Обеспечительный платеж"}')::text[]
+          else ('{"Арендная плата за нежилое помещение за '||param."месяц"||' '||param."год"||' г."}')::text[]
+        end  as "номенклатура"
+      from "движение ДС/аренда/счета" dp
+      where  d.id=dp.id
+        and param."month"=date_trunc('month', dp."дата")
+        and not ?::int = any("категории")
+    ) dp
+  ) dp on true
   
   ---нумерация счетов (может быть отключена)
   left join (

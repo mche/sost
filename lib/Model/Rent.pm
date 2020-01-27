@@ -160,9 +160,9 @@ sub счет_оплата_docx {# и акты
   
   my ($where, @bind) = $self->SqlAb->where({
     ' d.id ' => \[ ' = any(?) ', $param->{"договоры"} ],
-    ' dp."объект/id" ' => \[ ' = any(?) ', $param->{"объекты"} ],
+#    ' dp."объект/id" ' => \[ ' = any(?) ', $param->{"объекты"} ],
   });
-  unshift @bind, $param->{'месяц'};#, $param->{'присвоить номера'} ? $param->{"договоры"} : [], $param->{uid};
+  unshift @bind, $param->{'месяц'}, $param->{'счет или акт'} eq 'акт' ? 929979 : 0;# отключить обеспечит предоплата для актов, $param->{'присвоить номера'} ? $param->{"договоры"} : [], $param->{uid};
   my $data = $self->dbh->selectrow_array($self->sth('счета', where=>$where), undef, @bind);
   my $r = {};
   $r->{docx} = $param->{docx} || "счет-$param->{uid}.docx";

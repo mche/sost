@@ -25,6 +25,7 @@ const props = {
     },
   },
   "select": Object,
+  "dataList":Array,
   "dataUrl": {
     type: String,
     default: 'доступные объекты без проектов',
@@ -38,14 +39,19 @@ const methods = {/*методы*/
 
 LoadData(param){
   var vm = this;
-  vm.loader = new $Список(appRoutes.urlFor(vm.dataUrl));
-  return vm.loader.Load(param)
-    .then(function(resp){
-      vm.list = vm.loader.Data().map(function(it){ return {"id": it.id, "_match": it.name, "$item":it}; });
-      //~ vm['$объекты'] = loader.$Data();
-      //~ if (vm.select !== undefined) vm.Select(vm['объекты'].find(util.FilterByID, vm.select));
-      //~ else if (!vm.param['все объекты'] && vm['объекты'].length == 1) vm.Select(vm['объекты'][0]);
-    });
+  if (!vm.dataList) {
+    vm.loader = new $Список(appRoutes.urlFor(vm.dataUrl));
+    return vm.loader.Load(param)
+      .then(function(resp){
+        vm.list = vm.loader.Data().map(function(it){ return {"id": it.id, "_match": it.name, "$item":it}; });
+        //~ vm['$объекты'] = loader.$Data();
+        //~ if (vm.select !== undefined) vm.Select(vm['объекты'].find(util.FilterByID, vm.select));
+        //~ else if (!vm.param['все объекты'] && vm['объекты'].length == 1) vm.Select(vm['объекты'][0]);
+      });
+  } else /*if (vm.dataList)*/ {
+    vm.list = vm.dataList.map(function(it){ return {"id": it.id, "_match": it.name, "$item":it}; });
+    return $timeout(()=>{});
+  }
   
 },
   

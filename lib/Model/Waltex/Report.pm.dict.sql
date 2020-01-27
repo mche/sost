@@ -858,7 +858,8 @@ select d.id, d.ts, /*d."дата1", */d1."дата"::date, -1::numeric*sum."су
   -1::numeric as "sign", --- счет-расход
   ---"категории/родители узла/id"(c.id, true) as "категории",
   ---"категории/родители узла/title"(c.id, false) as "категория",
-  cc."@id" as "категории", cc."@title" as "категория",
+  coalesce(d1."@категории/id", cc."@id") as "категории",
+  coalesce(d1."@категории/title", cc."@title") as "категория",
   k.title as "контрагент", k.id as "контрагент/id",
   row_to_json(ob) as "$объект/json", ob.id as "объект/id", ob.name as "объект",
   null::int as "кошелек2", --- left join
@@ -908,20 +909,29 @@ from
     --- тут один первый месяц договора (возможно неполный)
     select d."дата1" as "дата", extract(day FROM date_trunc('month', d."дата1"+interval '1 month') - d."дата1")/extract(day FROM date_trunc('month', d."дата1") + interval '1 month - 1 day') as "доля дней",--- первого неполного месяца
     extract(day FROM date_trunc('month', d."дата1"+interval '1 month') - d."дата1") as "за дней",
-    ' за ' || extract(day FROM date_trunc('month', d."дата1"+interval '1 month') - d."дата1")::text || ' дн. неполн. мес.' as "коммент"
+    ' за ' || extract(day FROM date_trunc('month', d."дата1"+interval '1 month') - d."дата1")::text || ' дн. неполн. мес.' as "коммент",
+    null::int[] as "@категории/id", null::text[] as "@категории/title"
     union all
     --- тут остальные полные месяцы
-    select date_trunc('month', d."дата1"+interval '1 month')+make_interval(months=>m), 1, null, null --- полная сумма
-    from generate_series(0, extract(month from age(date_trunc('month', d."дата2"), date_trunc('month', d."дата1"+interval '2 month')))::int/*колич полных месяцев*/, 1) as m
+    select date_trunc('month', d."дата1"+interval '1 month')+make_interval(months=>m), 1, null, null, /*полная сумма*/ null, null
+    from
+      (select age(date_trunc('month', coalesce(d."дата расторжения", d."дата2")), date_trunc('month', d."дата1"+interval '2 month')) as "age") a
+      join lateral (
+        select generate_series(0, (extract(year from a."age")*12 + extract(month from a."age"))::int/*колич полных месяцев*/, 1) as m
+      ) m on true
+      
     union all
     --- тут один  последний месяц договора (возможно неполный)
-    select  date_trunc('month', d."дата2"), extract(day FROM d."дата2"/* тут важно до какой даты включительно- interval '1 day'*/)/extract(day FROM date_trunc('month', d."дата2") + interval '1 month - 1 day'),--- доля дней в последнем месяце
-    extract(day FROM d."дата2"/* тут важно до какой даты включительно- interval '1 day'*/), --- колич дней
-    ' за ' || extract(day FROM d."дата2"/* тут важно до какой даты включительно- interval '1 day'*/)::text || ' дн. неполн. мес.' as "коммент"
+    select  date_trunc('month', coalesce(d."дата расторжения", d."дата2")), extract(day FROM coalesce(d."дата расторжения", d."дата2")/* тут важно до какой даты включительно- interval '1 day'*/)/extract(day FROM date_trunc('month', coalesce(d."дата расторжения", d."дата2")) + interval '1 month - 1 day'),--- доля дней в последнем месяце
+    extract(day FROM coalesce(d."дата расторжения", d."дата2")/* тут важно до какой даты включительно- interval '1 day'*/), --- колич дней
+    ' за ' || extract(day FROM coalesce(d."дата расторжения", d."дата2")/* тут важно до какой даты включительно- interval '1 day'*/)::text || ' дн. неполн. мес.' as "коммент", null, null
     union all
     --- тут возможно предоплата одного мес
-    select d."дата1" as "дата", 1, null, ' предоплата (обеспечительный платеж)' --- полная сумма
-    from generate_series(0, 0, 1)
+    select d."дата1" as "дата", 1, null, ' предоплата (обеспечительный платеж)', --- полная сумма
+      cc."@id", cc."@title"
+    from 
+      generate_series(0, 0, 1) s,
+      (select array_agg("id" order by level desc) as "@id", (array_agg("title" order by level desc))[2:] as "@title" from "категории/родители узла"(929979::int, true)) cc
     where d."предоплата"=true
   ) d1 on true
 
@@ -954,7 +964,7 @@ from
       k.id as"контрагент/id",
       d.id as "договор/id",
       ---array_agg(array[d."дата1", d."дата2"]::date[]) as "даты договора",
-      d."дата1", d."дата2",
+      d."дата1", coalesce(d."дата расторжения", d."дата2") as "дата2",
       array_agg(ob.id) "@объекты/id",
       array_agg(ob.name) "@объекты/name",
       array_agg(ob) as "@объекты/json"
@@ -977,7 +987,7 @@ from
     
     ---where m."дата" between d."дата1" and d."дата2"
     
-    group by k.id, d.id, d."дата1", d."дата2"
+    group by k.id, d.id, d."дата1", coalesce(d."дата расторжения", d."дата2")
   
   ) rent on k.id=rent."контрагент/id" and m."дата" between rent."дата1" and rent."дата2"
   

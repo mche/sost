@@ -11,6 +11,7 @@ grep !/^--/, qw(
   Access
   Profile
   TimeWork
+  Rent|Аренда
   Money
   Waltex::Report
   Waltex::Report::Wallets|Деньги::Отчет::Кошельки
@@ -23,7 +24,7 @@ grep !/^--/, qw(
   ---СИЗ
   GuardWare|Спецодежда
   TMC::Cert|ТМЦ::Сертификаты
-  Rent|Аренда
+  
   Waltex::Report::Rent|Аренда::Отчет
   Uploader
   Tg

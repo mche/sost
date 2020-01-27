@@ -61,14 +61,25 @@ Ready(){/// метод
   $timeout(function(){
     $('input[type="text"]', $(vm.$el)).first().focus();
     
-    $('.datepicker', $(vm.$el)).pickadate({// все настройки в файле русификации ru_RU.js
-        formatSkipYear: true,// доп костыль - дописывать год при установке
-        onSet: function (context) {var s = this.component.item.select; vm.$set(vm.form,this._hidden.name , [s.year, s.month+1, s.date].join('-')); },//$(this._hidden).val().replace(/^\s*-/, this.component.item.select.year+'-'); },
-      });//{closeOnSelect: true,}
+    vm.InitDatepicker($('.datepicker', $(vm.$el)));
     
     $('.modal', $(vm.$el)).modal();
   });
 
+},
+
+InitDatepicker(el){
+  var vm = this;
+  el.pickadate({// все настройки в файле русификации ru_RU.js
+    //~ "clear": 'Очистить',
+    "formatSkipYear": false,// доп костыль - дописывать год при установке
+    "onSet": function (context) {
+      var s = this.component.item.select;
+      if (!s) return;
+      vm.$set(vm.form,this._hidden.name , [s.year, s.month+1, s.date].join('-'));
+    },//$(this._hidden).val().replace(/^\s*-/, this.component.item.select.year+'-'); },
+  });//{closeOnSelect: true,}
+  
 },
 
 ContragentData(){
@@ -249,6 +260,16 @@ ParseNum(num){
   return parseFloat(Util.numeric(num));
 },
 
+ClearDate(name){
+  var vm = this;
+  vm.form[name] = null;
+  vm.keys[name] = vm.idMaker.next().value;/// передернуть
+  setTimeout(()=>{
+    var el = $(`input[name="${ name }"]`, $(vm.$el));
+    vm.InitDatepicker(el);
+    //~ console.log("ClearDate", el);
+  });
+},
 
 }; /// конец methods
 
@@ -275,6 +296,7 @@ TotalSqure(){
 };
 
 const idMaker = IdMaker();/// глобал util/IdMaker.js
+
 const data = function() {
   let vm = this;
   vm.idMaker = idMaker;
@@ -285,6 +307,7 @@ const data = function() {
     "ready": false,
     "cancelerHttp": undefined,
     "form": form,
+    "keys": {"дата расторжения": vm.idMaker.next().value, "дата договора":vm.idMaker.next().value}, ///передерг рендер
     //~ "uploads": [],
   };
   //);

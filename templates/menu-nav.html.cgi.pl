@@ -4,6 +4,8 @@ my $profile = $c->auth_user
 $c->stash('пункты навигации', $c->app->models->{'Access'}->навигация([map $_->{id}, grep !$_->{disable}, @{$profile->roles}]))
   if $profile && !$c->stash('пункты навигации');
 
+#~ $c->log->error($c->dumper($c->stash('пункты навигации')));
+
 =pod
 my $level;# для навигационого цикла
 my $nav = '<ul class="nav-tree collapsible00 collapsible-accordion000">'.

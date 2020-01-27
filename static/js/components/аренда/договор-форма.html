@@ -65,7 +65,8 @@
       </div>
     </div>
     <div class="col s4 ">
-      <div class="input-field">
+      <div  :key=" keys['дата договора'] "class="input-field">
+        <a v-show="form['дата договора']" @click=" ClearDate('дата договора') " href="javascript:" class="" style="position:absolute; top:0; right:0; z-index:1;"><i class="material-icons red-text">cancel</i></a>
         <h5 class="nowrap" style="position:absolute; top:-1.2rem;">
           <span>дата</span>
           <!--sup v-show=" !Valid('номер') " class="chip red white-text" style="position: absolute; z-index: 1; top:0;padding:0.3rem;"></sup-->
@@ -75,7 +76,7 @@
     </div>
   </div><!-- row -->
   
-  <div class="row">
+  <div class="row" style="margin-bottom:3rem;">
     <div class="col s4 ">
       <h4 class="right-align">
         <i class="material-icons">today</i>
@@ -94,6 +95,28 @@
         <input name="дата2" type="text" class="datepicker"  :data-value=" form['дата2'] ">
       </div>
     </div>
+  </div><!-- row -->
+  
+  <div class="row" style="margin-bottom:3rem;">
+    <div class="col s4 ">
+      <h4 class="right-align">
+        <i class="material-icons">date_range</i>
+        <span>Договор расторгнут</span>
+      </h4>
+    </div>
+    <div class="col s4 ">
+      <div  :key=" keys['дата расторжения'] " class="input-field">
+        <a v-show="form['дата расторжения']" @click=" ClearDate('дата расторжения') " href="javascript:" class="" style="position:absolute; top:0; right:0; z-index:1;"><i class="material-icons red-text">cancel</i></a>
+        <h6 class="nowrap" style="position:absolute; top:-0.9rem;">дата расторжения</h6>
+        <input name="дата расторжения" type="text" class="datepicker"  :data-value=" form['дата расторжения'] " placeholder="дата расторжения">
+      </div>
+    </div>
+    <!--div class="col s4 ">
+      <div class="input-field">
+        <h6 class=" nowrap" style="position:absolute; top:-0.9rem;">завершение срока</h6>
+        <input name="дата2" type="text" class="datepicker"  :data-value=" form['дата2'] ">
+      </div>
+    </div-->
   </div><!-- row -->
   
   <div class="row">

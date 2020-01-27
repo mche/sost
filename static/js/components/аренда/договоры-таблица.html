@@ -40,7 +40,10 @@
       <div  v-show=" item_idx === 0 "class="input-field nowrap" style="position:absolute; top:-2rem;">
         <input type="checkbox" id="все крыжики" v-model="allChbs" @change="AllChbsChange">
         <label for="все крыжики" class="hover-shadow3d chb-yellow-lighten-4 orange-text chip yellow lighten-4" style="position:absolute; left:-2rem; bottom: 0; padding-left:17px;" ></label>
-        <a @click="AllChbsChange(!allChbs)" href="javascript:"><h5 class="orange-text text-darken-4"> все {{ allChbs ? 'снять' : 'отметить' }}</h5></a>
+        <a @click="AllChbsChange(!allChbs)" href="javascript:"><h5 class="orange-text text-darken-4">
+          <span>все {{ allChbs ? 'снять' : 'отметить' }}</span>
+          <sup class="chip white z-depth-1">{{ FilteredDataLen }}</sup>
+        </h5></a>
         
       </div>
       <div class="relative line-height-10" style="">
@@ -57,10 +60,25 @@
       
     </td>
     <td class="padd-05">
-      <div style="max-height:10rem; overflow:auto;"><table class="bordered highlight lime000 lighten-4-000">
-      <thead v-show=" item_idx === 0 " ><tr class="line-height-10">
-        <th style-000="width:calc(30vw);"></th>
-        <th><h6 class="bold">Площадь</h6></th>
+      <div :style="item_idx  > 0 ? {'max-height':'10rem', 'overflow':'auto'} : {}"><table class="bordered highlight lime000 lighten-4-000">
+      <thead v-if=" item_idx === 0 " ><tr class="line-height-10-000">
+        <th class="vbottom" style-000="width:calc(30vw);">
+          <div v-if=" rentObjects.length ">
+            <!-- <v-object-select v-if=" rentObjects.length " :select=" item['$объект'] " :data-list=" rentObjects " @on-select-object=" SelectObjectFilter "></v-object-select>-->
+            <v-select :select=" filters['объект'] " :items=" rentObjects " @on-select=" SelectObjectFilter ">
+              <template v-slot:selected="{ selected }">
+                <h5 class="fw500 blue-text text-darken-3 animated fadeIn" style="">{{ (selected && selected.$item && selected.$item.name) || 'По объекту' }}</h5>
+              </template>
+              <template v-slot:listItem="{ listItem, selected }">
+                <h4 class0000=" ItemClass(obj) " class=" blue-text text-darken-3 relative"  :class="{'bold': listItem === selected}"  style="">
+                    <span>★ {{ listItem.$item.name }}</span>
+                    <span class="grey-text fs7" style="position:absolute; right:0; bottom:0;">#{{ listItem.id }}</span>
+                </h4>
+              </template>
+            </v-select>
+          </div>
+        </th>
+        <th class="vbottom"><h6 class="bold">Площадь</h6></th>
         <th class="vbottom right-align"><h6 class="bold">₽ за м²/мес.</h6></th>
         <th class="vbottom right-align"><h6 class="bold">₽/мес.</h6></th>
         <th></th>
@@ -160,15 +178,15 @@
         </div>
       </div>
       
-      <ul>
+      <!---ul>
         <li v-for="(ob, idx) in rentObjects" :key="ob.id">
           <div class="input-field chip">
             <input type="checkbox" :id=" `крыжик-объекта-печати-${ ob.id }` " v-model="ob['крыжик печати']">
-            <label :for=" `крыжик-объекта-печати-${ ob.id }` " class="hover-shadow3d chb-yellow-lighten-4 blue-text text-darken-3 chip yellow lighten-4 middle" style="padding-left:16px;" ></label><!-- это лабел квадратика крыжика -->
+            <label :for=" `крыжик-объекта-печати-${ ob.id }` " class="hover-shadow3d chb-yellow-lighten-4 blue-text text-darken-3 chip yellow lighten-4 middle" style="padding-left:16px;" ></label><!-- это лабел квадратика крыжика >
             <label :for=" `крыжик-объекта-печати-${ ob.id }` " class="middle"><h5 class="hover-shadow3d chb-yellow-lighten-4 blue-text text-darken-3 inline">{{ob['$объект'].name}}</h5></label>
           </div>
         </li>
-      </ul>
+      </ul--->
     </div><!-- col -->
   </div>
   <div class="modal-footer center">
