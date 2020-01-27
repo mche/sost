@@ -37,20 +37,31 @@
     </td>
     <td class="vtop padd-05 relative" style="width:1%;">
       <!-- все крыжики-->
-      <div  v-show=" item_idx === 0 "class="input-field nowrap" style="position:absolute; top:-2rem;">
-        <input type="checkbox" id="все крыжики" v-model="allChbs" @change="AllChbsChange">
-        <label for="все крыжики" class="hover-shadow3d chb-yellow-lighten-4 orange-text chip yellow lighten-4" style="position:absolute; left:-2rem; bottom: 0; padding-left:17px;" ></label>
-        <a @click="AllChbsChange(!allChbs)" href="javascript:"><h5 class="orange-text text-darken-4">
-          <span>все {{ allChbs ? 'снять' : 'отметить' }}</span>
-          <sup class="chip white z-depth-1">{{ FilteredDataLen }}</sup>
-        </h5></a>
-        
+      <div v-show=" item_idx === 0 "class=" nowrap" style="position:absolute; top:-2rem;">
+        <div class="input-field iblock" style="margin-right:3rem;">
+          <input type="checkbox" id="все крыжики" v-model="allChbs" @change="AllChbsChange">
+          <label for="все крыжики" class="hover-shadow3d chb-yellow-lighten-4 orange-text chip yellow lighten-4" style="position:absolute; left:-2rem; bottom: 0; padding-left:16px;" ></label>
+          <a @click="AllChbsChange(!allChbs)" href="javascript:"><h5 class="orange-text text-darken-4">
+            <span>все {{ allChbs ? 'снять' : 'отметить' }}</span>
+            <sup class="chip white z-depth-1">{{ FilteredDataLen }}</sup>
+          </h5></a>
+        </div>
+        <!-- фильтр истекшие договоры -->
+        <div class="input-field iblock">
+          <input type="checkbox" id="архивные крыжики" v-model="filters['архивные договоры']" @change="ChbChange('архивные договоры')">
+          <label for="архивные крыжики" class="hover-shadow3d chb-maroon-lighten-5 maroon-text chip maroon lighten-5" style="position:absolute; left:-2rem; bottom: 0; padding-left:16px;" ></label>
+          <label for="архивные крыжики" class="hover-shadow3d " style=""><h5 class="maroon-text">
+            <span>архив</span>
+            <sup class="chip white z-depth-1">{{ archLen }}</sup>
+          </h5></label>
+        </div>
       </div>
       <div class="relative line-height-10" style="">
         <span class="fs8 grey-text" style="position:absolute; left:-1rem;">№</span><span class="nowrap truncate bold" style="width:calc(5vw);" :title=" item['номер'] ">{{ item['номер'] }}</span>
         <!--span class="fs8"> от </span-->
-        <span class="chip padd-0-05 nowrap" :title=" item['дата1'] "><span class="fs8 grey-text">c </span><span class="">{{ item.$дата1.day }}</span> <span class="fs8">{{ item.$дата1['мес'] }}</span><span v-show="(new Date).getYear()+1900 != item.$дата1.year"> {{ item.$дата1.year }}</span></span>
-        <span class="chip padd-0-05 nowrap breadcrumb" :title=" item['дата2'] "><span class="fs8 grey-text"> по </span><span class="">{{ item.$дата2.day }}</span> <span class="fs8">{{ item.$дата2['мес'] }}</span><span v-show="(new Date).getYear()+1900 != item.$дата2.year"> {{ item.$дата2.year }}</span></span>
+        <span class="chip padd-0-05 nowrap" :title=" item['дата1'] "><span class="fs8 grey-text">c </span><span class="bold">{{ item.$дата1.day }}</span> <span class="fs8">{{ item.$дата1['мес'] }}</span><span v-show="(new Date).getYear()+1900 != item.$дата1.year"> {{ item.$дата1.year }}</span></span>
+        <span class="chip padd-0-05 nowrap breadcrumb" :title=" item['дата2'] "><span class="fs8 grey-text"> по </span><span class="bold">{{ item.$дата2.day }}</span> <span class="fs8">{{ item.$дата2['мес'] }}</span><span v-show="(new Date).getYear()+1900 != item.$дата2.year"> {{ item.$дата2.year }}</span></span>
+        <span v-if="item['дата расторжения']" class="chip padd-0-05 nowrap red-text" :title=" item['$дата расторжения'] "><span class="fs8"> закрыт </span><span class="bold">{{ item['$дата расторжения'].day }}</span> <span class="fs8">{{ item['$дата расторжения']['мес'] }}</span><span v-show="(new Date).getYear()+1900 != item['$дата расторжения'].year"> {{ item['$дата расторжения'].year }}</span></span>
         <!-- крыжик -->
         <!--div class="input-field"-->
           <input type="checkbox" :id="`крыжик-${item.id}`" v-model="item['крыжик']">

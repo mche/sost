@@ -127,6 +127,11 @@ AllChbsChange(val){
   });
 },
 
+ChbChange(name){
+  this.FilterData();
+  
+},
+
 PrintPay(month){
   var vm = this;
   var modal = $('#modal-pay', $(vm.$el));
@@ -161,12 +166,19 @@ OnChangeFilter(event){
 FilterData(){
   var vm = this;
   //~ if (!vm.filters['арендаторы'].length) return vm.data;
-   vm.filteredData = vm.filters['арендаторы'].length || (vm.filters['объект'] && vm.filters['объект'].id)
-    ? vm.data.filter((item)=>{
-      return (vm.filters['арендаторы'] ? item['$контрагент'].title.toLowerCase().indexOf(vm.filters['арендаторы'].toLowerCase()) >= 0 : true)
+  vm.archLen = 0;
+   vm.filteredData = ///vm.filters['арендаторы'].length || (vm.filters['объект'] && vm.filters['объект'].id) /// || (vm.filters['архивные договоры'] !== undefined)
+    vm.data.filter((item)=>{
+      const cur = dateFns.isWithinRange(new Date(), new Date(item['дата1']), new Date(item['дата расторжения'] || item['дата2']));
+      if (!cur) vm.archLen += 1;
+      const test = (vm.filters['архивные договоры'] ? !cur : cur)
+        && (vm.filters['арендаторы'] ? item['$контрагент'].title.toLowerCase().indexOf(vm.filters['арендаторы'].toLowerCase()) >= 0 : true)
         && ( vm.filters['объект'] && vm.filters['объект'].id ? item['@помещения'][0].$объект.id == vm.filters['объект'].id : true);
-    })
-    : vm.data;
+      //~ console.log("filteredData", test);
+      return test;
+    });
+   // : vm.data;
+  
   vm.AllChbsChange();
   return vm;
 },
@@ -213,8 +225,9 @@ const  data = function(){
     "payMonth":  new Date().toISOString().replace(/T.+/, ''),
     "payNums": false, ///крыжик счета с номерами
     "radioSchetAkt": 'счет',/// или акт
-    "filters": {"арендаторы": '', "объект": {}},
+    "filters": {"арендаторы": '', "объект": {}, "архивные договоры": false,},
     "rentObjects":[],
+    "archLen":0, /// кол-во архивных договоров
     };
   //);
 };///конец data

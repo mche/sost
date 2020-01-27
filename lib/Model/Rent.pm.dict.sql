@@ -228,6 +228,7 @@ from "аренда/объекты" o
 select d.*,
   timestamp_to_json(d."дата1"::timestamp) as "$дата1/json",
   timestamp_to_json(d."дата2"::timestamp) as "$дата2/json",
+  timestamp_to_json(d."дата расторжения"::timestamp) as "$дата расторжения/json",
   row_to_json(k) as "$контрагент/json",
   k.id as "контрагент/id",
   dp.*,
