@@ -15,38 +15,37 @@
 </div>
 
 <!-- фильтры -->
-<div class="relative">
-  <div class="input-field" style="position:absolute; top:-2.3rem; left:0; width:9rem; max-width:calc(10vw);"><!-- стили ширины соотв. стилям первой колонки -->
-    <a v-show=" filters['арендаторы'] && filters['арендаторы'].length " @click=" ClearFilter('арендаторы') " href="javascript:" style="position: absolute; z-index: 1; right:0.5rem; top:0.3rem; "><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"  class="red-fill fill-darken-1" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#left-clear-fill"></use></svg></a>
-    <input type="text" name="арендаторы"  v-model="filters['арендаторы']" @input=" OnChangeFilter " :placeholder=" 'поиск арендатора' " class="">
-  </div>
-</div>
+<div class=""></div>
 
 <table class="striped bordered teal lighten-4 z-depth-1 animated slideInUp">
 
 <thead>
   <tr>
-    <td style="width:1%;"></td>
-    <td class="relative" style="width:1%;">
+    <td style="width:1%;">
+        <div class="input-field" style=" width:9rem; max-width:calc(10vw);"><!-- стили ширины соотв. стилям первой колонки position:absolute; top:-2.3rem; left:0;-->
+          <a v-show=" filters['арендаторы'] && filters['арендаторы'].length " @click=" ClearFilter('арендаторы') " href="javascript:" style="position: absolute; z-index: 1; right:0.5rem; top:0.3rem; "><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"  class="red-fill fill-darken-1" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#left-clear-fill"></use></svg></a>
+          <input type="text" name="арендаторы"  v-model="filters['арендаторы']" @input=" OnChangeFilter " :placeholder=" 'поиск арендатора' " class="">
+        </div>
+    </td>
+    <td class="relative vbottom" style="width:1%;">
+      <!-- фильтр истекшие договоры -->
+      <div class="input-field nowrap" style="position:absolute; top:-2rem;margin-left:0.3rem;">
+        <input type="checkbox" id="архивные крыжики" v-model="filters['архивные договоры']" @change="ChbChange('архивные договоры')">
+        <label for="архивные крыжики" class="hover-shadow3d chb-maroon-lighten-5 maroon-text chip maroon lighten-5" style="position:absolute; left:-2rem; bottom: 0; padding-left:16px;" ></label>
+        <label for="архивные крыжики" class="hover-shadow3d " style=""><h5 class="maroon-text">
+          <span>архив</span>
+          <sup class="chip white z-depth-1">{{ archLen }}</sup>
+        </h5></label>
+      </div>
+
       <!-- все крыжики-->
-      <div class=" nowrap" style="position:absolute; top:-2rem;">
-        <div class="input-field iblock" style="margin-right:3rem;">
-          <input type="checkbox" id="все крыжики" v-model="allChbs" @change="AllChbsChange">
-          <label for="все крыжики" class="hover-shadow3d chb-yellow-lighten-4 orange-text chip yellow lighten-4" style="position:absolute; left:-2rem; bottom: 0; padding-left:16px;" ></label>
-          <a @click="AllChbsChange(!allChbs)" href="javascript:"><h5 class="orange-text text-darken-4">
-            <span>все {{ allChbs ? 'снять' : 'отметить' }}</span>
-            <sup class="chip white z-depth-1">{{ FilteredDataLen }}</sup>
-          </h5></a>
-        </div>
-        <!-- фильтр истекшие договоры -->
-        <div class="input-field iblock">
-          <input type="checkbox" id="архивные крыжики" v-model="filters['архивные договоры']" @change="ChbChange('архивные договоры')">
-          <label for="архивные крыжики" class="hover-shadow3d chb-maroon-lighten-5 maroon-text chip maroon lighten-5" style="position:absolute; left:-2rem; bottom: 0; padding-left:16px;" ></label>
-          <label for="архивные крыжики" class="hover-shadow3d " style=""><h5 class="maroon-text">
-            <span>архив</span>
-            <sup class="chip white z-depth-1">{{ archLen }}</sup>
-          </h5></label>
-        </div>
+      <div v-show=" FilteredDataLen " class="input-field nowrap" style="margin-left:0.3rem;">
+        <input type="checkbox" id="все крыжики" v-model="allChbs" @change="AllChbsChange">
+        <label for="все крыжики" class="hover-shadow3d chb-yellow-lighten-4 orange-text chip yellow lighten-4" style="position:absolute; left:-2rem; bottom: 0; padding-left:16px;" ></label>
+        <a @click="AllChbsChange(!allChbs)" href="javascript:"><h6 class="orange-text text-darken-4">
+          <span>{{ allChbs ? 'снять' : 'отметить' }}</span>
+          <sup class="chip white z-depth-1">{{ FilteredDataLen }}</sup>
+        </h6></a>
       </div>
     </td>
     <td style="width:calc(30vw);">

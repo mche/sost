@@ -35,7 +35,7 @@ create table IF NOT EXISTS "аренда/договоры" (
   "коммент" text,
   "оплата до числа" smallint, --- ALTER TABLE "аренда/договоры" ADD COLUMN IF NOT EXISTS "оплата до числа" smallint;
   "предоплата" boolean --- ALTER TABLE "аренда/договоры" ADD COLUMN IF NOT EXISTS "предоплата" boolean;
-  ---"оплата наличкой" boolean --- ALTER TABLE ниже
+  ---"оплата наличкой" boolean --- !!!в реквизит контрагента физ. лицо ALTER TABLE ниже
 /* связи:
 id1("контрагенты")->id2("аренда/договоры")
 id1("аренда/договоры")->id2("аренда/договоры-помещения") 
