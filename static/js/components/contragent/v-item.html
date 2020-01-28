@@ -23,12 +23,20 @@
   </div>
   
   <div v-if="param['реквизиты']" class="row">
-    <div v-show="param['реквизиты'].hasOwnProperty('ИНН')" class="col s4 input-field">
-      <input v-if=" form['реквизиты']" type="text" v-model=" form['реквизиты']['ИНН'] " placeholder="ИНН" title="ИНН">
+    <div class="col s4 ">
+      <div v-show="param['реквизиты'].hasOwnProperty('ИНН')" class="input-field">
+        <input v-if=" form['реквизиты']" type="text" v-model=" form['реквизиты']['ИНН'] " placeholder="ИНН" title="ИНН">
+      </div>
+      <div v-show="param['реквизиты'].hasOwnProperty('физ. лицо')" class="input-field chip padd-0 transparent">
+        <input :id=" 'chb-fl-' + form._id " name="" type="checkbox" class="" v-model="  form['реквизиты']['физ. лицо'] " >
+        <label :for="'chb-fl-' + form._id " class="before-yellow before-lighten-4 brown-text text-darken-3 chip yellow lighten-4" style="padding-left:16px;"></label>
+        <label :for="'chb-fl-' + form._id " class=""><h5 class="inline" style="">Физ. лицо</h5></label>
+      </div>
     </div>
     <div v-show="param['реквизиты'].hasOwnProperty('юр. адрес')" class="col s8 input-field">
       <textarea v-if=" form['реквизиты']" v-model.trim="form['реквизиты']['юр. адрес']" placeholder="юр. адрес" class="materialize-textarea padd-0 fs8" style="min-height: 3rem;" title="юр. адрес"></textarea>
     </div>
+    
   </div>
 
   

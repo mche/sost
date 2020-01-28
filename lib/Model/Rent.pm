@@ -160,6 +160,7 @@ sub счет_оплата_docx {# и акты
   
   my ($where, @bind) = $self->SqlAb->where({
     ' d.id ' => \[ ' = any(?) ', $param->{"договоры"} ],
+    q| not coalesce((coalesce(k."реквизиты",'{}'::jsonb)->'физ. лицо'), 'false')::boolean |=>\[],
 #    ' dp."объект/id" ' => \[ ' = any(?) ', $param->{"объекты"} ],
   });
   unshift @bind, $param->{'месяц'}, $param->{'счет или акт'} eq 'акт' ? 929979 : 0;# отключить обеспечит предоплата для актов, $param->{'присвоить номера'} ? $param->{"договоры"} : [], $param->{uid};

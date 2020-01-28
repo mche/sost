@@ -19,7 +19,7 @@
   </a>
   
   <div  v-show=" dropDownShow " class="z-depth-1" style="position: absolute; z-index: 2; top:0; width:100%;">
-    <div class="input-field padd-0-05 grey lighten-4 ">
+    <div v-show="!param['без поля поиска']" class="input-field padd-0-05 grey lighten-4 ">
       <a v-show=" inputQuery " @click=" ClearInput " href="javascript:" style="position: absolute; z-index: 1; right:0.5rem; top:0.3rem; "><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"  class="red-fill fill-darken-1" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#left-clear-fill"></use></svg></a>
       <input type="text" v-model=" inputQuery "  @keydown=" OnKeyDown " :placeholder=" param.placeholder || 'поиск объекта' " class="" >
     </div>

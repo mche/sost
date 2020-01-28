@@ -32,7 +32,7 @@
     </div>
     <div class="col s8  row">
       <!--div class="border fs8">{{ form['контрагент'] }}</div-->
-      <v-contragent :item=" form['контрагент'] " :param=" {'редактировать':true, 'реквизиты': {'ИНН':'', 'юр. адрес': ''}} " :data=" contragentData " @on-select=" SelectContragent ">
+      <v-contragent :item=" form['контрагент'] " :param=" {'редактировать':true, 'реквизиты': {'ИНН':'', 'юр. адрес': '', 'физ. лицо': false,}} " :data=" contragentData " @on-select=" SelectContragent ">
         <template v-slot:form=" { form } ">
           <span  v-show="!form.id && form.title.length > 1" class="chip padd-0-05 red-text text-darken-2 fs8"  style="">* новый арендатор, проверьте *</span>
           <span  v-show="form.id" class="grey-text fs7 " style="position: absolute; right:0;">#{{form.id}}</span>
@@ -133,10 +133,15 @@
     </div>
     <div class="col s4 ">
       <div class="input-field chip">
-        <input :id=" 'chb_pay' + form._id " name="" type="checkbox" class="" v-model=" form['предоплата'] " >
-        <label :for="'chb_pay' + form._id " class="before-yellow before-lighten-4 brown-text text-darken-3 chip yellow lighten-4" style="padding-left:16px;"></label>
-        <label :for="'chb_pay' + form._id " class=""><h5 class="inline" style="">Предоплата</h5></label>
+        <input :id=" 'chb-pred-' + form._id " name="" type="checkbox" class="" v-model=" form['предоплата'] " >
+        <label :for="'chb-pred-' + form._id " class="before-yellow before-lighten-4 brown-text text-darken-3 chip yellow lighten-4" style="padding-left:16px;"></label>
+        <label :for="'chb-pred-' + form._id " class=""><h5 class="inline" style="">Предоплата</h5></label>
       </div>
+      <!--div class="input-field chip">
+        <input :id=" 'chb-nal-' + form._id " name="" type="checkbox" class="" v-model=" form['оплата наличкой'] " >
+        <label :for="'chb-nal-' + form._id " class="before-yellow before-lighten-4 brown-text text-darken-3 chip yellow lighten-4" style="padding-left:16px;"></label>
+        <label :for="'chb-nal-' + form._id " class=""><h5 class="inline" style="">Наличка</h5></label>
+      </div-->
     </div>
   </div><!-- row -->
   

@@ -24,20 +24,12 @@
 
 <table class="striped bordered teal lighten-4 z-depth-1 animated slideInUp">
 
-<tbody>
-  <tr v-for=" (item, item_idx) in filteredData " :key=" item.id " class="" :class="{'selected': item === selectedContract}">
-    <td class="vtop padd-05">
-
-      <h5 class="truncate line-height-12" :class="{'bold': item._edit}" style="width:10rem; max-width:calc(10vw);" :title="item['$контрагент'].title">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#contragent"></use></svg>
-        <a @click=" Edit(item) " href="javascript: void('редактировать договор аренды') " class="hover-shadow3d" title="редактировать договор аренды">{{ item['$контрагент'].title }}</a>
-      </h5>
-      <div v-show="item['коммент'] && !!item['коммент'].length " class="card padd-0-05 truncate pre-wrap fs8 grey-text-000 line-height-10" style="height:2rem; width:10rem; max-width:calc(10vw);" :title=" item['коммент'] ">{{ item['коммент'] }}</div>
-      <div v-if=" item._edit " style="position: absolute; width:110%; z-index:1; left:-5%;"><v-rent-contract-form :item=" item._edit " @on-save=" OnSave "></v-rent-contract-form></div>
-    </td>
-    <td class="vtop padd-05 relative" style="width:1%;">
+<thead>
+  <tr>
+    <td style="width:1%;"></td>
+    <td class="relative" style="width:1%;">
       <!-- все крыжики-->
-      <div v-show=" item_idx === 0 "class=" nowrap" style="position:absolute; top:-2rem;">
+      <div class=" nowrap" style="position:absolute; top:-2rem;">
         <div class="input-field iblock" style="margin-right:3rem;">
           <input type="checkbox" id="все крыжики" v-model="allChbs" @change="AllChbsChange">
           <label for="все крыжики" class="hover-shadow3d chb-yellow-lighten-4 orange-text chip yellow lighten-4" style="position:absolute; left:-2rem; bottom: 0; padding-left:16px;" ></label>
@@ -56,6 +48,50 @@
           </h5></label>
         </div>
       </div>
+    </td>
+    <td style="width:calc(30vw);">
+      <table>
+        <thead>
+          <tr class="line-height-10-000">
+            <th class="vbottom">
+              <div v-if=" rentObjects.length " style="width:calc(20vw);">
+                <!-- <v-object-select v-if=" rentObjects.length " :select=" item['$объект'] " :data-list=" rentObjects " @on-select-object=" SelectObjectFilter "></v-object-select>-->
+                <v-select :select=" filters['объект'] " :items=" rentObjects " :param=" {'без поля поиска': true} " @on-select=" SelectObjectFilter ">
+                  <template v-slot:selected="{ selected }">
+                    <h5 class="fw500 blue-text text-darken-3 animated fadeIn" style="">{{ (selected && selected.$item && selected.$item.name) || 'По объекту' }}</h5>
+                  </template>
+                  <template v-slot:listItem="{ listItem, selected }">
+                    <h4 class0000=" ItemClass(obj) " class=" blue-text text-darken-3 relative"  :class="{'bold': listItem === selected}"  style="">
+                        <span>★ {{ listItem.$item.name }}</span>
+                        <span class="grey-text fs7" style="position:absolute; right:0; bottom:0;">#{{ listItem.id }}</span>
+                    </h4>
+                  </template>
+                </v-select>
+              </div>
+            </th>
+            <th class="vbottom" style="width:1%;"><h6 class="bold" style="width: calc(5vw);">Площадь</h6></th>
+            <th class="vbottom right-align" style="width:1%;"><h6 class="bold nowrap" style="width: calc(5vw);">₽ за м²/мес.</h6></th>
+            <th class="vbottom right-align" style="width:1%;"><h6 class="bold nowrap" style="width: calc(5vw);">₽/мес.</h6></th>
+            <th style="width:1%;"><!--Примеч.--></th>
+          </tr>
+        </thead>
+      </table>
+    </td>
+  </tr>
+</thead>
+
+<tbody>
+  <tr v-for=" (item, item_idx) in filteredData " :key=" item.id " class="" :class="{'selected': item === selectedContract}">
+    <td class="vtop padd-05">
+
+      <h5 class="truncate line-height-12" :class="{'bold': item._edit}" style="width:10rem; max-width:calc(10vw);" :title="item['$контрагент'].title">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#contragent"></use></svg>
+        <a @click=" Edit(item) " href="javascript: void('редактировать договор аренды') " class="hover-shadow3d" title="редактировать договор аренды">{{ item['$контрагент'].title }}</a>
+      </h5>
+      
+      <div v-if=" item._edit " style="position: absolute; width:110%; z-index:1; left:-5%;"><v-rent-contract-form :item=" item._edit " @on-save=" OnSave "></v-rent-contract-form></div>
+    </td>
+    <td class="vtop padd-05 relative">
       <div class="relative line-height-10" style="">
         <span class="fs8 grey-text" style="position:absolute; left:-1rem;">№</span><span class="nowrap truncate bold" style="width:calc(5vw);" :title=" item['номер'] ">{{ item['номер'] }}</span>
         <!--span class="fs8"> от </span-->
@@ -71,33 +107,12 @@
       
     </td>
     <td class="padd-05">
-      <div :style="item_idx  > 0 ? {'max-height':'10rem', 'overflow':'auto'} : {}"><table class="bordered highlight lime000 lighten-4-000">
-      <thead v-if=" item_idx === 0 " ><tr class="line-height-10-000">
-        <th class="vbottom" style-000="width:calc(30vw);">
-          <div v-if=" rentObjects.length ">
-            <!-- <v-object-select v-if=" rentObjects.length " :select=" item['$объект'] " :data-list=" rentObjects " @on-select-object=" SelectObjectFilter "></v-object-select>-->
-            <v-select :select=" filters['объект'] " :items=" rentObjects " @on-select=" SelectObjectFilter ">
-              <template v-slot:selected="{ selected }">
-                <h5 class="fw500 blue-text text-darken-3 animated fadeIn" style="">{{ (selected && selected.$item && selected.$item.name) || 'По объекту' }}</h5>
-              </template>
-              <template v-slot:listItem="{ listItem, selected }">
-                <h4 class0000=" ItemClass(obj) " class=" blue-text text-darken-3 relative"  :class="{'bold': listItem === selected}"  style="">
-                    <span>★ {{ listItem.$item.name }}</span>
-                    <span class="grey-text fs7" style="position:absolute; right:0; bottom:0;">#{{ listItem.id }}</span>
-                </h4>
-              </template>
-            </v-select>
-          </div>
-        </th>
-        <th class="vbottom"><h6 class="bold">Площадь</h6></th>
-        <th class="vbottom right-align"><h6 class="bold">₽ за м²/мес.</h6></th>
-        <th class="vbottom right-align"><h6 class="bold">₽/мес.</h6></th>
-        <th></th>
-      </tr></thead>
+      <div style-000="item_idx  > 0 ? {'max-height':'10rem', 'overflow':'auto'} : {}"><table class="bordered highlight lime000 lighten-4-000">
+      <!---thead v-if=" item_idx === 0 " ></thead--->
       
       <tbody>
         <tr v-for="(room, idx) in item['@помещения']" :key="room.id" class="">
-          <td class="relative000">
+          <td class="relative000" style-000="width:calc(30vw);">
             <!-- не катит div style="position:absolute; left:-1rem;"><i class="material-icons fs8 lime-text-darken-4 padd-0">place</i></div-->
             <h5 class="truncate nowrap-000 lime-text-darken-4 line-height-12" style="width:calc(20vw);" :title=" room.$объект['name'] ">
               <span><i class="material-icons fs8 padd-0">place</i></span>
@@ -120,7 +135,7 @@
             </div>
           </td-->
           <td class="right-align" style="width:1%;">
-            <div class="nowrap line-height-10" style="">
+            <div class="nowrap line-height-10" style="width: calc(5vw);">
               <!--span class="bold">{{ ParseNum(room.$помещение['площадь']).toLocaleString() }}</span>
               <span class="fs8 grey-text">м<sup>2</sup></span-->
               <span class="nowrap " class-000="{'right': item['@помещения'].length == 1, 'chip padd-0-05': item['@помещения'].length > 1}"><span class="" :class="{'fw500': item['@помещения'].length == 1}">{{ ParseNum(room.$помещение['площадь']).toLocaleString() }}</span><span class="fs8"> м²</span></span>
@@ -143,13 +158,15 @@
             </div>
           </td>
           
-          <td style="width:10%;">
-            <div v-show="room['коммент'] && !!room['коммент'].length " class="padd-0-05 truncate pre-wrap fs8 grey-text line-height-10" style="max-height:2rem;" :title=" room['коммент'] ">{{ room['коммент'] }}</div>
+          <td class="relative" style="width:1%;">
+            <div v-show="room['коммент'] && !!room['коммент'].length " class="padd-0-05 truncate pre-wrap fs8 grey-text line-height-10" style="width: 10rem; max-height:2rem; position:absolute; top:0;" :title=" room['коммент'] ">{{ room['коммент'] }}</div>
           </td>
         </tr>
         <!--- Строка суммы за помещения -->
         <tr v-if="item['@помещения'] && item['@помещения'].length > 1">
-          <td></td>
+          <td>
+            <div v-show="item['коммент'] && !!item['коммент'].length " class="card-000 padd-0-05 truncate pre-wrap fs8 grey-text-000 line-height-10" style="max-height:2rem; width:calc(20vw);" :title=" item['коммент'] ">{{ item['коммент'] }}</div>
+          </td>
           <td class="right-align"><h5 class="nowrap">
             <span class="bold ">{{ RoomsSquare(item).toLocaleString().replace(/([.,]\d{2})\d+/, '$1') }}</span>
             <span class="fs8"> м²</span>

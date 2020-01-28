@@ -35,6 +35,7 @@ create table IF NOT EXISTS "аренда/договоры" (
   "коммент" text,
   "оплата до числа" smallint, --- ALTER TABLE "аренда/договоры" ADD COLUMN IF NOT EXISTS "оплата до числа" smallint;
   "предоплата" boolean --- ALTER TABLE "аренда/договоры" ADD COLUMN IF NOT EXISTS "предоплата" boolean;
+  ---"оплата наличкой" boolean --- ALTER TABLE ниже
 /* связи:
 id1("контрагенты")->id2("аренда/договоры")
 id1("аренда/договоры")->id2("аренда/договоры-помещения") 
@@ -44,6 +45,7 @@ ALTER TABLE "аренда/договоры" ADD COLUMN IF NOT EXISTS "оплат
 ALTER TABLE "аренда/договоры" ADD COLUMN IF NOT EXISTS "предоплата" boolean;
 ALTER TABLE "аренда/договоры" ADD COLUMN IF NOT EXISTS "дата договора" date;
 ALTER TABLE "аренда/договоры" ADD COLUMN IF NOT EXISTS "дата расторжения" date;
+ALTER TABLE "аренда/договоры" DROP COLUMN IF  EXISTS "оплата наличкой";
 
 
 create table IF NOT EXISTS "аренда/договоры-помещения" (
@@ -291,7 +293,7 @@ num as (---нумерация счетов
 ---конец with
 
 select jsonb_agg(s) as "json" from (
-select 
+select
   coalesce(num1."номер", '000')/*(random()*1000)::int*/ as "номер счета",
   timestamp_to_json(coalesce(num1.ts, now())) as "$дата счета",
   
@@ -350,9 +352,11 @@ from
           else ('{"Арендная плата за нежилое помещение за '||param."месяц"||' '||param."год"||' г."}')::text[]
         end  as "номенклатура"
       from "движение ДС/аренда/счета" dp
+       --- join "аренда/договоры" dd on dp.id=dd.id
       where  d.id=dp.id
         and param."month"=date_trunc('month', dp."дата")
-        and not ?::int = any("категории")
+        and not ?::int = any(dp."категории")
+        ---and not coalesce(dd."оплата наличкой", false)
     ) dp
   ) dp on true
   
