@@ -2,16 +2,16 @@ WITH param as (
   select *, to_char(d."дата", 'YYYY') as "год", date_trunc('month', d."дата") as "month"
   from (VALUES (1, 'январь'), (2, 'февраль'), (3, 'март'), (4, 'апрель'), (5, 'май'), (6, 'июнь'), (7, 'июль'), (8, 'август'), (9, 'сентябрь'), (10, 'октябрь'), (11, 'ноябрь'), (12, 'декабрь'))
     m(num, "месяц")
-  join (VALUES ('2020-02-25'::date)) d("дата") on m.num=date_part('month', d."дата")
+  join (VALUES ('2020-01-25'::date)) d("дата") on m.num=date_part('month', d."дата")
 )
 ---конец with
 
 select
-  coalesce(num1."номер", '000')/*(random()*1000)::int*/ as "номер счета",
-  coalesce(num1.ts, now())::date as "дата счета",
+  --coalesce(num1."номер", '000')/*(random()*1000)::int*/ as "номер счета",
+  ---coalesce(num1.ts, now())::date as "дата счета",
   
-  ---coalesce(num2."номер", '000')/*(random()*1000)::int*/ as "номер акта",
-  ---coalesce(num2.ts, now())::date as "дата акта",
+  coalesce(num2."номер", '000')/*(random()*1000)::int*/ as "номер акта",
+  coalesce(num2.ts, now())::date as "дата акта",
   
   d."номер" as "договор",
   k.title as "контрагент",
@@ -56,7 +56,7 @@ from
         ---join "аренда/договоры" dd on dp.id=dd.id
       where  d.id=dp.id
         and param."month"=date_trunc('month', dp."дата")
-        ---and not 929979::int = any("категории")
+        and not 929979::int = any("категории")
        --- and not coalesce(dd."оплата наличкой", false)
     ) dp
     group by dp."объект"
