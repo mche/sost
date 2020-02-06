@@ -137,14 +137,14 @@ sub перелогин {
 }
 
 sub relogin_id {
-  my ($c) = @_;
-  my $id = $c->param('id')
-    or return $c->render(text=>"Нет такого логина");
+  my $c = shift;
+  my $id = shift || $c->param('id')
+    or return $c->render(text=>"Нет профиль ID");
   
   my $model_profiles = $c->access->plugin->model('Profiles');
   
   my $p = $model_profiles->get_profile($id, undef)
-    or return $c->render(text=>"Нет такого логина [$id]");
+    or return $c->render(text=>"Нет такого профиля [$id]");
   
   #~ $c->logout;
   $c->authenticate(undef, undef, $p);# закинуть в сессию
@@ -155,7 +155,42 @@ sub relogin_id {
   
 }
 
+sub sign_cookie {
+  require Mojo::Util;# qw(b64_decode b64_encode);
+  my ($c) = @_;
+  my $value = $c->param('crypt');
+  my ($valid, $signature);
+  my $sess = $c->app->sessions;
+  my $name = $sess->cookie_name;
+  # Check signature with rotating secrets
+  if ($value =~ s/--([^\-]+)$//) {
+    $signature = $1;
 
+    for my $secret (@{ $c->app->secrets }) {
+      my $check = Mojo::Util::hmac_sha1_sum("$name=$value", $secret);
+      ++$valid and last if Mojo::Util::secure_compare($signature, $check);
+    }
+
+  }
+  $c->helpers->log->error(qq{ Cookie "$value" has bad signature "$signature" })
+    and return $c->redirect_to('home')
+    unless $valid;
+  
+  my $decr = $sess->deserialize->(Mojo::Util::b64_decode $value)
+    or $c->helpers->log->error(qq{  Bad Base64 "$value" })
+    and return $c->redirect_to('home');
+  
+  my $auth_name = $c->access->plugin->merge_conf->{auth}{session_key} || 'auth_data';#https://metacpan.org/release/Mojolicious-Plugin-Authentication/source/lib/Mojolicious/Plugin/Authentication.pm#L28
+  my $profile_id = $decr->{$auth_name}
+    or $c->helpers->log->error(qq{ None profile ID })
+    and return $c->redirect_to('home');
+  
+  return $c->relogin_id($profile_id)
+    if $decr->{expires} <= time;
+  
+  $c->log->error("Не смог авторизовать", $c->dumper($decr), "просрочка=".($decr->{expires} <= time));
+  $c->redirect_to('home');
+}
 
 
 1;

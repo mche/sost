@@ -38,10 +38,10 @@ sub trace2 {
   $c->render('main/trace');
 }
 
-sub prepared_st {
-  my $c = shift;
-  $c->render(format=>'txt',); #$c->access->plugin->oauth->model->dict, 
-}
+#~ sub prepared_st {
+  #~ my $c = shift;
+  #~ $c->render(format=>'txt',); #$c->access->plugin->oauth->model->dict, 
+#~ }
 
 sub config {# версия и прочее
   my $c = shift;
@@ -138,8 +138,6 @@ sub _wav_info {
 
   return $details;
 }
-
-
 
 1;
 
