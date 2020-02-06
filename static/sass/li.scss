@@ -1,0 +1,4 @@
+
+ul.striped.teal.lighten-4 > li:nth-child(odd) {
+  background-color: color("teal", "lighten-5");
+}
