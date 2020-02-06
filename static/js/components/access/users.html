@@ -102,8 +102,8 @@
 <h3 ng-show="$c.tab === 1" class="red-text text-darken-2">Уволенные сотрудники {{ $c.filterProfile ? '(фильтр ФИО/тел)' : '' }} {{ $c.filterChecked ? '(отмеченные)' : '' }}</h3>
 <!--h3 ng-show="$c.filterChecked">Отмеченные сотрудники ({{ $c.FilterCheckedCount() }})</h3-->
 
-<ul ng-if="$c.tabsReady && $c.tab !== undefined" class="collection users" style="overflow-y: auto;">
-  <li ng-repeat="user in $c.data | filter: $c.FilterData" class="collection-item click" ng-class="{'selected': user._selected, 'edit': user._edit, 'checked': user._checked}" ng-attr-id="{{ 'user-' + user.id}}" title000="{{user|json}}">
+<ul ng-if="$c.tabsReady && $c.tab !== undefined" class="collection users  striped teal lighten-4" style="overflow-y: auto;">
+  <li ng-repeat="user in $c.data | filter: $c.FilterData" class="collection-item click" ng-class="{'selected': user._selected, 'edit': user._edit, 'checked-000': user._checked}" ng-attr-id="{{ 'user-' + user.id}}" title000="{{user|json}}">
     
     <a ng-show="user.id" ng-click="$c.ToggleSelect(user)" href="javascript:" class="right hover-shadow3d">
       <!--i class="material-icons">visibility</i-->
@@ -112,14 +112,14 @@
     </a>
     
     <a ng-show="user.id && ($c.param.role || $c.param.route)" ng-click="$c.SaveCheck(user)" href="javascript:" class="right hover-shadow3d" ng-class="{'grey-text': $c.param.route}" >
-      <i ng-hide="user._checked" class="material-icons">check_box_outline_blank</i>
-      <i ng-show="user._checked" class="material-icons">check_box</i>
+      <i ng-hide="user._checked" class="material-icons fs18">check_box_outline_blank</i>
+      <i ng-show="user._checked" class="material-icons fs18">check_box</i>
     
     </a>
     
     <a ng-hide000="user._edit" ng-click="$c.Edit(user)" href="javascript:" class="hover-shadow3d">
       <ul class="">
-        <li ng-repeat="n in user.names track by $index" class="iblock" style="padding: 0 0.1rem;"><h5 ng-class="{'red-text': user.disable, 'bold': !!user._edit}">{{n}}</h5></li>
+        <li ng-repeat="n in user.names track by $index" class="iblock" style="padding: 0 0.1rem;"><h5 ng-class="{'red-text': user.disable, 'bold': !!user._edit || !!user._checked}">{{n}}</h5></li>
         <!-- @доп - суперпрофиль, профиль1/id - двойник -->
         <li ng-if=" user['@доп'] || user['профиль1/id'] " class="iblock"><i ng-class=" {'maroon-text': user['@доп'], 'grey-text': user['профиль1/id']} " class="material-icons ">supervisor_account</i></li>
         <li class="iblock grey-text fs8 right chip transparent" style="padding: 0 0.5rem;">#{{ user.id }}</li>
