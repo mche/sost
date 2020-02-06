@@ -186,9 +186,9 @@ sub sign_cookie {
     and return $c->redirect_to('home');
   
   return $c->relogin_id($profile_id)
-    if $decr->{expires} <= time;
+    if $decr->{expires} >= time;
   
-  $c->log->error("Не смог авторизовать", $c->dumper($decr), "просрочка=".($decr->{expires} <= time));
+  $c->log->error("Не смог авторизовать", $c->dumper($decr), "просрочка=".($decr->{expires} >= time));
   $c->redirect_to('home');
 }
 
