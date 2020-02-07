@@ -182,13 +182,13 @@ sub sign_cookie {
   
   my $auth_name = $c->access->plugin->merge_conf->{auth}{session_key} || 'auth_data';#https://metacpan.org/release/Mojolicious-Plugin-Authentication/source/lib/Mojolicious/Plugin/Authentication.pm#L28
   my $profile_id = $decr->{$auth_name}
-    or $c->helpers->log->error(qq{ None profile ID })
+    or $c->helpers->log->error(qq{ Нет профиля в логине })
     and return $c->redirect_to('home');
   
   return $c->relogin_id($profile_id)
-    if $decr->{expires} >= time;
+    if $decr->{expires} && $decr->{expires} >= time;
   
-  $c->log->error("Не смог авторизовать", $c->dumper($decr), "просрочка=".($decr->{expires} >= time));
+  $c->log->error("Не смог авторизовать", $c->dumper($decr), "просрочка=".($decr->{expires} && $decr->{expires} >= time));
   $c->redirect_to('home');
 }
 
