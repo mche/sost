@@ -339,7 +339,7 @@ from
   /*** Waltex/Report.pm.dict.sql ***/
   ---join "движение ДС/аренда/счета" dp on d.id=dp.id and param."month"=date_trunc('month', dp."дата") and dp."примечание"!~'предоплата'
   join lateral (
-    select
+    select 
       sum(dp."сумма") as "сумма",
       array_agg(row_to_json(dp) order by dp."order_by") as "@позиции",
       count(dp) as "всего позиций"
