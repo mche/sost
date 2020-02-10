@@ -27,7 +27,7 @@ select
   ---row_to_json(k) as "$контрагент",
   k.title as "арендатор",
   --k.id as "контрагент/id",
-  dp."сумма"
+  dp."сумма"::numeric
   /*** хитрая функция sql/пропись.sql ***/
   --firstCap(to_text(dp."сумма"::numeric, 'рубль', scale_mode => 'int')) as "сумма прописью",
   ---ARRAY(select (select to_json(a) from (select ('{"Арендная плата за нежилое помещение за '||param."месяц"||' '||param."год"||' г."}')::text[] as "номенклатура", -1::numeric*dp."сумма" as "сумма" ) a)) as "@позиции",
