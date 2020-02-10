@@ -18,7 +18,7 @@ num as (---нумерация счетов
 ---select jsonb_agg(s) as "json" from (
 select
   
-  coalesce(num2."номер", '000')/*(random()*1000)::int*/ as "номер акта",
+  coalesce(num2."номер", '-')/*(random()*1000)::int*/ as "номер акта",
   --timestamp_to_json(coalesce(num2.ts, now())) as "$дата акта",
   
   ---row_to_json(d) as "$договор", 
