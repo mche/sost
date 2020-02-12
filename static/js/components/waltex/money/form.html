@@ -17,7 +17,17 @@
 </div>
 
 <div ng-if="$c.ready && $c.data && $c.ready != 'нет доступа' " class="card lime lighten-5 animated zoomIn"><div class="card-content">
-<div class="row" style-000="margin:0;">
+<div class="row relative" style-000="margin:0;">
+
+    <!-- пакет -->
+    <div ng-show="!$c.data.id" class="input-field nowrap" style="position: absolute;top: 0;left: 2rem;">
+      <input type="checkbox" id="крыжик пакетной заказчки" ng-model="$c.data['пакетная закачка']" ng-change="$c.ChbChange('пакетная закачка')">
+      <label for="крыжик пакетной заказчки" class="hover-shadow3d chb-maroon-lighten-5 maroon-text chip maroon lighten-5" style="position:absolute; left:-2rem; bottom: 0; padding-left:16px;" ></label>
+      <label for="крыжик пакетной заказчки" class="hover-shadow3d " style=""><h5 class="maroon-text">
+        <span>Пакетная закачка</span>
+      </h5></label>
+    </div>
+
 <!-- && $c.data.id -->
   <a ng-if="!$c.param['без сохранения']" class="right btn-flat z-depth-1 red-text lighten-2" href="javascript:" ng-click="$c.CancelBtn()">
     <i class="material-icons">cancel</i>
@@ -32,7 +42,7 @@
   </h3>
 
 
-  <div ng-hide="" class="col s2">
+  <div ng-hide="$c.data['пакетная закачка']" class="col s2">
     <h4 class="fw500">
       <i class="material-icons">today</i>
       <span>Дата</span>
@@ -42,18 +52,9 @@
       <input name="date" type="text" class="datepicker right-align"  data-value="{{ $c.data['дата'] }}" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;"><!-- ng-disabled="!!$c.data.transport" -->
     </div>
     
-    <!-- пакет -->
-    <div class="input-field nowrap" style="">
-      <input type="checkbox" id="крыжик пакетной заказчки" ng-model="$c.data['пакетная закачка']" ng-change="$c.ChbChange('пакетная закачка')">
-      <label for="крыжик пакетной заказчки" class="hover-shadow3d chb-maroon-lighten-5 maroon-text chip maroon lighten-5" style="position:absolute; left:-2rem; bottom: 0; padding-left:16px;" ></label>
-      <label for="крыжик пакетной заказчки" class="hover-shadow3d " style=""><h5 class="maroon-text">
-        <span>Пакетная закачка</span>
-      </h5></label>
-    </div>
-    
   </div>
 
-  <div ng-hide="$c.data['расход']" class="col s2">
+  <div ng-hide="$c.data['расход'] || $c.data['пакетная закачка']" class="col s2">
     <h4 class="green-text-darken-4 fw500">
       <i class="material-icons ">add_circle_outline</i>
       <span>{{ (Profile && !(Contragent && Wallet2)) || Profile.id ? 'Начислить' : 'Приход' }}</span>
@@ -67,7 +68,7 @@
     </div>
   </div>
   
-  <div ng-hide="$c.data['приход']" class="col s2">
+  <div ng-hide="$c.data['приход'] || $c.data['пакетная закачка']" class="col s2">
     <h4 class="orange-text-darken-4 fw500">
       <i class="material-icons ">remove_circle_outline</i>
       <span>{{ (Profile && !(Contragent && Wallet2)) || Profile.id ? 'Выплатить' : 'Расход' }}</span>
@@ -81,7 +82,7 @@
     </div>
   </div>
   
-  <div class="col s3" ng-class="{'s4': $c.data['приход'] || $c.data['расход']}">
+  <div ng-hide="$c.data['пакетная закачка']" class="col s3" ng-class="{'s4': $c.data['приход'] || $c.data['расход']}">
     <div ng-if="Contragent" ng-hide="(Wallet2 && Wallet2.title) || (Profile && Profile.title)" class="card padd-05  light-green lighten-3" ng-class-000="{'col s3': $c.param.move.id !== 0}">
       <h4 class="light-green-text-darken-4 fw500"> 
         <i class="material-icons">business</i><!--all_out-->
@@ -121,7 +122,19 @@
     <!--div ng-if="$c.param.move.id === 0" class="fs8 grey-text"> Указать только один из трех источников/получателей или ничего</div-->
   </div>
   
-  <div class="col s3" ng-class="{'s4': $c.data['приход'] || $c.data['расход']}">
+  <div ng-show="$c.data['пакетная закачка']" class="col s9  card maroon lighten-5 padd-05">
+    <h4 class='fw500 maroon-text'>
+      <i class="material-icons"></i>
+      <span>Вставить строки из Excel</span>
+      <span class="chip padd-0-05"> три колонки </span>
+    </h4>
+    <div class="input-field">
+      <textarea name="comment" ng-model="$c.data['пакет']" class="materialize-textarea comment maroon-text" style="min-height: 30rem; " placeholder=" дата | ИНН контрагента | сумма "></textarea>
+      <!--label class="descr" for="comment" ng-class="{active: $c.data.comment != null}">Пояснительный текст</label-->
+    </div>
+  </div>
+  
+  <div class="col s3" ng-class="{'s4': !$c.data['пакетная закачка'] && ($c.data['приход'] || $c.data['расход'])}">
     <div class="card padd-05 teal lighten-5">
       <h4 class="fw500">
         <i class="material-icons blue-text000">account_balance</i><span>Кошелек</span><!--span>{{ $c.param['проект'] | json }}</span-->
