@@ -32,7 +32,7 @@
   </h3>
 
 
-  <div class="col s2">
+  <div ng-hide="" class="col s2">
     <h4 class="fw500">
       <i class="material-icons">today</i>
       <span>Дата</span>
@@ -40,6 +40,15 @@
     <div class="input-field">
       <!--i class="material-icons prefix" style="top: 0.5rem;">today</i-->
       <input name="date" type="text" class="datepicker right-align"  data-value="{{ $c.data['дата'] }}" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;"><!-- ng-disabled="!!$c.data.transport" -->
+    </div>
+    
+    <!-- пакет -->
+    <div class="input-field nowrap" style="">
+      <input type="checkbox" id="крыжик пакетной заказчки" ng-model="$c.data['пакетная закачка']" ng-change="$c.ChbChange('пакетная закачка')">
+      <label for="крыжик пакетной заказчки" class="hover-shadow3d chb-maroon-lighten-5 maroon-text chip maroon lighten-5" style="position:absolute; left:-2rem; bottom: 0; padding-left:16px;" ></label>
+      <label for="крыжик пакетной заказчки" class="hover-shadow3d " style=""><h5 class="maroon-text">
+        <span>Пакетная закачка</span>
+      </h5></label>
     </div>
     
   </div>

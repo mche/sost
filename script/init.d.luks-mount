@@ -1,0 +1,26 @@
+#!/sbin/openrc-run
+
+description="Монтирование LUKS"
+
+depend() {
+  use net
+}
+  
+start() {
+# (Команды, необходимые для запуска сервиса)
+  ebegin "Запускается [$description]"
+  busybox httpd -p 10080 -f -h /root/httpd-luks-mount
+  # или
+  # /root/uwsgi -b 32768 --http-socket 0.0.0.0:10080 --plugins cgi --cgi /root/httpd-luks-mount/cgi-bin/ --http-socket-modifier1 9
+  # /root/uwsgi -b 32768 --https-socket 0.0.0.0:8443,host.crt,host.key --plugins cgi --cgi /root/httpd-luks-mount/cgi-bin/ --https-socket-modifier1 9
+  
+  eend $retval
+}
+  
+stop() {
+# (Команды, необходимые для остановки сервиса)
+  ebegin "Останавливается [$description]"
+  /bin/bash /root/httpd-luks-mount/cgi-bin/ups.onbatt.sh
+  
+  eend $retval
+}

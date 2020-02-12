@@ -13,7 +13,7 @@ const Controll = function($scope, $attrs, $element, $timeout, TemplateCache, app
   var ctrl = this;
   
   ctrl.$onInit = function() {
-    $scope.param = {"создавать проект":true};
+    $scope.param = {"создавать проект":true, };
     $scope.moves = [
       {"id":0, "title": 'Все платежи', "icon": 'view_column', "class":'grey'},
       {"id":1, "title": 'Внешние платежи', "icon": 'all_out'},
@@ -156,7 +156,8 @@ const Component = function($scope, $rootScope, $element, $timeout, $http, $q, ap
       var Profile = {id: $c.data["профиль/id"] || $c.param['профиль/id'] || ($c.param['профиль'] && $c.param['профиль'].id) || $c.param['профиль']};
       //~ if ($c.data["профиль/id"]) Profile.id= $c.data["профиль/id"] || $c.param['профиль'].id || $c.param['профиль'];
       $scope.Profile = Profile;
-      
+    
+    $c.data["пакетная закачка"] = false;
       //~ $timeout(function(){// костыль доступа в начислении табеля ЗП
         //~ var l = $('profile-item div').length;//eq(0).contents()
         //~ if($('profile-item div').length === 0) $c.ready = 'нет доступа'; /// не показывать форму
