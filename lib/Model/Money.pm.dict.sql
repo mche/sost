@@ -116,7 +116,7 @@ select m.*,
   "формат даты"(m."дата") as "дата формат",
   timestamp_to_json(m."дата"::timestamp) as "$дата/json",
   ----to_char(m."дата", 'TMdy, DD TMmon' || (case when date_trunc('year', now())=date_trunc('year', m."дата") then '' else ' YYYY' end)) as "дата формат",
-  c.id as "категория/id", "категории/родители узла/title"(c.id, false) as "категории",
+  cat.id as "категория/id", /*"категории/родители узла/title"(c.id, false) as*/ cat."категории",
   ca.id as "контрагент/id", ca.title as "контрагент",
   ob.id as "объект/id", ob.name as "объект",
   w2.id as "кошелек2/id", w2.title as "кошелек2",
@@ -129,7 +129,14 @@ from  "{%= $schema %}"."{%= $tables->{main} %}" m
 
   --- категории
   join refs rc on m.id=rc.id2
-  join "категории" c on c.id=rc.id1
+  --join "категории" c on c.id=rc.id1
+  join (
+    select c.id, array_agg(cat.title order by cat.level desc) as "категории"
+    from 
+      "категории" c, ---on c.id=rc.id1,
+      "категории/родители узла"(c.id, false) cat
+    group by c.id
+  ) cat on cat.id=rc.id1
   
   ---кошелек
   join refs rw on m.id=rw.id2
@@ -264,11 +271,14 @@ select
   timestamp_to_json(v.val[1]::timestamp) as "$дата/json",
   v.val[2] as "ИНН",
   v.val[3]::money as "деньги",
+  v.val[4]::int as "кошелек/id",
+  v.val[5]::int as "категория/id",
   to_json(k) as "$контрагент/json",
-  to_json(m) as "$похожая запись/json"
+  to_json(m) as "$похожая запись/json",
+  case when m.id::boolean then false when k.id::boolean then true else false end as "крыжик"
 from
   unnest_2dim(?::text[][]) WITH ORDINALITY AS  v(val,n)
-  left join "контрагенты" k on trim('"' from (coalesce("реквизиты",'{}'::jsonb)->'ИНН')::text)=v.val[2]
+  left join "контрагенты" k on coalesce(coalesce("реквизиты",'{}'::jsonb)->>'ИНН', '0'||(k.id::text))=v.val[2]
   left join (--- ловим похожие записи
     select m.*, cat."@категории",/*to_json(c) as "$категория",*/ to_json(w) as "$кошелек", k.id as "контрагент/id"
     from 

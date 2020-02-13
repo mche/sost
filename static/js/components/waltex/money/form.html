@@ -241,17 +241,29 @@
 <!-- Modal Structure -->
 <div id="bulk-confirm" class="card modal" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated zoomInDown" data-modal-out="animated zoomOutUp"  style="top:3%;">
   <div class="modal-content">
-    <h3 class="maroon-text">Проверка пакетных записей</h3>
+    <h2 class="maroon-text">Проверка пакетных записей</h2>
     
     <table ng-if="$c.data['@пакет'] && $c.data['@пакет'].length" class="striped">
       <!--thead></thead-->
       <tbody>
-        <tr ng-repeat="row in $c.data['@пакет']" ng-class="{'red-text-000': !row['$контрагент'], 'bold': !!row['$похожая запись']}">
+        <tr ng-repeat="row in $c.data['@пакет']" ng-class="{'red-text-000': !row['$контрагент'], 'bold-000': !!row['$похожая запись']}">
           <td class="right-align"><span class="fs8 grey-text ">{{ row['$дата']['день нед'] }}</span>  <span class="bold">{{ row['$дата']['day'] }}</span>   <span class="fs8">{{ row['$дата']['мес'] }}</span> <span class="">{{ row['$дата'].year }}</span></td>
-          <td><h4 ng-class="{'grey-text strike-through-red-thin-10': !row['$контрагент'], 'bold': !!row['$похожая запись']}">{{ row['$контрагент'] ? row['$контрагент'].title : row['ИНН'] }}</h4></td>
+          <td><h4 ng-class="{'grey-text strike-through-red-thin-10': !row['$контрагент'], 'bold orange-text text-darken-4': !!row['$похожая запись']}">{{ row['$контрагент'] ? row['$контрагент'].title : row['ИНН'] }}</h4></td>
           <td class="right-align"><span>{{ row['деньги'] }}</span></td>
+          <td>
+            <!-- КРЫЖИК -->
+            <div ng-if="!!row['$контрагент']" class="chip-000" style-000="position: absolute;top: 0; padding-left: 2.5rem;">
+              <div class="input-field" style="line-height:0.1rem;">
+                <input type="checkbox" ng-attr-id="крыжик-{{row['$$hashKey']}}" ng-model="row['крыжик']" ng-checked="!!row['крыжик']" ng-change="">
+                <label for="крыжик-{{row['$$hashKey']}}" class="hover-shadow3d chb-maroon-lighten-5 maroon-text chip maroon lighten-5" style=" padding-left:16px;" ></label>
+                <!--label for="крыжик пакетной заказчки" class="hover-shadow3d " style=""><h5 class="maroon-text">
+                  <span>Пакетное сохранение</span>
+                </h5></label-->
+              </div>
+            </div>
+          </td>
           <td class="padd-05"><!--div class="pre-wrap fs8">{{ row['$похожая запись'] | json }}</div-->
-            <div ng-if="row['$похожая запись']" class="chip z-depth-1">
+            <div ng-if="!!row['$похожая запись']" class="chip z-depth-1">
               <h5>{{ row['$похожая запись']['$кошелек'].title }}</h5>
               <h5><span ng-repeat="cat in row['$похожая запись']['@категории']" class="breadcrumb">{{ cat.title }}</span></h5>
               <div class="fs8">{{ row['$похожая запись']['примечание'] }}</div>
@@ -263,7 +275,7 @@
   </div>
   <div class="modal-footer teal-lighten-5">
     <a href="javascript:" class="modal-action modal-close  btn-flat white z-depth-1 red-text fs14 float-none">Отмена</a>
-    <a ng-click="$c.DeleteBtn()" href="javascript:" class="modal-action modal-close  btn-flat white z-depth-1 green-text fs14">Да</a>
+    <a ng-click="$c.DeleteBtn()" href="javascript:" class="modal-action modal-close  btn-flat white z-depth-1 green-text fs14">Сохранить</a>
     
   </div>
 </div>
