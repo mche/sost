@@ -20,12 +20,14 @@
 <div class="row relative" style-000="margin:0;">
 
     <!-- пакет -->
-    <div ng-show="!$c.data.id" class="input-field nowrap" style="position: absolute;top: 0;left: 2rem;">
-      <input type="checkbox" id="крыжик пакетной заказчки" ng-model="$c.data['пакетная закачка']" ng-change="$c.ChbChange('пакетная закачка')">
-      <label for="крыжик пакетной заказчки" class="hover-shadow3d chb-maroon-lighten-5 maroon-text chip maroon lighten-5" style="position:absolute; left:-2rem; bottom: 0; padding-left:16px;" ></label>
-      <label for="крыжик пакетной заказчки" class="hover-shadow3d " style=""><h5 class="maroon-text">
-        <span>Пакетная закачка</span>
-      </h5></label>
+    <div ng-show="!$c.data.id" class="chip" style="position: absolute;top: 0; padding-left: 2.5rem;">
+      <div class="input-field nowrap">
+        <input type="checkbox" id="крыжик пакетной заказчки" ng-model="$c.data['пакетная закачка']" ng-change="$c.ChbChange('пакетная закачка')">
+        <label for="крыжик пакетной заказчки" class="hover-shadow3d chb-maroon-lighten-5 maroon-text chip maroon lighten-5" style="position:absolute; left:-2rem; bottom: 0; padding-left:16px;" ></label>
+        <label for="крыжик пакетной заказчки" class="hover-shadow3d " style=""><h5 class="maroon-text">
+          <span>Пакетное сохранение</span>
+        </h5></label>
+      </div>
     </div>
 
 <!-- && $c.data.id -->
@@ -122,16 +124,18 @@
     <!--div ng-if="$c.param.move.id === 0" class="fs8 grey-text"> Указать только один из трех источников/получателей или ничего</div-->
   </div>
   
+  <!-- пакет -->
   <div ng-show="$c.data['пакетная закачка']" class="col s9  card maroon lighten-5 padd-05">
-    <h4 class='fw500 maroon-text'>
+    <h4 class="fw500 maroon-text" style="border-bottom: 1px solid;">
       <i class="material-icons"></i>
       <span>Вставить строки из Excel</span>
-      <span class="chip padd-0-05"> три колонки </span>
+      <span class="chip padd-0-05 fs8"> три колонки: дата | ИНН контрагента | сумма </span>
     </h4>
     <div class="input-field">
-      <textarea name="comment" ng-model="$c.data['пакет']" class="materialize-textarea comment maroon-text" style="min-height: 30rem; " placeholder=" дата | ИНН контрагента | сумма "></textarea>
+      <textarea name="comment" ng-model="$c.data['пакет']" class="materialize-textarea comment maroon-text fs8" style="min-height: 30rem; " placeholder=" дата | ИНН контрагента | сумма "></textarea>
       <!--label class="descr" for="comment" ng-class="{active: $c.data.comment != null}">Пояснительный текст</label-->
     </div>
+    
   </div>
   
   <div class="col s3" ng-class="{'s4': !$c.data['пакетная закачка'] && ($c.data['приход'] || $c.data['расход'])}">
@@ -150,7 +154,7 @@
 </div>
 
 <div class="row">
-  <div class="col s4 pull-s4-000 card teal lighten-5 padd-05"  style=";">
+  <div class="col s4 pull-s4-000 card teal lighten-5 padd-05"  style="">
     <h4 class='fw500'>
       <i class="material-icons">message</i>
       <span>Примечание</span>
@@ -164,7 +168,7 @@
   <!---div class="col s2"></div-->
   
   <div class="col s4">
-    <div ng-show="(Contragent && Contragent.title) || $c.param.move.id == 1" class="card maroon lighten-5 padd-05" style="">
+    <div ng-show="(Contragent && Contragent.title) || $c.param.move.id == 1 || $c.data['пакетная закачка']" class="card maroon lighten-5 padd-05" style="">
       <h4 class="maroon-text text-darken-2-000 fw500">
         <i class="icon-location"></i><span>Объект</span>
         <!---span ng-if="$c.data['проект'] || $c.param['проект']" class="chip padd-0-05 bold"> {{$c.data['проект'] ||  $c.param['проект'].name}}</span-->
@@ -226,6 +230,36 @@
   <div class="modal-content">
     <h3 class="red-text">Удалить запись?</h3>
     <!--p class="center fs14">Точно удалить?</p-->
+  </div>
+  <div class="modal-footer teal-lighten-5">
+    <a href="javascript:" class="modal-action modal-close  btn-flat white z-depth-1 red-text fs14 float-none">Отмена</a>
+    <a ng-click="$c.DeleteBtn()" href="javascript:" class="modal-action modal-close  btn-flat white z-depth-1 green-text fs14">Да</a>
+    
+  </div>
+</div>
+
+<!-- Modal Structure -->
+<div id="bulk-confirm" class="card modal" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated zoomInDown" data-modal-out="animated zoomOutUp"  style="top:3%;">
+  <div class="modal-content">
+    <h3 class="maroon-text">Проверка пакетных записей</h3>
+    
+    <table ng-if="$c.data['@пакет'] && $c.data['@пакет'].length" class="striped">
+      <!--thead></thead-->
+      <tbody>
+        <tr ng-repeat="row in $c.data['@пакет']" ng-class="{'red-text-000': !row['$контрагент'], 'bold': !!row['$похожая запись']}">
+          <td class="right-align"><span class="fs8 grey-text ">{{ row['$дата']['день нед'] }}</span>  <span class="bold">{{ row['$дата']['day'] }}</span>   <span class="fs8">{{ row['$дата']['мес'] }}</span> <span class="">{{ row['$дата'].year }}</span></td>
+          <td><h4 ng-class="{'grey-text strike-through-red-thin-10': !row['$контрагент'], 'bold': !!row['$похожая запись']}">{{ row['$контрагент'] ? row['$контрагент'].title : row['ИНН'] }}</h4></td>
+          <td class="right-align"><span>{{ row['деньги'] }}</span></td>
+          <td class="padd-05"><!--div class="pre-wrap fs8">{{ row['$похожая запись'] | json }}</div-->
+            <div ng-if="row['$похожая запись']" class="chip z-depth-1">
+              <h5>{{ row['$похожая запись']['$кошелек'].title }}</h5>
+              <h5><span ng-repeat="cat in row['$похожая запись']['@категории']" class="breadcrumb">{{ cat.title }}</span></h5>
+              <div class="fs8">{{ row['$похожая запись']['примечание'] }}</div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
   <div class="modal-footer teal-lighten-5">
     <a href="javascript:" class="modal-action modal-close  btn-flat white z-depth-1 red-text fs14 float-none">Отмена</a>

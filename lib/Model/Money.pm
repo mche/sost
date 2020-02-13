@@ -238,6 +238,11 @@ sub баланс_по_профилю {# возможно на дату
   return $self->dbh->selectrow_hashref($self->dict->render('баланс по профилю', date_expr=>$date_expr), undef, (($profile) x 2, ($date || $param->{"дата"}) x 2) x 2, $cb // ());
 }
 
+sub пакетная_закачка {
+  my ($self, $data) = @_; # двумерный массив
+  my $r = eval {$self->dbh->selectall_arrayref($self->sth('пакетное сохранение'), {Slice=>{}}, $data)};
+  return $r || $@;#Mojo::Exception
+}
 
 1;
 

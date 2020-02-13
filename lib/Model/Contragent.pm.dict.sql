@@ -197,3 +197,8 @@ from "почистить контрагентов"(?) d;
 
 select json_agg(u)
 from "изменить связи"(?, ?, ?) u;
+
+@@ контрагент/ИНН
+select *
+from "контрагенты"
+where trim('"' from (coalesce("реквизиты",'{}'::jsonb)->'ИНН')::text)=?;

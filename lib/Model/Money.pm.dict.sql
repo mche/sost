@@ -94,6 +94,19 @@ BEFORE UPDATE  ON "движение денег"
     FOR EACH ROW EXECUTE FUNCTION "движение денег/TG_UPDATE"();
 */
 
+CREATE OR REPLACE FUNCTION unnest_2dim(ANYARRAY, OUT a ANYARRAY)
+  RETURNS SETOF ANYARRAY AS
+/*
+Двумерный массив -> одномерные строки
+*/
+$func$
+BEGIN
+   FOREACH a SLICE 1 IN ARRAY $1 LOOP
+      RETURN NEXT;
+   END LOOP;
+END
+$func$  LANGUAGE plpgsql IMMUTABLE STRICT;
+
 ----================================================================
 
 @@ список или позиция?cached=1
@@ -244,3 +257,40 @@ where sign(m."сумма"::numeric)=1 --- только приходы, расх�
 ) u
 ----group by "профиль/id"
 ;
+
+@@ пакетное сохранение
+select
+  v.val[1]::date as "дата",
+  timestamp_to_json(v.val[1]::timestamp) as "$дата/json",
+  v.val[2] as "ИНН",
+  v.val[3]::money as "деньги",
+  to_json(k) as "$контрагент/json",
+  to_json(m) as "$похожая запись/json"
+from
+  unnest_2dim(?::text[][]) WITH ORDINALITY AS  v(val,n)
+  left join "контрагенты" k on trim('"' from (coalesce("реквизиты",'{}'::jsonb)->'ИНН')::text)=v.val[2]
+  left join (--- ловим похожие записи
+    select m.*, cat."@категории",/*to_json(c) as "$категория",*/ to_json(w) as "$кошелек", k.id as "контрагент/id"
+    from 
+      "{%= $schema %}"."{%= $tables->{main} %}" m
+
+      --- категории
+      join refs rc on m.id=rc.id2
+      --join "категории" c on c.id=rc.id1
+      join (
+        select c.id, jsonb_agg(cat order by cat.level desc) as "@категории"
+        from 
+          "категории" c, ---on c.id=rc.id1,
+          "категории/родители узла"(c.id, false) cat
+        group by c.id
+      ) cat on cat.id=rc.id1
+      
+      
+      ---кошелек
+      join refs rw on m.id=rw.id2
+      join "кошельки" w on w.id=rw.id1
+      
+      join ({%= $dict->render('контрагент') %}) k on m.id=k."движение денег/id"
+  ) m on m."дата"=v.val[1]::date and m."контрагент/id"=k.id and m."сумма"=v.val[3]::money
+order by v.n
+

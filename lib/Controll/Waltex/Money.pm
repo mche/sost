@@ -33,27 +33,12 @@ sub save {
   #~ $data->{$_} && $data->{$_} =~ s/\./,/g)
     #~ for qw(приход расход);
   
-  $data->{"сумма"} = $data->{"приход"} || ($data->{"расход"} && '-'.$data->{"расход"})
-    || return $c->render(json=>{error=>"Не указан приход/расход"});
-  
-  return $c->render(json=>{error=>"Не указана дата"})
-    unless $data->{"дата"};
-  
-  return $c->render(json=>{error=>"Не указан контрагент"})
-    unless ($data->{"профиль"} && $data->{"профиль"}{id}) || ($data->{"кошелек2"} && $data->{"кошелек2"}{title}) || ($data->{"контрагент"} && $data->{"контрагент"}{title});
-    
-  return $c->render(json=>{error=>"Не указан кошелек перемещения"})
-    unless ($data->{"профиль"} && $data->{"профиль"}{id}) || ($data->{"контрагент"} && $data->{"контрагент"}{title}) || ($data->{"кошелек2"} && $data->{"кошелек2"}{title});
-  
-  return $c->render(json=>{error=>"Не указан сотрудник"})
-    unless  ($data->{"контрагент"} && $data->{"контрагент"}{title}) || ($data->{"кошелек2"} && $data->{"кошелек2"}{title}) || ($data->{"профиль"} && $data->{"профиль"}{id});
-
-  return $c->render(json=>{error=>"Не указана категория"})
-    unless $data->{"категория"} && ($data->{"категория"}{selectedItem}{id} || $data->{"категория"}{newItems}[0] && $data->{"категория"}{newItems}[0]{title});
-  
   my $tx_db = $c->model->dbh->begin;
     local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
     #~ for qw(model_category model_wallet model_contragent model);
+  
+  return $c->render(json=>{error=>"Не указана категория"})
+    unless $data->{"категория"} && ($data->{"категория"}{selectedItem}{id} || $data->{"категория"}{newItems}[0] && $data->{"категория"}{newItems}[0]{title});
   
   my $rc = $c->model_category->сохранить_категорию($data->{"категория"});
   return $c->render(json=>{error=>$rc})
@@ -65,6 +50,41 @@ sub save {
   $rc = $c->сохранить_кошелек($data->{"кошелек"});
   return $c->render(json=>{error=>$rc})
     unless ref $rc;
+  
+  if ($data->{'пакетная закачка'}) {
+    return $c->render(json=>{error=>"Не указаны строки пакетной закачки"})
+      unless $data->{"пакет"};
+    my @data = ();
+    #~ my $sth_k = $c->model_contragent->sth('контрагент/ИНН');
+    for my $line (split /\s*\r?\n\s*/, $data->{'пакет'}) {
+      my @val = map s/[^\d.,]//gr, split /\s*\t\s*/, $line;#дата | ИНН контрагента | сумма
+      #~ my $r = $c->model_contragent->dbh->selectrow_hashref($sth_k, undef, $val[1]);
+      push @val, $data->{"кошелек"}{id} || $data->{"кошелек"}{new}{id};
+      push @val, $data->{"категория"}{id};
+      push @data, \@val;
+    }
+    my $r = $c->model->пакетная_закачка(\@data);
+    #~ $c->log->error($c->dumper($r));#
+    return $c->render(json=>{error=>"Ошибка пакетных данных"})
+      if ref $r eq 'Mojo::Exception';
+    return $c->render(json=>{"пакет"=>$r});
+  } else {
+  
+    $data->{"сумма"} = $data->{"приход"} || ($data->{"расход"} && '-'.$data->{"расход"})
+      || return $c->render(json=>{error=>"Не указан приход/расход"});
+    
+    return $c->render(json=>{error=>"Не указана дата"})
+      unless $data->{"дата"};
+    
+    return $c->render(json=>{error=>"Не указан контрагент"})
+      unless ($data->{"профиль"} && $data->{"профиль"}{id}) || ($data->{"кошелек2"} && $data->{"кошелек2"}{title}) || ($data->{"контрагент"} && $data->{"контрагент"}{title});
+      
+    return $c->render(json=>{error=>"Не указан кошелек перемещения"})
+      unless ($data->{"профиль"} && $data->{"профиль"}{id}) || ($data->{"контрагент"} && $data->{"контрагент"}{title}) || ($data->{"кошелек2"} && $data->{"кошелек2"}{title});
+    
+    return $c->render(json=>{error=>"Не указан сотрудник"})
+      unless  ($data->{"контрагент"} && $data->{"контрагент"}{title}) || ($data->{"кошелек2"} && $data->{"кошелек2"}{title}) || ($data->{"профиль"} && $data->{"профиль"}{id});
+  }
     
   #~ if ($data->{move}{id} eq 1 || $data->{move}{id} eq 0) {
   if ($data->{"контрагент"} && $data->{"контрагент"}{title}) {
@@ -74,7 +94,6 @@ sub save {
   }
   
   # внутренние дела
-  #~ if ($data->{move}{id} eq 2 || ($data->{move}{id} eq 0 && $data->{"кошелек2"} && ($data->{"кошелек2"}{id} || $data->{"кошелек2"}{title}))) {# между кошельками
   if ($data->{"кошелек2"} && $data->{"кошелек2"}{title}) {
     $data->{"кошелек2"}{'проект'} = $data->{'проект'} || $data->{'проект/id'};
     my $rc = $c->сохранить_кошелек($data->{"кошелек2"});
@@ -82,14 +101,10 @@ sub save {
       unless ref $rc;
   }
   
-  #~ if ($data->{"кошелек2"} && ($data->{"кошелек2"}{id} || $data->{"кошелек2"}{new}{id}) &&  ($data->{"контрагент"}{id} || $data->{"контрагент"}{new}{id})
-  
-  #~ return $c->render(json=>{error=>"Не указан ЕЩЕ кошелек "})
-    #~ unless !exists($data->{"кошелек2"}) || ($data->{"кошелек2"} && ($data->{"кошелек2"}{id} || ($data->{"кошелек2"}{new} && $data->{"кошелек2"}{new}{id})));
+
   $data->{uid} = $c->auth_user->{id};
-  #~ $c->app->log->error($c->dumper($data));
-  
-  $rc = eval{$c->model->сохранить((map {($_=>$data->{$_})} grep {defined $data->{$_}} qw(id uid сумма дата примечание)),
+
+  $rc = eval {$c->model->сохранить((map {($_=>$data->{$_})} grep {defined $data->{$_}} qw(id uid сумма дата примечание)),
     "кошелек"=>$data->{"кошелек"}{id} || $data->{"кошелек"}{new}{id},
     "кошелек2"=>$data->{"кошелек2"}{id} || $data->{"кошелек2"}{new}{id},
     "контрагент"=>$data->{"контрагент"} && ($data->{"контрагент"}{id} || $data->{"контрагент"}{new}{id}),

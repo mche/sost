@@ -5,11 +5,11 @@
 
 <div v-if=" ready ">
 <div>
-  <a v-show=" !newObject " @click=" New " href="javascript:" class="btn-flat z-depth-1 green lighten-4 green-text text-darken-4" style="position: absolute; top:0.3rem; right:1rem;"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="green-fill fill-darken-4" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#form-add" /></svg> Добавить объект</a>
+  <a v-show=" !newObject " @click=" New " href="javascript:" class="btn-flat z-depth-1 blue lighten-4 blue-text text-darken-4" style="position: absolute; top:0.3rem; right:1rem;"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="blue-fill fill-darken-4" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#form-add" /></svg> Добавить объект</a>
   <div v-if=" newObject " style-000="position: absolute;  left:-5%;  width:110%; z-index:1;"><v-rent-object-form :item=" newObject " @on-save=" OnSave "></v-rent-object-form></div>
 </div>
 
-<table class="striped bordered teal lighten-4 z-depth-1 animated slideInUp">
+<table class="striped bordered blue lighten-4 z-depth-1 animated slideInUp">
 
 <tbody>
   <tr v-for=" (item, idx) in data " :key=" item.id " class="relative" :class="{'selected': item === selectedObject}">

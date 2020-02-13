@@ -222,8 +222,12 @@ const Component = function($scope, $rootScope, $element, $timeout, $http, $q, ap
   $c.Validate = function(){
     return $scope.Category && (!!$scope.Category.selectedItem.id || $scope.Category.newItems && $scope.Category.newItems[0] && !!$scope.Category.newItems[0].title)
       && $scope.Wallet && !!$scope.Wallet.title
-      && (!!$c.data['расход'] || !!$c.data['приход'])
-      && !!(($scope.Contragent && $scope.Contragent.title) || ($scope.Wallet2 && $scope.Wallet2.title) || ($scope.Profile && $scope.Profile.id))
+      && (($c.data['пакетная закачка'] && $c.data['пакет'] && $c.data['пакет'].length)
+        || (
+          (!!$c.data['расход'] || !!$c.data['приход'])
+          && !!(($scope.Contragent && $scope.Contragent.title) || ($scope.Wallet2 && $scope.Wallet2.title) || ($scope.Profile && $scope.Profile.id))
+        )
+      )
     ;
     
     
@@ -251,8 +255,8 @@ const Component = function($scope, $rootScope, $element, $timeout, $http, $q, ap
       .then(function(resp){
         //~ $c.cancelerHttp.resolve();
         delete $c.cancelerHttp;
-        if(resp.data.hasOwnProperty('error')) $c.error = resp.data.error;
-        if(resp.data.success) {
+        if (resp.data.hasOwnProperty('error')) $c.error = resp.data.error;
+        if (resp.data.success) {
           Materialize.toast('Сохранено успешно', 4000, 'green-text text-darken-4 green lighten-4 fw500 border animated zoomInUp slow');
           $rootScope.$broadcast('Движение ДС/запись сохранена', resp.data.success);
           /*if ($c.data.id) {
@@ -273,6 +277,10 @@ const Component = function($scope, $rootScope, $element, $timeout, $http, $q, ap
           
           
           
+        }
+        if (resp.data['пакет']) {
+          $c.data['@пакет'] = resp.data['пакет'];
+          $('#bulk-confirm', $element[0]).modal('open');
         }
         console.log("Редактирование сохранено: ", resp.data);
         

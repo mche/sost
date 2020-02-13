@@ -111,7 +111,7 @@
 <h3 ng-show="$c.filterDisable">Отключенные маршруты</h3>
 
 <ul ng-if000="$c.tabsReady" class="collection routes striped teal lighten-4" style="overflow-y:auto;">
-  <li ng-repeat="route in $c.data | filter: $c.FilterData" class="collection-item" ng-class="{'selected': route._selected, 'edit': route._edit, 'checked': route._checked}" ng-attr-id="{{ 'route-' + route.id}}">
+  <li ng-repeat="route in $c.data | filter: $c.FilterData" class="collection-item clearfix" ng-class="{'selected': route._selected, 'edit': route._edit, 'checked': route._checked}" ng-attr-id="{{ 'route-' + route.id}}">
     
     <a ng-show="route.id" ng-click="$c.ToggleSelect(route)" href="javascript:" class="right">
       <!--i class="material-icons">visibility</i-->
@@ -130,8 +130,8 @@
         <li ng-repeat="n in ['request', 'to', 'name'] track by $index" class="inline" style="padding: 0 0.5rem;" title="{{n}}"><h5 ng-class="{'grey-text': route.disable}">{{route[n] || '-'}}</h5></li>
         <li class="inline grey-text fs8">#{{ route.id }}</li>
       </ul-->
-      <span ng-repeat="n in ['request', 'namespace', 'to', 'name'] track by $index"> <span ng-show="route[n]" ng-class="{'grey-text': route.disable, 'fw500': $index === 0}" class="chip z-depth-1 shadow-inset-10-000" style="padding: 0 0.5rem;" title="{{n}}">{{route[n] || '-'}}</span> </span>
-      <span class="grey-text fs7 right chip transparent">#{{ route.id }}</span>
+      <span ng-repeat="n in ['request', 'namespace', 'to', 'name'] track by $index"> <span ng-show="route[n]" ng-class="{'grey-text': route.disable, 'fw500': $index === 0, 'bold': $index === 0 && route._checked}" class="chip z-depth-1 shadow-inset-10-000" style="padding: 0 0.5rem;" title="{{n}}">{{route[n] || '-'}}</span> </span>
+      <!--span class="grey-text fs7 right chip transparent">#{{ route.id }}</span-->
     </a>
     
     <div ng-show="route._edit && $c.cancelerHttp" ng-include=" 'progress/save' "></div>

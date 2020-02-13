@@ -185,6 +185,9 @@ svg + span:before, svg + span:after, svg + span + span:after  {
   text-decoration: none;
   background-image: linear-gradient(transparent 0.7rem, #cc1f1f 0.7rem, #cc1f1f 1.3rem, transparent 1rem);
 }
+.strike-through-red-thin-10 {
+  background-image: linear-gradient(transparent 0.9rem, #cc1f1f 0.9rem, #cc1f1f 1rem, transparent 0rem);
+}
 
 .nowrap {
   white-space: nowrap;
@@ -317,7 +320,7 @@ sup.chip {
 
 
 .bold {
-  font-weight: bold;
+  font-weight: bold !important;
 }
 .italic {
   font-style: italic;

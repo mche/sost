@@ -169,6 +169,7 @@ FilterData(){
   vm.archLen = 0;
    vm.filteredData = ///vm.filters['арендаторы'].length || (vm.filters['объект'] && vm.filters['объект'].id) /// || (vm.filters['архивные договоры'] !== undefined)
     vm.data.filter((item)=>{
+      
       const cur = dateFns.isWithinRange(new Date(), new Date(item['дата1']), new Date(item['дата расторжения'] || item['дата2']));
       if (!cur) vm.archLen += 1;
       const test = (vm.filters['архивные договоры'] ? !cur : cur)
