@@ -27,7 +27,7 @@ sub save {
   my $data =  $c->req->json
     or return $c->render(json=>{error=>"нет данных"});
 
-  my $prev = $data->{id} && $c->model->позиция($data->{id});
+  my $prev = ref $data eq 'HASH' && $data->{id} && $c->model->позиция($data->{id});
     #~ if $data->{id};
   #~ ($data->{$_} && $data->{$_} =~ s/[a-zа-я\-\s]+//gi,
   #~ $data->{$_} && $data->{$_} =~ s/\./,/g)
@@ -36,6 +36,33 @@ sub save {
   my $tx_db = $c->model->dbh->begin;
     local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
     #~ for qw(model_category model_wallet model_contragent model);
+  
+  if (ref $data eq 'ARRAY') {# это подтвержденный пакет
+    my @r = map {
+      my $data = $_;
+      $_->{uid} = $c->auth_user->{id};
+
+      my $r = eval {$c->model->сохранить(
+        (map {($_=>$data->{$_})} grep {defined $data->{$_}} qw(uid сумма дата примечание)),
+        "кошелек"=>$_->{"кошелек/id"},
+        "контрагент"=>$_->{"контрагент/id"},
+        "категория"=>$_->{"категория/id"},
+        $_->{'объект/id'} ? ("объект" => $_->{'объект/id'}) : (),
+        {},
+      )};
+      
+      $r ||= $@
+        and $c->app->log->error($r)
+        and return $c->render(json=>{error=>"Ошибка пакетной записи ДС: $r"})
+        unless ref $r && $r->{id};
+
+      $c->model->позиция($r->{id});
+      
+    } @$data;
+    
+    $tx_db->commit;
+    return $c->render(json=>{success=>\@r});
+  }
   
   return $c->render(json=>{error=>"Не указана категория"})
     unless $data->{"категория"} && ($data->{"категория"}{selectedItem}{id} || $data->{"категория"}{newItems}[0] && $data->{"категория"}{newItems}[0]{title});
@@ -61,14 +88,18 @@ sub save {
       #~ my $r = $c->model_contragent->dbh->selectrow_hashref($sth_k, undef, $val[1]);
       push @val, $data->{"кошелек"}{id} || $data->{"кошелек"}{new}{id};
       push @val, $data->{"категория"}{id};
+      push @val, $data->{'$объект'} && $data->{'$объект'}{id};
+      push @val, $data->{"примечание"};
       push @data, \@val;
     }
     my $r = $c->model->пакетная_закачка(\@data);
     #~ $c->log->error($c->dumper($r));#
     return $c->render(json=>{error=>"Ошибка пакетных данных"})
       if ref $r eq 'Mojo::Exception';
+    
+    $tx_db->commit;# новые кошелек и категория
     return $c->render(json=>{"пакет"=>$r});
-  } else {
+  }  else {
   
     $data->{"сумма"} = $data->{"приход"} || ($data->{"расход"} && '-'.$data->{"расход"})
       || return $c->render(json=>{error=>"Не указан приход/расход"});

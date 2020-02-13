@@ -274,18 +274,48 @@ const Component = function($scope, $rootScope, $element, $timeout, $http, $q, ap
           $c.RefreshData();
           $c.CancelBtn();
           if($c.onSave) $c.onSave({"data": $c.data});
-          
-          
-          
         }
         if (resp.data['пакет']) {
           $c.data['@пакет'] = resp.data['пакет'];
-          $('#bulk-confirm', $element[0]).modal('open');
+          $('#bulk-confirm', $element[0]).modal('open');///на проверку пакет
         }
         console.log("Редактирование сохранено: ", resp.data);
         
       });
     
+  };
+  
+  const Pick = (obj, names) => {
+    return names.reduce((res, key) => { return { ...res, [key]: obj[key] }}, { });
+  };
+  
+  $c.SaveBulk = function(){///сохранить проверенный пакет
+    var names = ['дата', 'сумма', 'контрагент/id', 'категория/id', 'кошелек/id', 'объект/id', 'примечание'];
+    var data = $c.data['@пакет'].filter((row)=>{ return !!row['крыжик']; }).map((row)=>{ return Pick(row, names); })
+    
+    //~ return console.log("SaveBulk", data);
+    
+    $c.cancelerHttp = true;
+    
+    return $http.post(appRoutes.url_for('сохранить движение ДС'), data)///, {timeout: $c.cancelerHttp.promise}
+      .then(function(resp){
+        //~ $c.cancelerHttp.resolve();
+        delete $c.cancelerHttp;
+        if (resp.data.hasOwnProperty('error')) $c.error = resp.data.error;
+        if (resp.data.success) {///массив
+          Materialize.toast('Сохранено успешно', 4000, 'green-text text-darken-4 green lighten-4 fw500 border animated zoomInUp slow');
+          for (const r of resp.data.success) {
+            $rootScope.$broadcast('Движение ДС/запись сохранена', r);
+          }
+          $c.RefreshData();
+          $c.CancelBtn();
+          ///if($c.onSave) $c.onSave({"data": $c.data});
+        }
+      },
+      function(){
+        delete $c.cancelerHttp;
+      }
+    );
   };
   
   $c.RefreshData = function(){
