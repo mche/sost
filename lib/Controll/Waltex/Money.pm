@@ -83,17 +83,25 @@ sub save {
       unless $data->{"пакет"};
     my @data = ();
     #~ my $sth_k = $c->model_contragent->sth('контрагент/ИНН');
-    for my $line (split /\s*\r?\n\s*/, $data->{'пакет'}) {
-      my @val = map s/[^\d.,]//gr, split /\s*\t\s*/, $line;#дата | ИНН контрагента | сумма
+    for my $line (split /\r?\n/, $data->{'пакет'}) {
+      my @val = map s/(^\s+|\s+$)//gr, split /\t/, $line, -1;#дата | ИНН контрагента | сумма | прочие
+      #~ $c->log->error(scalar @val, $line =~ s/\t/|/gr, $line);#
+      map s/[^\d.,]//g, @val[0..2]; # только три осн колонки
       #~ my $r = $c->model_contragent->dbh->selectrow_hashref($sth_k, undef, $val[1]);
-      push @val, $data->{"кошелек"}{id} || $data->{"кошелек"}{new}{id};
-      push @val, $data->{"категория"}{id};
-      push @val, $data->{'$объект'} && $data->{'$объект'}{id};
-      push @val, $data->{"примечание"};
+      # обратный порядок перед прочими колонками
+      splice(@val, 3, 0, $data->{"примечание"});
+      splice(@val, 3, 0, $data->{'$объект'} && $data->{'$объект'}{id});
+      splice(@val, 3, 0, $data->{"категория"}{id});
+      splice(@val, 3, 0, $data->{"кошелек"}{id} || $data->{"кошелек"}{new}{id});
+      
+      #~ push @val, $data->{"кошелек"}{id} || $data->{"кошелек"}{new}{id};
+      #~ push @val, $data->{"категория"}{id};
+      #~ push @val, $data->{'$объект'} && $data->{'$объект'}{id};
+      #~ push @val, $data->{"примечание"};
       push @data, \@val;
     }
     my $r = $c->model->пакетная_закачка(\@data);
-    #~ $c->log->error($c->dumper($r));#
+    #~ $c->log->error($c->dumper(\@data));#
     return $c->render(json=>{error=>"Ошибка пакетных данных"})
       if ref $r eq 'Mojo::Exception';
     

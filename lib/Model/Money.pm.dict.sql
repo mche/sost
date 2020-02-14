@@ -283,6 +283,7 @@ select
   cat.id as "категория/id", cat."@категории" as "@категории/json",---v.val[5]
   ob.id as "объект/id", to_json(ob) as "$объект/json",---v.val[6]
   v.val[7] as "примечание",
+  v.val[8:] as "прочие колонки",
   k.id as "контрагент/id", to_json(k) as "$контрагент/json",
   to_json(m) as "$похожая запись/json",
   case when m.id::boolean then false when k.id::boolean then true else false end as "крыжик"
@@ -291,12 +292,15 @@ from
   join cat on cat.id=v.val[5]::int
   ---кошелек
   join "кошельки" w on w.id=v.val[4]::int
+    ---  проект через кошелек для похожих записей
+  join refs rpr on w.id=rpr.id2
+  join "roles" pr on pr.id=rpr.id1
   
   left join "roles" ob on ob.id=v.val[6]::int
   
   left join "контрагенты" k on coalesce(coalesce("реквизиты",'{}'::jsonb)->>'ИНН', '0'||(k.id::text))=v.val[2]
   left join (--- ловим похожие записи
-    select m.*, cat."@категории",/*to_json(c) as "$категория",*/ to_json(w) as "$кошелек", k.id as "контрагент/id", to_json(ob) as "$объект"
+    select m.*, cat."@категории",/*to_json(c) as "$категория",*/ pr.id as "проект/id", w.id as "кошелек/id", to_json(w) as "$кошелек", k.id as "контрагент/id", to_json(ob) as "$объект"
     from 
       "{%= $schema %}"."{%= $tables->{main} %}" m
 
@@ -309,9 +313,12 @@ from
       ---кошелек
       join refs rw on m.id=rw.id2
       join "кошельки" w on w.id=rw.id1
+        ---  проект через кошелек
+      join refs rpr on w.id=rpr.id2
+      join "roles" pr on pr.id=rpr.id1
       
       join ({%= $dict->render('контрагент') %}) k on m.id=k."движение денег/id"
       left join ({%= $dict->render('объект') %}) ob on m.id=ob."движение денег/id"
-  ) m on m."дата"=v.val[1]::date and m."контрагент/id"=k.id and m."сумма"=v.val[3]::money
+  ) m on m."проект/id"=pr.id and m."дата"=v.val[1]::date and m."контрагент/id"=k.id and m."сумма"=v.val[3]::money
 order by v.n
 

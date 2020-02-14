@@ -125,20 +125,20 @@
   </div>
   
   <!-- пакет -->
-  <div ng-show="$c.data['пакетная закачка']" class="col s9  card maroon lighten-5 padd-05">
-    <h4 class="fw500 maroon-text" style="border-bottom: 1px solid;">
+  <div ng-show="$c.data['пакетная закачка']" class="col s8  card navy lighten-4 padd-05">
+    <h4 class="fw500 navy-text" style="border-bottom: 1px solid;">
       <i class="material-icons"></i>
       <span>Вставить строки из Excel</span>
-      <span class="chip padd-0-05 fs8"> три колонки: дата | ИНН контрагента | сумма </span>
+      <span class="chip-0000 padd-0-05 fs8"> обязательно три колонки: <span class="chip padd-0-05 z-depth-1">дата</span>  <span class="chip padd-0-05 z-depth-1">ИНН контрагента (или ИД с нулем в начале)</span>  <span class="chip padd-0-05 z-depth-1">сумма</span> | прочие колонки</span>
     </h4>
     <div class="input-field">
-      <textarea name="comment" ng-model="$c.data['пакет']" class="materialize-textarea comment maroon-text fs8" style="min-height: 30rem; " placeholder=" дата | ИНН контрагента | сумма "></textarea>
+      <textarea name="comment" ng-model="$c.data['пакет']" class="materialize-textarea comment navy-text fs8" style="min-height: 20rem; " placeholder=" дата | ИНН контрагента | сумма | прочие колонки"></textarea>
       <!--label class="descr" for="comment" ng-class="{active: $c.data.comment != null}">Пояснительный текст</label-->
     </div>
     
   </div>
   
-  <div class="col s3" ng-class="{'s4': !$c.data['пакетная закачка'] && ($c.data['приход'] || $c.data['расход'])}">
+  <div class="col s3" ng-class="{'s4': !!$c.data['пакетная закачка'] || ($c.data['приход'] || $c.data['расход'])}">
     <div class="card padd-05 teal lighten-5">
       <h4 class="fw500">
         <i class="material-icons blue-text000">account_balance</i><span>Кошелек</span><!--span>{{ $c.param['проект'] | json }}</span-->
@@ -241,15 +241,15 @@
 <!-- Modal Structure -->
 <div id="bulk-confirm" class="card modal" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated zoomInDown" data-modal-out="animated zoomOutUp"  style="top:3%; max-height:90%; width:90%;">
   <div class="modal-content">
-    <h2 class="maroon-text">Проверка пакетных записей</h2>
+    <h2 class="navy-text">Проверка пакетных записей</h2>
     
     <table ng-if="$c.data['@пакет'] && $c.data['@пакет'].length" class="striped">
       <!--thead></thead-->
       <tbody>
         <tr ng-repeat="row in $c.data['@пакет']" ng-class="{'red-text-000': !row['$контрагент'], 'orange lighten-3': !!row['$похожая запись']}">
-          <td class="right-align"><span class="fs8 grey-text ">{{ row['$дата']['день нед'] }}</span>  <span class="bold">{{ row['$дата']['day'] }}</span>   <span class="fs8">{{ row['$дата']['мес'] }}</span> <span class="">{{ row['$дата'].year }}</span></td>
+          <td class="right-align"><span class=" grey-text ">{{ row['$дата']['день нед'] }}</span>  <span class="bold fs14">{{ row['$дата']['day'] }}</span>   <span class="">{{ row['$дата']['мес'] }}</span> <span class="fs14">{{ row['$дата'].year }}</span></td>
           <td><h4 ng-class="{'grey-text strike-through-red-thin-10': !row['$контрагент'], 'bold orange-text text-darken-4': !!row['$похожая запись']}">{{ row['$контрагент'] ? row['$контрагент'].title : row['ИНН'] }}</h4></td>
-          <td class="right-align"><span>{{ row['сумма'] }}</span></td>
+          <td class="right-align"><span class="fs14">{{ row['сумма'] }}</span></td>
           <td>
             <!-- КРЫЖИК -->
             <div ng-if="!!row['$контрагент']" class="chip-000" style-000="position: absolute;top: 0; padding-left: 2.5rem;">
@@ -270,6 +270,8 @@
               <div class="fs8">{{ !!row['$похожая запись'] ? row['$похожая запись']['примечание'] : row['примечание'] }}</div>
             </div>
           </td>
+          <td ng-repeat="c in row['прочие колонки'] track by $index">{{ c }}</td>
+          <!--td>{{ row['прочие колонки'] | json }}</td-->
         </tr>
       </tbody>
     </table>
