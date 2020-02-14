@@ -53,7 +53,7 @@
         <thead>
           <tr class="line-height-10-000">
             <th class="vbottom">
-              <div v-if=" rentObjects.length " style="width:calc(20vw);">
+              <div v-if=" rentObjects.length " style-000="width:calc(20vw);">
                 <!-- <v-object-select v-if=" rentObjects.length " :select=" item['$объект'] " :data-list=" rentObjects " @on-select-object=" SelectObjectFilter "></v-object-select>-->
                 <v-select :select=" filters['объект'] " :items=" rentObjects " :param=" {'без поля поиска': true} " @on-select=" SelectObjectFilter ">
                   <template v-slot:selected="{ selected }">
@@ -68,6 +68,8 @@
                 </v-select>
               </div>
             </th>
+            <th class="vbottom" style="width:1%;"><!--h6 class="bold" style="width: calc(5vw);">Площадь</h6--></th>
+            <th class="vbottom" style="width:1%;"><!--h6 class="bold" style="width: calc(5vw);">Площадь</h6--></th>
             <th class="vbottom" style="width:1%;"><h6 class="bold" style="width: calc(5vw);">Площадь</h6></th>
             <th class="vbottom right-align" style="width:1%;"><h6 class="bold nowrap" style="width: calc(5vw);">₽ за м²/мес.</h6></th>
             <th class="vbottom right-align" style="width:1%;"><h6 class="bold nowrap" style="width: calc(5vw);">₽/мес.</h6></th>
@@ -106,38 +108,36 @@
       
     </td>
     <td class="padd-05">
-      <div style-000="item_idx  > 0 ? {'max-height':'10rem', 'overflow':'auto'} : {}"><table class="bordered highlight lime000 lighten-4-000">
+      <div style-000="item_idx  > 0 ? {'max-height':'10rem', 'overflow':'auto'} : {}"><table class="bordered highlight striped lime lighten-4">
       <!---thead v-if=" item_idx === 0 " ></thead--->
       
       <tbody>
         <tr v-for="(room, idx) in item['@помещения']" :key="room.id" class="">
           <td class="relative000" style-000="width:calc(30vw);">
             <!-- не катит div style="position:absolute; left:-1rem;"><i class="material-icons fs8 lime-text-darken-4 padd-0">place</i></div-->
-            <h5 class="truncate nowrap-000 lime-text-darken-4 line-height-12" style="width:calc(20vw);" :title=" room.$объект['name'] ">
+            <h5 class="truncate-000 nowrap lime-text-darken-4 line-height-12" style="width:calc(10vw);" :title=" room.$объект['name'] ">
               <span><i class="material-icons fs8 padd-0">place</i></span>
               <span :class="{'transparent-text': idx > 0 && room.$объект.id == item['@помещения'][idx].$объект.id }">{{ room.$объект['name'] }}</span>
-              <span class="nowrap chip padd-0-05"><span class="fs8">№</span><span class="">{{ room.$помещение['номер-название'] }}</span></span>
-              <span class="nowrap chip padd-0-05"><span class="">{{ room.$помещение['этаж'] }}</span><span class="fs8"> эт.</span></span>
-              <!--span class="nowrap " :class="{'right': item['@помещения'].length == 1, 'chip padd-0-05': item['@помещения'].length > 1}"><span class="" :class="{'fw500': item['@помещения'].length == 1}">{{ ParseNum(room.$помещение['площадь']).toLocaleString() }}</span><span class="fs8"> м²</span></span-->
+              <!--span class="nowrap chip padd-0-05"><span class="fs8">№</span><span class="">{{ room.$помещение['номер-название'] }}</span></span-->
+              <!--span class="nowrap chip padd-0-05"><span class="">{{ room.$помещение['этаж'] }}</span><span class="fs8"> эт.</span></span-->
             </h5>
           </td>
-          <!--td style="width:1%;">
-            <div class="nowrap">
-              <span class="fs8 grey-text">№ </span><span class="bold">{{ room.$помещение['номер-название'] }}</span>
+          <td style="width:1%;">
+            <div class="nowrap line-height-10" style--000="width: calc(1vw);">
+              <span class="nowrap chip-000 padd-0-05"><span class="fs8 grey-text">№ </span><span class="">{{ room.$помещение['номер-название'] }}</span></span>
             </div>
             
-          </td-->
-          <!--td class="right-align" style="width:1%;">
-            <div class="nowrap line-height-10" style="">
-              <span class="bold">{{ room.$помещение['этаж'] }}</span>
-              <span class="fs8 grey-text">эт.</span>
+          </td>
+          <td class="" style="width:1%;">
+            <div class="nowrap line-height-10" style---000="width: calc(1vw);">
+              <span class="nowrap chip-000 padd-0-05"><span class="">{{ room.$помещение['этаж'] }}</span><span class="fs8 grey-text"> эт.</span></span>
             </div>
-          </td-->
+          </td>
           <td class="right-align" style="width:1%;">
             <div class="nowrap line-height-10" style="width: calc(5vw);">
               <!--span class="bold">{{ ParseNum(room.$помещение['площадь']).toLocaleString() }}</span>
               <span class="fs8 grey-text">м<sup>2</sup></span-->
-              <span class="nowrap " class-000="{'right': item['@помещения'].length == 1, 'chip padd-0-05': item['@помещения'].length > 1}"><span class="" :class="{'fw500': item['@помещения'].length == 1}">{{ ParseNum(room.$помещение['площадь']).toLocaleString() }}</span><span class="fs8"> м²</span></span>
+              <span class="nowrap " class-000="{'right': item['@помещения'].length == 1, 'chip padd-0-05': item['@помещения'].length > 1}"><span class="" :class="{'fw500': item['@помещения'].length == 1}">{{ ParseNum(room.$помещение['площадь']).toLocaleString() }}</span><span class="fs8 grey-text"> м²</span></span>
             </div>
           </td>
           <td class="right-align" style="width:1%;">
@@ -162,9 +162,9 @@
           </td>
         </tr>
         <!--- Строка суммы за помещения -->
-        <tr v-if="item['@помещения'] && item['@помещения'].length > 1">
-          <td>
-            <div v-show="item['коммент'] && !!item['коммент'].length " class="card-000 padd-0-05 truncate pre-wrap fs8 grey-text-000 line-height-10" style="max-height:2rem; width:calc(20vw);" :title=" item['коммент'] ">{{ item['коммент'] }}</div>
+        <tr v-if="item['@помещения'] && item['@помещения'].length > 1" class="grey lighten-4">
+          <td colspan="3">
+            <div v-show="item['коммент'] && !!item['коммент'].length " class="card-000 padd-0-05 truncate-000 pre-wrap fs8 grey-text line-height-10" style="max-height:2rem; overflow:auto;" >{{ item['коммент'] }}</div>
           </td>
           <td class="right-align"><h5 class="nowrap">
             <span class="bold ">{{ RoomsSquare(item).toLocaleString().replace(/([.,]\d{2})\d+/, '$1') }}</span>
@@ -174,7 +174,9 @@
           <td class="right-align"><span class="bold nowrap">{{ RoomsSum(item).toLocaleString().replace(/[.,]\d+/, '') }}</span></td>
           <td></td>
         </tr>
-      </tbody></table></div>
+      </tbody></table>
+      <div v-show="!item['@помещения'] || item['@помещения'].length == 1" class="padd-0-05 pre-wrap fs8 grey-text line-height-10 border-bottom" style="max-height:2rem; overflow:auto;" :title=" item['коммент'] ">{{ item['коммент'] }}</div>
+      </div>
     </td>
     <!--td style="width:1%;"></td-->
   </tr>

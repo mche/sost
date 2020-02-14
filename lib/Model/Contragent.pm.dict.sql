@@ -201,4 +201,5 @@ from "изменить связи"(?, ?, ?) u;
 @@ контрагент/ИНН
 select *
 from "контрагенты"
-where trim('"' from (coalesce("реквизиты",'{}'::jsonb)->'ИНН')::text)=?;
+where coalesce(coalesce("реквизиты",'{}'::jsonb)->>'ИНН', '0'||(id::text))=?
+;

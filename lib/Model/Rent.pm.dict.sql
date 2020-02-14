@@ -298,7 +298,7 @@ select
   timestamp_to_json(coalesce(num1.ts, now())) as "$дата счета",
   
   coalesce(num2."номер", '000')/*(random()*1000)::int*/ as "номер акта",
-  timestamp_to_json(coalesce(num2.ts, now())) as "$дата акта",
+  timestamp_to_json(coalesce(/*num2.ts*/(date_trunc('month', num2."месяц")+interval '1 month'-interval '1 day')::timestamp, now())) as "$дата акта",--- на последнее число мес
   
   row_to_json(d) as "$договор", 
   row_to_json(k) as "$контрагент",
