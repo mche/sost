@@ -78,10 +78,10 @@ const Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, 
           "фильтр": function(ask){
             return !!ask['на объект/id'] /*&& !ask['с объекта/id']*/;
           },
-          "liClass": 'navy lighten-5',
-          "aClass": 'navy-text ',
+          "liClass": 'navy lighten-4',
+          "aClass": 'navy-text text-darken-1 ',
           "aClassActive": ' before-navy',
-          "svgClass":'navy-fill',
+          "svgClass":'navy-fill-darken-1',
         },
         
         {//tab

@@ -107,10 +107,10 @@ const Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, 
           "фильтр в перемещение": function(row){/// позиции
             return row['крыжик переместить'];/// || !row['тмц/перемещение/id'];/***уже перемещено*/
           },
-          "liClass": 'navy lighten-5',
-          "aClass": 'navy-text ',
+          "liClass": 'navy lighten-4',
+          "aClass": 'navy-text text-darken-1',
           "aClassActive": ' before-navy',
-          "svgClass":'navy-fill',
+          "svgClass":'navy-fill fill-darken-1',
         },
         
         {
