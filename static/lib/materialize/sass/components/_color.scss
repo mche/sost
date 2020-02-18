@@ -345,18 +345,19 @@ $maroon: (
   "darken-5": #000015,
 );***/
 
+$navy-base: #5555aa;
 $navy: (
-  "base":       #5555aa,
-  "lighten-1": lighten(#5555aa, 10%),
-  "lighten-2": lighten(#5555aa, 20%),
-  "lighten-3": lighten(#5555aa, 30%),
-  "lighten-4": lighten(#5555aa, 40%),
-  "lighten-5": lighten(#5555aa, 50%),
-  "darken-1": darken(#5555aa, 10%),
-  "darken-2": darken(#5555aa, 20%),
-  "darken-3": darken(#5555aa, 30%),
-  "darken-4": darken(#5555aa, 40%),
-  "darken-5": darken(#5555aa, 50%),
+  "base": $navy-base,
+  "lighten-1": lighten($navy-base, 10%),
+  "lighten-2": lighten($navy-base, 20%),
+  "lighten-3": lighten($navy-base, 30%),
+  "lighten-4": lighten($navy-base, 40%),
+  "lighten-5": lighten($navy-base, 50%),
+  "darken-1": darken($navy-base, 10%),
+  "darken-2": darken($navy-base, 20%),
+  "darken-3": darken($navy-base, 30%),
+  "darken-4": darken($navy-base, 40%),
+  "darken-5": darken($navy-base, 50%),
 );
 
 $green-forest: (

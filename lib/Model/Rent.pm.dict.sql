@@ -54,6 +54,7 @@ create table IF NOT EXISTS "аренда/договоры-помещения" (
   uid int, --- автор записи
   "ставка" money, -- кв.м./месяц -- ALTER TABLE "аренда/договоры-помещения" ALTER COLUMN  "ставка" DROP NOT NULL;
   "сумма" money, -- или сумма /месяц -- ALTER TABLE "аренда/договоры-помещения" ADD COLUMN "сумма" money;
+  "сумма нал" money, --- доп. наличка --- ALTER TABLE "аренда/договоры-помещения" ADD COLUMN IF NOT EXISTS  "сумма нал" money;
   "коммент" text
 ---  ALTER TABLE "аренда/договоры-помещения" ADD CONSTRAINT "аренда/договоры-помещения/ставка|сумма" CHECK ( "ставка" is not null or "сумма" is not null );
 /* связи:
@@ -63,7 +64,33 @@ id1("аренда/помещения")->id2("аренда/договоры-по�
 );
 ALTER TABLE "аренда/договоры-помещения" ALTER COLUMN  "ставка" DROP NOT NULL;
 ALTER TABLE "аренда/договоры-помещения" ADD COLUMN IF NOT EXISTS  "сумма" money;
+ALTER TABLE "аренда/договоры-помещения" ADD COLUMN IF NOT EXISTS  "сумма нал" money;
 
+/***********************************/
+create table IF NOT EXISTS "аренда/расходы" (---- кроме самой аренды
+  id integer  NOT NULL DEFAULT nextval('{%= $sequence %}'::regclass) primary key,
+  ts  timestamp without time zone NOT NULL DEFAULT now(),
+  uid int, --- автор записи
+  "дата" date not null,
+  "вид расхода" int not null,----> "аренда/расходы/виды"
+  "количество" numeric not null,
+  "ед" text,
+  "цена" money,
+  "сумма" money,
+  "коммент" text
+/* связи:
+id1("аренда/договоры")->id2("аренда/расходы")
+*/
+);
+create table IF NOT EXISTS "аренда/расходы/виды" (
+  id integer  NOT NULL DEFAULT nextval('{%= $sequence %}'::regclass) primary key,
+  ts  timestamp without time zone NOT NULL DEFAULT now(),
+  uid int, --- автор записи
+  "наименование расхода" text not null
+);
+
+
+/*******************************************/
 CREATE SEQUENCE IF NOT EXISTS "счета";
 CREATE SEQUENCE IF NOT EXISTS "акты";
 ---DROP TABLE IF EXISTS "счета";

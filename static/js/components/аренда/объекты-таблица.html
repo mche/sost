@@ -15,8 +15,8 @@
   <tr v-for=" (item, idx) in data " :key=" item.id " class="relative" :class="{'selected': item === selectedObject}">
     <td class="vtop padd-05" style="/*width:30%;*/">
       <h4 :class="{'bold': item._edit}" class="fw500 line-height-10 row" style=""><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" style="height: 1.2rem;" class="blue-fill-darken-3"><use xlink:href="/fonts/icons.svg#realty-1"></use></svg>  <a @click=" Edit(item) " href="javascript:void('редактировать объект аренды') " class="hover-shadow3d blue-text text-darken-3" title="редактировать объект аренды">{{ (item['$объект'] && item['$объект'].name) || item['адрес'] }}</a></h4>
-      <div v-show="item['коммент'] && !!item['коммент'].length " class="chip width100 padd-0-05 truncate pre-wrap fs8 grey-text-000 line-height-10" style="height:2rem;" :title=" item['коммент'] ">{{ item['коммент'] }}</div>
-      <div class="right chip padd-0-05 right-align hoverable fs8 line-height-10" stle=""><a @click="ToggleRooms(item)" href="javascript:void('развернуть строки помещений/кабинетов')" title="развернуть строки помещений/кабинетов" class="black-text hover-shadow3d">общая площадь <span class="bold fs12">{{ SumSquare(item).toLocaleString() }}</span> м² в <span class="bold fs12">{{ item['@кабинеты'].length }}</span> помещениях <i class="material-icons">arrow_forward</i></a></div>
+      <div v-show="item['коммент'] && !!item['коммент'].length " class="chip width100 truncate pre-wrap fs8 grey-text-000 line-height-10" style="height:2rem;" :title=" item['коммент'] ">{{ item['коммент'] }}</div>
+      <div class="right chip  right-align hoverable fs8 line-height-10" stle=""><a @click="ToggleRooms(item)" href="javascript:void('развернуть строки помещений/кабинетов')" title="развернуть строки помещений/кабинетов" class="black-text hover-shadow3d">общая площадь <span class="bold fs12">{{ SumSquare(item).toLocaleString() }}</span> м²<br> в <span class="bold fs12">{{ item['@кабинеты'].length }}</span> помещениях <i class="material-icons">arrow_forward</i></a></div>
       <div v-if=" item._edit " style="position: absolute; left:-5%; width:110%; z-index:1;"><v-rent-object-form :item=" item._edit " @on-save=" OnSave "></v-rent-object-form></div>
     </td>
     <td class="vtop padd-05 relative" style="width:60%;" :style=" item['@кабинеты'].length > 1 ? {'padding-top':'2rem !important'} : {}">
@@ -26,8 +26,8 @@
       <div style="overflow:auto;" :style="item._expandRooms ? {} : {'max-height':'10rem'}">
       <table class="bordered striped lime lighten-4"><tbody>
         <tr v-for="room in (item.rooms || item['@кабинеты'])" :key="room.id">
-          <td style="width:3%;">
-            <div class="nowrap lime-text-darken-4 line-height-10" style="">
+          <td style="">
+            <div class="nowrap truncate lime-text-darken-4 line-height-10" style="width:10rem;">
               <span class="fs8 grey-text">№ </span><span class="bold">{{ room['номер-название'] }}</span>
             </div>
           </td>
@@ -43,7 +43,7 @@
               <span class="fs8 grey-text"> м<sup>2</sup></span>
             </div>
           </td>
-          <td style="width:10%;"><span v-show="!!room['коммент']" class="padd-0-05 truncate pre-wrap fs8 grey-text middle line-height-10" style="max-height:2rem;" :title=" room['коммент'] ">{{ room['коммент'] }}</span></td>
+          <td style="width:10%;"><span v-show="!!room['коммент']" class="padd-0-05 truncate pre-wrap fs8 grey-text middle line-height-8" style="max-height:2rem;" :title=" room['коммент'] ">{{ room['коммент'] }}</span></td>
         </tr>
       </tbody></table>
       </div>

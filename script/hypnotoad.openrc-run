@@ -6,9 +6,9 @@ extra_commands="clean_cache"
 extra_started_commands="reload upgrade force_stop"
 #~ extra_stopped_commands="clean-cache-start"
 
-description="Веб-система СоюзОСТ"
+description="Веб-система ОСТ"
 
-ROOT=/home/guest/Ostanin
+ROOT=/home/guest/sost
 # только старт гипнотода, далее только пидфайл
 SCRIPT=$ROOT/script/app.sh
 LOG=log/mojo.log
@@ -24,20 +24,10 @@ depend() {
 }
 
 
-#~ start() {
-  #~ ebegin "Starting $SCRIPT"
-  #~ start-stop-daemon --start --user $USER --exec $SCRIPT # там 2>/dev/null
-  #~ local retval=$?
-  #~ if [ $retval -ne 0 ] ; then
-      #~ eerror "ошибка в логе $LOG"
-  #~ fi
-  #~ eend $retval
-#~ }
-
 start() {
   ebegin "Starting [$description]"
   su - $USER -c \
-       "cd ~/Ostanin; \
+       "cd ~/sost; \
         source ~/.bashrc; \
         perlbrew use perl-5.26.1; \
         MOJO_MODE=production; \
