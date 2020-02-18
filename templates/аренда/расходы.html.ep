@@ -1,0 +1,10 @@
+% layout 'main';
+
+
+<div ng-app="Аренда::Расходы"  ng-controller="Controll as ctrl" class="row relative">
+
+  <div id="тут компонент расходы таблица"></div>
+    <!--v-right-contract-table :param=" param "></v-right-contract-table-->
+  </div>
+
+</div>
