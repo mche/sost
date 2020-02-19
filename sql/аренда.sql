@@ -11,7 +11,7 @@ select
   ---coalesce(num1.ts, now())::date as "дата счета",
   
   coalesce(num2."номер", '000')/*(random()*1000)::int*/ as "номер акта",
-  coalesce(num2.ts, now())::date as "дата акта",
+  coalesce(/*num2.ts*/(date_trunc('month', num2."месяц")+interval '1 month'-interval '1 day')::timestamp, now()) as "дата акта",--- на последнее число мес
   
   d."номер" as "договор",
   k.title as "контрагент",
