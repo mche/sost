@@ -149,7 +149,7 @@ BEGIN
         where  s."месяц"=date_trunc('month', $1) --- только счета этого мес
       ) s on d.id=s.id1
     where 
-      date_trunc('month', $1) between date_trunc('month', d."дата1") and (date_trunc('month', coalesce(d."дата расторжения", d."дата2") + interval '1 month') - interval '1 day') ---только действующие договоры
+      date_trunc('month', $1) /*between date_trunc('month', d."дата1") and*/ < (date_trunc('month', coalesce(d."дата расторжения", d."дата2") + interval '1 month') - interval '1 day') ---только действующие договоры
       and d.id=any($2)
       and  s.id1 is null
     order by d."дата1" desc, d.id desc
@@ -201,7 +201,7 @@ BEGIN
         where  s."месяц"=date_trunc('month', $1) --- только счета этого мес
       ) s on d.id=s.id1
     where 
-      date_trunc('month', $1) between date_trunc('month', d."дата1") and (date_trunc('month', coalesce(d."дата расторжения", d."дата2") + interval '1 month') - interval '1 day') ---только действующие договоры
+      date_trunc('month', $1) /*between date_trunc('month', d."дата1") and*/ < (date_trunc('month', coalesce(d."дата расторжения", d."дата2") + interval '1 month') - interval '1 day') ---только действующие договоры
       and d.id=any($2)
       and  s.id1 is null
     order by d."дата1" desc, d.id desc
@@ -300,7 +300,7 @@ from "аренда/договоры-помещения" r
 {%= $where || '' %}
 {%= $order_by || '' %}
 
-@@ счета
+@@ счета и акты
 --- для docx
 WITH param as (
   select *, to_char(d."дата", 'YYYY') as "год", date_trunc('month', d."дата") as "month"
@@ -319,17 +319,22 @@ num as (---нумерация счетов
 )*/
 ---конец with
 
-select jsonb_agg(s) as "json" from (
+select {%= $select || '*' %} from (
 select
   coalesce(num1."номер", '000')/*(random()*1000)::int*/ as "номер счета",
+  coalesce(num1.ts, now())::date as "дата счета",
   timestamp_to_json(coalesce(num1.ts, now())) as "$дата счета",
   
   coalesce(num2."номер", '000')/*(random()*1000)::int*/ as "номер акта",
+  coalesce(/*num2.ts*/date_trunc('month', num2."месяц")+interval '1 month'-interval '1 day', now())::date as "дата акта",--- на последнее число мес
   timestamp_to_json(coalesce(/*num2.ts*/(date_trunc('month', num2."месяц")+interval '1 month'-interval '1 day')::timestamp, now())) as "$дата акта",--- на последнее число мес
   
   row_to_json(d) as "$договор", 
   row_to_json(k) as "$контрагент",
   k.id as "контрагент/id",
+  d."номер!" as "договор/номер",
+  k.title as "контрагент/title",
+  coalesce(k."реквизиты",'{}'::jsonb)->>'ИНН' as "ИНН",
   dp."сумма",
   /*** хитрая функция sql/пропись.sql ***/
   firstCap(to_text(dp."сумма"::numeric, 'рубль', scale_mode => 'int')) as "сумма прописью",
@@ -340,12 +345,12 @@ from
   param
   join (
     select d.*,
-      upper(replace(d."номер", '№', '')) as "номер",
+      upper(replace(d."номер", '№', '')) as "номер!",
       timestamp_to_json(coalesce(d."дата договора", d."дата1")::timestamp) as "$дата договора",
       timestamp_to_json(d."дата1"::timestamp) as "$дата1",
       timestamp_to_json(d."дата2"::timestamp) as "$дата2"
     from "аренда/договоры" d
-  ) d on param."month" between date_trunc('month', d."дата1") and (date_trunc('month', coalesce(d."дата расторжения", d."дата2") + interval '1 month') - interval '1 day') ---только действующие договоры
+  ) d on param."month" /*between date_trunc('month', d."дата1") and*/ < (date_trunc('month', coalesce(d."дата расторжения", d."дата2") + interval '1 month') - interval '1 day') ---только действующие договоры
   join refs r on d.id=r.id2
   join "контрагенты" k on k.id=r.id1
   /*left join (

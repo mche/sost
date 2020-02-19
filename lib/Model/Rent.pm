@@ -164,7 +164,7 @@ sub счет_оплата_docx {# и акты
 #    ' dp."объект/id" ' => \[ ' = any(?) ', $param->{"объекты"} ],
   });
   unshift @bind, $param->{'месяц'}, $param->{'счет или акт'} eq 'акт' ? 929979 : 0;# отключить обеспечит предоплата для актов, $param->{'присвоить номера'} ? $param->{"договоры"} : [], $param->{uid};
-  my $data = $self->dbh->selectrow_array($self->sth('счета', where=>$where), undef, @bind);
+  my $data = $self->dbh->selectrow_array($self->sth('счета и акты', select=>' jsonb_agg(s) as "json" ', where=>$where), undef, @bind);
   my $r = {};
   $r->{docx} = $param->{docx} || "счет-$param->{uid}.docx";
   $r->{docx_out_file} = "static/tmp/$r->{docx}";
@@ -179,6 +179,19 @@ sub счет_оплата_docx {# и акты
   );
   
   return $r;#для отладки - коммент линию
+}
+
+sub реестр_актов {
+  my $self  =  shift;
+  my $param = ref $_[0] ? shift : {@_};
+  
+  my ($where, @bind) = $self->SqlAb->where({
+    #~ ' d.id ' => \[ ' = any(?) ', $param->{"договоры"} ],
+    q| not coalesce((coalesce(k."реквизиты",'{}'::jsonb)->'физ. лицо'), 'false')::boolean |=>\[],
+#    ' dp."объект/id" ' => \[ ' = any(?) ', $param->{"объекты"} ],
+  });
+  unshift @bind, $param->{'месяц'}, $param->{'счет или акт'} eq 'акт' ? 929979 : 0;# отключить обеспечит предоплата для актов, $param->{'присвоить номера'} ? $param->{"договоры"} : [], $param->{uid};
+  $self->dbh->selectall_arrayref($self->sth('счета и акты', where=>$where), {Slice=>{}}, @bind);
 }
 
 
