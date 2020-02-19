@@ -15,7 +15,7 @@ var moduleName = "Аренда::Расходы::Таблица";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, [/* 'Аренда::Расходы::Форма',*/ 'Компонент::Выбор в списке', ]);
 
-module.factory('$КомпонентАрендаРасходыТаблица', function($templateCache, $http, appRoutes, /*$timeout, $rootScope, /**$compile, , */ $EventBus, Util, /*$КомпонентАрендаРасходыФорма,*/ $КомпонентВыборВСписке ) {// 
+module.factory('$КомпонентАрендаРасходыТаблица', function($templateCache, $http, appRoutes,  /*$EventBus, Util, /*$КомпонентАрендаРасходыФорма,*/ $КомпонентВыборВСписке ) {// 
 
 const props = {
   "param": {
@@ -50,7 +50,7 @@ Ready(){/// метод
 LoadData(){
   var vm = this;
   
-  return $http.post(appRoutes.urlFor('аренда/расходы/список'), {})
+  return $http.post(appRoutes.urlFor('аренда/расходы/список'), {"месяц": vm.payMonth,})
     .then(function(resp){
       vm.data.push(...resp.data);
       return vm.data;
@@ -199,7 +199,10 @@ const mounted = function(){
         format: 'mmmm yyyy',
         monthOnly: 'OK',// кнопка
         selectYears: true,
-        onSet: function (context) {var s = this.component.item.select; vm.$set(vm, "payMonth" , [s.year, s.month+1, s.date].join('-')); },//$(this._hidden).val().replace(/^\s*-/, this.component.item.select.year+'-'); },
+        onSet: function (context) {
+          var s = this.component.item.select;
+          vm.$set(vm, "payMonth" , [s.year, s.month+1, s.date].join('-'));
+        },
       });//{closeOnSelect: true,}
     });
     

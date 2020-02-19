@@ -1,0 +1,16 @@
+@@@ аренда/расходы/таблица
+
+<div><!-- обязательно один корень Vue -->
+<v-progress-indeterminate v-show=" !ready " :color=" 'teal' " :message=" 'Загружается...' "></v-progress-indeterminate>
+
+<div v-if=" ready " class="">
+  <div>
+    <h3 class="iblock middle">Месяц</h3>
+    <div class="input-field chip padd-05">
+      <input name="месяц" type="text" class="datepicker pay-month fs18 fw500" style="" :data-value=" payMonth ">
+    </div>
+  </div>
+   
+</div>
+
+</div>

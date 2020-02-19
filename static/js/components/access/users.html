@@ -107,8 +107,8 @@
     
     <a ng-show="user.id" ng-click="$c.ToggleSelect(user)" href="javascript:" class="right hover-shadow3d">
       <!--i class="material-icons">visibility</i-->
-      <i ng-hide="user._selected" class="material-icons circle yellow lighten-4">radio_button_unchecked</i>
-      <i ng-show="user._selected" class="material-icons circle yellow lighten-4">radio_button_checked</i>
+      <i ng-hide="user._selected" class="material-icons circle yellow lighten-5" style="line-height:1;">radio_button_unchecked</i>
+      <i ng-show="user._selected" class="material-icons circle yellow lighten-5" style="line-height:1;">radio_button_checked</i>
     </a>
     
     <a ng-show="user.id && ($c.param.role || $c.param.route)" ng-click="$c.SaveCheck(user)" href="javascript:" class="right hover-shadow3d" ng-class="{'grey-text': $c.param.route}" >

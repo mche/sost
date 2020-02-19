@@ -777,6 +777,25 @@ sub map_grep_mode {
         js/c/waltex/report/table.html
         )],
         
+        ['аренда-расходы.js' => grep !/^--/, qw(
+        js/c/аренда/расходы/index.js
+        js/c/аренда/расходы/расходы-таблица.js
+        ---js/c/contragent/data.js
+        ---js/c/contragent/v-item.js
+        js/util/IdMaker.js
+        js/util/debounce.js
+        js/c/autocomplete/v-suggestions.js
+        ----v-uploader.js
+        js/c/autocomplete/v-select.js
+        )],
+        ['аренда-расходы.html' => grep !/^--/, qw(
+        js/c/аренда/расходы/расходы-таблица.html
+        ---js/c/contragent/v-item.html
+        js/c/autocomplete/v-suggestions.html
+        ---v-uploader.html
+        js/c/autocomplete/v-select.html
+        )],
+        
         ['контрагенты/замена.js' => grep !/^--/, qw(
         js/c/contragent/data.js
         js/c/contragent/v-item.js

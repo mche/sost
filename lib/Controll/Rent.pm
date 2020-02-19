@@ -14,6 +14,15 @@ sub index {
     );
 }
 
+sub расходы {
+  my $c = shift;
+  return $c->render('аренда/расходы',
+    handler=>'ep',
+    'header-title' => 'Счета на расходы арендаторов',
+    assets=>["аренда-расходы.js",],# "uploader.css"],
+    );
+}
+
 sub объекты_список {
   my $c = shift;
   $c->render(json=>$c->model->список_объектов());
@@ -129,6 +138,12 @@ sub сохранить_договор {
   $c->model_contragent->почистить_таблицу();# только после связей!{uid=>$c->auth_user->{id}}
   
   $c->render(json=>{success=>$r});
+}
+
+sub расходы_список {
+  my $c = shift;
+  my $param = $c->req->json;
+  $c->render(json=>[]);
 }
 
 sub счет_оплата_docx {# сделать docx во врем папке и вернуть урл

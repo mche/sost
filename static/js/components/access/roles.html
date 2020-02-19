@@ -119,8 +119,8 @@
     <!-- аттач-позиция/узел из другого места -->
     <h5 ng-if="item.parents1 && item.parents1.length > 1 && item.parents1[0] != item.parent" ng-show000="!$c.filterChecked || !$c.param.roles || !$c.param.roles.length || item._checked || item._expand" class="iblock000" ng-class="{'checked bold': item._checked}" class="brown-text" style000="border-bottom: 1px solid #e0e0e0;">
       <a ng-click="$c.SelectItem(item)" href="javascript:" class="right hover-shadow3d" style="margin-right: 0.5rem;">
-        <i ng-hide="item._selected" class="material-icons circle yellow lighten-4">radio_button_unchecked</i>
-        <i ng-show="item._selected" class="material-icons circle yellow lighten-4">radio_button_checked</i>
+        <i ng-hide="item._selected" class="material-icons circle yellow lighten-5" style="line-height:1;">radio_button_unchecked</i>
+        <i ng-show="item._selected" class="material-icons circle yellow lighten-5" style="line-height:1;">radio_button_checked</i>
       </a>
       
       <a class="right" ng-show="item._checked" >
@@ -147,8 +147,8 @@
     <!-- нормальный первично-вложенный узел -->
     <h5 ng-if="!item.parents1 || item.parents1.length == 1 ||  item.parents1[0] == item.parent" ng-show000="!$c.filterChecked || !$c.param.roles || !$c.param.roles.length || item._checked || item._expand" class="hover-childs-show" ng-class="{'checked bold': item._checked}" style000="border-bottom: 1px solid #e0e0e0;">
       <a ng-show="item.id" ng-click="$c.SelectItem(item)" href="javascript:" class="right hover-shadow3d" style="margin-right: 0.5rem;">
-        <i ng-hide="item._selected" class="material-icons circle yellow lighten-4">radio_button_unchecked</i>
-        <i ng-show="item._selected" class="material-icons circle yellow lighten-4">radio_button_checked</i>
+        <i ng-hide="item._selected" class="material-icons circle yellow lighten-5" style="line-height:1;">radio_button_unchecked</i>
+        <i ng-show="item._selected" class="material-icons circle yellow lighten-5" style="line-height:1;">radio_button_checked</i>
       </a>
       
       <a ng-show="item.id  && ($c.param.user || $c.param.route)" ng-click="$c.SaveCheck(item)" href="javascript:" class="right hover-shadow3d" >

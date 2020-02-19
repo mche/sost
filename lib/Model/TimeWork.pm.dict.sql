@@ -163,7 +163,7 @@ select
   array_to_string(p.names, ' ') as "профиль",
   text2numeric(t."коммент")::money as "сумма",
   (date_trunc('month', t."дата"+interval '1 month') - interval '1 day')::date as "дата",
-  '('::text || to_char(t."дата", 'TMMon YYYY') || ': переработка сверх 11 часов)'::text as "примечание"
+  '('::text || to_char(t."дата", 'TMMon YYYY') || ': переработка сверх 12 часов)'::text as "примечание"
 from
   "табель" t
   join refs rp on t.id=rp.id2 -- на профили
@@ -565,8 +565,8 @@ with with_acc_ob as (
 % }
 select sum(coalesce(text2numeric(t."значение"), 0::numeric)) as "всего часов",
   count(t."значение") as "всего смен",
-  sum(case when (coalesce(text2numeric(t."значение"), 0::numeric)>11::numeric)::boolean and og.id<>132389 /*километраж нет*/ then text2numeric(t."значение")-11::numeric else null end) as "переработка/часов",
-  count(case when (coalesce(text2numeric(t."значение"), 0::numeric)>11::numeric)::boolean and og.id<>132389 /*километраж нет*/ then 1 else null end) as "переработка/смен",
+  sum(case when (coalesce(text2numeric(t."значение"), 0::numeric)>12::numeric)::boolean and og.id<>132389 /*километраж нет*/ then text2numeric(t."значение")-12::numeric else null end) as "переработка/часов",
+  count(case when (coalesce(text2numeric(t."значение"), 0::numeric)>12::numeric)::boolean and og.id<>132389 /*километраж нет*/ then 1 else null end) as "переработка/смен",
   og.id as "объект", p.id as "профиль", p.names, og.name as "объект/name" ---, array_agg(g1.name) as "должности"
   , /*"формат месяц"(t."дата") as "формат месяц",*/ date_trunc('month', t."дата") as "дата месяц",
   null::int as "профиль1/id"
