@@ -204,7 +204,7 @@ sub реестр_актов_xlsx {
   my $filename=sprintf("static/tmp/%s-реестр-актов-%s.xlsx", $c->auth_user->{id}, $month);
   open(my $fh, ">:encoding(UTF-8)", $filename)
     || die "Can't open UTF-8 encoded $filename: $!";
-  my @names = ('номер акта', 'дата акта', 'договор/номер', 'контрагент/title', 'ИНН', 'сумма');
+  my @names = ('номер акта', 'дата акта', 'договор/номер','договор/дата начала', 'договор/дата завершения', 'контрагент/title', 'ИНН', 'сумма');
   say $fh join("\t", @names);
   say $fh join("\t", @$_{@names})
     for @$data;
