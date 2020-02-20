@@ -222,10 +222,11 @@
         </li>
       </ul--->
     </div><!-- col -->
-  </div>
+    <div class="clipboard chip">{{ clipBoard }}</div>
+  </div><!-- modal-content -->
   <div class="modal-footer center">
     <a @click=" PrintPay(payMonth) " href="javascript:" class="modal-action waves-effect waves-green btn-flat z-depth-1 green lighten-4 green-text text-darken-4" style="float:none;"><svg ng-hide="$c.cancelerHttp" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="blue-fill " style="height: 1.7rem;"><use xlink:href="/fonts/icons.svg#ms-word" class=""></use></svg><span>Получить распечатку</span></a>
-    <a @click=" PrintReestrXLSX(payMonth) " href="javascript:" class="modal-action waves-effect waves-green btn-flat z-depth-1 blue lighten-4 blue-text text-darken-4" style="float:none;"><!--svg ng-hide="$c.cancelerHttp" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="blue-fill " style="height: 1.7rem;"><use xlink:href="/fonts/icons.svg#ms-word" class=""></use></svg--><span>Получить реестр</span></a>
+    <a @click=" Reestr(payMonth) " href="javascript:" class="modal-action waves-effect waves-green btn-flat z-depth-1 blue lighten-4 blue-text text-darken-4" style="float:none;"><!--svg ng-hide="$c.cancelerHttp" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="blue-fill " style="height: 1.7rem;"><use xlink:href="/fonts/icons.svg#ms-word" class=""></use></svg--><span>Копировать реестр актов</span></a>
     <a  href="javascript:" class="modal-action modal-close waves-effect waves-red btn-flat z-depth-1 red lighten-3 red-text text-darken-3"><i class="material-icons">cancel</i><span>Отмена</span></a>
   </div>
 </div>

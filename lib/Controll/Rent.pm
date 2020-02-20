@@ -200,20 +200,20 @@ sub реестр_актов_xlsx {
   my $c = shift;
   my $month = $c->param('month');
   my $data = $c->model->реестр_актов("месяц"=> $month, "счет или акт"=>'акт');
-  #~ $c->render(json=>[]);
-  my $filename=sprintf("static/tmp/%s-реестр-актов-%s.xlsx", $c->auth_user->{id}, $month);
+  my @names = ('номер акта', 'дата акта', 'договор/номер','договор/дата начала', 'договор/дата завершения', 'контрагент/title', 'ИНН', 'сумма/num');
+  #~ $c->render(json=>[join("\t", @names), map(join("\t", @$_{@names}), @$data)]);
+  my $filename=sprintf("static/tmp/%s-реестр-актов-%s.csv", $c->auth_user->{id}, $month);
   open(my $fh, ">:encoding(UTF-8)", $filename)
     || die "Can't open UTF-8 encoded $filename: $!";
-  my @names = ('номер акта', 'дата акта', 'договор/номер','договор/дата начала', 'договор/дата завершения', 'контрагент/title', 'ИНН', 'сумма');
+  
   say $fh join("\t", @names);
   say $fh join("\t", @$_{@names})
     for @$data;
-  #~ say $fh $c->app->json->encode($data);
   close($fh);
   $c->render_file(
     'filepath' => $filename,
-    'format'   => 'xlsx',                 # will change Content-Type "application/x-download" to "application/pdf"
-    #~ 'content_disposition' => 'inline',   # will change Content-Disposition from "attachment" to "inline"
+    'format'   => 'csv',                 # will change Content-Type "application/x-download" to "application/pdf"
+    ##~ 'content_disposition' => 'inline',   # will change Content-Disposition from "attachment" to "inline"
     'cleanup'  => 1,                     # delete file after completed
   );
   

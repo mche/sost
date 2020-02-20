@@ -326,7 +326,7 @@ select
   timestamp_to_json(coalesce(num1.ts, now())) as "$дата счета",
   
   coalesce(num2."номер", '000')/*(random()*1000)::int*/ as "номер акта",
-  coalesce(/*num2.ts*/date_trunc('month', num2."месяц")+interval '1 month'-interval '1 day', now())::date as "дата акта",--- на последнее число мес
+  coalesce(/*num2.ts*/date_trunc('month', num2."месяц")+interval '1 month'-interval '1 day', /*now()*/null)::date as "дата акта",--- на последнее число мес
   timestamp_to_json(coalesce(/*num2.ts*/(date_trunc('month', num2."месяц")+interval '1 month'-interval '1 day')::timestamp, now())) as "$дата акта",--- на последнее число мес
   
   row_to_json(d) as "$договор", 
@@ -337,7 +337,7 @@ select
    coalesce(d."дата расторжения", d."дата2") as "договор/дата завершения",
   k.title as "контрагент/title",
   coalesce(k."реквизиты",'{}'::jsonb)->>'ИНН' as "ИНН",
-  dp."сумма",
+  dp."сумма", replace(dp."сумма"::numeric::text, '.', ',') as "сумма/num",
   /*** хитрая функция sql/пропись.sql ***/
   firstCap(to_text(dp."сумма"::numeric, 'рубль', scale_mode => 'int')) as "сумма прописью",
   ---ARRAY(select (select to_json(a) from (select ('{"Арендная плата за нежилое помещение за '||param."месяц"||' '||param."год"||' г."}')::text[] as "номенклатура", -1::numeric*dp."сумма" as "сумма" ) a)) as "@позиции",

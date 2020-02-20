@@ -229,7 +229,7 @@ return function /*конструктор*/($c, $scope, $element){
     return $c.data.$объекты[id] && this.re.test($c.data.$объекты[id].name);
   };
   $c.FilterOfis = function(row, idx){// фильтовать объекты Офис
-   return !!$c.data.$объекты && row["объекты"].some(IsObjRegexpName, {"re": reOfis});
+   return !!$c.data.$объекты && !!row["объекты"] && row["объекты"].some(IsObjRegexpName, {"re": reOfis});
   };
   const rePL = /путевые листы/i;
   $c.FilterPL = function(row, idx){// фильтовать объекты Путевые листы...
@@ -248,7 +248,7 @@ return function /*конструктор*/($c, $scope, $element){
   };
   $c.OrderByData = function(row){
     var profile = $c.RowProfile(row);
-    if(!profile) return '';
+    if(!profile || !profile.names) return '';
     return profile.names.join();
   };
   

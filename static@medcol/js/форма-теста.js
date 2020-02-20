@@ -127,7 +127,7 @@ ChangeChb(q){
 
 CopyQuestions(){
   var vm = this;
-  var copy = copyTextToClipboard(vm.myQuestions.map(util.MapTextarea).join('\n\n'));
+  var copy = copyTextToClipboard(vm.myQuestions.filter(util.FilterCheckedQuestion).map(util.MapTextarea).join('\n\n'));
   var success = function(msg){
     Materialize.toast('Скопировано! ', 2000, 'left orange-text text-darken-3 orange lighten-5 fw500 border animated zoomInUp fast');
   };

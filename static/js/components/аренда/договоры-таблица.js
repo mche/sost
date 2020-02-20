@@ -152,12 +152,50 @@ PrintPay(month){
   });
 },
 
-PrintReestrXLSX(month){
+Reestr(month){
   var vm = this;
   var modal = $('#modal-pay', $(vm.$el));
-  modal.modal('close');
+
+  //~ return $http.get(appRoutes.url_for('аренда/реестр актов.xlsx', month)).then(function(resp){
+    //~ var copy = copyTextToClipboard(resp.data.join('\n'));
+    //~ var success = function(msg){
+      //~ Materialize.toast('Скопировано! ', 2000, 'blue-text text-darken-3 blue lighten-5 fw500 border animated zoomInUp fast');
+    //~ };
+    //~ setTimeout(function(){
+      //~ if (copy.then) copy.then(success);
+      //~ if (copy == 'success') success(copy);
+      ///console.log('CopyQuestions', copy);
+    //~ }, 10);
+    
+    //~ vm.UpdateClipboard(resp.data.join('\n'));
+    
+    //~ vm.clipBoard = resp.data.join('\n');
+    //~ setTimeout(function(){
+      //~ vm.CopyClipBoard();
+    //~ });
+  //~ });
   window.location.href = appRoutes.url_for('аренда/реестр актов.xlsx', month);
+  modal.modal('close');
 },
+
+//~ CopyClipBoard() {
+  //~ var vm = this;
+  //~ var textToCopy = vm.$el.getElementsByClassName('clipboard')[0];
+  //~ var range = document.createRange();
+  //~ range.selectNodeContents(textToCopy);
+  //~ window.getSelection().addRange(range);
+  //~ document.execCommand('copy');
+//~ },
+
+//~ UpdateClipboard(newClip) {
+  //~ navigator.clipboard.writeText(newClip).then(function() {
+    //~ /* clipboard successfully set */
+    //~ Materialize.toast('Скопировано! ', 2000, 'blue-text text-darken-3 blue lighten-5 fw500 border animated zoomInUp fast');
+  //~ }, function() {
+    //~ /* clipboard write failed */
+    //~ console.log('clipboard write failed', arguments);
+  //~ });
+//~ },
 
 OnChangeFilter(event){
   var vm = this;
@@ -236,6 +274,7 @@ const  data = function(){
     "filters": {"арендаторы": '', "объект": {}, "архивные договоры": false,},
     "rentObjects":[],
     "archLen":0, /// кол-во архивных договоров
+    "clipBoard": undefined,
     };
   //);
 };///конец data

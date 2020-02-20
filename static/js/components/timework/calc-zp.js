@@ -119,9 +119,13 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     row._index = index;
     var profile = $c.RowProfile(row);
     row._profile = profile;
-    var fio = profile.names.join(' ');
-    if (!$c.data['данные/профили']) $c.data['данные/профили'] = {};
-    if(!$c.data['данные/профили'][fio]) $c.data['данные/профили'][fio] = profile;
+    if (profile.names) {
+      var fio = profile.names.join(' ');
+      if (!$c.data['данные/профили']) $c.data['данные/профили'] = {};
+      if(!$c.data['данные/профили'][fio]) $c.data['данные/профили'][fio] = profile;
+      
+    }
+    
     
     //~ row._object = $c.Obj(row);
     row['месяц'] = $c.param['месяц'];
