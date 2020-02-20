@@ -164,7 +164,7 @@
         <!--- Строка суммы за помещения -->
         <tr v-if="item['@помещения'] && item['@помещения'].length > 1" class="grey lighten-4">
           <td colspan="3">
-            <div v-show="item['коммент'] && !!item['коммент'].length " class="card-000 padd-0-05 truncate-000 pre-wrap fs8 grey-text line-height-10" style="max-height:2rem; overflow:auto;" :title=" item['коммент'] ">{{ item['коммент'] }}</div>
+            <div v-show="item['коммент'] && !!item['коммент'].length " class="card-000 padd-0-05 truncate-000 pre-wrap fs8 grey-text line-height-8" style="max-height:2rem; overflow:auto;" :title=" item['коммент'] ">{{ item['коммент'] }}</div>
           </td>
           <td class="right-align"><h5 class="nowrap lime-text text-darken-4">
             <span class="bold ">{{ RoomsSquare(item).toLocaleString().replace(/([.,]\d{2})\d+/, '$1') }}</span>
@@ -180,7 +180,7 @@
           <td></td>
         </tr>
       </tbody></table>
-      <div v-show="!item['@помещения'] || item['@помещения'].length == 1" class="padd-0-05 pre-wrap fs8 grey-text line-height-10 border-bottom" style="max-height:2rem; overflow:auto;" :title=" item['коммент'] ">{{ item['коммент'] }}</div>
+      <div v-show="!item['@помещения'] || item['@помещения'].length == 1 &&  item['коммент'] && item['коммент'].length" class="padd-0-05 pre-wrap fs8 grey-text line-height-8 border-bottom" style="max-height:2rem; overflow:auto;" :title=" item['коммент'] ">{{ item['коммент'] }}</div>
       </div>
     </td>
     <!--td style="width:1%;"></td-->

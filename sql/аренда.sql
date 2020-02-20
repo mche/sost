@@ -46,7 +46,7 @@ from
     from (
       select
         -1::numeric*dp."сумма" as "сумма",
-        "объект",
+        dp."объект",
         not 929979=any(dp."категории") as "order_by",
         case when 929979=any(dp."категории")---ид категории
           then ('{"Обеспечительный платеж"}')::text[]

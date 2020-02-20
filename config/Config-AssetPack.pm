@@ -760,7 +760,7 @@ sub map_grep_mode {
         js/c/waltex/report/аренда/форма.js
         date-between.js
         js/c/waltex/report/table.js
-        js/util/copy-clipboard.js
+        ---js/util/copy-clipboard.js
         ---js/util/array-splice.js
         )],
         ['аренда.html' => grep !/^--/, qw(
