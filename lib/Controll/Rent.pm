@@ -200,7 +200,7 @@ sub реестр_актов_xlsx {
   my $c = shift;
   my $month = $c->param('month');
   my $data = $c->model->реестр_актов("месяц"=> $month, "счет или акт"=>'акт');
-  my @names = ('номер акта', 'дата акта', 'договор/номер','договор/дата начала', 'договор/дата завершения', 'контрагент/title', 'ИНН', 'сумма/num');
+  my @names = ('номер акта', 'дата акта', 'договор/номер','договор/дата начала', 'договор/дата завершения', 'контрагент/title', 'ИНН', 'объект', 'сумма/num');
   #~ $c->render(json=>[join("\t", @names), map(join("\t", @$_{@names}), @$data)]);
   my $filename=sprintf("static/tmp/%s-реестр-актов-%s.csv", $c->auth_user->{id}, $month);
   open(my $fh, ">:encoding(UTF-8)", $filename)

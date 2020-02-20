@@ -329,6 +329,7 @@ select
   coalesce(/*num2.ts*/date_trunc('month', num2."месяц")+interval '1 month'-interval '1 day', /*now()*/null)::date as "дата акта",--- на последнее число мес
   timestamp_to_json(coalesce(/*num2.ts*/(date_trunc('month', num2."месяц")+interval '1 month'-interval '1 day')::timestamp, now())) as "$дата акта",--- на последнее число мес
   
+  ob.name as "объект",
   row_to_json(d) as "$договор", 
   row_to_json(k) as "$контрагент",
   k.id as "контрагент/id",
@@ -376,10 +377,12 @@ from
     select 
       sum(dp."сумма") as "сумма",
       array_agg(row_to_json(dp) order by dp."order_by") as "@позиции",
+      array_agg(dp."объект/id" order by dp."order_by") as "@объекты/id",
       count(dp) as "всего позиций"
     from (
       select
         -1::numeric*dp."сумма" as "сумма",
+        dp."объект/id",
         not 929979=any(dp."категории") as "order_by",
         case when 929979=any(dp."категории")---ид категории
           then ('{"Обеспечительный платеж"}')::text[]
@@ -393,6 +396,8 @@ from
         ---and not coalesce(dd."оплата наличкой", false)
     ) dp
   ) dp on true
+  
+  join  "roles" ob on ob.id=dp."@объекты/id"[1]
   
   ---нумерация счетов (может быть отключена)
   left join (
