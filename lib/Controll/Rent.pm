@@ -36,7 +36,8 @@ sub объекты_ук {# для формы
 
 sub договоры_список {
   my $c = shift;
-  $c->render(json=>$c->model->список_договоров());
+  my $param = $c->req->json;
+  $c->render(json=>$c->model->список_договоров($param));
 }
 
 sub сохранить_объект {
@@ -126,13 +127,25 @@ sub сохранить_договор {
     $room->{uid} = $c->auth_user->{id}
       unless $room->{uid};
     
-    $c->model->сохранить_помещение_договора($room);# строка договора
+    my $r = eval {$c->model->сохранить_помещение_договора($room)};# строка договора
+    
+    $r = $@
+      and $c->log->error($r)
+      and return $c->render(json=>{error=>$r})
+      unless $r && ref $r;
+    
+    $r;
     
   } grep {$_->{'помещение/id'}} @{ $data->{'@помещения'} }];
   
   $data->{uid} = $c->auth_user->{id}
     unless $data->{id};
-  my $r = $c->model->сохранить_договор($data, $prev);
+  my $r = eval {$c->model->сохранить_договор($data, $prev)};
+  
+  $r = $@
+    and $c->log->error($r)
+    and return $c->render(json=>{error=>$r})
+    unless $r && ref $r;
   
   $tx_db->commit;
   $c->model_contragent->почистить_таблицу();# только после связей!{uid=>$c->auth_user->{id}}

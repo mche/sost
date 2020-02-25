@@ -46,6 +46,7 @@ ALTER TABLE "аренда/договоры" ADD COLUMN IF NOT EXISTS "предо
 ALTER TABLE "аренда/договоры" ADD COLUMN IF NOT EXISTS "дата договора" date;
 ALTER TABLE "аренда/договоры" ADD COLUMN IF NOT EXISTS "дата расторжения" date;
 ALTER TABLE "аренда/договоры" DROP COLUMN IF  EXISTS "оплата наличкой";
+---ALTER TABLE "аренда/договоры" ADD CONSTRAINT "аренда/договоры/дата2>дата1" check("дата2">="дата1");
 
 
 create table IF NOT EXISTS "аренда/договоры-помещения" (
@@ -67,28 +68,35 @@ ALTER TABLE "аренда/договоры-помещения" ADD COLUMN IF NOT
 ALTER TABLE "аренда/договоры-помещения" ADD COLUMN IF NOT EXISTS  "сумма нал" money;
 
 /***********************************/
+drop  table IF  EXISTS "аренда/расходы";
+
 create table IF NOT EXISTS "аренда/расходы" (---- кроме самой аренды
   id integer  NOT NULL DEFAULT nextval('{%= $sequence %}'::regclass) primary key,
   ts  timestamp without time zone NOT NULL DEFAULT now(),
   uid int, --- автор записи
   "дата" date not null,
-  "вид расхода" int not null,----> "аренда/расходы/виды"
+  "коммент" text
+/* связи:
+id1("аренда/договоры")->id2("аренда/расходы")
+id1("аренда/расходы")->id2("аренда/расходы/позиции")
+*/
+);
+
+create table IF NOT EXISTS "аренда/расходы/позиции" (---- кроме самой аренды
+  id integer  NOT NULL DEFAULT nextval('{%= $sequence %}'::regclass) primary key,
+  ts  timestamp without time zone NOT NULL DEFAULT now(),
+  uid int, --- автор записи
   "количество" numeric not null,
   "ед" text,
   "цена" money,
   "сумма" money,
   "коммент" text
 /* связи:
-id1("аренда/договоры")->id2("аренда/расходы")
+id1("номенклатура")->id2("аренда/расходы/позиции")
+id1("аренда/расходы")->id2("аренда/расходы/позиции")
 */
 );
-create table IF NOT EXISTS "аренда/расходы/виды" (
-  id integer  NOT NULL DEFAULT nextval('{%= $sequence %}'::regclass) primary key,
-  ts  timestamp without time zone NOT NULL DEFAULT now(),
-  uid int, --- автор записи
-  "наименование расхода" text not null
-);
-
+drop  table IF  EXISTS "аренда/расходы/виды";
 
 /*******************************************/
 CREATE SEQUENCE IF NOT EXISTS "счета";

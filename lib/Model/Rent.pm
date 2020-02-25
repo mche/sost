@@ -128,6 +128,7 @@ sub список_договоров {
   my ($self, $data)  =  @_;
   my ($where, @bind) = $self->SqlAb->where({
     $data->{id} ? (' d.id ' => $data->{id}) : (),
+    $data->{'договоры на дату'} ? (qq{ date_trunc('month', ?::date) } => { -between => \[qq{ date_trunc('month', d."дата1") and (date_trunc('month', coalesce(d."дата расторжения", d."дата2") + interval '1 month') - interval '1 day') }, , $data->{'договоры на дату'}] }) : (),
     });
   $self->dbh->selectall_arrayref($self->sth('договоры', where=>$where), {Slice=>{}}, @bind);
 }

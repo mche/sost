@@ -2,7 +2,7 @@ WITH param as (
   select *, to_char(d."дата", 'YYYY') as "год", date_trunc('month', d."дата") as "month"
   from (VALUES (1, 'январь'), (2, 'февраль'), (3, 'март'), (4, 'апрель'), (5, 'май'), (6, 'июнь'), (7, 'июль'), (8, 'август'), (9, 'сентябрь'), (10, 'октябрь'), (11, 'ноябрь'), (12, 'декабрь'))
     m(num, "месяц")
-  join (VALUES ('2020-01-10'::date)) d("дата") on m.num=date_part('month', d."дата")
+  join (VALUES ('2020-02-10'::date)) d("дата") on m.num=date_part('month', d."дата")
 )
 /*** ЭТО НЕ ПОШЛО, функция не возвращала вставленные строки, вынес вызов функции отдельно перед этим статементом
 num as (---нумерация счетов 
@@ -19,9 +19,11 @@ num as (---нумерация счетов
 select
   
   coalesce(num2."номер", '-')/*(random()*1000)::int*/ as "номер акта",
-  --timestamp_to_json(coalesce(num2.ts, now())) as "$дата акта",
+  coalesce(/*num2.ts*/date_trunc('month', num2."месяц")+interval '1 month'-interval '1 day', /*now()*/null)::date as "дата акта",--- на последнее число мес
+  -- timestamp_to_json(coalesce(/*num2.ts*/(date_trunc('month', num2."месяц")+interval '1 month'-interval '1 day')::timestamp, now())) as "$дата акта",--- на последнее число мес
   
   ---row_to_json(d) as "$договор", 
+  ---ob.name as "объект", ob.id as "объект/id",
   d."номер договора",
   coalesce(d."дата договора", d."дата1") as "дата договора",
   ---row_to_json(k) as "$контрагент",
@@ -52,10 +54,12 @@ from
     select 
       sum(dp."сумма") as "сумма",
       array_agg(row_to_json(dp) order by dp."order_by") as "@позиции",
+      array_agg(dp."объект/id" order by dp."order_by") as "@объекты/id",
       count(dp) as "всего позиций"
     from (
       select
         -1::numeric*dp."сумма" as "сумма",
+        dp."объект/id",
         not 929979=any(dp."категории") as "order_by",
         case when 929979=any(dp."категории")---ид категории
           then ('{"Обеспечительный платеж"}')::text[]
@@ -70,6 +74,8 @@ from
     ) dp
   ) dp on true
   
+  join  "roles" ob on ob.id=dp."@объекты/id"[1]
+  
   ---нумерация актов (может быть отключена)
   left join (
     select n.*, r.id1
@@ -79,7 +85,8 @@ from
   ) num2 on d.id=num2.id1 and num2."месяц"=param."month"
   
   ---left join num on d.id=num.id1
- ---WHERE ( not coalesce((coalesce(k."реквизиты",'{}'::jsonb)->'физ. лицо'), 'false')::boolean  )
+ WHERE ( not coalesce((coalesce(k."реквизиты",'{}'::jsonb)->'физ. лицо'), 'false')::boolean  )
+  and ob.id=120425---Стахан
 order by d."дата1" desc, d.id desc  
 
 --Statement name[Model::Rent]::[счета]" with ParamValues: 1='2020-1-10', 2='929979', 3='{"926762","924072","924036","923866","869610","923872","923821","923920","872490","868758","923846","726497","868739","924012","869534","926751","923853","923808","872546","872541","872536","872531","872495","872423","872402","872309","872301","872296","872291","872245","872229","872224","872215","872199","872178","869778","869771","869764","869622","869617","869601","869596","869591","869524","869513","869497","869448","869411","869404","869399","868777","868771","868753","868731","831198","831191","726521","726473","726457","725937","725888","725879","869519","923898","923908","917526","917511","922747"}'] at /home/guest/perl5/perlbrew/perls/perl-5.26.1/lib/site_perl/5.26.1/Mojo/Pg/Che.pm line 115.

@@ -13,9 +13,9 @@
 */
 var moduleName = "Аренда::Расходы::Таблица";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, [/* 'Аренда::Расходы::Форма',*/ 'Компонент::Выбор в списке', ]);
+var module = angular.module(moduleName, [ 'Аренда::Расходы::Форма', 'Компонент::Выбор в списке', ]);
 
-module.factory('$КомпонентАрендаРасходыТаблица', function($templateCache, $http, appRoutes,  /*$EventBus, Util, /*$КомпонентАрендаРасходыФорма,*/ $КомпонентВыборВСписке ) {// 
+module.factory('$КомпонентАрендаРасходыТаблица', function($templateCache, $http, appRoutes,  /*$EventBus, Util,*/ $КомпонентАрендаРасходыФорма, $КомпонентВыборВСписке ) {// 
 
 const props = {
   "param": {
@@ -59,7 +59,7 @@ LoadData(){
 
 
 New(){
-  this.newContract = {};
+  this.newForm = {};
 },
 
 
@@ -70,7 +70,7 @@ ParseNum(num){
 
 OnSave(data){ ///  из события сохранения формы
   var vm = this;
-  if (vm.newContract) vm.newContract = undefined;
+  if (vm.newForm) vm.newForm = undefined;
   if (data) {
     var f = vm.data.find(util.IsEqualId, data);
     if (data['удалить']) {
@@ -182,6 +182,7 @@ const  data = function(){
     "filteredData":[],
     "allChbs": false, /// крыжик выбора всех договоров
     "payMonth":  new Date().toISOString().replace(/T.+/, ''),
+    "newForm": undefined,
     };
   //);
 };///конец data
@@ -223,7 +224,7 @@ const $Конструктор = function (/*data, $c, $scope*/){
   let $this = this;
   //~ data = data || {};
   $Компонент.template = $templateCache.get('аренда/расходы/таблица');
-  //~ $Компонент.components['v-rent-credit-form'] =  new $КомпонентАрендаРасходыФорма();
+  $Компонент.components['v-form'] =  new $КомпонентАрендаРасходыФорма();
   $Компонент.components['v-select'] = new $КомпонентВыборВСписке();
 
   return $Компонент;

@@ -781,6 +781,7 @@ sub map_grep_mode {
         ['аренда-расходы.js' => grep !/^--/, qw(
         js/c/аренда/расходы/index.js
         js/c/аренда/расходы/расходы-таблица.js
+        js/c/аренда/расходы/расходы-форма.js
         ---js/c/contragent/data.js
         ---js/c/contragent/v-item.js
         js/util/IdMaker.js
@@ -791,6 +792,7 @@ sub map_grep_mode {
         )],
         ['аренда-расходы.html' => grep !/^--/, qw(
         js/c/аренда/расходы/расходы-таблица.html
+        js/c/аренда/расходы/расходы-форма.html
         ---js/c/contragent/v-item.html
         js/c/autocomplete/v-suggestions.html
         ---v-uploader.html

@@ -1,0 +1,215 @@
+@@@ аренда/расходы/форма
+
+<div v-if="ready" class="card z-depth-5 teal lighten-4 animated zoomIn fast">
+
+<div class="card-content">
+  <div class="row relative">
+    <a @click=" CancelBtn()" href="javascript:" class="btn-flat z-depth-1 white red-text lighten-2" style="position:absolute; right:0;">
+      <i class="material-icons">cancel</i><span>Отмена</span>
+    </a>
+    <h3 class="fw500">
+        <i v-show=" !form.id " class="material-icons ">folder_special</i>
+        <span v-show=" !form.id " >Новый счет</span>
+        
+        <i v-show=" form.id " class="material-icons ">edit</i>
+        <span v-show=" form.id " >Редактировать счет</span>
+        
+        <span v-show="form.id" class="grey-text fs8">#{{form.id}}</span>
+        
+      </h3>
+      <div class="divider teal darken-4" style="margin-bottom: 1rem;"></div>
+  
+  </div>
+  
+    
+  <div class="row">
+    <div class="col s4 ">
+      <h4 class="right-align relative">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#contragent"></use></svg>
+        <span>Арендатор и договор</span>
+        <sup v-show=" !Valid('контрагент') " class="chip red white-text" style="position: absolute; z-index: 1; top:0;padding:0.3rem;"></sup>
+      </h4>
+    </div>
+    <div class="col s8  row">
+      <!--div class="border fs8">{{ form['контрагент'] }}</div-->
+              <v-select :select=" {'id': form.$договор.id,} " :items=" contragentContracts " :param=" {placeholder: 'поиск арендатора'} " @on-select=" OnContragentSelect ">
+                <template v-slot:selected="{ selected }">
+                  <h5 v-if="selected" class="relative padd-0-05 lime-text text-darken-4 animated fadeIn ">
+                    <span><i class="material-icons fs8 padd-0">place</i></span>
+                    <span>{{ selected }}</span>
+                    <!--span class="nowrap chip padd-0-05"><span class="fs8 grey-text">№</span><span class="">{{ selected.$помещение['номер-название'] }}</span></span>
+                    <span class="nowrap chip padd-0-05"><span class="">{{ selected.$помещение['этаж'] }}</span><span class="fs8 grey-text">эт.</span></span>
+                    <span class="nowrap chip padd-0-05"><span class="">{{ ParseNum(selected.$помещение['площадь']).toLocaleString() }}</span><span class="fs8 grey-text">м<sup>2</sup></span></span--->
+                    <!--span class="grey-text fs7" style="position:absolute; right:0; bottom:0;">#{{ selected.id }}</span-->
+                  </h5>
+                  <h5 v-else class="grey-text">Выбрать арендатора</h5>
+                </template>
+                <template v-slot:listItem="{ listItem, selected }">
+                  <h6 class="padd-0-05 lime-text text-darken-4 relative"  :class="{'bold fs12': listItem === selected}"  style="">
+                    <span><i class="material-icons fs8 padd-0">place</i></span>
+                    <span >{{ listItem }}</span>
+                    <!--span class="nowrap chip padd-0-05"><span class="fs8 grey-text">№</span><span class="">{{ listItem.$помещение['номер-название'] }}</span></span>
+                    <span class="nowrap chip padd-0-05"><span class="">{{ listItem.$помещение['этаж'] }}</span><span class="fs8 grey-text">эт.</span></span>
+                    <span class="nowrap chip padd-0-05"><span class="">{{ ParseNum(listItem.$помещение['площадь']).toLocaleString() }}</span><span class="fs8 grey-text">м<sup>2</sup></span></span-->
+                    <span class="grey-text fs7" style="position:absolute; right:0; bottom:0;">#{{ listItem.id }}</span>
+                  </h6>
+                </template>
+              </v-select>
+    </div>
+  </div><!-- row -->
+
+  <div class="row" style="margin-bottom: 3rem;">
+    <div class="col s4 ">
+      <h4 class="right-align relative">
+        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32" class="teal-fill-darken-3" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#handshake"></use></svg>
+        <span>Договор</span>
+      </h4>
+    </div>
+    <div class="col s4 ">
+      <div  :key=" keys['дата'] "class="input-field">
+        <a v-show="form['дата']" @click=" ClearDate('дата') " href="javascript:" class="" style="position:absolute; top:0; right:0; z-index:1;"><i class="material-icons red-text">cancel</i></a>
+        <h5 class="nowrap" style="position:absolute; top:-1.2rem;">
+          <span>дата</span>
+          <!--sup v-show=" !Valid('номер') " class="chip red white-text" style="position: absolute; z-index: 1; top:0;padding:0.3rem;"></sup-->
+        </h5>
+        <input name="дата" type="text" class="datepicker"  :data-value=" form['дата'] " placeholder="дата счета">
+      </div>
+    </div>
+  </div><!-- row -->
+  
+
+  
+  
+    
+    <!--div class="row"><div class=" col s12 ">
+      <h4 class="fw500 helmet tab-shadow active z-depth-1  lime lighten-4">
+        <i class="material-icons">format_list_numbered</i>
+        <span>Позиции</span>
+        <sup class="chip ">{{ form['@позиции'].length-1 }}</sup>
+      </h4>
+    
+      <table class="z-depth-1 bordered ">
+        <tbody class="striped lime lighten-4">
+          <tr v-for="(room, idx) in form['@позиции']" :key=" room._id ">
+            <td class="right-align relative padd-05 vtop" style="width:1%;">
+              {{idx+1}}
+              <span v-if=" !!room.id " class="fs7 grey-text" style="position: absolute; z-index: 1; bottom:0; left:0;">#{{ room.id }}</span>
+              <span v-else class="orange-text" style="position: absolute; z-index: 1; bottom:0; left:0;">✱</span>
+              
+            </td>
+            <td class="relative padd-05 vtop">
+              
+              <v-select :select=" {'id': room.$помещение && room.$помещение.id, room: room} " :items=" rentRooms " :param=" {placeholder: 'поиск'} " @on-select=" OnRoomSelect ">
+                <template v-slot:selected="{ selected }">
+                  <h5 v-if="selected" class="relative padd-0-05 lime-text text-darken-4 animated fadeIn ">
+                    <span><i class="material-icons fs8 padd-0">place</i></span>
+                    <span>{{ selected.$объект['name'] }}</span>
+                    <span class="nowrap chip padd-0-05"><span class="fs8 grey-text">№</span><span class="">{{ selected.$помещение['номер-название'] }}</span></span>
+                    <span class="nowrap chip padd-0-05"><span class="">{{ selected.$помещение['этаж'] }}</span><span class="fs8 grey-text">эт.</span></span>
+                    <span class="nowrap chip padd-0-05"><span class="">{{ ParseNum(selected.$помещение['площадь']).toLocaleString() }}</span><span class="fs8 grey-text">м<sup>2</sup></span></span>
+                    <!--span class="grey-text fs7" style="position:absolute; right:0; bottom:0;">#{{ selected.id }}</span>
+                  </h5>
+                  <h5 v-else class="grey-text">Выбрать помещение</h5>
+                </template>
+                <template v-slot:listItem="{ listItem, selected }">
+                  <h6 class="padd-0-05 lime-text text-darken-4 relative"  :class="{'bold fs12': listItem === selected}"  style="">
+                    <span><i class="material-icons fs8 padd-0">place</i></span>
+                    <span >{{ listItem.$объект['name'] }}</span>
+                    <span class="nowrap chip padd-0-05"><span class="fs8 grey-text">№</span><span class="">{{ listItem.$помещение['номер-название'] }}</span></span>
+                    <span class="nowrap chip padd-0-05"><span class="">{{ listItem.$помещение['этаж'] }}</span><span class="fs8 grey-text">эт.</span></span>
+                    <span class="nowrap chip padd-0-05"><span class="">{{ ParseNum(listItem.$помещение['площадь']).toLocaleString() }}</span><span class="fs8 grey-text">м<sup>2</sup></span></span>
+                    <span class="grey-text fs7" style="position:absolute; right:0; bottom:0;">#{{ listItem.id }}</span>
+                  </h6>
+                </template>
+              </v-select>
+              
+              <span  v-show="room['помещение/id']" class="grey-text fs7 " style="position: absolute; right:0.5rem;">#{{ room['помещение/id']}}</span>
+              <span  v-show="!room['помещение/id'] " class="chip padd-0-05 red-text fs8 " style="position: absolute; right:0;">не выбрано</span>
+            </td>
+            <td class="padd-05" style="width:20%;">
+              <div class="input-field row" :class="{'chip lime lighten-3 z-depth-1': room['ставка|сумма'] == 'ставка'}">
+                <input type="text" v-model.trim="room['ставка']" placeholder="ставка за 1 м²/мес."  title="ставка за 1 м²/мес." @input=" InputMetr(room) " :disabled="!room['помещение/id']">
+                <!---div v-show="room['помещение/id'] && room['ставка']" class="right-align grey-text" title="сумма за месяц">{{ RoomSum(room).toLocaleString() }}  ₽</div>
+              </div>
+              
+              <div class="input-field row" :class="{'chip lime lighten-3 z-depth-1': room['ставка|сумма'] == 'сумма'}">
+                <p class="fs8 grey-text line-height-8"> или вся сумма за месяц</p>
+                <input type="text" v-model.trim="room['сумма']" placeholder="сумма за месяц"  title="сумма за месяц" @input=" InputSum(room)" :disabled="!room['помещение/id']">
+              </div>
+              
+              
+              <div class="input-field " :class="{'chip lime lighten-3  z-depth-1': room['сумма нал'] && room['сумма нал'].length}">
+                <p class="fs8 grey-text line-height-8"> и еще платит наличкой</p>
+                <input type="text" v-model.trim="room['сумма нал']" placeholder="доп. сумма нал."  title="доп. сумма нал." :disabled="!room['помещение/id']">
+              </div>
+            </td>
+            <td class="vtop" style="width:20%;">
+              <div class="card padd-0-05 grey-lighten-3">
+                <div class="input-field">
+                  <textarea v-model.trim="room['коммент']" class="materialize-textarea padd-0" style="min-height: 10rem; font-size:0.8rem;" placeholder="примечание"></textarea>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <!-- итогововая строка >
+          <tr>
+            <td></td>
+            <td class="right-align">
+              <h4 class="nowrap">Итого по договору <span class="bold">{{ TotalSqure.toLocaleString().replace(/([\.,]\d{2})\d+$/, '$1') }} м²</span></h4>
+            </td>
+            <td class="right-align">
+              <h4>
+                <span class="bold">{{ TotalSum.toLocaleString({"currency": 'RUB'}).replace(/[\.,]\d+$/, '') }}</span>
+                <span class="grey-text fs8"> ₽/мес.</span>
+              
+              </h4>
+            </td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div><!-- col >
+  </div><!-- row -->
+  
+   <!--div class="row">
+    <div class="col s12 ">
+      <h4 class="">
+        <i class="material-icons">storage</i>
+        <span>Файлы документов</span>
+        <!--sup class="chip ">{{ form._uploads.length }}</sup>
+      </h4>
+      <div v-if="form.id" class="card teal lighten-5">
+        <v-uploads :parent="form"></v-uploads>
+      </div>
+      <div v-else class="grey-text center">Можно загрузить после сохранения договора</div>
+    </div>
+   </div><!-- row -->
+  
+  <div class="row">
+    <div class="col s12 ">
+      <h4 class="">Примечание</h4>
+    </div>
+    <div class="col s12 ">
+      <div class="card padd-05 teal-000-lighten-5 input-field">
+        <textarea v-model.trim="form['коммент']" class="materialize-textarea padd-0 fs8" style="min-height: 4rem;"></textarea>
+      </div>
+    </div>
+  </div><!-- row -->
+  
+</div>
+
+<div class="card-action center grey lighten-2">
+  <v-progress-indeterminate v-show=" cancelerHttp " :color=" 'teal' " :message=" 'Сохраняется...' "></v-progress-indeterminate>
+      <div v-show="!cancelerHttp">
+        <a @click=" Save() " href="javascript:" :disabled="!Valid()" class="btn" >
+          <i class="material-icons">save</i>
+          <span>Сохранить</span>
+        </a>
+        <a @click=" CancelBtn() " href="javascript:" class="right btn-flat z-depth-1 red-text white">
+          <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
+          <span>Отмена</span>
+        </a>
+    </div>
+</div>
+
+</div>

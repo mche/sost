@@ -107,11 +107,22 @@ const FactoryUtil = function($timeout){
   };
    /********* end Util.Scroll2El ************/
   Util.paramFromLocation = function() {
-    var query = decodeURI(location.search.substr(1));
+    //~ var query = decodeURI(location.search.substr(1));
+    var params = new URL(window.location.href).searchParams;
     var result = {};
-    query.split("&").forEach(function(part) {
-      var item = part.split("=");
-      var val = decodeURIComponent(item[1]);
+    //~ query.split("&").forEach(function(part) {
+      //~ var item = part.split("=");
+      //~ var val = decodeURIComponent(item[1]);
+      //~ var key = item[0];
+      //~ if (!result[key]) result[key] = [];
+      //~ if(/^(undef|undefined)$/.test(val)) result[key].push(undefined);
+      //~ else if(/^null$/.test(val)) result[key].push(null);
+      //~ else if(/^true$/.test(val)) result[key].push(true);
+      //~ else if(/^false$/.test(val)) result[key].push(false);
+      //~ else result[key].push(val);
+    //~ });
+    for (const item of params) {
+      var val = /*decodeURIComponent(*/item[1]/*)*/;
       var key = item[0];
       if (!result[key]) result[key] = [];
       if(/^(undef|undefined)$/.test(val)) result[key].push(undefined);
@@ -119,7 +130,7 @@ const FactoryUtil = function($timeout){
       else if(/^true$/.test(val)) result[key].push(true);
       else if(/^false$/.test(val)) result[key].push(false);
       else result[key].push(val);
-    });
+    }
     return result;
   };
    /********* end Util.paramFromLocation ************/
