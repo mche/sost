@@ -13,7 +13,7 @@
 */
 var moduleName = "Аренда::Расходы::Форма";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, [ 'EventBus',/* 'Компонент::Поиск в списке',*/ 'Компонент::Выбор в списке',  'Uploader::Файлы', /*'Uploader'*/]);
+var module = angular.module(moduleName, [ 'EventBus',/* 'Компонент::Поиск в списке',*/ 'Компонент::Выбор в списке', /* 'Uploader::Файлы',*/ ]);
 
 module
 .factory('$КомпонентАрендаРасходыФорма', function($templateCache, $http, $timeout, appRoutes, $EventBus, /*$КомпонентПоискВСписке,*/ $КомпонентВыборВСписке, Util/*$КомпонентФайлы */) {// factory
@@ -83,10 +83,11 @@ InitDatepicker(el){
 
 ContragentContractData(){
   var vm = this;
-  return $http.get(appRoutes.urlFor('аренда/договоры/список'), {"договоры на дату": vm.form['дата'],}).then(function(rest){
+  return $http.get(appRoutes.urlFor('аренда/договоры/список'), {"договоры на дату": vm.form['дата'],}).then(function(resp){
     vm.contragentContracts = resp.data.map(function(item){
       item._match = `${ item['$контрагент']['title']  } ${ item['дата1'] } ${ item['дата2'] } ${ item['номер'] }`.toLowerCase();
      /// , /*"адрес": item['адрес'],*/ "$помещение": room, "$объект": item['$объект'],});
+      return item;
     });
   });
 },
@@ -131,6 +132,7 @@ Save(){
 
 Valid(name){
   var vm = this;
+  return false;
   if (name == 'контрагент') return !!(vm.form['контрагент'].id || vm.form['контрагент'].title);
   else if (name) return !!vm.form[name];
   
@@ -251,8 +253,7 @@ const mounted = function(){
 
   var vm = this;
   vm.ContragentContractData().then(function(){
-        vm.Ready();
-    });
+    vm.Ready();
   });
 };/// конец mounted
 
