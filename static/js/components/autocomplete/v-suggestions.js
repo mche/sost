@@ -45,6 +45,9 @@ const defaultParam = {
 };
 
 const  props =  {
+  "item":{
+    "type": Object,
+  },
   "items": {
     type: Array,
     //~ default: []
@@ -149,6 +152,7 @@ onBlur(){
 
 onFocus(){
   var vm = this;
+  if (vm.inputQuery.length) vm.QueryItems(true);
   //~ vm.showItems = true;
   //~ vm.$emit('focus',vm);
 },
@@ -160,8 +164,10 @@ onPaste(event){
 
 onInputDblClick(e){
   var vm = this;
-  if (vm.inputQuery.length) vm.SetItems(vm.onInputChange(vm.inputQuery, vm));
-  else vm.SetItems(vm.onInputChange(null, vm));
+   if (vm.inputQuery.length) vm.QueryItems(true);
+  else vm.ToggleAll();
+  //~ if (vm.inputQuery.length) vm.SetItems(vm.onInputChange(vm.inputQuery, vm));
+  //~ else vm.SetItems(vm.onInputChange(null, vm));
   
 },
 
@@ -174,8 +180,8 @@ Select(index){ /// уст/сброс позиции
   var item = vm.queryItems[idx];
   //~ var item = vm.pageItems[idx];
   if (!item)  return;
-  if (vm.onItemSelect) 
-  var value = vm.onItemSelect ? vm.onItemSelect(item, idx, vm) : item;
+  //~ if (vm.onItemSelect) 
+  var value = vm.onItemSelect ? vm.onItemSelect(item, idx, vm.item, vm) : item;
     //~ vm.SetInputQuery(item);
   //~ } else {
     //~ vm.onItemSelectedDefault(item);
@@ -232,19 +238,19 @@ SetItems(items){
 },
 
 
-QueryItems() {
+QueryItems(show) {
   var vm = this;
   //~ if (value === undefined) value = vm.inputQuery;
-  if (vm.inputQuery == vm.lastQuery) return;
+  if (!show && vm.inputQuery == vm.lastQuery) return;
   vm.lastQuery = vm.inputQuery;
-  if (!vm.items) vm.SetItems(vm.onInputChange(vm.inputQuery, vm));
+  if (!vm.items) vm.SetItems(vm.onInputChange(vm.inputQuery, vm.item, vm));
   else vm.SetItems(vm._QueryItems());/// поиск по _match
 
 },
 
 _QueryItems() {
   var vm = this;
-  var query = vm.onInputChange(vm.inputQuery, vm);
+  var query = vm.onInputChange(vm.inputQuery, vm.item, vm);
   query = query || util.CleanString(vm.inputQuery);///query.replace(util.re.trash, '');
   if (query.length) return vm.items.filter(util.FilterQuery, {"re": new RegExp(query, 'i')});
   else return [];//vm.items; отличие от v-select когда при пустом вводе все равно отображается список
@@ -252,7 +258,7 @@ _QueryItems() {
 
 FilterItems(it){
   var vm = this;
-  var reStr = vm.inputQuery.replace(util.REtrash, '');
+  //~ var reStr = vm.inputQuery.replace(util.REtrash, '');
   //~ if (!reStr.length) return false;
   //~ var re = new RegExp(reStr, 'i');
   //~ return re.test(it._match);
@@ -271,7 +277,7 @@ ClearInput(){
   vm.inputQuery = '';
   //~ vm.$emit('input', vm);
   //~ vm.QueryItems('');
-  vm.onInputChange('', vm);
+  vm.onInputChange(null, vm.item, vm);
   vm.SetItems([]).HideItems();
 },
 
@@ -323,7 +329,7 @@ AllLen(){
   return (this.items && this.items.length) || this.allLen;
 },
   
-queryItemsLen(){
+QueryItemsLen(){
   return this.queryItems.length;
 },
 

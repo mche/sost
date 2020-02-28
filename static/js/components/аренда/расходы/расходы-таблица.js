@@ -21,7 +21,7 @@ const props = {
   "param": {
     type: Object,
     default: function () {
-      return {};
+      return {"foo":'bar'};
     },
   },
   
@@ -49,9 +49,11 @@ Ready(){/// метод
 
 LoadData(){
   var vm = this;
-  
-  return $http.post(appRoutes.urlFor('аренда/расходы/список'), {"месяц": vm.payMonth,})
+  vm.data = [];
+  vm.loading = true;
+  return $http.post(appRoutes.urlFor('аренда/расходы/список'), /*{"месяц": vm.payMonth,}*/ vm.param)
     .then(function(resp){
+      vm.loading = false;
       vm.data.push(...resp.data);
       return vm.data;
     });
@@ -141,6 +143,7 @@ OnChangeFilter(event){
 
 FilterData(){
   var vm = this;
+  vm.filteredData = [...vm.data];
 
   return vm;
 },
@@ -178,10 +181,11 @@ const  data = function(){
     //data,// dst
     //{/// src
     "ready": false,
+    "loading": false,
     //~ "data": [],
     "filteredData":[],
     "allChbs": false, /// крыжик выбора всех договоров
-    "payMonth":  new Date().toISOString().replace(/T.+/, ''),
+    //~ "payMonth":  vm.param['месяц'] || new Date().toISOString().replace(/T.+/, ''),
     "newForm": undefined,
     };
   //);
@@ -200,9 +204,15 @@ const mounted = function(){
         format: 'mmmm yyyy',
         monthOnly: 'OK',// кнопка
         selectYears: true,
-        onSet: function (context) {
+        onClose: function (context) {
           var s = this.component.item.select;
-          vm.$set(vm, "payMonth" , [s.year, s.month+1, s.date].join('-'));
+          //~ vm.$set(vm, "payMonth" , [s.year, s.month+1, s.date].join('-'));
+          var date = new Date([s.year, s.month+1, s.date].join('-')).toISOString().replace(/T.+/, '');
+          if ( vm.param['месяц'] == date ) return;
+          vm.param['месяц'] = date;
+          //~ vm.ready = false;
+          //~ vm.Ready();
+          vm.LoadData();
         },
       });//{closeOnSelect: true,}
     });

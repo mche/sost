@@ -143,7 +143,8 @@ from
     from  refs r
       join "контрагенты" k on k.id=r.id2
   ) k on p.id=k.id1
-
+%#{%= $where || '' %}
+where not coalesce(p."disable", false)
 order by name
 ;
 

@@ -6,7 +6,7 @@ has model => sub { $_[0]->app->models->{'Project'}->uid($_[0]->auth_user && $_[0
 
 sub list {
   my $c = shift;
-  
+  my $data =  $c->req->json;
   return $c->render(json=>$c->model->список());
   
   

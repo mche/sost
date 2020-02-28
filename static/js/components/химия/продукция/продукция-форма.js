@@ -89,7 +89,7 @@ const methods = {
     
   },
   
-OnProdInputChange(query, vmSuggest){///из v-suggest
+OnProdInputChange(query){///из v-suggest propItem, vmSuggest
   var vm = this;
   if (query === null) return; ///vm.MapSuggest(vm.autocomplete);
   if (vm.form['номенклатура'].id && vm.form['номенклатура'].title != query) vm.form['номенклатура'].id = undefined;
@@ -98,7 +98,7 @@ OnProdInputChange(query, vmSuggest){///из v-suggest
   //~ return util.CleanString(query); /// обязательно очищеннный запрос-строка
 },
 
-OnProdSelect(item, idx, vmSuggest){
+OnProdSelect(item, idx){/// propItem, vmSuggest
   var vm = this;
   //~ var item = vm.lastItems[idx];
   //~ console.log("onSuggestSelect", item, vmSuggest.options);

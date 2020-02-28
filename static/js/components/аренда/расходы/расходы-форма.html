@@ -1,6 +1,11 @@
 @@@ аренда/расходы/форма
 
+<div><!-- обязательно один корень Vue -->
+<v-progress-indeterminate v-show=" !ready " :color=" 'teal' " :message=" 'Загружается...' "></v-progress-indeterminate>
+
 <div v-if="ready" class="card z-depth-5 teal lighten-4 animated zoomIn fast">
+
+<div>{{ param }}</div>
 
 <div class="card-content">
   <div class="row relative">
@@ -28,7 +33,7 @@
         <span>Дата счета</span>
       </h4>
     </div>
-    <div class="col s4 ">
+    <div class="col s4 m2 ">
       <div  key-000=" keys['дата'] "class="input-field">
         <!--a v-show="form['дата']" @click=" ClearDate('дата') " href="javascript:" class="" style="position:absolute; top:0; right:0; z-index:1;"><i class="material-icons red-text">cancel</i></a-->
         <!--h5 class="nowrap" style="position:absolute; top:-1.2rem;">
@@ -44,36 +49,43 @@
       <h4 class="right-align relative">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#contragent"></use></svg>
         <span>Арендатор и договор</span>
-        <sup v-show=" !Valid('контрагент') " class="chip red white-text" style="position: absolute; z-index: 1; top:0;padding:0.3rem;"></sup>
+        <sup v-show=" !Valid('договор/id') " class="chip red white-text" style="position: absolute; z-index: 1; top:0;padding:0.3rem;"></sup>
       </h4>
     </div>
     <div class="col s10  row">
       <!--div class="border fs8">{{ form['контрагент'] }}</div-->
-              <v-select :select=" {'id': undefined,} " :items=" contragentContracts " :param=" {placeholder: 'поиск арендатора'} " @on-select=" OnContragentSelect ">
+              <v-select :select=" {'id': form['договор/id'],} " :items=" contragentContracts " :param=" {placeholder: 'поиск арендатора', ulDropDownClass: ['blue lighten-4']} " @on-select=" OnContragentSelect ">
                 <template v-slot:selected="{ selected }">
-                  <h4 v-if="selected" class="nowrap relative padd-0-05 blue-text text-darken-4 animated fadeIn ">
+                  <h4 v-if="selected" class="relative padd-0-05 blue-text text-darken-4 animated fadeIn ">
                     
                     <span class="chip padd-0-05">{{ selected.$контрагент.title }}</span>
                     <span class="chip padd-0-05" title="объект и помещения">
                       <span><i class="material-icons ">place</i></span>
                       <span>{{ selected['@помещения'] && selected['@помещения'][0] && selected['@помещения'][0].$объект.name  }}</span>
-                      <span v-for="room in selected['@помещения']" :key="room.id" class="fs10 padd-0-05">#{{ room.$помещение['номер-название'] }}</span>
+                      <span class="fs10 padd-0-05">
+                        <span>к./оф.: </span>
+                        <span v-for="room in selected['@помещения']" :key="room.id"> {{ room.$помещение['номер-название'] }},</span>
+                      </span>
                     </span>
                     <span class="chip padd-0-05" title="номер договора">
-                      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32" class="blue-fill-darken-3" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#handshake"></use></svg>
+                      <!--svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32" class="blue-fill-darken-3" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#handshake"></use></svg-->
                       дог. № {{ selected['номер'].replace('№', '') }} от {{ selected['дата договора'] || selected['дата1'] }}
                     </span>
                     <!--span class="grey-text fs7" style="position:absolute; right:0; bottom:0;">#{{ selected.id }}</span-->
                   </h4>
                   <h5 v-else class="grey-text">Выбрать арендатора</h5>
                 </template>
+                
                 <template v-slot:listItem="{ listItem, selected }">
-                  <h6 class="padd-0-05 blue-text text-darken-4 relative"  :class="{'bold fs12': listItem === selected}"  style="">
+                  <h6 class="padd-0-05 blue-text text-darken-4 relative hover-shadow3d"  :class="{'bold fs12': listItem === selected, 'nowrap': listItem !== selected}"  style="">
                     <span class="chip padd-0-05">{{ listItem.$контрагент.title }}</span>
                     <span class="chip padd-0-05" title="объект и помещения">
                       <span><i class="material-icons">place</i></span>
                       <span>{{ listItem['@помещения'] && listItem['@помещения'][0] && listItem['@помещения'][0].$объект.name  }}</span>
-                      <span v-for="room in listItem['@помещения']" :key="room.id" class="fs10 padd-0-05">#{{ room.$помещение['номер-название'] }}</span>
+                      <span class="fs10 padd-0-05">
+                        <span>к./оф.: </span>
+                        <span v-for="room in listItem['@помещения']" :key="room.id"> {{ room.$помещение['номер-название'] }},</span>
+                      </span>
                     </span>
                     <span class="chip padd-0-05" title="номер договора">дог. № {{ listItem['номер'].replace('№', '') }} от {{ listItem['дата договора'] || listItem['дата1'] }}</span>
                     <!--span class="grey-text fs7" style="position:absolute; right:0; bottom:0;">#{{ selected.id }}</span-->
@@ -97,35 +109,42 @@
             <td class="right-align relative padd-05 vtop" style="width:1%;">
               {{idx+1}}
               <span v-if=" !!pos.id " class="fs7 grey-text" style="position: absolute; z-index: 1; bottom:0; left:0;">#{{ pos.id }}</span>
-              <span v-else class="orange-text" style="position: absolute; z-index: 1; bottom:0; left:0;">✱</span>
+              <span v-else class="" :class="[ ValidPos(pos) ? 'lime-text-darken-4' : 'red-text-darken-3' ,]" style="position: absolute; z-index: 1; bottom:0; left:0;">✱</span>
               
             </td>
             <td class="relative padd-05 vtop">
-              Номенклатура
-              <!--span  v-show="pos['помещение/id']" class="grey-text fs7 " style="position: absolute; right:0.5rem;">#{{ pos['помещение/id']}}</span>
-              <span  v-show="!pos['помещение/id'] " class="chip padd-0-05 red-text fs8 " style="position: absolute; right:0;">не выбрано</span-->
+              <!-- Номенклатура-->
+              <v-suggest v-model.trim="pos['$номенклатура'].title" :item="pos" :items=" nomenData " :param="{placeholder: 'выбрать наименование или ввести новое',}" :onInputChange="OnNomenInput" :onItemSelect="OnNomenSelect">
+                <template v-slot:item="{ item, idx }">
+                  <h5 class="relative hover-shadow3d"  :class="{'bold fs12': item.title == form.title}"  style="">
+                    <span>{{  item.title }}</span>
+                  </h5>
+                </template>
+              </v-suggest>
+              <span  v-show="!pos['$номенклатура'].id && pos['$номенклатура'].title.length > 0" class="chip red-text text-darken-3 fs8"  style="position: absolute;">* новое наименование *</span>
+              <span  v-show="pos['$номенклатура'].id" class="grey-text fs7 " style="position: absolute; right:0.5rem;">#{{ pos['$номенклатура'].id }}</span>
             </td>
             <td class="padd-05" style="width:7rem;">
               <div class="input-field row" :class="{}">
-                <input type="text" v-model.trim="pos['количество']" placeholder="количество"  title="количество" :disabled="!pos['помещение/id']">
+                <input type="text" v-model.trim="pos['количество']"  @input="PosSum(pos)"placeholder="количество" class="right-align" title="количество" :disabled="!pos['$номенклатура'].title.length">
               </div>
             </td>
             
-            <td class="padd-05" style="width:4rem;">
+            <td class="padd-05" style="width:5rem;">
               <div class="input-field row" :class="{}">
-                <input type="text" v-model.trim="pos['ед']" placeholder="единиц"  title="единиц" :disabled="!pos['помещение/id']">
-              </div>
-            </td>
-            
-            <td class="padd-05" style="width:7rem;">
-              <div class="input-field row" :class="{}">
-                <input type="text" v-model.trim="pos['цена']" placeholder="цена"  title="цена" :disabled="!pos['помещение/id']">
+                <input type="text" v-model.trim="pos['ед']" placeholder="ед. изм."  title="единицы измерения" :disabled="!pos['$номенклатура'].title.length">
               </div>
             </td>
             
             <td class="padd-05" style="width:7rem;">
               <div class="input-field row" :class="{}">
-                <input type="text" v-model.trim="pos['сумма']" placeholder="сумма"  title="сумма" :disabled="!0">
+                <input type="text" v-model.trim="pos['цена']" @input="PosSum(pos)" class="right-align"  placeholder="цена, ₽"  title="цена, ₽" :disabled="!pos['$номенклатура'].title.length">
+              </div>
+            </td>
+            
+            <td class="padd-05" style="width:7rem;">
+              <div class="input-field row" :class="{}">
+                <input type="text" v-model.trim=" pos['сумма2'] " class="right-align" placeholder="сумма, ₽"  title="сумма, ₽" :disabled="!0">
               </div>
             </td>
             
@@ -137,21 +156,18 @@
               </div>
             </td>
           </tr>
-          <!-- итогововая строка --->
-          <!--tr>
-            <td></td>
-            <td class="right-align">
-              <h4 class="nowrap">Итого по договору <span class="bold">{{ TotalSqure.toLocaleString().replace(/([\.,]\d{2})\d+$/, '$1') }} м²</span></h4>
-            </td>
+          <!-- итогововая строка .replace(/[\.,]\d+$/, '')--->
+          <tr>
+            <td colspan=5></td>
             <td class="right-align">
               <h4>
-                <span class="bold">{{ TotalSum.toLocaleString({"currency": 'RUB'}).replace(/[\.,]\d+$/, '') }}</span>
-                <span class="grey-text fs8"> ₽/мес.</span>
+                <span class="bold">{{ TotalSum.toLocaleString({"currency": 'RUB'}) }}</span>
+                <span class=""> ₽</span>
               
               </h4>
             </td>
             <td></td>
-          </tr-->
+          </tr>
         </tbody>
       </table>
     </div><!-- col -->
@@ -176,13 +192,15 @@
       <h4 class="">Примечание</h4>
     </div>
     <div class="col s12 ">
-      <div class="card padd-05 teal-000-lighten-5 input-field">
+      <div class="card padd-05 grey-lighten-3 input-field">
         <textarea v-model.trim="form['коммент']" class="materialize-textarea padd-0 fs8" style="min-height: 4rem;"></textarea>
       </div>
     </div>
   </div><!-- row -->
   
-</div>
+</div><!-- card-content -->
+
+<div class="pre-wrap">{{ form }}</div>
 
 <div class="card-action center grey lighten-2">
   <v-progress-indeterminate v-show=" cancelerHttp " :color=" 'teal' " :message=" 'Сохраняется...' "></v-progress-indeterminate>
@@ -196,6 +214,8 @@
           <span>Отмена</span>
         </a>
     </div>
+</div>
+
 </div>
 
 </div>

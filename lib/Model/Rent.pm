@@ -6,7 +6,7 @@ our $DATA = ['Rent.pm.dict.sql'];
 
 #~ has model_obj => sub {shift->app->models->{'Object'}};
 #~ has model_transport => sub {shift->app->models->{'Transport'}};
-#~ has model_nomen => sub {shift->app->models->{'Nomen'}};
+has model_nomen => sub {shift->app->models->{'Nomen'}};
 
 sub init {
   #~ state $self = shift->SUPER::new(@_);
@@ -27,7 +27,8 @@ sub объекты_ук {
 }
 
 sub список_объектов {
-  my ($self, $data)  =  @_;
+  my $self  =  shift;
+  my $data= ref $_[0] ? shift : {@_};
   my ($where, @bind) = $self->SqlAb->where({
     $data->{id} ? (' o.id ' => $data->{id}) : (),
     });
@@ -37,7 +38,7 @@ sub список_объектов {
 sub сохранить_объект {
   my ($self, $data, $prev,)  =  @_;
   
-  $prev ||= $self->список_объектов({id=>$data->{id}})->[0]
+  $prev ||= $self->список_объектов( id=>$data->{id} )->[0]
     if $data->{id};
   
   $data->{'адрес'} = $data->{'$объект'}{name}
@@ -64,7 +65,7 @@ sub сохранить_объект {
   } @{ $prev->{'@кабинеты/id'}}
     if $prev;
   
-  $self->список_объектов({id=>$r->{id}})->[0];
+  $self->список_объектов( id=>$r->{id} )->[0];
   
 }
 
@@ -98,7 +99,7 @@ sub помещения_договора {
 sub сохранить_договор {
   my ($self, $data, $prev)  =  @_;
   
-  $prev ||= $self->список_договоров({id=>$data->{id}})->[0]
+  $prev ||= $self->список_договоров( id=>$data->{id} )->[0]
     if $data->{id};
   
   #~ $self->app->log->error($self->app->dumper($data->{'@помещения'}, $prev && $prev->{'@договоры/помещения/id'}));
@@ -120,22 +121,23 @@ sub сохранить_договор {
   $self->связь_удалить(id1=>$prev->{'контрагент/id'}, id2=>$r->{id})
     if $prev && $prev->{'контрагент/id'} ne $data->{'контрагент/id'};
   
-  return $self->список_договоров({id=>$r->{id}})->[0];
+  return $self->список_договоров( id=>$r->{id} )->[0];
   
 }
 
 sub список_договоров {
-  my ($self, $data)  =  @_;
+  my $self  =  shift;
+  my $data= ref $_[0] ? shift : {@_};
   my ($where, @bind) = $self->SqlAb->where({
     $data->{id} ? (' d.id ' => $data->{id}) : (),
     $data->{'договоры на дату'} ? (qq{ date_trunc('month', ?::date) } => { -between => \[qq{ date_trunc('month', d."дата1") and (date_trunc('month', coalesce(d."дата расторжения", d."дата2") + interval '1 month') - interval '1 day') }, , $data->{'договоры на дату'}] }) : (),
     });
-  $self->dbh->selectall_arrayref($self->sth('договоры', where=>$where), {Slice=>{}}, @bind);
+  $self->dbh->selectall_arrayref($self->sth('договоры', where=>$where, $data->{order_by} ? (order_by=>$data->{order_by}) : ()), {Slice=>{}}, @bind);
 }
 
 sub удалить_объект {
   my ($self, $data,)  =  @_;
-  my $r = $self->список_объектов({id=>$data->{id}})->[0];
+  my $r = $self->список_объектов( id=>$data->{id} )->[0];
   map {
     my ($where, @bind) = $self->SqlAb->where({
       ' p.id ' => $_,
@@ -150,7 +152,8 @@ sub удалить_объект {
 }
 
 sub счет_оплата_docx {# и акты
-  my ($self, $param,)  =  @_;
+  my $self  =  shift;
+  my $param = ref $_[0] ? shift : {@_};
   
   # пришлось вынести вызов нумерации отдельно, функции чет косячно не возвращает строки
   $self->dbh->do(qq|select "номера счетов/аренда помещений"(?::date, ?::int[], ?::int)|, undef, $param->{'месяц'}, $param->{"договоры"}, $param->{uid})
@@ -195,5 +198,89 @@ sub реестр_актов {
   $self->dbh->selectall_arrayref($self->sth('счета и акты', where=>$where), {Slice=>{}}, @bind);
 }
 
+sub расходы_номенклатура {
+  my $self  =  shift;
+  my $param = ref $_[0] ? shift : {@_};
+  #~ $self->model_nomen->список_без_потомков(501876);
+  my ($where, @bind) = $self->SqlAb->where({
+    ' n."parents_id"[1] ' => 501876,
+    #~ '  c.childs ' => undef #  is null
+  });
+  
+  $self->dbh->selectall_arrayref($self->sth('номенклатура', select=>$param->{select} || '*', where=>$where, order_by=>' order by "parents_title" || title '), {Slice=>{}}, @bind);
+}
+
+sub сохранить_номенклатуру {
+  my $self  =  shift;
+  my $data = ref $_[0] ? shift : {@_};
+  #~ $self->app->log->error($self->app->dumper($data));
+  $data->{newItems} = [$data]
+    unless $data->{id};
+  $data->{parent} = 501876;
+  $self->model_nomen->сохранить_номенклатуру($data);
+}
+
+sub сохранить_позицию_расхода {
+  my ($self, $data, $prev)  =  @_;
+  $prev ||= $self->позиции_расхода(id=>$data->{id})->[0]
+    if $data->{id};
+  my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, 'аренда/расходы/позиции', ["id"], $data);
+  $self->связь($data->{'номенклатура/id'}, $r->{id});
+  $self->связь_удалить(id1=>$prev->{'номенклатура/id'}, id2=>$r->{id})
+    if $prev && $prev->{'номенклатура/id'} ne $data->{'номенклатура/id'};
+  return $r;
+}
+
+sub позиции_расхода {
+  my $self  =  shift;
+  my $data = ref $_[0] ? shift : {@_};
+  my ($where, @bind) = $self->SqlAb->where({
+    $data->{id} ? (' pos.id ' => $data->{id}) : (),
+    });
+  $self->dbh->selectall_arrayref($self->sth('расходы/позиции', where=>$where), {Slice=>{}}, @bind);
+
+}
+
+sub сохранить_расход {
+  my ($self, $data, $prev)  =  @_;
+  
+  $prev ||= $self->список_расходов( id=>$data->{id} )->[0]
+    if $data->{id};
+  
+  #~ $self->app->log->error($self->app->dumper($data->{'@помещения'}, $prev && $prev->{'@договоры/помещения/id'}));
+  
+  my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, 'аренда/расходы', ["id"], $data);
+  my %refs = ();
+  map {
+    my $rr  = $self->связь($r->{id}, $_->{id});
+    $refs{"$rr->{id1}:$rr->{id2}"}++;
+  } @{ $data->{'@позиции'} };
+  
+  map {
+    $self->_удалить_строку('аренда/расходы/позиции', $_)
+      unless $refs{"$r->{id}:$_"};
+  } @{$prev->{'@позиции/id'}}
+    if $prev;
+  
+  my $rk = $self->связь($data->{'договор/id'}, $r->{id});
+  
+  $self->связь_удалить(id1=>$prev->{'договор/id'}, id2=>$r->{id})
+    if $prev && $prev->{'договор/id'} ne $data->{'договор/id'};
+  
+  #~ $self->app->log->error('сохранить_расход', $self->app->dumper($r));
+  
+  return $self->список_расходов( id=>$r->{id} )->[0];
+}
+
+sub список_расходов {
+  my $self  =  shift;
+  my $data= ref $_[0] ? shift : {@_};
+  my ($where, @bind) = $self->SqlAb->where({
+    $data->{id} ? (' r.id ' => $data->{id}) : (),
+    $data->{'месяц'} ? (qq{ date_trunc('month', r."дата") } => \[qq{ = date_trunc('month', ?::date) }, $data->{'месяц'}] ) : (),
+    });
+  $self->dbh->selectall_arrayref($self->sth('расходы', where=>$where, $data->{order_by} ? (order_by=>$data->{order_by}) : ()), {Slice=>{}}, @bind);
+  
+}
 
 1;

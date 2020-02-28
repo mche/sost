@@ -780,6 +780,7 @@ sub map_grep_mode {
         
         ['аренда-расходы.js' => grep !/^--/, qw(
         js/c/аренда/расходы/index.js
+        js/c/project/list.js
         js/c/аренда/расходы/расходы-таблица.js
         js/c/аренда/расходы/расходы-форма.js
         ---js/c/contragent/data.js
@@ -791,6 +792,7 @@ sub map_grep_mode {
         js/c/autocomplete/v-select.js
         )],
         ['аренда-расходы.html' => grep !/^--/, qw(
+        js/c/project/list.html
         js/c/аренда/расходы/расходы-таблица.html
         js/c/аренда/расходы/расходы-форма.html
         ---js/c/contragent/v-item.html

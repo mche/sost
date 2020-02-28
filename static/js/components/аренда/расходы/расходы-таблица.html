@@ -1,24 +1,31 @@
 @@@ аренда/расходы/таблица
 
 <div><!-- обязательно один корень Vue -->
-<v-progress-indeterminate v-show=" !ready " :color=" 'teal' " :message=" 'Загружается...' "></v-progress-indeterminate>
+<v-progress-indeterminate v-show=" !ready || loading " :color=" 'teal' " :message=" 'Загружается...' "></v-progress-indeterminate>
 
 <div v-if=" ready " class="">
   <div>
     <h3 class="iblock middle">Месяц</h3>
     <div class="input-field chip padd-05">
-      <input name="месяц" type="text" class="datepicker pay-month fs18 fw500" style="" :data-value=" payMonth ">
+      <input name="месяц" type="text" class="datepicker pay-month fs18 fw500" style="" :data-value=" param['месяц'] ">
     </div>
   </div>
+  
+  <div>{{ param }}</div>
    
   <div><!--  новая форма --->
     <div style="position: absolute; top:0.3rem; right:1rem;">
       <a v-show=" !newForm " @click=" New " href="javascript:" class="btn-flat z-depth-1 green lighten-4 green-text text-darken-4"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="green-fill fill-darken-4" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#form-add" /></svg> Новый счет</a>
     </div>
     <div v-if=" newForm " style="margin-bottom:3rem;">
-      <v-form :item=" newForm " @on-save=" OnSave "></v-form>
+      <v-form :item=" newForm " :param=" param " @on-save=" OnSave "></v-form>
     </div>
   </div>
+   
+   <div v-for="row in filteredData" :key="row.id" style="display:flex;">
+    <div style="width:25%;">{{ row.$контрагент }}</div>
+    <div style="width:75%;">{{ row['@позиции'] }}</div>
+   </div>
    
 </div>
 

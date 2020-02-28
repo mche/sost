@@ -1,10 +1,12 @@
 % layout 'main';
 
 
-<div ng-app="Аренда::Расходы"  ng-controller="Controll as ctrl" class="row relative">
+<div ng-app="Аренда::Расходы"  ng-controller="Controll as ctrl" class="row">
 
-  <div id="тут компонент расходы таблица"></div>
-    <!--v-right-contract-table :param=" param "></v-right-contract-table-->
+  <project-list ng-if="ctrl.ready" data-param="param" data-on-select-project="ctrl.SelectProject(p)"></project-list>
+
+  <div ng-if="ctrl.ready && ctrl.param['проект'] && ctrl.param['проект'].id" class="relative">
+    <div id="тут компонент расходы таблица"></div>
   </div>
 
 </div>

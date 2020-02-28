@@ -21,9 +21,9 @@ sub init {
 }
 
 sub список {
-  my ($self) = @_;
-  
-  $self->dbh->selectall_arrayref($self->sth('список'), {Slice=>{}},);
+  my $self = shift;
+  my $param = ref $_[0] ? shift : {@_};
+  $self->dbh->selectall_arrayref($self->sth('список', where=>$param->{where}), {Slice=>{}},);
   
   
 }

@@ -89,13 +89,14 @@ create table IF NOT EXISTS "аренда/расходы/позиции" (---- к
   "количество" numeric not null,
   "ед" text,
   "цена" money,
-  "сумма" money,
+  ---"сумма" money,
   "коммент" text
 /* связи:
 id1("номенклатура")->id2("аренда/расходы/позиции")
 id1("аренда/расходы")->id2("аренда/расходы/позиции")
 */
 );
+ALTER TABLE "аренда/расходы/позиции" DROP COLUMN IF EXISTS  "сумма";
 drop  table IF  EXISTS "аренда/расходы/виды";
 
 /*******************************************/
@@ -275,18 +276,19 @@ from
   join refs r on d.id=r.id2
   join "контрагенты" k on k.id=r.id1
   left join (
-    select d.id as "договор/id",
+    select dp."договор/id",
       jsonb_agg(dp order by dp.id) as "@помещения/json",
       array_agg(dp."помещение/id" order by dp.id) as "@кабинеты/id",
       array_agg(dp.id  order by dp.id) as "@договоры/помещения/id",
+      array_agg(dp."объект/id" order by dp.id) as "@объекты/id",
       sum(dp."площадь помещения") as "площадь помещений",
       sum(dp."оплата за помещение") as "оплата"
-    from "аренда/договоры" d 
-      join refs r on d.id=r.id1
-      join (
-        {%= $dict->render('договоры/помещения') %}
-      ) dp on dp.id=r.id2
-    group by d.id
+    from ---"аренда/договоры" d 
+      ---join refs r on d.id=r.id1
+      --join (
+        ( {%= $dict->render('договоры/помещения') %} ) dp
+      --) dp on dp."договор/id"=d.id
+    group by "договор/id"--d.id
   ) dp on d.id=dp."договор/id"
 {%= $where || '' %}
 {%= $order_by || 'order by d."дата1" desc, d.id desc  ' %}
@@ -297,8 +299,12 @@ select p.id as "помещение/id", row_to_json(p) as "$помещение/j
   ob.id as "объект/id", row_to_json(ob) as "$объект/json",
   p."площадь" as "площадь помещения",
   coalesce(r."сумма", r."ставка"*p."площадь") as "оплата за помещение",
-  r.*
-from "аренда/договоры-помещения" r
+  r.*,
+  d.id as "договор/id"
+from 
+  "аренда/договоры" d 
+  join refs _r on d.id=_r.id1
+  join "аренда/договоры-помещения" r on r.id=_r.id2
   join refs r1 on r.id=r1.id2
   join "аренда/помещения" p on p.id=r1.id1
   join refs r2 on p.id=r2.id2
@@ -307,6 +313,7 @@ from "аренда/договоры-помещения" r
   join "roles" ob on ob.id=ro.id1
 {%= $where || '' %}
 {%= $order_by || '' %}
+{%= $limit || '' %}
 
 @@ счета и акты
 --- для docx
@@ -364,20 +371,6 @@ from
   ) d on param."month" between date_trunc('month', d."дата1") and (date_trunc('month', coalesce(d."дата расторжения", d."дата2") + interval '1 month') - interval '1 day') ---только действующие договоры
   join refs r on d.id=r.id2
   join "контрагенты" k on k.id=r.id1
-  /*left join (
-    select d.id as "договор/id",
-      jsonb_agg(dp order by dp.id) as "@помещения/json",
-      array_agg(dp."помещение/id" order by dp.id) as "@кабинеты/id",
-      array_agg(dp.id  order by dp.id) as "@договоры/помещения/id",
-      sum(dp."площадь помещения") as "площадь помещений",
-      sum(dp."оплата за помещение") as "оплата"
-    from "аренда/договоры" d 
-      join refs r on d.id=r.id1
-      join (
-        {%= $dict->render('договоры/помещения') %}
-      ) dp on dp.id=r.id2
-    group by d.id
-  ) dp on d.id=dp."договор/id"*/
   
   /*** Waltex/Report.pm.dict.sql ***/
   ---join "движение ДС/аренда/счета" dp on d.id=dp.id and param."month"=date_trunc('month', dp."дата") and dp."примечание"!~'предоплата'
@@ -427,6 +420,101 @@ from
 {%= $where || '' %}
 {%= $order_by || 'order by d."дата1" desc, d.id desc  ' %}
 ) s
+
+@@ номенклатура
+--- для расходов с ед и ценой
+select {%= $select || '*' %} from (
+select n.*, pos.*
+from "номенклатура/родители"(null) n
+left join lateral (
+  select to_json(pos) as "$позиция/json"
+  from
+    "аренда/расходы/позиции" pos
+    join refs r on r.id1=n.id and pos.id=r.id2
+  order by pos.id desc
+  limit 1
+) pos on true
+{%= $where || '' %}
+{%= $order_by || '' %}
+) q
+
+
+@@ расходы
+select {%= $select || '*' %} from (
+select 
+  to_json(d) as "$договор/json",
+  d.id as "договор/id",
+  to_json(k) as "$контрагент/json",
+  k.id as "контрагент/id",
+  dp."@объекты/id"[1] as "объект/id", dp."@объекты/json"[1] as "$объект/json",
+  r.*,
+  timestamp_to_json(r."дата"::timestamp) as "$дата расхода/json",
+  pos.*--- позиции сгруппированы
+from 
+  "аренда/договоры" d
+  join refs _r on d.id=_r.id2
+  join "контрагенты" k on k.id=_r.id1
+  
+  --- по объекту (одна строка из арендованных помещений)
+  ---join refs _rp on d.id=_rp.id1
+  left join (
+    select dp."договор/id",
+      ---jsonb_agg(dp order by dp.id) as "@помещения/json",
+      ---array_agg(dp."помещение/id" order by dp.id) as "@кабинеты/id",
+      ---array_agg(dp.id  order by dp.id) as "@договоры/помещения/id",
+      array_agg(dp."$объект/json"  order by dp.id) as "@объекты/json",
+      array_agg(dp."объект/id" order by dp.id) as "@объекты/id"
+      ---sum(dp."площадь помещения") as "площадь помещений",
+      ---sum(dp."оплата за помещение") as "оплата"
+    from ---"аренда/договоры" d 
+      ---join refs r on d.id=r.id1
+      --join (
+        ( {%= $dict->render('договоры/помещения') %} ) dp
+      --) dp on dp."договор/id"=d.id
+    group by "договор/id"--d.id
+  ) dp on d.id=dp."договор/id"
+  
+  join refs _rr on d.id=_rr.id1
+  join "аренда/расходы" r on r.id=_rr.id2
+  
+  left join (
+    select r.id as "расход/id",
+      jsonb_agg(pos order by pos.id) as "@позиции/json",
+      array_agg(pos.id  order by pos.id) as "@позиции/id",
+      sum(pos."сумма") as "сумма"
+      
+    from "аренда/расходы" r
+      join refs _r on r.id=_r.id1
+      join (
+        {%= $dict->render('расходы/позиции') %}
+      ) pos on pos.id=_r.id2
+    group by r.id
+  ) pos on r.id=pos."расход/id"
+{%= $where || '' %}
+{%= $order_by || '' %} ---order by d."дата1" desc, d.id desc  
+) q
+
+@@ расходы/позиции
+select 
+  r.id as "расход/id",
+  ---to_json(r) as "$расход/json",
+  d.id as "договор/id",
+  ---to_json(d) as "$договор/json",
+  n.id as "номенклатура/id",
+  to_json(n) as "$номенклатура/json",
+  pos.*,
+  pos."количество"*pos."цена"::numeric as "сумма"
+from "аренда/расходы" r
+  join refs r1 on r.id=r1.id1
+  join "аренда/расходы/позиции" pos on pos.id=r1.id2
+  join refs rn on pos.id=rn.id2
+  join "номенклатура/родители"(null) n on n.id=rn.id1
+  join refs r2 on r.id=r2.id2
+  join "аренда/договоры" d on d.id=r2.id1
+  ---join refs ro on o.id=ro.id2
+  ---join "roles" ob on ob.id=ro.id1
+{%= $where || '' %}
+{%= $order_by || '' %}
 
 @@ счет.docx
 # -*- coding: utf-8 -*-

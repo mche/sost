@@ -18,7 +18,7 @@ sub расходы {
   my $c = shift;
   return $c->render('аренда/расходы',
     handler=>'ep',
-    'header-title' => 'Счета на расходы арендаторов',
+    'header-title' => 'Счета на возмещение расходов по арендаторам',
     assets=>["аренда-расходы.js",],# "uploader.css"],
     );
 }
@@ -156,8 +156,77 @@ sub сохранить_договор {
 sub расходы_список {
   my $c = shift;
   my $param = $c->req->json;
-  $c->render(json=>[]);
+  $c->render(json=>$c->model->список_расходов($param));
 }
+
+sub расходы_номенклатура {
+  my $c = shift;
+  my $param = $c->req->json;
+  $c->render(json=>$c->model->расходы_номенклатура($param || ()));
+}
+
+sub сохранить_расход {
+  my $c = shift;
+  my $data = $c->req->json;
+  #~ return $c->render(json=>{error=>"Не заполнен договор"})
+    #~ unless (scalar grep($data->{$_}, qw(номер дата1 дата2))) eq 3;
+  
+  return $c->render(json=>{error=>"Нет договора"})
+    unless $data->{'договор/id'};
+  
+  my $prev = $c->model->список_расходов( id=>$data->{id} )->[0]
+    if $data->{id};
+  
+  my $tx_db = $c->model->dbh->begin;
+  local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
+  
+  $data->{'@позиции'} = [map {
+    my $pos = $_;
+    
+    my $n = eval {$c->model->сохранить_номенклатуру($pos->{'$номенклатура'})};
+    $n = $@
+      and $c->log->error($n)
+      and return $c->render(json=>{error=>$n})
+      unless $n && ref $n;
+    $pos->{'номенклатура/id'} = $n->{id};
+    
+    return $c->render(json=>{error=>"Не заполнена позиция"})
+      unless (scalar grep($pos->{$_}, qw(количество ед цена))) eq 3;
+    
+    $pos->{$_} = &Util::numeric($pos->{$_})
+      for grep defined $pos->{$_}, qw(количество);
+    $pos->{$_} = &Util::money($pos->{$_})
+      for grep defined $pos->{$_}, qw(цена);
+    
+    $pos->{uid} = $c->auth_user->{id}
+      unless $pos->{uid};
+    
+    my $r = eval {$c->model->сохранить_позицию_расхода($pos)};# строка договора
+    
+    $r = $@
+      and $c->log->error($r)
+      and return $c->render(json=>{error=>$r})
+      unless $r && ref $r;
+    
+    $r;
+    
+  } grep { $_->{'$номенклатура'} && ($_->{'$номенклатура'}{id} || $_->{'$номенклатура'}{title}) } @{ $data->{'@позиции'} }];
+  
+  $data->{uid} = $c->auth_user->{id}
+    unless $data->{id};
+  my $r = eval {$c->model->сохранить_расход($data, $prev)};
+  
+  
+  $r = $@
+    and $c->log->error($r)
+    and return $c->render(json=>{error=>$r})
+    unless $r && ref $r;
+  
+  $tx_db->commit;
+  
+  $c->render(json=>{success=>$r});
+  
+}# end сохранить_расход
 
 sub счет_оплата_docx {# сделать docx во врем папке и вернуть урл
   my $c = shift;

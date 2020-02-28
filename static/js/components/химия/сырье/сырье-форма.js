@@ -52,7 +52,7 @@ const methods = {
     });
   },
   
-OnStockInputChange(query, vmSuggest){///из v-suggest
+OnStockInputChange(query){///из v-suggest propItem, vmSuggest
   var vm = this;
   //~ 
   if (query === null) return; ///vm.MapSuggest(vm.autocomplete);
@@ -63,7 +63,7 @@ OnStockInputChange(query, vmSuggest){///из v-suggest
   //~ return util.CleanString(query); /// обязательно очищеннный запрос-строка
 },
 
-OnStockSelect(item, idx, vmSuggest){
+OnStockSelect(item, idx){///, propItem, vmSuggest
   var vm = this;
   //~ var item = vm.lastItems[idx];
   //~ console.log("onSuggestSelect", item, vmSuggest.options);

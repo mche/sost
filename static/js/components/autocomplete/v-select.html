@@ -24,7 +24,7 @@
       <input type="text" v-model=" inputQuery "  @keydown=" OnKeyDown " :placeholder=" param.placeholder || 'поиск объекта' " class="" >
     </div>
   
-    <ul class=" dropdown-content select-dropdown z-depth-3 animated zoomInDown0000 fadeIn  fast " style="opacity: 1; display:block; width:100%;">
+    <ul class=" dropdown-content select-dropdown z-depth-3 animated fadeIn  fast " :class="extParam.ulDropDownClass" style="opacity: 1; display:block; width:100%;">
       
       <!--li><h4 class="input-field relative">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" v-show=" inputQuery " @click=" inputQuery = ''; ChangeInput(); " class="middle red-fill fill-darken-1" style="height: 1.5rem; position: absolute; z-index: 1; right:1rem; top:1rem; cursor:pointer;"><use xlink:href="/fonts/icons.svg#left-clear-fill"></use></svg>

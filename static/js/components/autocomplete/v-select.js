@@ -30,7 +30,7 @@ const defaultParam = {
 };
 
 const props = {
-  "param": {
+  "param": { /// накладка на defaultParam
     type: Object,
     default: function () {
       return {};

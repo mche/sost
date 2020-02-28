@@ -276,17 +276,18 @@ $func$ LANGUAGE plpgsql;
 
 @@ список?cached=1
 select {%= $select || '*' %} from (
-select g.*, r."parent", r."parents_id", r."parents_title", c.childs, 'спр. поз. '||g.id::text as _title
-from "номенклатура/родители"(null) r
-join "номенклатура" g on r.id=g.id
+---select g.*, r."parent", r."parents_id", r."parents_title", c.childs, 'спр. поз. '||g.id::text as _title
+select n.*, c.childs, 'спр. поз. '||n.id::text as _title
+from "номенклатура/родители"(null) n
+---join "номенклатура" g on r.id=g.id
 left join (
   select array_agg(c.id) as childs, r.id1 as parent
   from "номенклатура" c
     join refs r on c.id=r.id2
   group by r.id1
-) c on r.id= c.parent
+) c on n.id= c.parent
 
-where (coalesce(?::int, 0)=0 or r."parents_id"[1]=?::int)                         ----=any(r."parents_id") -- может ограничить корнем
+----where (coalesce(::int, 0)=0 or n."parents_id"[1]=::int)                         ----=any(r."parents_id") -- может ограничить корнем
 {%= $where || '' %}
 {%= $order_by || '' %}
 ) t

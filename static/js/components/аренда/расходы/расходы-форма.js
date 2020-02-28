@@ -13,16 +13,22 @@
 */
 var moduleName = "Аренда::Расходы::Форма";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, [ 'EventBus',/* 'Компонент::Поиск в списке',*/ 'Компонент::Выбор в списке', /* 'Uploader::Файлы',*/ ]);
+var module = angular.module(moduleName, [ 'EventBus', 'Компонент::Поиск в списке', 'Компонент::Выбор в списке', /* 'Uploader::Файлы',*/ ]);
 
 module
-.factory('$КомпонентАрендаРасходыФорма', function($templateCache, $http, $timeout, appRoutes, $EventBus, /*$КомпонентПоискВСписке,*/ $КомпонентВыборВСписке, Util/*$КомпонентФайлы */) {// factory
+.factory('$КомпонентАрендаРасходыФорма', function($templateCache, $http, $q, $timeout, appRoutes, $EventBus, $КомпонентПоискВСписке, $КомпонентВыборВСписке, Util/*$КомпонентФайлы */) {// factory
 
 //~ var rentRoomsData;///синглетон для данных объектов аренды
 //~ $Контрагенты.Load();
 
 const props = {
   "item": {
+    type: Object,
+    default: function () {
+      return {};
+    },
+  },
+  "param": {
     type: Object,
     default: function () {
       return {};
@@ -58,7 +64,7 @@ Ready(){/// метод
 
   vm.ready = true;
   $timeout(function(){
-    $('input[type="text"]', $(vm.$el)).first().focus();
+    //~ $('input[type="text"]', $(vm.$el)).first().focus();
     
     vm.InitDatepicker($('.datepicker', $(vm.$el)));
     
@@ -83,24 +89,74 @@ InitDatepicker(el){
 
 ContragentContractData(){
   var vm = this;
-  return $http.get(appRoutes.urlFor('аренда/договоры/список'), {"договоры на дату": vm.form['дата'],}).then(function(resp){
+  return $http.post(appRoutes.urlFor('аренда/договоры/список'), {"договоры на дату": vm.form['дата'], "order_by": " order by  lower(regexp_replace(k.title, '^\W', '', 'g')) "}).then(function(resp){
     vm.contragentContracts = resp.data.map(function(item){
-      item._match = `${ item['$контрагент']['title']  } ${ item['дата1'] } ${ item['дата2'] } ${ item['номер'] }`.toLowerCase();
+      item._match = `${ item['$контрагент']['title']  } ${  item['@помещения'][0]['$объект'].name } ${ item['@помещения'].map(p=>{ return p['$помещение']['номер-название']; }).join(':') } ${ item['дата1'] } ${ item['номер'] }`.toLowerCase();
      /// , /*"адрес": item['адрес'],*/ "$помещение": room, "$объект": item['$объект'],});
       return item;
     });
   });
 },
 
+NomenData(){/// номенклатура позиций
+  var vm = this;
+  return $http.get(appRoutes.urlFor('аренда/расходы/номенклатура')).then(function(resp){
+    vm.nomenData = resp.data.map((item)=>{
+      item._match = item.title;
+      return item;
+    });
+  });
+},
+
+OnNomenInput(query, propItem){/// из компонента выбор из списка
+  var vm = this;
+  //~ console.log("OnNomenInput", query, propItem);
+  if (/*query === '' || */query === null || query === undefined) return  vm.RemovePos(propItem); ///vm.MapSuggest(vm.autocomplete);
+  if (propItem['$номенклатура'].id && propItem['$номенклатура'].title != query) vm.$set(propItem, '$номенклатура', {});//Object.keys(propItem['$номенклатура']).forEach((k)=>{ delete propItem['$номенклатура'][k]; });
+  propItem['$номенклатура'].title = query;
+  vm.AddPos(propItem);
+},
+
+OnNomenSelect(item, idx, propItem){/// из компонента выбор из списка
+  //~ console.log("OnNomenSelect", item, idx, propItem);
+  var vm = this;
+  var items = vm.form['@позиции'];
+  vm.AddPos(propItem);
+  if (item) {
+    //~ Object.assign(propItem.$номенклатура, item);
+    vm.$set(propItem, '$номенклатура', item);
+    if (item['$позиция']) {
+      if (!propItem['ед']) propItem['ед']=item['$позиция']['ед'];
+      if (!propItem['цена']) {
+        propItem['цена']=item['$позиция']['цена'];
+        vm.PosSum(propItem);
+      }
+    }
+  } else {///удалить строку формы
+    items.removeOf(propItem);
+  }
+  return (item && item.title) || '';/// !!! Вернуть строку
+},
+
+AddPos(pos, items){
+  var vm = this;
+  items = items || vm.form['@позиции'];
+  if (!pos || pos  === items[items.length-1])  items.push({"$номенклатура":{"title": ''}, /*"количество":'', "цена":'',*/ "сумма":'', "_id": vm.idMaker.next().value});/// тут обязательно объявить реактивные поля!
+},
+
+RemovePos(pos){
+   this.form['@позиции'].removeOf(pos);
+},
 
 InitForm(item){/// обязательные реактивные поля
   var vm = this;
   var d = new Date;
-  item["дата"] = item["дата"] || d.toISOString().replace(/T.+/, '');
+  item["дата"] = item["дата"] || vm.param['месяц'] || d.toISOString().replace(/T.+/, '');
   //~ item["дата2"] = item["дата2"] || (new Date(d.setMonth(d.getMonth() + 11))).toISOString().replace(/T.+/, '');
-  //~ if (!item['контрагент']) item['контрагент'] = {"id": item['контрагент/id'], /*"реквизиты":{},*/};
+  //~ if (!item['договор']) item['договор'] = {"id": item['договор/id'], /*"реквизиты":{},*/};
+  if (!item['договор/id']) item['договор/id'] = undefined;
   if (!item['@позиции']) item['@позиции'] = [];
-  if (!item['@позиции'].length) item['@позиции'].push({"сумма": ''});/// это поле для компутед суммы!!!
+  if (!item['@позиции'].length) vm.AddPos(undefined, item['@позиции']);//.push({"$номенклатура":{"title": ''}, "сумма": ''});/// это поле для компутед суммы!!!
   item['@позиции'].map(util.MapPosItem, vm);
   item._uploads = [];
   item._id = vm.idMaker.next().value;
@@ -113,14 +169,15 @@ Save(){
   
   //~ vm.form['контрагент']['реквизиты'] = JSON.stringify({"ИНН": vm.form['контрагент/ИНН'], "юр. адрес": vm.form['контрагент/юр. адрес']});
   
-  vm.cancelerHttp =  $http.post(appRoutes.urlFor('аренда/сохранить договор'), vm.form)
+  vm.cancelerHttp =  $http.post(appRoutes.urlFor('аренда/сохранить расход'), vm.form)
     .then(function(resp){
       vm.cancelerHttp = undefined;
       if (resp.data.error) return Materialize.toast(resp.data.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
       Materialize.toast('Сохранено успешно', 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
-      vm.$emit('on-save', resp.data.success);
-      $Контрагенты.RefreshData();
-      vm.ContragentData();
+      //~ vm.$emit('on-save', resp.data.success);
+      console.log("Сохранено", resp.data);
+      //~ $Контрагенты.RefreshData();
+      //~ vm.ContragentData();
       //~ rentRoomsData = undefined;
     },
     function(resp){
@@ -132,22 +189,25 @@ Save(){
 
 Valid(name){
   var vm = this;
-  return false;
-  if (name == 'контрагент') return !!(vm.form['контрагент'].id || vm.form['контрагент'].title);
-  else if (name) return !!vm.form[name];
+  //~ if (name == 'договор') return !!(vm.form['договор'].id || vm.form['договор'].title);
+  if (name) return !!vm.form[name];
   
-  return vm.form['номер'] && vm.form['номер'].length
-    && vm.form['дата1'] && vm.form['дата2'] && vm.form['контрагент'] && (vm.form['контрагент'].id || vm.form['контрагент'].title)
+  return vm.form['дата'] && vm.form['договор/id']
     && vm.ValidPos()
   ;
 },
 
-ValidPos(){
+ValidPos(pos){
   var vm = this;
+  if (pos) return pos['$номенклатура'] && (pos['$номенклатура'].id || pos['$номенклатура'].title)  && !!vm.ParseNum(pos['количество']) && !!vm.ParseNum(pos['цена']);
   return vm.form['@позиции'].length > 1
-    && vm.form['@позиции'].every(function(pos){ return !pos['номенклатура/id']  || room['количество']; });
+    && vm.form['@позиции'].slice(0,-1).every(function(pos){
+      return vm.ValidPos(pos);
+    });
   
 },
+
+
 
 CancelBtn(){
   this.$emit('on-save', this.item.id ? {"id": this.item.id} : undefined);
@@ -160,40 +220,24 @@ CancelBtn(){
 //~ },
 
 OnContragentSelect(item, propSelect){/// из компонента выбор из списка 
-  console.log("OnContractSelect", item, propSelect);
+  //~ console.log("OnContractSelect", item, propSelect);
   var vm = this;
-  
+  vm.form['договор/id'] = item ? item.id : undefined;
 }, 
 
-On000Select(item, propSelect){/// из компонента выбор из списка позиций
-  //~ console.log("OnRoomSelect", item, propSelect);
+
+
+PosSum(pos){
   var vm = this;
-  var rooms = vm.form['@позиции'];
-  var room = propSelect.room;
-  
-  if ( room === rooms[rooms.length-1])  rooms.push({"сумма":'', /*"объект-помещение": '',*/ "_id": vm.idMaker.next().value});/// тут обязательно объявить реактивные поля!
-  //~ rooms.splice(rooms.indexOf(room), 1, {"id": item['помещение'].id, "объект-помещение": val, "ставка": room['ставка'], });
-  //~ room.id = item['помещение'].id;
-  //~ Object.assign(room, item['помещение']);
-  if (item) {
-    room['помещение/id'] = item && item.$помещение.id;
-    room.$помещение = item && item.$помещение;
-    ((room['ставка|сумма'] == 'ставка') && vm.InputMetr(room)) || vm.InputSum(room);
-  } else {///удалить строку формы
-    rooms.removeOf(room);
-  }
-},
-
-
-
-RoomSum(room){
-  var vm = this;
-  //~ console.log("RoomSum", room.$помещение ? room.$помещение['площадь'] : room['площадь'], room['ставка']);
-  return vm.ParseNum(room.$помещение ? room.$помещение['площадь'] : room['площадь'])*vm.ParseNum(room['ставка']);
+  pos['количество'] = vm.ParseNum(pos['количество']);
+  pos['цена'] = vm.ParseNum(pos['цена']);
+  pos['сумма'] = pos['количество'] * pos['цена'];
+  pos['цена'] = pos['цена'] || '';
+  vm.$set(pos, 'сумма2', pos['сумма'] && pos['сумма'].toLocaleString({"currency": 'RUB'}) +' ₽');
 },
 
 ParseNum(num){
-  return parseFloat(Util.numeric(num));
+  return parseFloat(Util.numeric(num)) || 0;
 },
 
 ClearDate(name){
@@ -211,14 +255,14 @@ ClearDate(name){
 
 const computed = {
 
-//~ TotalSum(){
-  //~ var vm = this;
-  //~ var s = vm.form['@помещения'].reduce(function(a, room){
-    //~ if (!room || !room['сумма']) return a;
-    //~ return a + vm.ParseNum(room['сумма']);
-  //~ }, 0);
-  //~ return s;
-//~ },
+TotalSum(){
+  var vm = this;
+  var s = vm.form['@позиции'].reduce(function(a, pos){
+    if (!pos || !pos['сумма']) return a;
+    return a + pos['сумма'];
+  }, 0);
+  return s;
+},
 
 //~ TotalSqure(){
   //~ var vm = this;
@@ -252,7 +296,7 @@ const data = function() {
 const mounted = function(){
 
   var vm = this;
-  vm.ContragentContractData().then(function(){
+  $q.all([vm.ContragentContractData(), vm.NomenData()]).then(function(){
     vm.Ready();
   });
 };/// конец mounted
@@ -272,7 +316,7 @@ var $Компонент = {
 const $Конструктор = function (/*data, $c, $scope*/){
   let $this = this;
   $Компонент.template = $templateCache.get('аренда/расходы/форма');
-  //~ $Компонент.components['v-suggest'] = new $КомпонентПоискВСписке();
+  $Компонент.components['v-suggest'] = new $КомпонентПоискВСписке();
   $Компонент.components['v-select'] = new $КомпонентВыборВСписке();
   //~ $Компонент.components['v-uploads'] = new $КомпонентФайлы();
   //~ $Компонент.components['v-uploader'] = new $Uploader();

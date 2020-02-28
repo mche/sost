@@ -167,7 +167,7 @@ OnSuggestInputChange(query, vmSuggest){///из v-suggest
   //~ return vm.MapSuggest(vm.autocomplete.filter(util.FilterSuggest, {"match":query}));  
 },
 
-OnSuggestSelect(item, idx, vmSuggest){
+OnSuggestSelect(item, idx){///, propItem, vmSuggest
   var vm = this;
   //~ var item = vm.lastItems[idx];
   //~ console.log("onSuggestSelect", item, vmSuggest.options);

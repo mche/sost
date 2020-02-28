@@ -139,7 +139,7 @@
               </label>
             </div-->
             
-            <div class="input-field  lighten-5 card padd-05" ng-class="{'grey': $c.data['$на объект'].id, 'navy-darken-1': !$c.data['$на объект'].id}">
+            <div class="input-field  lighten-5 card padd-05" ng-class="{'grey': $c.data['$на объект'].id, 'navy': !$c.data['$на объект'].id}">
               <h4 class="navy-text text-darken-1 fw500" title000="{000{ $c.data['$на объект'] }}">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="navy-fill-darken-1" style="height: 2rem;"><use xlink:href="/fonts/icons.svg#tracking" /></svg>
                 <span>Через склад(базу)</span>
@@ -201,7 +201,7 @@
               На дату<sup ng-hide="$c.ValidDate1($c.data)" class="chip red white-text" style="position:absolute; top:0;padding:0.5rem;" />
             </h5>
           </th--->
-          <th ng-if000="$c.param['объект'].id === 0" class="center " style="width:5%;">
+          <th ng-if000="$c.param['объект'].id === 0" class="center " style="width:15rem;">
             <h5 class="fw500 relative">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#to-location"></use></svg>
               На объект (склад)<sup ng-hide="$c.ValidObject($c.data)" class="chip red white-text" style="position: absolute; z-index: 1; top:0;padding:0.5rem;"></sup>
@@ -301,7 +301,7 @@
               </div-->
             </td>
             <td class="padd-05 relative" style="" ng-init=" row.nomen._edit = !row['номенклатура/не изменять'] && !row.id ">
-              <span ng-hide="$c.FilterValidPosNomen(row)" class="chip red white-text" style="position: absolute; z-index: 1; left:0; bottom:0; padding:0.5rem;"></span>
+              <span ng-hide="$c.FilterValidPosNomen(row)" class="chip padd-0-05 fs8 red white-text bold" style="position: absolute; z-index: 1; left:0; bottom:0; padding:0.5rem;">!</span>
               <!-- !row['количество/принято'] && $c.EditNomenRow(row) -->
               <h5 ng-if="row['номенклатура'] && row['номенклатура'].length && !(row['наименование'] && row['наименование'].length)" ng-hide="row.nomen._edit"><a ng-click=" $c.EditNomenRow(row)" class="hover-shadow3d" href="javascript:"><span ng-repeat="n in row['номенклатура'] track by $index" class="breadcrumb brown-text before-margin-0"><span class="chip padd-0-05 shadow-inset-10">{{n}}</span></span></a></h5>
               <tree-item ng-if=" row.nomen._edit " ng-init="param = {'placeholder': !!$c.data['перемещение'] ? 'выбрать позицию из остатков' : 'выбрать или новая позиция номенклатуры ТМЦ', 'не добавлять новые позиции': !!$c.data['перемещение'], 'подпись не найдно': !!$c.data['перемещение'] ? 'Не найдено на остатках' : 'не найдено ТМЦ', 'autocompleteOnlyFinalItems0000': !!$c.data['перемещение'], 'autocompleteFilter': $c.NomenAutocompleteFilter, 'autocomplete': {'AppendSuggestions':$c.NomenAutocompleteAppendSuggestions}}" data-param=" param " data-item="row.nomen" data-data=" $c['@номенклатура'] " data-lookup-complete=" $c['@номенклатура/lookupComplete'] " data-on-focus-field="$c.FocusRow(row)" data-on-select-item="$c.OnSelectItemNomen(item, param)" class="block"></tree-item>

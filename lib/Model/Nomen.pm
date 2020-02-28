@@ -19,7 +19,10 @@ sub init {
 
 sub список {
   my ($self, $root, $param) = (shift, shift, ref $_[0] ? shift : {@_},);
-  $self->dbh->selectall_arrayref($self->sth('список', select=>$param->{select} || '*', order_by=>' order by r."parents_title" || g.title '), {Slice=>{}}, ($root) x 2);
+  my ($where, @bind) = $self->SqlAb->where({
+    $root ? (' n."parents_id"[1] ' => $root) : (),
+  });
+  $self->dbh->selectall_arrayref($self->sth('список', select=>$param->{select} || '*', where=>$where, order_by=>' order by n."parents_title" || n.title '), {Slice=>{}}, @bind);
 }
 
 sub позиция {
@@ -33,7 +36,11 @@ sub позиция {
 
 sub список_без_потомков {
   my ($self, $root, $param) = (shift, shift, ref $_[0] ? shift : {@_},);
-  $self->dbh->selectall_arrayref($self->sth('список', select=>$param->{select} || '*', where=>' and c.childs is null ', order_by=>' order by r."parents_title" || g.title '), {Slice=>{}}, ($root) x 2);
+  my ($where, @bind) = $self->SqlAb->where({
+    $root ? (' n."parents_id"[1] ' => $root) : (),
+    '  c.childs ' => undef #  is null
+  });
+  $self->dbh->selectall_arrayref($self->sth('список', select=>$param->{select} || '*', where=>$where, order_by=>' order by n."parents_title" || n.title '), {Slice=>{}}, @bind);
 }
 
 sub сохранить_номенклатуру {
@@ -50,7 +57,7 @@ sub сохранить_номенклатуру {
     return $nom;
   }
   
-  my $parent = ($nom->{selectedItem} && $nom->{selectedItem}{id}) || ($nom->{topParent} && $nom->{topParent}{id});
+  my $parent = ($nom->{selectedItem} && $nom->{selectedItem}{id}) || ($nom->{topParent} && $nom->{topParent}{id}) || $nom->{parent};
   
   #~ $nom->{selectedItem} = $self->проверить_путь($parent, [map $_->{title}, @new])
     #~ and $nom->{id} = $nom->{selectedItem}{id}
@@ -75,8 +82,6 @@ sub сохранить_номенклатуру {
   #~ $nom->{selectedItem} = $nom->{selectedPath}[-1]
     #~ if @new;
     #~ unless $nom->{selectedItem} && $nom->{selectedItem}{id};
-  
-  
   
   $nom->{id} = $nom->{selectedItem}{id};
   return $nom;
