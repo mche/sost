@@ -54,7 +54,7 @@
     </div>
     <div class="col s10  row">
       <!--div class="border fs8">{{ form['контрагент'] }}</div-->
-              <v-select :select=" {'id': form['договор/id'],} " :items=" contragentContracts " :param=" {placeholder: 'поиск арендатора', ulDropDownClass: ['blue lighten-4']} " @on-select=" OnContragentSelect ">
+              <v-select :select=" {'id': form['договор/id'],} " :items=" contragentContracts " :param=" {placeholder: 'поиск арендатора', ulDropDownClass: ['striped blue lighten-4']} " @on-select=" OnContragentSelect ">
                 <template v-slot:selected="{ selected }">
                   <h4 v-if="selected" class="relative padd-0-05 blue-text text-darken-4 animated fadeIn ">
                     
@@ -76,8 +76,8 @@
                   <h5 v-else class="grey-text">Выбрать арендатора</h5>
                 </template>
                 
-                <template v-slot:listItem="{ listItem, selected }">
-                  <h6 class="padd-0-05 blue-text text-darken-4 relative hover-shadow3d"  :class="{'bold fs12': listItem === selected, 'nowrap': listItem !== selected}"  style="">
+                <template v-slot:listItem="{ listItem, selected, highlighted }">
+                  <h6 class="padd-0-05 blue-text text-darken-4 relative hover-shadow3d"  :class="{'bold fs12': listItem === selected, 'fw500': listItem === highlighted, 'nowrap': listItem !== selected}"  style="">
                     <span class="chip padd-0-05">{{ listItem.$контрагент.title }}</span>
                     <span class="chip padd-0-05" title="объект и помещения">
                       <span><i class="material-icons">place</i></span>
@@ -114,9 +114,9 @@
             </td>
             <td class="relative padd-05 vtop">
               <!-- Номенклатура-->
-              <v-suggest v-model.trim="pos['$номенклатура'].title" :item="pos" :items=" nomenData " :param="{placeholder: 'выбрать наименование или ввести новое',}" :onInputChange="OnNomenInput" :onItemSelect="OnNomenSelect">
-                <template v-slot:item="{ item, idx }">
-                  <h5 class="relative hover-shadow3d"  :class="{'bold fs12': item.title == form.title}"  style="">
+              <v-suggest v-model.trim="pos['$номенклатура'].title" :item="pos" :items=" nomenData " :param="{placeholder: 'выбрать наименование или ввести новое', ulDropDownClass: ['striped teal lighten-4'],}" :onInputChange="OnNomenInput" :onItemSelect="OnNomenSelect">
+                <template v-slot:item="{ item, idx, activeItem }">
+                  <h5 class="relative hover-shadow3d"  :class="{'bold fs12': item.title == form.title, 'fw500': item === activeItem}"  style="">
                     <span>{{  item.title }}</span>
                   </h5>
                 </template>

@@ -219,6 +219,7 @@ Highlight(direction){/// подсветка
     }
   }
   this.activeItemIndex = selectedIndex;
+  this.activeItem=this.queryItems[selectedIndex];
 },
 
 SetItems(items){
@@ -352,6 +353,7 @@ const data = function(){
     page: 0,
     pageItems: [],
     activeItemIndex: -1,
+    activeItem: undefined,
   };
   
 };

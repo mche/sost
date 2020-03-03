@@ -20,14 +20,14 @@
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill fill-lighten-1" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#left-clear-fill" /></svg>
   </a>
   <div v-show=" QueryItemsLen > 0 " class="autocomplete-content z-depth-3 dropdown-content truncate animated zoomInDown0000 fadeIn  fast" :style=" SuggestionsStyle ">
-    <ul class="marg-0">
+    <ul class="marg-0" :class="extParam.ulDropDownClass">
       <li class="autocomplete-suggestion padd-0-05"
         :key="index"
         v-for="(item, index) in pageItems"
         @click.prevent="Select(index)"
         :class="SuggestionClass(item, index)"
         :title=" item ">
-        <slot name="item" :item="item" :idx=" page*extParam.limit + index ">
+        <slot name="item" :item="item" :idx=" page*extParam.limit + index " :activeItem=" activeItem ">
           {{item}}
         </slot>
       </li>

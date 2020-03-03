@@ -241,6 +241,7 @@ SelectObjectFilter(data){
   this.FilterData();
 },
 
+
 }; ///конец methods
 
 const computed = {

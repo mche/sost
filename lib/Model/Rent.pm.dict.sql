@@ -68,7 +68,7 @@ ALTER TABLE "аренда/договоры-помещения" ADD COLUMN IF NOT
 ALTER TABLE "аренда/договоры-помещения" ADD COLUMN IF NOT EXISTS  "сумма нал" money;
 
 /***********************************/
-drop  table IF  EXISTS "аренда/расходы";
+---drop  table IF  EXISTS "аренда/расходы";
 
 create table IF NOT EXISTS "аренда/расходы" (---- кроме самой аренды
   id integer  NOT NULL DEFAULT nextval('{%= $sequence %}'::regclass) primary key,
@@ -447,8 +447,9 @@ select
   to_json(k) as "$контрагент/json",
   k.id as "контрагент/id",
   dp."@объекты/id"[1] as "объект/id", dp."@объекты/json"[1] as "$объект/json",
+  pr.id as "проект/id",
   r.*,
-  timestamp_to_json(r."дата"::timestamp) as "$дата расхода/json",
+  timestamp_to_json(r."дата"::timestamp) as "$дата/json",
   pos.*--- позиции сгруппированы
 from 
   "аренда/договоры" d
@@ -477,6 +478,12 @@ from
   join refs _rr on d.id=_rr.id1
   join "аренда/расходы" r on r.id=_rr.id2
   
+  join refs _rp on r.id=_rp.id2
+  join (
+    select distinct id, name, descr, disable
+    from "проекты"
+  ) pr on pr.id=_rp.id1
+  
   left join (
     select r.id as "расход/id",
       jsonb_agg(pos order by pos.id) as "@позиции/json",
@@ -503,7 +510,7 @@ select
   n.id as "номенклатура/id",
   to_json(n) as "$номенклатура/json",
   pos.*,
-  pos."количество"*pos."цена"::numeric as "сумма"
+  pos."количество"*pos."цена" as "сумма"
 from "аренда/расходы" r
   join refs r1 on r.id=r1.id1
   join "аренда/расходы/позиции" pos on pos.id=r1.id2

@@ -6,8 +6,8 @@
 
 <div v-if=" ready" class="relative">
   <v-suggest v-model="form.title"  :items=" autocomplete " :param=" param.suggest " :onInputChange="OnSuggestInputChange" :onItemSelect="OnSuggestSelect">
-    <template v-slot:item="{ item, idx }">
-      <h5 class="relative"  :class="{'bold fs12': item.title == form.title, 'orange-text text-darken-4': !!item.data['проект/id']}"  style="">
+    <template v-slot:item="{ item, idx, activeItem }">
+      <h5 class="relative"  :class="{'bold fs12': item.title == form.title, 'fw500': item===activeItem, 'orange-text text-darken-4': !!item.data['проект/id']}"  style="">
         <span>{{  item.title }}</span>
         <!--span class="grey-text fs7" style="position:absolute; right:0; bottom:0;">#{{ item.id }}</span-->
       </h5>

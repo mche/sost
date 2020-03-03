@@ -19,7 +19,7 @@ sub расходы {
   return $c->render('аренда/расходы',
     handler=>'ep',
     'header-title' => 'Счета на возмещение расходов по арендаторам',
-    assets=>["аренда-расходы.js",],# "uploader.css"],
+    assets=>["аренда-расходы.js", "flexboxgrid.css"],# "uploader.css"],
     );
 }
 
@@ -129,7 +129,7 @@ sub сохранить_договор {
     
     my $r = eval {$c->model->сохранить_помещение_договора($room)};# строка договора
     
-    $r = $@
+    $r ||= $@
       and $c->log->error($r)
       and return $c->render(json=>{error=>$r})
       unless $r && ref $r;
@@ -142,7 +142,7 @@ sub сохранить_договор {
     unless $data->{id};
   my $r = eval {$c->model->сохранить_договор($data, $prev)};
   
-  $r = $@
+  $r ||= $@
     and $c->log->error($r)
     and return $c->render(json=>{error=>$r})
     unless $r && ref $r;
@@ -168,9 +168,11 @@ sub расходы_номенклатура {
 sub сохранить_расход {
   my $c = shift;
   my $data = $c->req->json;
-  #~ return $c->render(json=>{error=>"Не заполнен договор"})
-    #~ unless (scalar grep($data->{$_}, qw(номер дата1 дата2))) eq 3;
   
+  return $c->render(json=>{error=>"Нет даты"})
+    unless (scalar grep($data->{$_}, qw(дата))) eq 1;
+  return $c->render(json=>{error=>"Нет проекта"})
+    unless $data->{'проект/id'};
   return $c->render(json=>{error=>"Нет договора"})
     unless $data->{'договор/id'};
   
@@ -184,7 +186,7 @@ sub сохранить_расход {
     my $pos = $_;
     
     my $n = eval {$c->model->сохранить_номенклатуру($pos->{'$номенклатура'})};
-    $n = $@
+    $n ||= $@
       and $c->log->error($n)
       and return $c->render(json=>{error=>$n})
       unless $n && ref $n;
@@ -214,10 +216,9 @@ sub сохранить_расход {
   
   $data->{uid} = $c->auth_user->{id}
     unless $data->{id};
+    
   my $r = eval {$c->model->сохранить_расход($data, $prev)};
-  
-  
-  $r = $@
+  $r ||= $@
     and $c->log->error($r)
     and return $c->render(json=>{error=>$r})
     unless $r && ref $r;

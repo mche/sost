@@ -21,14 +21,14 @@ const props = {
   "param": {
     type: Object,
     default: function () {
-      return {"foo":'bar'};
+      return {};
     },
   },
   
 };
   
 const util = {/*разное*/
-IsEqualId(id){ return (id.id || id) == this.id; },
+  IsEqualId(id){ return (id.id || id) == this.id; },
 };/// конец util
 
 const methods = {/*методы*/
@@ -51,6 +51,7 @@ LoadData(){
   var vm = this;
   vm.data = [];
   vm.loading = true;
+  //~ console.log("LoadData", vm.param);
   return $http.post(appRoutes.urlFor('аренда/расходы/список'), /*{"месяц": vm.payMonth,}*/ vm.param)
     .then(function(resp){
       vm.loading = false;
@@ -159,6 +160,10 @@ ClearFilter(name){
   //~ this.FilterData();
 //~ },
 
+Test(param){
+  //~ console.log("Test", this.param, param);
+},
+
 }; ///конец methods
 
 const computed = {
@@ -174,7 +179,7 @@ FilteredDataLen(){
   /* computed */};
 
 const  data = function(){
-  //~ console.log("on data item", this.item);
+  //~ console.log("on data", this.param);
   let vm = this;
   vm.data = [];
   return {//angular.extend(// return dst
@@ -198,23 +203,6 @@ const mounted = function(){
   vm.Ready().then(function(){
     setTimeout(function(){
       $('.modal', $el).modal( );// Callback for Modal close} {"complete": vm.ModalComplete}
-      
-      $('.datepicker.pay-month', $el).pickadate({// все настройки в файле русификации ru_RU.js
-        monthsFull: [ 'январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь' ],
-        format: 'mmmm yyyy',
-        monthOnly: 'OK',// кнопка
-        selectYears: true,
-        onClose: function (context) {
-          var s = this.component.item.select;
-          //~ vm.$set(vm, "payMonth" , [s.year, s.month+1, s.date].join('-'));
-          var date = new Date([s.year, s.month+1, s.date].join('-')).toISOString().replace(/T.+/, '');
-          if ( vm.param['месяц'] == date ) return;
-          vm.param['месяц'] = date;
-          //~ vm.ready = false;
-          //~ vm.Ready();
-          vm.LoadData();
-        },
-      });//{closeOnSelect: true,}
     });
     
   });

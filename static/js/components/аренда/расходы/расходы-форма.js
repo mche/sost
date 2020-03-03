@@ -155,6 +155,7 @@ InitForm(item){/// обязательные реактивные поля
   //~ item["дата2"] = item["дата2"] || (new Date(d.setMonth(d.getMonth() + 11))).toISOString().replace(/T.+/, '');
   //~ if (!item['договор']) item['договор'] = {"id": item['договор/id'], /*"реквизиты":{},*/};
   if (!item['договор/id']) item['договор/id'] = undefined;
+  if (!item['проект/id']) item['проект/id'] = vm.param['проект'].id;
   if (!item['@позиции']) item['@позиции'] = [];
   if (!item['@позиции'].length) vm.AddPos(undefined, item['@позиции']);//.push({"$номенклатура":{"title": ''}, "сумма": ''});/// это поле для компутед суммы!!!
   item['@позиции'].map(util.MapPosItem, vm);

@@ -32,7 +32,7 @@
     </div>
     <div class="col s8  row">
       <!--div class="border fs8">{{ form['контрагент'] }}</div-->
-      <v-contragent :item=" form['контрагент'] " :param=" {'редактировать':true, 'реквизиты': {'ИНН':'', 'юр. адрес': '', 'физ. лицо': false,}} " :data=" contragentData " @on-select=" SelectContragent ">
+      <v-contragent :item=" form['контрагент'] " :param=" {'редактировать':true, 'реквизиты': {'ИНН':'', 'юр. адрес': '', 'физ. лицо': false,}, suggest:{ ulDropDownClass: ['striped teal lighten-4'],}} " :data=" contragentData " @on-select=" SelectContragent ">
         <template v-slot:form=" { form } ">
           <span  v-show="!form.id && form.title.length > 1" class="chip padd-0-05 red-text text-darken-2 fs8"  style="">* новый арендатор, проверьте *</span>
           <span  v-show="form.id" class="grey-text fs7 " style="position: absolute; right:0;">#{{form.id}}</span>
@@ -175,7 +175,7 @@
             </td>
             <td class="relative padd-05 vtop">
               
-              <v-select :select=" {'id': room.$помещение && room.$помещение.id, room: room} " :items=" rentRooms " :param=" {placeholder: 'поиск помещения'} " @on-select=" OnRoomSelect ">
+              <v-select :select=" {'id': room.$помещение && room.$помещение.id, room: room} " :items=" rentRooms " :param=" {placeholder: 'поиск помещения', ulDropDownClass: ['striped lime lighten-4']} " @on-select=" OnRoomSelect ">
                 <template v-slot:selected="{ selected }">
                   <h5 v-if="selected" class="relative padd-0-05 lime-text text-darken-4 animated fadeIn ">
                     <span><i class="material-icons fs8 padd-0">place</i></span>
@@ -187,8 +187,8 @@
                   </h5>
                   <h5 v-else class="grey-text">Выбрать помещение</h5>
                 </template>
-                <template v-slot:listItem="{ listItem, selected }">
-                  <h6 class="padd-0-05 lime-text text-darken-4 relative"  :class="{'bold fs12': listItem === selected}"  style="">
+                <template v-slot:listItem="{ listItem, selected, highlighted }">
+                  <h6 class="padd-0-05 lime-text text-darken-4 hover-shadow3d relative"  :class="{'bold fs12': listItem === selected, 'fw500': listItem === highlighted}"  style="">
                     <span><i class="material-icons fs8 padd-0">place</i></span>
                     <span >{{ listItem.$объект['name'] }}</span>
                     <span class="nowrap chip padd-0-05"><span class="fs8 grey-text">№</span><span class="">{{ listItem.$помещение['номер-название'] }}</span></span>

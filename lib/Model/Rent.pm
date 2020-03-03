@@ -247,7 +247,7 @@ sub сохранить_расход {
   $prev ||= $self->список_расходов( id=>$data->{id} )->[0]
     if $data->{id};
   
-  #~ $self->app->log->error($self->app->dumper($data->{'@помещения'}, $prev && $prev->{'@договоры/помещения/id'}));
+  #~ $self->app->log->error($self->dbh);#$self->app->dumper($data->{'@помещения'}, $prev && $prev->{'@договоры/помещения/id'}));
   
   my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, 'аренда/расходы', ["id"], $data);
   my %refs = ();
@@ -262,11 +262,12 @@ sub сохранить_расход {
   } @{$prev->{'@позиции/id'}}
     if $prev;
   
-  my $rk = $self->связь($data->{'договор/id'}, $r->{id});
+  map {
+  $self->связь($data->{"$_/id"}, $r->{id});
   
-  $self->связь_удалить(id1=>$prev->{'договор/id'}, id2=>$r->{id})
-    if $prev && $prev->{'договор/id'} ne $data->{'договор/id'};
-  
+  $self->связь_удалить(id1=>$prev->{"$_/id"}, id2=>$r->{id})
+    if $prev && $prev->{"$_/id"} ne $data->{"$_/id"};
+  } qw(проект договор);
   #~ $self->app->log->error('сохранить_расход', $self->app->dumper($r));
   
   return $self->список_расходов( id=>$r->{id} )->[0];

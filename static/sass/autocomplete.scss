@@ -1,6 +1,6 @@
 .autocomplete-content {
   position: absolute;
-  /*width: 100%;*/
+  width: 100%;
   /*margin-top: 1px;*/
   top:0;
   max-height: calc(100vh);
@@ -31,11 +31,11 @@
 .autocomplete-suggestion .breadcrumb {color: color("teal", "darken-4");}
 .autocomplete-suggestion strong {color:black;}
 .autocomplete-no-suggestion { padding: 2px 5px;}
-.autocomplete-selected, .suggestion-selected { background: #F0F0F0; }
+.autocomplete-selected, .suggestion-selected { background-color: lighten(#eee, 5%)  !important; }
 .autocomplete-suggestions strong { font-weight: bold; color: #000; }
 .autocomplete-group { font-weight: bold; font-size: 16px; color: #000; display: block; border-bottom: 1px solid #000; }
 
 /*табель рабочего времени*/
 .input-field .autocomplete-content .autocomplete-suggestion:hover {
-  background: #F0F0F0;
+  background-color: darken(#eee, 5%) !important;
 }

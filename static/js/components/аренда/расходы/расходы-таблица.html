@@ -4,12 +4,7 @@
 <v-progress-indeterminate v-show=" !ready || loading " :color=" 'teal' " :message=" 'Загружается...' "></v-progress-indeterminate>
 
 <div v-if=" ready " class="">
-  <div>
-    <h3 class="iblock middle">Месяц</h3>
-    <div class="input-field chip padd-05">
-      <input name="месяц" type="text" class="datepicker pay-month fs18 fw500" style="" :data-value=" param['месяц'] ">
-    </div>
-  </div>
+
   
   <div>{{ param }}</div>
    
@@ -22,9 +17,31 @@
     </div>
   </div>
    
-   <div v-for="row in filteredData" :key="row.id" style="display:flex;">
-    <div style="width:25%;">{{ row.$контрагент }}</div>
-    <div style="width:75%;">{{ row['@позиции'] }}</div>
+   <div v-for="row in filteredData" :key="row.id" class="flex-row flex-end-xs-000" style="">
+    <div class="flex-col-sm-1 padd-05"style="">
+      <span class="chip padd-0-05 nowrap" :title=" row['дата'] "><span class="fs8 grey-text">от </span><span class="bold">{{ row.$дата.day }}</span> <span class="fs8">{{ row.$дата['мес'] }}</span><span v-show="(new Date).getYear()+1900 != row.$дата.year"> {{ row.$дата.year }}</span></span>
+    </div>
+    <div class="flex-col-sm-3" style="">
+      <h4>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#contragent"></use></svg>
+        <span>{{ row.$контрагент.title }}</span>
+      </h4>
+      <span class="chip padd-0-05">дог. {{ row.$договор['номер'] }}</span>
+    </div>
+    <div class="flex-col-sm-8 padd-05" style="">
+      <table class="striped">
+        <tbody>
+          <tr v-for="pos in  row['@позиции']" :key="pos.id">
+            <td><h5>{{ pos['$номенклатура'].title }}</h5></td>
+            <td><div class="truncate nowrap right-align" style="width:5rem;">{{ pos['количество'] }}</div></td>
+            <td><div class="truncate nowrap" style="width:3rem;">{{ pos['ед'] }}</div></td>
+            <td><div class="truncate nowrap" style="width:5rem;">{{ pos['цена'] }}</div></td>
+            <td><div class="truncate nowrap" style="width:5rem;">{{ pos['сумма'] }}</div></td>
+            <td><div class="truncate nowrap" style="width:10rem;">{{ pos['коммент'] }}</div></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
    </div>
    
 </div>

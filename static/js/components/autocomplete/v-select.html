@@ -33,7 +33,7 @@
 
       <li v-for="item in itemsPage" :key="item.id" class="animated fadeIn" :class=" {'active selected': item === selected || item === highlighted} ">
         <a @click=" Select(item) " href="javascript:">
-          <slot name="listItem" :listItem="item" :selected="selected"><h3 class000=" ItemClass(item) " class="blue-text text-darken-3">{{ item }}</h3></slot>
+          <slot name="listItem" :listItem="item" :selected="selected" :highlighted="highlighted"><h3 class000=" ItemClass(item) " class="blue-text text-darken-3">{{ item }}</h3></slot>
         </a>
       </li>
        <!-- пагинация -->

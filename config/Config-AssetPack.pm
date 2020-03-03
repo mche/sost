@@ -239,6 +239,11 @@ sub map_grep_mode {
         --css/main.css
         ),
       ],# static/sass $ sass --watch main.scss:../css/main.css
+      
+      ['flexboxgrid.css'=> &map_grep_mode(qw(
+      lib/flexboxgrid/dist/flexboxgrid.css::development
+      lib/flexboxgrid/dist/flexboxgrid.min.css::production
+      ))],
 
       ['календарь.js'=> grep !/^--/, qw(
       lib/dayjs/dayjs.min.js

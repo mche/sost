@@ -48,7 +48,7 @@ sub сохранить_номенклатуру {
   my @new = grep $_->{title}, @{$nom->{newItems} || []};
   
   return "нет наименования номенклатуры"
-    unless ($nom->{selectedItem} && $nom->{selectedItem}{id}) || @new;
+    unless $nom->{id} || ($nom->{selectedItem} && $nom->{selectedItem}{id}) || @new;
   
   if (!@new && (my $id = $nom->{id} || ($nom->{selectedItem} && $nom->{selectedItem}{id}))) {#проверить в базе
     my $r = $self->_select($self->{template_vars}{schema}, 'номенклатура', ["id"], {id=>$id})
