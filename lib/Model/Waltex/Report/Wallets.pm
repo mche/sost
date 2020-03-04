@@ -42,8 +42,8 @@ sub прямые_платежи {# обратно - внутр перемеще�
     ' m."дата" ' => $param->{'дата'},
   });
   $cb 
-    ? $self->dbh->pg->db->query($self->model_money->dict->render('список или позиция', select => $param->{select} || '*', where1=>$where), @bind, $cb)
-    : $self->dbh->selectall_arrayref($self->model_money->sth('список или позиция', select => $param->{select} || '*', where1=>$where), {Slice=>{}}, @bind,);
+    ? $self->dbh->pg->db->query($self->model_money->dict->render('список или позиция', select => $param->{select} || '*', where=>$where), @bind, $cb)
+    : $self->dbh->selectall_arrayref($self->model_money->sth('список или позиция', select => $param->{select} || '*', where=>$where), {Slice=>{}}, @bind,);
 }
 
 sub внутренние_перемещения {#переворот кошельков
