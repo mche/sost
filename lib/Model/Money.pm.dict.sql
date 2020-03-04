@@ -116,7 +116,7 @@ select m.*,
   "формат даты"(m."дата") as "дата формат",
   timestamp_to_json(m."дата"::timestamp) as "$дата/json",
   ----to_char(m."дата", 'TMdy, DD TMmon' || (case when date_trunc('year', now())=date_trunc('year', m."дата") then '' else ' YYYY' end)) as "дата формат",
-  cat.id as "категория/id", /*"категории/родители узла/title"(c.id, false) as*/ cat."категории",
+  cat.id as "категория/id", /*"категории/родители узла/title"(c.id, false) as*/ cat.parents_title[2:]||cat.title as "категории",
   ca.id as "контрагент/id", ca.title as "контрагент",
   ob.id as "объект/id", ob.name as "объект",
   w2.id as "кошелек2/id", w2.title as "кошелек2",
@@ -129,14 +129,14 @@ from  "{%= $schema %}"."{%= $tables->{main} %}" m
 
   --- категории
   join refs rc on m.id=rc.id2
-  --join "категории" c on c.id=rc.id1
-  join (
+  join "категории/родители"() cat on cat.id=rc.id1
+  /*join (
     select c.id, array_agg(cat.title order by cat.level desc) as "категории"
     from 
       "категории" c, ---on c.id=rc.id1,
       "категории/родители узла"(c.id, false) cat
     group by c.id
-  ) cat on cat.id=rc.id1
+  ) cat on cat.id=rc.id1*/
   
   ---кошелек
   join refs rw on m.id=rw.id2
@@ -151,14 +151,16 @@ from  "{%= $schema %}"."{%= $tables->{main} %}" m
   left join ({%= $dict->render('кошелек2') %}) w2 on m.id=w2."движение денег/id"
   left join ({%= $dict->render('профиль') %}) pp on m.id=pp."движение денег/id"
 
-{%= $where1 || '' %}
+{%= $where || '' %}
+{%= $order_by || '' %}
+---order by m."дата" desc, m.id desc
+{%= $limit_offset || '' %}
 ---where (::int is null or m.id =)
 --  and p.id=20962 -- все проекты или проект
 ) m
-{%= $where || '' %}
+%#{%= $where || '' %}
 
-order by "дата" desc, id desc
-{%= $limit_offset || '' %}
+
 ;
 
 @@ контрагент

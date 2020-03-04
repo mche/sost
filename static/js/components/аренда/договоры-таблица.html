@@ -143,18 +143,20 @@
           <td class="right-align" style="width:1%;">
             <div class="nowrap line-height-10" style="width: calc(5vw);">
               <span class="" title="руб. за м²/мес. ">{{ RoomMetr(room).toLocaleString().replace(/[.,]\d+/, '') }}</span>
-              <!--br>
-              <span class="fs8 grey-text">₽ м²/мес</span-->
+              <span class="fs8 grey-text">₽</span>
             </div>
             
           </td>
           
           <td class="right-align" style="width:1%;">
-            <div class="nowrap line-height-10" style="width: calc(5vw);">
-              <span class=" " :class="{'bold': item['@помещения'].length == 1}" title=" руб./мес. ">{{ RoomSum(room).toLocaleString().replace(/[.,]\d+/, '') }}</span>
-              <!--br>
-              <span class="fs8 grey-text"> ₽/мес</span-->
+            <div v-show="item['@помещения'].length > 1" class="nowrap line-height-10" style="width: calc(5vw);">
+              <span class="bold " :class000="{'bold': item['@помещения'].length == 1}" title=" руб./мес. ">{{ RoomSum(room).toLocaleString().replace(/[.,]\d+/, '') }}</span>
+              <span class="fs8 grey-text"> ₽</span>
             </div>
+            <h5 v-show="item['@помещения'].length == 1" class="nowrap">
+              <span class="bold " title=" руб./мес. ">{{ RoomSum(room).toLocaleString().replace(/[.,]\d+/, '') }}</span>
+              <span class="fs8 grey-text"> ₽</span>
+            </h5>
           </td>
           
           <td class="relative" style="width:1%;">

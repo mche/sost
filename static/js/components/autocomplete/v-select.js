@@ -98,7 +98,7 @@ OnKeyDown(e){
       e.preventDefault();
       break;
     case 38:
-      vm.highlighted = vm.itemsFiltered[idx-1] || vm.itemsFiltered[$c.itemsFiltered.length-1];
+      vm.highlighted = vm.itemsFiltered[idx-1] || vm.itemsFiltered[vm.itemsFiltered.length-1];
       e.preventDefault();
       break;
     case 13:

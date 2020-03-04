@@ -1,12 +1,12 @@
-
-*.striped.teal.lighten-4 > *:nth-child(odd) {
+/*без таблиц, они в материализ*/
+*:not(table, thead, tbody).striped.teal.lighten-4 > *:nth-child(odd) {
   background-color: color("teal", "lighten-5");
 }
 
-*.striped.lime.lighten-4 > *:nth-child(odd) {
+*:not(table, thead, tbody).striped.lime.lighten-4 > *:nth-child(odd) {
   background-color: color("lime", "lighten-5");
 }
 
-*.striped.blue.lighten-4 > *:nth-child(odd) {
+*:not(table, thead, tbody).striped.blue.lighten-4 > *:nth-child(odd) {
   background-color: color("blue", "lighten-5");
 }

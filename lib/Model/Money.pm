@@ -79,32 +79,34 @@ sub позиция {
     ' m.id ' => $id,
     
   });
-  $self->dbh->selectrow_hashref($self->sth('список или позиция', where1=>$where), undef, @bind);
+  $self->dbh->selectrow_hashref($self->sth('список или позиция', where=>$where), undef, @bind);
 }
 
 
 my %type = ("дата"=>'date', "сумма"=>'money', "примечание"=>'text');
+my %KEY = ("дата"=>' m."дата" ', "контрагент"=>' ca.id ', "профиль"=>' pp.id ', "объект"=>' ob.id ', "кошелек"=>' w.id ', "проект" => ' p.id ');
+
 sub список {
   my ($self, $project, $param) = @_;
   
-  my ($where1, @bind) = $self->SqlAb->where({
+  my $where = {# условия
     ' p.id '=>$project,
-  });
-  
-  my $where = "";#дополнительные условия
+  };
   while (my ($key, $value) = each %{$param->{table} || {}}) {
     next
       unless ref($value) && ($value->{ready} || $value->{_ready}) ;
     
     if ($key eq 'категория') {
-      $where .= ($where ? " and " :  "where ").qq\ "$key/id" in (select id from "категории/родители"() where ?=any(parents_id||id)) \;
-      push @bind, $value->{id};
+      #~ $where .= ($where ? " and " :  "where ").qq\ "$key/id" in (select id from "категории/родители"() where ?=any(parents_id||id)) \;
+      #~ push @bind, $value->{id};
+      $where->{' ? /*категория*/ '} = \['= any(cat.parents_id||cat.id)', $value->{id},];
       next;
     }
     
     if ($value->{id}) {
-      $where .= ($where ? " and " :  "where ").qq| "$key/id"=? |;
-      push @bind, $value->{id};
+      #~ $where .= ($where ? " and " :  "where ").qq| "$key/id"=? |;
+      #~ push @bind, $value->{id};
+      $where->{$KEY{$key} || qq{ "$key" }} = $value->{id};
       next;
     }
     
@@ -120,41 +122,53 @@ sub список {
       
       my $sign = $value->{sign};
       
-      $where .= ($where ? " and " :  "where ") . sprintf(qq' ("%s" between ?::%s and ?::%s)', $key, ($type{$key}) x 2);
-      push @bind, map {s/,/./g; s/[^\d\-\.]//g; $sign ? $sign*$_ : $_;}  (($sign && $sign < 0) ? reverse @values : @values);
+      #~ $where .= ($where ? " and " :  "where ") . sprintf(qq' ("%s" between ?::%s and ?::%s)', $key, ($type{$key}) x 2);
+      #~ push @bind, map {s/,/./g; s/[^\d\-\.]//g; $sign ? $sign*$_ : $_;}  (($sign && $sign < 0) ? reverse @values : @values);
+      $where->{$KEY{$key} || qq{ "$key" }} = \[
+        sprintf(qq{ between ?::%s and ?::%s}, ($type{$key}) x 2),
+        #bind
+        map {s/,/./g; s/[^\d\-\.]//g; $sign ? $sign*$_ : $_;}  (($sign && $sign < 0) ? reverse @values : @values),
+      ];
       next;
     }
     
     if ($type{$key} eq 'text' && $value->{title}) {
-      $where .= ($where ? " and " :  "where ").qq| "$key" ~* ? |;
-      push @bind, $value->{title};
+      #~ $where .= ($where ? " and " :  "where ").qq| "$key" ~* ? |;
+      #~ push @bind, $value->{title};
+      $where->{$KEY{$key} || qq{ "$key" }} = \['~* ?', $value->{title}];
       next;
     }
   }
   
   if($param->{move}) {
     if ($param->{move}{id} eq 1){ # внешние контрагенты
-      my $w2 = '"кошелек2/id" is null and "профиль/id" is null';
-      $where .= $where ? "\n and $w2" : "where $w2";
+      #~ my $w2 = '"кошелек2/id" is null and "профиль/id" is null';
+      #~ $where .= $where ? "\n and $w2" : "where $w2";
+      $where->{qq{ w.id }} = undef;
+      $where->{qq{ p.id }} = undef;
     }
     elsif ($param->{move}{id} eq 2){ # внутр кошельки
-      my $w2 = '"кошелек2/id" is not null';
-      $where .= $where ? "\n and $w2" : "where $w2";
+      #~ my $w2 = '"кошелек2/id" is not null';
+      #~ $where .= $where ? "\n and $w2" : "where $w2";
+      $where->{qq{ w2.id }} = {'!=' => undef};
     }
     elsif ($param->{move}{id} eq 3){ # сотрудники
-      my $w2 = '"профиль/id" is not null';
-      $where .= $where ? "\n and $w2" : "where $w2";
+      #~ my $w2 = '"профиль/id" is not null';
+      #~ $where .= $where ? "\n and $w2" : "where $w2";
+      $where->{qq{ pp.id }} = {'!=' => undef};
     }
   } else {# все платежи
     
     
   }
   
+  ($where, my @bind) = $self->SqlAb->where($where);
+  
   my $limit_offset = "LIMIT 100 OFFSET ".($param->{offset} // 0);
   
   #~ $self->app->log->error($where);
   
-  my $r = $self->dbh->selectall_arrayref($self->sth('список или позиция', select => $param->{select} || '*', where1=>$where1, where=>$where, limit_offset=>$limit_offset), {Slice=>{}}, @bind);
+  my $r = $self->dbh->selectall_arrayref($self->sth('список или позиция', select => $param->{select} || '*',  where=>$where, order_by=>$param->{order_by} || 'order by m."дата" desc, m.id desc', limit_offset=>$limit_offset), {Slice=>{}}, @bind);
   
 }
 

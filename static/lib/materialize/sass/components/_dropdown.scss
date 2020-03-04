@@ -25,11 +25,11 @@
       background-color: $dropdown-hover-bg-color !important;
     }
     &.active, &.selected {
-      background-color: lighten($dropdown-hover-bg-color, 5%) !important;
+      background-color: darken($dropdown-hover-bg-color, 5%) !important;
     }
 
     &.active.selected {
-      background-color: darken($dropdown-hover-bg-color, 5%);
+      background-color: lighten($dropdown-hover-bg-color, 5%);
     }
 
     &.divider {

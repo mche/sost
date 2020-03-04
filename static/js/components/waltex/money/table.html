@@ -184,7 +184,11 @@
         </div>
       </td>
       
-      <td><span ng-repeat="cat in it['категории'] track by $index" class="breadcrumb before-margin-0 teal-text-darken-3"><span class="chip padd-0-05">{{cat}}</span></span></td>
+      <td>
+        <div  class="chip padd-0-05">
+          <span ng-repeat="cat in it['категории'] track by $index" class="breadcrumb before-margin-0 teal-text-darken-3 line-height-10"><span>{{cat}}</span></span>
+        </div>
+      </td>
       <td><div class="fs8 grey-text-000">{{it['примечание']}}</div></td>
     </tr>
     
