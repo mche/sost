@@ -40,7 +40,7 @@ var Controll = function($scope, $attrs, /*$element,*/ $timeout, /*$q,*/  Templat
   ctrl.SelectProject = function(p){
     
     $scope.param["проект"] = undefined;
-    ['кошелек', 'объект'].map(function(name){
+    ['кошелек', /*'объект'*/].map(function(name){
       $scope.param[name]["проект"].ready = false;
       $scope.param[name].id = undefined;
       $scope.param[name].title = '';
@@ -106,8 +106,9 @@ var Component = function  ($scope, $timeout, $element) {
   };
 
   $ctrl.FilterObj  = function(item){/// по проекту
-    if (!$ctrl.param["проект"].id) return true;
-    return item.$проект.id == $ctrl.param["проект"].id;
+    //~ if (!$ctrl.param["проект"].id) return true;
+    //~ return item['проект/id'] == $ctrl.param["проект"].id;
+    return true;
     
   };
   

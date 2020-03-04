@@ -127,11 +127,11 @@ from (
   select t.* from
     ---"движение ДС/начисления по табелю" t
     (--- знак расхода по объекту
-    select id, ts, "дата", -1::numeric*"сумма",---как расход
+    select t.id, t.ts, t."дата", -1::numeric*t."сумма",---как расход
       -1::numeric as "sign",
      --- "категории/родители узла/id"(123439::int, true) as "категории",
       ---"категории/родители узла/title"(123439::int, false) as "категория",
-      cc."@id" as "категории", cc."@title" as "категория",
+      cat.parents_id||cat.id as "категории", cat.parents_title[2:]||cat.title as "категория",
       null::text as "контрагент", null::int as "контрагент/id",
       row_to_json(null) as "$объект/json", "объект/id", "объект",
       null::int as "кошелек2",
@@ -142,8 +142,10 @@ from (
       ---'(' || "проект" || ': ' || "объект" || ') ' || coalesce("примечание", ''::text) as "примечание"
       "примечание"
     from 
-      "табель/начисления/объекты" t -- view  в модели Model::TimeWork.pm
-      , (select array_agg("id" order by level desc) as "@id", (array_agg("title" order by level desc))[2:] as "@title" from "категории/родители узла"(123439::int, true)) cc
+      "табель/начисления/объекты" t, -- view  в модели Model::TimeWork.pm
+      ---(select array_agg("id" order by level desc) as "@id", (array_agg("title" order by level desc))[2:] as "@title" from "категории/родители узла"(123439::int, true)) cc
+      "категории/родители"() cat
+    where cat.id=123439 --начисление по табелю
     ) t
     -- табель строка РасчетЗП
     join "табель" t2 on date_trunc('month', t2."дата") = date_trunc('month', t."дата")
@@ -858,8 +860,8 @@ select d.id, d.ts, /*d."дата1", */d1."дата"::date, -1::numeric*sum."су
   -1::numeric as "sign", --- счет-расход
   ---"категории/родители узла/id"(c.id, true) as "категории",
   ---"категории/родители узла/title"(c.id, false) as "категория",
-  coalesce(d1."@категории/id", cc."@id") as "категории",
-  coalesce(d1."@категории/title", cc."@title") as "категория",
+  coalesce(d1."@категории/id", cat.parents_id||cat.id) as "категории",
+  coalesce(d1."@категории/title", cat.parents_title[2:]||cat.title) as "категория",
   k.title as "контрагент", k.id as "контрагент/id",
   row_to_json(ob) as "$объект/json", ob.id as "объект/id", ob.name as "объект",
   null::int as "кошелек2", --- left join
@@ -903,7 +905,8 @@ from
   
   join  "roles" ob on ob.id=sum."@объекты/id"[1]
   
-  join (select array_agg("id" order by level desc) as "@id", (array_agg("title" order by level desc))[2:] as "@title" from "категории/родители узла"(121952::int, true)) cc on true
+  ---join (select array_agg("id" order by level desc) as "@id", (array_agg("title" order by level desc))[2:] as "@title" from "категории/родители узла"(121952::int, true)) cc on true
+  join "категории/родители"() cat on cat.id=121952 -- аренда офисов
   
   join lateral (--- повторить по месяцам договоров
     --- тут один первый месяц договора (возможно неполный)
@@ -928,11 +931,13 @@ from
     union all
     --- тут возможно предоплата одного мес
     select d."дата1" as "дата", 1, null, ' предоплата (обеспечительный платеж)', --- полная сумма
-      cc."@id", cc."@title"
+      ---cc."@id", cc."@title"
+      cc.parents_id||cc.id as "@id", cc.parents_title||cc.title as "@title"
     from 
       generate_series(0, 0, 1) s,
-      (select array_agg("id" order by level desc) as "@id", (array_agg("title" order by level desc))[2:] as "@title" from "категории/родители узла"(929979::int, true)) cc
-    where d."предоплата"=true
+      ---(select array_agg("id" order by level desc) as "@id", (array_agg("title" order by level desc))[2:] as "@title" from "категории/родители узла"(929979::int, true)) cc
+      "категории/родители"() cc
+    where d."предоплата"=true and cc.id=929979
   ) d1 on true
 
 ;
@@ -945,7 +950,7 @@ select m.id, m.ts, m."дата", m."сумма",
   sign("сумма"::numeric) as "sign", ---to_char("дата", ---) as "код интервала", to_char("дата", ---) as "интервал",
   --"категории/родители узла/id"(c.id, true) as "категории",
   ---"категории/родители узла/title"(c.id, false) as "категория",
-  cc."@id" as "категории", cc."@title" as "категория",
+  cat.parents_id||cat.id as "категории", cat.parents_title[2:]||cat.title as "категория",
   k.title as "контрагент", k.id as "контрагент/id",
   coalesce(row_to_json(ob), row_to_json(rent."@объекты/json"[1])) as "$объект/json",
   coalesce(ob.id, rent."@объекты/id"[1]) as "объект/id",
@@ -957,7 +962,8 @@ select m.id, m.ts, m."дата", m."сумма",
   ,m."примечание"
 from 
   {%= $dict->render('все платежи/from') %}
-  left join lateral (select array_agg("id" order by level desc) as "@id", (array_agg("title" order by level desc))[2:] as "@title" from "категории/родители узла"(c.id, true)) cc on true
+  ---left join lateral (select array_agg("id" order by level desc) as "@id", (array_agg("title" order by level desc))[2:] as "@title" from "категории/родители узла"(c.id, true)) cc on true
+  left join "категории/родители"() cat on cat.id=c.id
   
   left join /*lateral*/ ( --- по какому объекту приход аренды
     select
@@ -1002,7 +1008,8 @@ select m.id, m.ts, m."дата", -1*m."сумма" as "сумма",
   -1*sign("сумма"::numeric) as "sign", ---to_char("дата", ---) as "код интервала", to_char("дата", ---) as "интервал",
   ---"категории/родители узла/id"(c.id, true) as "категории",
   ---"категории/родители узла/title"(c.id, false) as "категория",
-  cc."@id" as "категории", cc."@title" as "категория",
+  ---cc."@id" as "категории", cc."@title" as "категория",
+  cat.parents_id||cat.id as "категории", cat.parents_title[2:]||cat.title as "категория",
   null::text as "контрагент", null::int as "контрагент/id",
   row_to_json(null) as "$объект/json", null::int as "объект/id", null as "объект",
   w2.id as "кошелек2",
@@ -1012,7 +1019,8 @@ select m.id, m.ts, m."дата", -1*m."сумма" as "сумма",
   ,m."примечание"
 from 
   {%= $dict->render('внутренние перемещения/from') %}
-  left join lateral (select array_agg("id" order by level desc) as "@id", (array_agg("title" order by level desc))[2:] as "@title" from "категории/родители узла"(c.id, true)) cc on true
+  ---left join lateral (select array_agg("id" order by level desc) as "@id", (array_agg("title" order by level desc))[2:] as "@title" from "категории/родители узла"(c.id, true)) cc on true
+  left join "категории/родители"() cat on cat.id=c.id
 ;
 
 DROP VIEW IF EXISTS "движение ДС/по сотрудникам";
@@ -1023,7 +1031,8 @@ select m.id, m.ts, m."дата", m."сумма",
   c.id as "категория/id",
   ---"категории/родители узла/id"(c.id, true) as "категории/id",
   ---"категории/родители узла/title"(c.id, false) as "категории",
-  cc."@id" as "категории/id", cc."@title" as "категории",
+  ---cc."@id" as "категории/id", cc."@title" as "категории",
+  cat.parents_id||cat.id as "категории", cat.parents_title[2:]||cat.title as "категория",
   null::text as "контрагент", null::int as "контрагент/id",
   row_to_json(null) as "$объект/json", null::int as "объект/id", null as "объект",
   null::int as "кошелек2",
@@ -1034,7 +1043,8 @@ select m.id, m.ts, m."дата", m."сумма",
   ---'(' || w."проект" || ': ' || w.title || ') ' || coalesce(m."примечание", ''::text) as "примечание"
 from 
   {%= $dict->render('движение по сотрудникам/from') %}
-  left join lateral (select array_agg("id" order by level desc) as "@id", (array_agg("title" order by level desc))[2:] as "@title" from "категории/родители узла"(c.id, true)) cc on true
+  ---left join lateral (select array_agg("id" order by level desc) as "@id", (array_agg("title" order by level desc))[2:] as "@title" from "категории/родители узла"(c.id, true)) cc on true
+  left join "категории/родители"() cat on cat.id=c.id
 ;
 
 DROP VIEW IF EXISTS "движение ДС/начисления по табелю" CASCADE;
@@ -1042,11 +1052,12 @@ CREATE OR REPLACE VIEW "движение ДС/начисления по табе
 -- только приходы-начисления из табеля(view "табель/начисления/объекты" в модели Model::TimeWork.pm)
 --- ПЛЮС суточные (без объекта)
 --- + отпускные (без объекта)
-select id, ts, "дата", "сумма",
+select t.id, t.ts, t."дата", t."сумма",
   1::numeric as "sign",
   ---"категории/родители узла/id"(123439::int, true) as "категории",
   ---"категории/родители узла/title"(123439::int, false) as "категория",
-  cc."@id" as "категории", cc."@title" as "категория",
+  ---cc."@id" as "категории", cc."@title" as "категория",
+  cat.parents_id||cat.id as "категории", cat.parents_title[2:]||cat.title as "категория",
   null::text as "контрагент", null::int as "контрагент/id",
   row_to_json(null) as "$объект/json", "объект/id", "объект",
   null::int as "кошелек2",
@@ -1057,16 +1068,19 @@ select id, ts, "дата", "сумма",
   ---'(' || "проект" || ': ' || "объект" || ') ' || coalesce("примечание", ''::text) as "примечание"
   "примечание"
 from 
-  "табель/начисления/объекты" t-- view  в модели Model::TimeWork.pm
-  , (select array_agg("id" order by level desc) as "@id", (array_agg("title" order by level desc))[2:] as "@title" from "категории/родители узла"(123439::int, true)) cc
+  "табель/начисления/объекты" t,-- view  в модели Model::TimeWork.pm
+  ---(select array_agg("id" order by level desc) as "@id", (array_agg("title" order by level desc))[2:] as "@title" from "категории/родители узла"(123439::int, true)) cc
+  "категории/родители"() cat
+where cat.id=123439
 
 union all --- переработка без объекта!
 
-select id, ts, "дата", "сумма",
+select t.id, t.ts, t."дата", t."сумма",
   1::numeric as "sign",
   ---"категории/родители узла/id"(123441::int, true) as "категории", -- категория з/п переработка
   ---"категории/родители узла/title"(123441::int, false) as "категория", -- категория з/п переработка
-  cc."@id" as "категории", cc."@title" as "категория",
+  ---cc."@id" as "категории", cc."@title" as "категория",
+  cat.parents_id||cat.id as "категории", cat.parents_title[2:]||cat.title as "категория",
   null::text as "контрагент", null::int as "контрагент/id",
   row_to_json(null) as "$объект/json", null::int as "объект/id", null as "объект",
   null::int as "кошелек2",
@@ -1076,16 +1090,19 @@ select id, ts, "дата", "сумма",
   null, ---array[[0, 0]]::int[][] as "кошельки/id",  --- проект+объект, ...
   "примечание"
 from 
-  "табель/начисления/переработка" t-- view  в модели Model::TimeWork.pm
-  , (select array_agg("id" order by level desc) as "@id", (array_agg("title" order by level desc))[2:] as "@title" from "категории/родители узла"(123441::int, true)) cc
+  "табель/начисления/переработка" t,-- view  в модели Model::TimeWork.pm
+  --- (select array_agg("id" order by level desc) as "@id", (array_agg("title" order by level desc))[2:] as "@title" from "категории/родители узла"(123441::int, true)) cc
+  "категории/родители"() cat
+where cat.id=123441
 
 union all --- суточные без объекта!
 
-select id, ts, "дата", "сумма",
+select t.id, t.ts, t."дата", t."сумма",
   1::numeric as "sign",
   ---"категории/родители узла/id"(57541::int, true) as "категории", -- категория з/п/суточные
   ---"категории/родители узла/title"(57541::int, false) as "категория", -- категория з/п/суточные
-  cc."@id" as "категории", cc."@title" as "категория",
+  ---cc."@id" as "категории", cc."@title" as "категория",
+  cat.parents_id||cat.id as "категории", cat.parents_title[2:]||cat.title as "категория",
   null::text as "контрагент", null::int as "контрагент/id",
   row_to_json(null) as "$объект/json", null::int as "объект/id", null as "объект",
   null::int as "кошелек2",
@@ -1095,16 +1112,19 @@ select id, ts, "дата", "сумма",
   null, ---array[[0, 0]]::int[][] as "кошельки/id",  --- проект+объект, ...
   "примечание"
 from 
-  "табель/начисления/суточные" t-- view  в модели Model::TimeWork.pm
-  , (select array_agg("id" order by level desc) as "@id", (array_agg("title" order by level desc))[2:] as "@title" from "категории/родители узла"(57541::int, true)) cc
+  "табель/начисления/суточные" t,-- view  в модели Model::TimeWork.pm
+  --- (select array_agg("id" order by level desc) as "@id", (array_agg("title" order by level desc))[2:] as "@title" from "категории/родители узла"(57541::int, true)) cc
+  "категории/родители"() cat
+where cat.id=57541
 
 union all --- отпускные тоже без объекта!
 
-select id, ts, "дата", "сумма",
+select t.id, t.ts, t."дата", t."сумма",
   1::numeric as "sign",
   ---"категории/родители узла/id"(104845::int, true) as "категории", -- категория з/п/отпускные
   ---"категории/родители узла/title"(104845::int, false) as "категория", -- категория з/п/отпускные
-  cc."@id" as "категории", cc."@title" as "категория",
+  ---cc."@id" as "категории", cc."@title" as "категория",
+  cat.parents_id||cat.id as "категории", cat.parents_title[2:]||cat.title as "категория",
   null::text as "контрагент", null::int as "контрагент/id",
   row_to_json(null) as "$объект/json", null::int as "объект/id", null as "объект",
   null::int as "кошелек2",
@@ -1114,8 +1134,10 @@ select id, ts, "дата", "сумма",
   null, ---array[[0, 0]]::int[][] as "кошельки/id",  --- проект+объект, ...
   "примечание"
 from 
-  "табель/начисления/отпускные" t-- view  в модели Model::TimeWork.pm
-  , (select array_agg("id" order by level desc) as "@id", (array_agg("title" order by level desc))[2:] as "@title" from "категории/родители узла"(104845::int, true)) cc
+  "табель/начисления/отпускные" t,-- view  в модели Model::TimeWork.pm
+  ---(select array_agg("id" order by level desc) as "@id", (array_agg("title" order by level desc))[2:] as "@title" from "категории/родители узла"(104845::int, true)) cc
+  "категории/родители"() cat
+where cat.id=104845
 ;
 
 
@@ -1147,7 +1169,8 @@ select m.id, m.ts, m."дата", m."сумма",
   sign("сумма"::numeric) as "sign", 
   --"категории/родители узла/id"(c.id, true) as "категории",
   ---"категории/родители узла/title"(c.id, false) as "категория",
-  cc."@id" as "категории", cc."@title" as "категория",
+  ---cc."@id" as "категории", cc."@title" as "категория",
+  cat.parents_id||cat.id as "категории", cat.parents_title[2:]||cat.title as "категория",
   null::text as "контрагент", null::int as "контрагент/id",
   row_to_json(null) as "$объект/json", null::int as "объект/id", null::text as "объект",
   null::int as "кошелек2",
@@ -1158,9 +1181,9 @@ select m.id, m.ts, m."дата", m."сумма",
 
 from "движение денег" m
   join refs rc on m.id=rc.id2
-  join "категории" c on c.id=rc.id1
-  
-  left join lateral (select array_agg("id" order by level desc) as "@id", (array_agg("title" order by level desc))[2:] as "@title" from "категории/родители узла"(c.id, true)) cc on true
+  --join "категории" c on c.id=rc.id1
+  ---left join lateral (select array_agg("id" order by level desc) as "@id", (array_agg("title" order by level desc))[2:] as "@title" from "категории/родители узла"(c.id, true)) cc on true
+  join "категории/родители"() cat on cat.id=rc.id1
   
   join refs rp on m.id=rp.id1
   join "профили" p on p.id=rp.id2
@@ -1192,7 +1215,7 @@ from "движение денег" m
 
 where 
     --- 74315 это категория штрафа будет тоже как деньги
-    (sign(m."сумма"::numeric)=1 or c.id=74315) --- только (+) начисления, (-)расходы будут одной цифрой - выплата
+    (sign(m."сумма"::numeric)=1 or cat.id=74315) --- только (+) начисления, (-)расходы будут одной цифрой - выплата
     and t."значение"='РасчетЗП'
     and t."коммент" is not null
 

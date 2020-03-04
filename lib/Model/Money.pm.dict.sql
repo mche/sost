@@ -269,11 +269,11 @@ where sign(m."сумма"::numeric)=1 --- только приходы, расх�
 
 @@ пакетное сохранение
 WITH cat as (
-  select c.id, jsonb_agg(cat order by cat.level desc) as "@категории"
+  select c.*---c.id, jsonb_agg(cat order by cat.level desc) as "@категории"
   from 
-    "категории" c, ---on c.id=rc.id1,
-    "категории/родители узла"(c.id, false) cat
-  group by c.id
+    "категории/родители"() c--, ---on c.id=rc.id1,
+    ---"категории/родители узла"(c.id, false) cat
+  ---group by c.id
 )
 
 select
@@ -282,7 +282,7 @@ select
   v.val[2] as "ИНН",
   v.val[3]::money as "сумма",
   w.id as "кошелек/id", to_json(w) as "$кошелек/json",---v.val[4]
-  cat.id as "категория/id", cat."@категории" as "@категории/json",---v.val[5]
+  cat.id as "категория/id", cat.parents_title[2:]||cat.title as "@категории", ----cat."@категории" as "@категории/json",---v.val[5]
   ob.id as "объект/id", to_json(ob) as "$объект/json",---v.val[6]
   v.val[7] as "примечание",
   v.val[8:] as "прочие колонки",
@@ -302,7 +302,7 @@ from
   
   left join "контрагенты" k on coalesce(coalesce("реквизиты",'{}'::jsonb)->>'ИНН', '0'||(k.id::text))=v.val[2]
   left join (--- ловим похожие записи
-    select m.*, cat."@категории",/*to_json(c) as "$категория",*/ pr.id as "проект/id", w.id as "кошелек/id", to_json(w) as "$кошелек", k.id as "контрагент/id", to_json(ob) as "$объект"
+    select m.*, cat.parents_title[2:]||cat.title as "@категории",/*to_json(c) as "$категория",*/ pr.id as "проект/id", w.id as "кошелек/id", to_json(w) as "$кошелек", k.id as "контрагент/id", to_json(ob) as "$объект"
     from 
       "{%= $schema %}"."{%= $tables->{main} %}" m
 

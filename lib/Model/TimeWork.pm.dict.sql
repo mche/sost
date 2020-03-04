@@ -227,14 +227,16 @@ select m.*,
   c.id as "категория/id",
   ---"категории/родители узла/id"(c.id, true) as "категории",
   ---"категории/родители узла/title"(c.id, false) as "категория",
-  cc."@id" as "категории", cc."@title" as "категория",
+  --cc."@id" as "категории", cc."@title" as "категория",
+  c.parents_id[2:]||c.id as "категории", c.parents_title[2:]||c.title as "категория",
   rp.id2 as "профиль/id"
 
 from refs rp -- к профилю
   join "движение денег" m on m.id=rp.id1
   join refs rc on m.id=rc.id2
-  join "категории" c on c.id=rc.id1
-  left join lateral (select array_agg("id" order by level desc) as "@id", (array_agg("title" order by level desc))[2:] as "@title" from "категории/родители узла"(c.id, true)) cc on true
+  join "категории/родители"() c on c.id=rc.id1
+  --join "категории" c on c.id=rc.id1
+  --left join lateral (select array_agg("id" order by level desc) as "@id", (array_agg("title" order by level desc))[2:] as "@title" from "категории/родители узла"(c.id, true)) cc on true
 
 where 
   (m.id=$1 --
@@ -1389,7 +1391,8 @@ select m.id, m.ts, m."дата", timestamp_to_json(m."дата"::timestamp) as "
   sign("сумма"::numeric) as "sign", 
   ---"категории/родители узла/id"(c.id, true) as "категории",
   ---"категории/родители узла/title"(c.id, false) as "категория"
-  cc."@id" as "категории", cc."@title" as "категория"
+  --cc."@id" as "категории", cc."@title" as "категория"
+  c.parents_id[2:]||c.id as "категории", c.parents_title[2:]||c.title as "категория"
   ---array_to_string(p.names, ' ') as "профиль", p.id as "профиль/id",
   ---null, ---array[[null, null]]::text[][] as "кошельки", --- проект+объект, ...
   ---array[[pr.id, null]]::int[][] as "кошельки/id",  --- проект 0 -- запись для всех проектов
@@ -1397,8 +1400,9 @@ select m.id, m.ts, m."дата", timestamp_to_json(m."дата"::timestamp) as "
 
 from "движение денег" m
   join refs rc on m.id=rc.id2
-  join "категории" c on c.id=rc.id1
-  left join lateral (select array_agg("id" order by level desc) as "@id", (array_agg("title" order by level desc))[2:] as "@title" from "категории/родители узла"(c.id, true)) cc on true
+  join "категории/родители"() c on c.id=rc.id1
+  --join "категории" c on c.id=rc.id1
+  --left join lateral (select array_agg("id" order by level desc) as "@id", (array_agg("title" order by level desc))[2:] as "@title" from "категории/родители узла"(c.id, true)) cc on true
   
   join refs rp on m.id=rp.id1
   join "профили" p on p.id=rp.id2

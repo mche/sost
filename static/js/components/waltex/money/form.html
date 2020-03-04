@@ -264,9 +264,9 @@
           </td>
           <td class="padd-05"><!--div class="pre-wrap fs8">{{ row['$похожая запись'] | json }}</div-->
             <div ng-if-000="!!row['$похожая запись']" class="chip z-depth-1">
-              <h5 class="nowrap">{{ !!row['$похожая запись'] ? row['$похожая запись']['$кошелек'].title : row['$кошелек'] && row['$кошелек'].title }}</h5>
-              <h5 class="nowrap"><span ng-repeat="cat in (!!row['$похожая запись'] ? row['$похожая запись']['@категории'] : row['@категории'])" class="breadcrumb">{{ cat.title }}</span></h5>
-              <h5 class="nowrap">{{ !!row['$похожая запись'] ? row['$похожая запись']['$объект'].name : row['$объект'] && row['$объект'].name }}</h5>
+              <h5 class="nowrap"><i class="material-icons blue-text000">account_balance</i> {{ !!row['$похожая запись'] ? row['$похожая запись']['$кошелек'].title : row['$кошелек'] && row['$кошелек'].title }}</h5>
+              <h5 class="nowrap"><i class="material-icons">more_horiz</i> <span ng-repeat="cat in (!!row['$похожая запись'] ? row['$похожая запись']['@категории'] : row['@категории'])" class="breadcrumb">{{ cat }}</span></h5>
+              <h5 class="nowrap maroon-text"><i class="material-icons">business</i> {{ !!row['$похожая запись'] ? row['$похожая запись']['$объект'].name : row['$объект'] && row['$объект'].name }}</h5>
               <div class="fs8">{{ !!row['$похожая запись'] ? row['$похожая запись']['примечание'] : row['примечание'] }}</div>
             </div>
           </td>
