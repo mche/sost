@@ -144,8 +144,8 @@ sub список {
     if ($param->{move}{id} eq 1){ # внешние контрагенты
       #~ my $w2 = '"кошелек2/id" is null and "профиль/id" is null';
       #~ $where .= $where ? "\n and $w2" : "where $w2";
-      $where->{qq{ w.id }} = undef;
-      $where->{qq{ p.id }} = undef;
+      $where->{qq{ w2.id }} = undef;
+      $where->{qq{ pp.id }} = undef;
     }
     elsif ($param->{move}{id} eq 2){ # внутр кошельки
       #~ my $w2 = '"кошелек2/id" is not null';
