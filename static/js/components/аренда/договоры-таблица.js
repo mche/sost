@@ -13,9 +13,9 @@
 */
 var moduleName = "Аренда::Договоры::Таблица";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, [ 'Аренда::Договор::Форма', 'Компонент::Выбор в списке', ]);
+var module = angular.module(moduleName, [ 'Аренда::Договор::Форма', 'Компонент::Выбор объекта', ]);
 
-module.factory('$КомпонентАрендаДоговорыТаблица', function($templateCache, $http, appRoutes, /*$timeout, $rootScope, /**$compile, , */ $EventBus, Util, $КомпонентАрендаДоговорФорма, $КомпонентВыборВСписке ) {// 
+module.factory('$КомпонентАрендаДоговорыТаблица', function($templateCache, $http, appRoutes, /*$timeout, $rootScope, /**$compile, , */ $EventBus, Util, $КомпонентАрендаДоговорФорма, $КомпонентВыборОбъекта ) {// 
 
 const props = {
   "param": {
@@ -39,14 +39,14 @@ Ready(){/// метод
     vm.FilterData();
     vm.ready = true;
     $EventBus.$emit('$КомпонентАрендаДоговорыТаблица - готов');
-    $EventBus.$emit('Дайте список объектов аренды', function(loader){/// один раз выполнится
+    /*$EventBus.$emit('Дайте список объектов аренды', function(loader){/// один раз выполнится
       loader.then(function(data){
         //~ console.log("Объекты аренды", data);
         
         //~ vm.rentObjects.push(...data.map((it)=>{ return it['$объект']; }));
         vm.rentObjects.push(...data.map((it)=>{ return {"id": it['$объект'].id, "_match": it['$объект'].name, "$item":it['$объект']}; }));
       });
-    });
+    });*/
   });
 },
 
@@ -144,9 +144,9 @@ PrintPay(month){
   modal.modal('close');
   //~ console.log("PrintPay", month, ids);
   /// вернет урл для скачивания
-  return $http.post(appRoutes.urlFor('аренда/счет.docx'), {"месяц": month, "договоры": ids, "присвоить номера": vm.payNums, "счет или акт": vm.radioSchetAkt, /*"объекты":obs*/}).then(function(resp){
+  return $http.post(appRoutes.urlFor('аренда/счет#docx', '-'/*обязательно что-нибудь*/), {"месяц": month, "договоры": ids, "присвоить номера": vm.payNums, "счет или акт": vm.radioSchetAkt, /*"объекты":obs*/}).then(function(resp){
     if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 border fw500  animated zoomInUp');
-    if (resp.data.docx) window.location.href = appRoutes.urlFor('аренда/счет/#docx', resp.data.docx);
+    if (resp.data.docx) window.location.href = appRoutes.urlFor('аренда/счет#docx', resp.data.docx);
     if (resp.data.data) console.log("счет", resp.data.data);///отладка
     //~ window.location.href = appRoutes.urlFor('тмц/накладная.docx', $c.data.id);
   });
@@ -236,8 +236,8 @@ ClearFilter(name){
 },
 
 SelectObjectFilter(data){
-  //~ console.log("SelectObjectFilter", data);
-  this.filters['объект'] = data ? data.$item : {};
+  console.log("SelectObjectFilter", data);
+  this.filters['объект'] = data;/// ? data.$item : {};
   this.FilterData();
 },
 
@@ -273,7 +273,7 @@ const  data = function(){
     "payNums": false, ///крыжик счета с номерами
     "radioSchetAkt": 'счет',/// или акт
     "filters": {"арендаторы": '', "объект": {}, "архивные договоры": false,},
-    "rentObjects":[],
+    //~ "rentObjects":[],
     "archLen":0, /// кол-во архивных договоров
     "clipBoard": undefined,
     };
@@ -315,7 +315,7 @@ const $Конструктор = function (/*data, $c, $scope*/){
   //~ data = data || {};
   $Компонент.template = $templateCache.get('аренда/договоры/таблица');
   $Компонент.components['v-rent-contract-form'] =  new $КомпонентАрендаДоговорФорма();
-  $Компонент.components['v-select'] = new $КомпонентВыборВСписке();
+  $Компонент.components['v-object-select'] = new $КомпонентВыборОбъекта();
 
   return $Компонент;
 };

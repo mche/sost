@@ -13,9 +13,9 @@
 */
 var moduleName = "Аренда::Расходы::Таблица";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, [ 'Аренда::Расходы::Форма', 'Компонент::Выбор в списке', ]);
+var module = angular.module(moduleName, [ 'Аренда::Расходы::Форма', /*'Компонент::Выбор в списке',*/ 'Компонент::Выбор объекта',]);
 
-module.factory('$КомпонентАрендаРасходыТаблица', function($templateCache, $http, appRoutes,  /*$EventBus, Util,*/ $КомпонентАрендаРасходыФорма, $КомпонентВыборВСписке ) {// 
+module.factory('$КомпонентАрендаРасходыТаблица', function($templateCache, $http, appRoutes,  /*$EventBus, Util,*/ $КомпонентАрендаРасходыФорма, /*$КомпонентВыборВСписке,*/ $КомпонентВыборОбъекта ) {// 
 
 const props = {
   "param": {
@@ -97,6 +97,8 @@ Edit(item){
 AllChbsChange(val){
   var vm = this;
   if (typeof val == 'boolean') vm.allChbs = val;
+  
+  /*if (val != 'оставить крыжики')*/
   vm.data.map((item)=>{
     item['крыжик'] = undefined;
     
@@ -104,32 +106,15 @@ AllChbsChange(val){
   vm.filteredData.map((item)=>{
     item['крыжик'] =  !!vm.allChbs;
   });
+  this.CheckedData();
 },
 
 ChbChange(name){
-  this.FilterData();
+  //~ this.FilterData();
+  setTimeout(()=>this.CheckedData());
   
 },
 
-PrintPay(month){
-  var vm = this;
-  var modal = $('#modal-pay', $(vm.$el));
-  if (!month) return modal.modal('open');
-  
-  var ids = vm.data.filter((item)=>{ return !!item['крыжик']; }).map((item)=>{ return item.id; });
-  //~ var obs = vm.rentObjects.filter((ob)=>{ return !!ob['крыжик печати']; }).map((ob)=>{ return ob['$объект'].id; });
-  if (!ids.length) return Materialize.toast("не указаны договоры", 3000, 'red-text text-darken-3 red lighten-3 border fw500  animated zoomInUp');
-  //~ if (!obs.length) return Materialize.toast("не указан объект", 3000, 'red-text text-darken-3 red lighten-3 border fw500  animated zoomInUp');
-  modal.modal('close');
-  //~ console.log("PrintPay", month, ids);
-  /// вернет урл для скачивания
-  return $http.post(appRoutes.urlFor('аренда/счет.docx'), {"месяц": month, "договоры": ids, "присвоить номера": vm.payNums, "счет или акт": vm.radioSchetAkt, /*"объекты":obs*/}).then(function(resp){
-    if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 border fw500  animated zoomInUp');
-    if (resp.data.docx) window.location.href = appRoutes.urlFor('аренда/счет/#docx', resp.data.docx);
-    if (resp.data.data) console.log("счет", resp.data.data);///отладка
-    //~ window.location.href = appRoutes.urlFor('тмц/накладная.docx', $c.data.id);
-  });
-},
 
 OnChangeFilter(event){
   var vm = this;
@@ -144,9 +129,24 @@ OnChangeFilter(event){
 
 FilterData(){
   var vm = this;
-  vm.filteredData = [...vm.data];
-
+  vm.filteredData = /// [...vm.data];
+    vm.data.filter((item)=>{
+      
+      //~ const cur = dateFns.isWithinRange(new Date(), new Date(/*item['дата1']*/ '2000-01-01'), new Date(item['дата расторжения'] || item['дата2']));
+      //~ if (!cur) vm.archLen += 1;
+      const test = ///(vm.filters['архивные договоры'] ? !cur : cur)
+        (vm.filters['арендаторы'] ? item['$контрагент'].title.toLowerCase().indexOf(vm.filters['арендаторы'].toLowerCase()) >= 0 : true)
+        && ( (vm.filters['объект'] && vm.filters['объект'].id) ? item.$объект.id == vm.filters['объект'].id : true);
+      //~ console.log("filteredData", vm.filters['объект'], item.$объект);
+      return test;
+    });
+    
+  vm.AllChbsChange();
   return vm;
+},
+
+CheckedData(){
+  this.checkedData = this.data.filter((item)=>{ return !!item['крыжик']; });
 },
 
 ClearFilter(name){
@@ -155,21 +155,43 @@ ClearFilter(name){
   vm.FilterData();
 },
 
-//~ SelectObjectFilter(data){
-  //~ this.filters['объект'] = data ? data.$item : {};
-  //~ this.FilterData();
-//~ },
-
-Test(param){
-  //~ console.log("Test", this.param, param);
+SelectObjectFilter(data){
+  console.log("SelectObjectFilter", data);
+  this.filters['объект'] = data;/// ? data.$item : {};
+  this.FilterData();
 },
+
+Print(){
+  var vm = this;
+  //~ var modal = $('#modal-print', $(vm.$el));
+  //~ if (!month) return modal.modal('open');
+  
+  vm.param['аренда/расходы/id'] = vm.checkedData.map((item)=>{ return item.id; });
+  //~ var obs = vm.rentObjects.filter((ob)=>{ return !!ob['крыжик печати']; }).map((ob)=>{ return ob['$объект'].id; });
+  //~ if (!ids.length) return Materialize.toast("не указаны", 3000, 'red-text text-darken-3 red lighten-3 border fw500  animated zoomInUp');
+  //~ if (!obs.length) return Materialize.toast("не указан объект", 3000, 'red-text text-darken-3 red lighten-3 border fw500  animated zoomInUp');
+  //~ modal.modal('close');
+
+  /// вернет урл для скачивания
+  return $http.post(appRoutes.urlFor('аренда/расходы#docx', '-'/*обязательно что-нибудь*/), vm.param).then(function(resp){
+    if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 border fw500  animated zoomInUp');
+    if (resp.data.docx) window.location.href = appRoutes.urlFor('аренда/расходы#docx', resp.data.docx);
+    if (resp.data.data) console.log("счет", resp.data.data);///отладка
+    //~ window.location.href = appRoutes.urlFor('тмц/накладная.docx', $c.data.id);
+  });
+},
+
+//~ Test(param){
+  //~ console.log("Test", this.param, param);
+//~ },
 
 }; ///конец methods
 
 const computed = {
-//~ IsChbs(){
+//~ Chbs(){
   //~ console.log("IsChbs");
-  //~ return this.data.some((item)=>{ return !!item['крыжик']; });
+  //~ ///return this.data.some((item)=>{ return !!item['крыжик']; });
+  //~ return /*vm.filteredData*/ this.filteredData.filter((item)=>{ return !!item['крыжик']; });
 //~ },
 FilteredDataLen(){
   return this.filteredData.length;
@@ -189,9 +211,12 @@ const  data = function(){
     "loading": false,
     //~ "data": [],
     "filteredData":[],
+    "checkedData":[],/// с крыжиками
+    "filters": {"арендаторы": '', "объект": {},},
     "allChbs": false, /// крыжик выбора всех договоров
     //~ "payMonth":  vm.param['месяц'] || new Date().toISOString().replace(/T.+/, ''),
     "newForm": undefined,
+    "rentObjects":[],
     };
   //);
 };///конец data
@@ -223,7 +248,7 @@ const $Конструктор = function (/*data, $c, $scope*/){
   //~ data = data || {};
   $Компонент.template = $templateCache.get('аренда/расходы/таблица');
   $Компонент.components['v-form'] =  new $КомпонентАрендаРасходыФорма();
-  $Компонент.components['v-select'] = new $КомпонентВыборВСписке();
+  $Компонент.components['v-object-select'] = new $КомпонентВыборОбъекта();
 
   return $Компонент;
 };

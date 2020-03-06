@@ -11,6 +11,12 @@
   <div><!--  новая форма --->
     <div style="position: absolute; top:0.3rem; right:1rem;">
       <a v-show=" !newForm " @click=" New " href="javascript:" class="btn-flat z-depth-1 green lighten-4 green-text text-darken-4"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="green-fill fill-darken-4" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#form-add" /></svg> Новый счет</a>
+      <!--a v-show="checkedData.length" @click="Print()" disabled-000="!IsChbs" href="javascript:" class="btn-flat  z-depth-1 orange lighten-4 black-text">Печать</a-->
+      <a v-show="checkedData.length" @click="Print()" href="javascript:" class="btn-flat  z-depth-1 orange lighten-4 black-text right">
+        <i class="material-icons">print</i>
+        <span>Печать</span>
+        <sup class="chip padd-0-05-000">{{ checkedData.length }}</sup>
+      </a>
     </div>
     <div v-if=" newForm " style="margin-bottom:3rem;">
       <v-form :item=" newForm " :param=" param " @on-save=" OnSave "></v-form>
@@ -18,9 +24,59 @@
   </div>
   
   <div class="striped teal lighten-4">
+    <!-- типа thead колонки повторяют  -->
+    <div class="flex-row " style="">
+      <div class="flex-col-sm-1 padd-05 relative" style="">
+        <!-- все крыжики-->
+        <div v-show=" FilteredDataLen " class="input-field-000 nowrap" style="">
+          <input type="checkbox" id="все крыжики" v-model="allChbs" @change="AllChbsChange">
+          <label for="все крыжики" class="hover-shadow3d chb-yellow-lighten-4 orange-text chip yellow lighten-4" style="position:absolute; left:-2rem; padding-left:16px;" ></label>
+          <a @click="AllChbsChange(!allChbs)" href="javascript:"><h6 class="orange-text text-darken-4">
+            <span>{{ allChbs ? 'снять' : 'отметить' }}</span>
+            <sup class="chip white z-depth-1">{{ FilteredDataLen }}</sup>
+          </h6></a>
+        </div>
+      </div>
+      <!-- вторая колонка -->
+      <div class="flex-col-sm-3" style="">
+        <!-- фильтр арендатора -->
+        <div class="input-field" style="">
+          <a v-show=" filters['арендаторы'] && filters['арендаторы'].length " @click=" ClearFilter('арендаторы') " href="javascript:" style="position: absolute; z-index: 1; right:0.5rem; top:0.3rem; "><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"  class="red-fill fill-darken-1" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#left-clear-fill"></use></svg></a>
+          <input type="text" name="арендаторы"  v-model="filters['арендаторы']" @input=" OnChangeFilter " :placeholder=" 'фильтр арендатора' " class="">
+        </div>
+        
+        <!-- фильтр по объекту -->
+        <div>
+          <!-- <v-object-select v-if=" rentObjects.length " :select=" item['$объект'] " :data-list=" rentObjects " @on-select-object=" SelectObjectFilter "></v-object-select>-->
+          <v-object-select :select=" filters['объект'] " :data-url=" 'аренда/объекты-ук' " :param=" {placeholder: 'фильтр по объекту',} " @on-select-object=" SelectObjectFilter "></v-object-select>
+          <!--v-select :select=" filters['объект'] " :items=" rentObjects " :param=" {'без поля поиска': true} " @on-select=" SelectObjectFilter ">
+            <template v-slot:selected="{ selected }">
+              <h5 class="fw500 blue-text text-darken-3 animated fadeIn slow hover-bottom-shadow-blue-darken-3" style="">{{ (selected && selected.$item && selected.$item.name) || 'По объекту' }}</h5>
+            </template>
+            <template v-slot:listItem="{ listItem, selected }">
+              <h4 class0000=" ItemClass(obj) " class=" blue-text text-darken-3 relative"  :class="{'bold': listItem === selected}"  style="">
+                  <span>★ {{ listItem.$item.name }}</span>
+                  <span class="grey-text fs7" style="position:absolute; right:0; bottom:0;">#{{ listItem.id }}</span>
+              </h4>
+            </template>
+          </v-select-->
+        </div>
+      </div>
+      <!-- третья колонка -->
+      <div class="flex-col-sm-8 padd-05" style="">
+      
+      </div>
+    </div>
+      <!-- типа tbody --->
      <div v-for="row in filteredData" :key="row.id" class="relative flex-row flex-end-xs-000" style="">
-      <div class="flex-col-sm-1 padd-05"style="">
+      <div class="flex-col-sm-1 padd-05 relative-000" style="">
         <span class="chip padd-0-05 nowrap" :title=" row['дата'] "><span class="fs8 grey-text">от </span><span class="bold">{{ row.$дата.day }}</span> <span class="fs8">{{ row.$дата['мес'] }}</span><span v-show="(new Date).getYear()+1900 != row.$дата.year"> {{ row.$дата.year }}</span></span>
+        
+        <!-- крыжик -->
+        <!--div class="input-field"-->
+        <input type="checkbox" :id="`крыжик-${row.id}`" @input="ChbChange" v-model="row['крыжик']">
+        <label :for="`крыжик-${row.id}`" class="hover-shadow3d chb-yellow-lighten-4 orange-text chip yellow lighten-4" style="position:absolute; left:-2rem; padding-left:16px;" ></label>
+        
         <div v-if=" !!row._edit " style="position: absolute; width:90%; z-index:1; left:5%;"><v-form :item=" row._edit " :param=" param " @on-save=" OnSave "></v-form></div>
       </div>
       <div class="flex-col-sm-3" style="">
@@ -28,17 +84,18 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#contragent"></use></svg>
           <a @click=" Edit(row) " href="javascript: void('редактировать') " class="hover-shadow3d" title="редактировать">{{ row['$контрагент'].title }}</a>
         </h4>
-        <span class="chip padd-0-05">дог. {{ row.$договор['номер'] }}</span>
+        <span class-000="chip padd-0-05">дог. {{ row.$договор['номер'] }}</span>
+        <h5 class="right iblock blue-text text-darken-3">{{ row.$объект.name }}</h5>
       </div>
       <div class="flex-col-sm-8 padd-05" style="">
-        <table class="striped lime lighten-4">
+        <table class="bordered striped-000 lime-000 lighten-4">
           <tbody>
             <tr v-for="pos in  row['@позиции']" :key="pos.id">
-              <td><h5>{{ pos['$номенклатура'].title }}</h5></td>
-              <td><div class="truncate nowrap right-align" style="width:5rem;">{{ pos['количество'] }}</div></td>
+              <td style="width:40%;"><h5>{{ pos['$номенклатура'].title }}</h5></td>
+              <td class="right-align"><div class="truncate nowrap right-align" style="width:5rem;">{{ pos['количество'] }}</div></td>
               <td><div class="truncate nowrap" style="width:3rem;">{{ pos['ед'] }}</div></td>
-              <td><div class="truncate nowrap" style="width:5rem;">{{ pos['цена'] }}</div></td>
-              <td><div class="truncate nowrap" style="width:5rem;">{{ pos['сумма'] }}</div></td>
+              <td class="right-align"><div class="truncate nowrap" style="width:5rem;">{{ pos['цена'] }}</div></td>
+              <td class="right-align"><div class="truncate nowrap" style="width:5rem;">{{ pos['сумма'] }}</div></td>
               <td><div class="truncate nowrap" style="width:10rem;">{{ pos['коммент'] }}</div></td>
             </tr>
           </tbody>

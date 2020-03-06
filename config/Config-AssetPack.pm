@@ -240,6 +240,7 @@ sub map_grep_mode {
         ),
       ],# static/sass $ sass --watch main.scss:../css/main.css
       
+      #http://flexboxgrid.com/
       ['flexboxgrid.css'=> &map_grep_mode(qw(
       lib/flexboxgrid/dist/flexboxgrid.css::development
       lib/flexboxgrid/dist/flexboxgrid.min.css::production
@@ -795,6 +796,7 @@ sub map_grep_mode {
         js/c/autocomplete/v-suggestions.js
         ----v-uploader.js
         js/c/autocomplete/v-select.js
+        js/c/object/v-select-object.js
         )],
         ['аренда-расходы.html' => grep !/^--/, qw(
         js/c/project/list.html
@@ -804,6 +806,7 @@ sub map_grep_mode {
         js/c/autocomplete/v-suggestions.html
         ---v-uploader.html
         js/c/autocomplete/v-select.html
+        js/c/object/v-select-object.html
         )],
         
         ['контрагенты/замена.js' => grep !/^--/, qw(

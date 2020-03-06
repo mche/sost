@@ -13,7 +13,7 @@
 */
 var moduleName = "Аренда::Объект::Форма";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Выбор объекта']);
+var module = angular.module(moduleName, ['Компонент::Выбор объекта']);
 
 module
 .factory('$КомпонентАрендаОбъектФорма',  function($templateCache, $http, $timeout, appRoutes, $КомпонентВыборОбъекта) {// factory

@@ -185,6 +185,12 @@ sub счет_оплата_docx {# и акты
   return $r;#для отладки - коммент линию
 }
 
+sub счет_расходы_docx {
+  my $self  =  shift;
+  my $param = ref $_[0] ? shift : {@_};
+  
+}
+
 sub реестр_актов {
   my $self  =  shift;
   my $param = ref $_[0] ? shift : {@_};
@@ -276,8 +282,10 @@ sub сохранить_расход {
 sub список_расходов {
   my $self  =  shift;
   my $data= ref $_[0] ? shift : {@_};
+  my $pid = $data->{'проект/id'} || ($data->{'проект'} && $data->{'проект'}{id});
   my ($where, @bind) = $self->SqlAb->where({
     $data->{id} ? (' r.id ' => $data->{id}) : (),
+    $pid ? (' pr.id '=> $pid) : (),
     $data->{'месяц'} ? (qq{ date_trunc('month', r."дата") } => \[qq{ = date_trunc('month', ?::date) }, $data->{'месяц'}] ) : (),
     });
   $self->dbh->selectall_arrayref($self->sth('расходы', where=>$where, $data->{order_by} ? (order_by=>$data->{order_by}) : ()), {Slice=>{}}, @bind);

@@ -40,18 +40,14 @@ const util = {/*разное*/
   //~ IsEqualId(it){ return (it.id || it) == this.id; },
   MapPosItem(pos){
     var vm = this;
-    //~ console.log("MapItemRooms", room);
-    //~ var r = room['помещение/id'] && rentRoomsData.find(util.IsEqualId, {"id": room['помещение/id']});
-    //~ room['объект-помещение'] = room.$помещение ? `${ room.$объект['name'] }: №${ room.$помещение['номер-название'] }, ${ room.$помещение['этаж'] } эт., ${ parseFloat(room.$помещение['площадь']).toLocaleString() } м²` : '';
     pos._id = vm.idMaker.next().value;
+    vm.PosSum(pos);
     //~ vm.InputMetr(room) || vm.InputSum(room);
   },
   FilterPos(item){
     return item._match.indexOf(this.match) !== -1;
   },
-  //~ MapRoom(item){
-    //~ return item['объект-помещение'];
-  //~ },
+
 };///конец util
 
 const methods = {/*методы*/
@@ -102,7 +98,7 @@ NomenData(){/// номенклатура позиций
   var vm = this;
   return $http.get(appRoutes.urlFor('аренда/расходы/номенклатура')).then(function(resp){
     vm.nomenData = resp.data.map((item)=>{
-      item._match = item.title;
+      item._match = `${ item.title } ${ item['$позиция'] && item['$позиция']['ед'] }`;
       return item;
     });
   });
@@ -157,7 +153,7 @@ InitForm(item){/// обязательные реактивные поля
   if (!item['договор/id']) item['договор/id'] = undefined;
   if (!item['проект/id']) item['проект/id'] = vm.param['проект'].id;
   if (!item['@позиции']) item['@позиции'] = [];
-  if (!item['@позиции'].length) vm.AddPos(undefined, item['@позиции']);//.push({"$номенклатура":{"title": ''}, "сумма": ''});/// это поле для компутед суммы!!!
+  /*if (!item['@позиции'].length)*/ vm.AddPos(undefined, item['@позиции']);//.push({"$номенклатура":{"title": ''}, "сумма": ''});/// это поле для компутед суммы!!!
   item['@позиции'].map(util.MapPosItem, vm);
   item._uploads = [];
   item._id = vm.idMaker.next().value;
@@ -175,7 +171,7 @@ Save(){
       vm.cancelerHttp = undefined;
       if (resp.data.error) return Materialize.toast(resp.data.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
       Materialize.toast('Сохранено успешно', 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
-      //~ vm.$emit('on-save', resp.data.success);
+      vm.$emit('on-save', resp.data.success);
       console.log("Сохранено", resp.data);
       //~ $Контрагенты.RefreshData();
       //~ vm.ContragentData();
@@ -228,8 +224,10 @@ OnContragentSelect(item, propSelect){/// из компонента выбор и
 
 
 
-PosSum(pos){
+PosSum(pos, name){
   var vm = this;
+  //~ console.log("PosSum", pos['количество']);
+  if (name && /[,.]$/.test(pos[name])) return;
   pos['количество'] = vm.ParseNum(pos['количество']);
   pos['цена'] = vm.ParseNum(pos['цена']);
   pos['сумма'] = pos['количество'] * pos['цена'];

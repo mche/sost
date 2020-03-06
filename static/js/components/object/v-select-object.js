@@ -11,7 +11,7 @@
   })
   
 */
-var moduleName = "Выбор объекта";
+var moduleName = "Компонент::Выбор объекта";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['Util', 'Компонент::Выбор в списке']);
 

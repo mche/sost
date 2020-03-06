@@ -229,6 +229,8 @@ sub сохранить_расход {
   
 }# end сохранить_расход
 
+#~ ^\/аренда\/счет([^/]+)/?(?:\.([^/]+))?$
+
 sub счет_оплата_docx {# сделать docx во врем папке и вернуть урл
   my $c = shift;
   
@@ -239,7 +241,7 @@ sub счет_оплата_docx {# сделать docx во врем папке �
     #~ 'format'   => 'pdf',                 # will change Content-Type "application/x-download" to "application/pdf"
     #~ 'content_disposition' => 'inline',   # will change Content-Disposition from "attachment" to "inline"
     'cleanup'  => 1,                     # delete file after completed
-  )  if $docx;
+  )  if $c->req->method eq 'GET';#$docx;
   
   my $param =  $c->req->json || {};
   return $c->render(json=>{error=>'не указан месяц'})
@@ -279,7 +281,58 @@ sub счет_оплата_docx {# сделать docx во врем папке �
   $c->render(json=>{docx=>$data->{docx}});
 }
 
-sub реестр_актов_xlsx {
+sub счет_расходы_docx {# сделать docx во врем папке и вернуть урл
+  my $c = shift;
+  
+  my $docx = $c->stash('docx'); # имя файла
+  #~ $c->app->log->error($docx);
+  return $c->render_file(
+    'filepath' => "static/tmp/$docx",
+    #~ 'format'   => 'pdf',                 # will change Content-Type "application/x-download" to "application/pdf"
+    #~ 'content_disposition' => 'inline',   # will change Content-Disposition from "attachment" to "inline"
+    'cleanup'  => 1,                     # delete file after completed
+  )  if $c->req->method eq 'GET';#$docx;
+  
+  my $param =  $c->req->json || {};
+  return $c->render(json=>{error=>'не указан месяц'})
+    unless $param->{'месяц'};
+  return $c->render(json=>{error=>'не указаны счета'})
+    unless $param->{'аренда/расходы/id'};
+  
+  $param->{'счет или акт'} = 'счет-возмещение';
+  $param->{docx} = sprintf("%s-%s.docx", $param->{'счет или акт'}, $c->auth_user->{id});
+  $param->{docx_template_file} = sprintf("static/аренда-%s.template.docx", $param->{'счет или акт'},);
+  $param->{uid} = $c->auth_user->{id};
+  $param->{auth_user} = $c->auth_user;
+  my $data = $c->model->счет_расходы_docx($param);
+  $c->log->error($c->dumper($data))
+    and return $c->render(json=>{error=>$data})
+    unless ref $data;
+  return $c->render(json=>{error=>"Не найдено счетов"})
+    unless $data->{data};
+  
+  #~ $c->log->error($c->dumper($data));
+  
+  #~ return $c->render(json=>{data=>$data});
+  
+  my $err_file = "$data->{docx_out_file}.error";
+  
+  open(PYTHON, "| python  2>'$err_file' ")
+    || die "can't fork: $!";
+  #~ ##local $SIG{PIPE} = sub { die "spooler pipe broke" };
+  say PYTHON $data->{python};
+  close PYTHON
+    #~ || die "bads: $! $?"
+    || return $c->render_file('filepath' => $err_file,  'format'   => 'txt', 'content_disposition' => 'inline', 'cleanup'  => 1,);
+  
+  unlink $err_file;
+  
+  #~ $c->render(json=>{data=>$data});
+  #~ $c->render(json=>{url=>$data->{docx_out_file}});
+  $c->render(json=>{docx=>$data->{docx}});
+}
+
+sub реестр_актов_xlsx111 {
   my $c = shift;
   my $month = $c->param('month');
   my $data = $c->model->реестр_актов("месяц"=> $month, "счет или акт"=>'акт');
@@ -302,4 +355,26 @@ sub реестр_актов_xlsx {
   
 }
 
+sub реестр_актов_xlsx {
+  my $c = shift;
+  require Excel::Writer::XLSX;
+  
+  my $month = $c->param('month');
+  my $data = $c->model->реестр_актов("месяц"=> $month, "счет или акт"=>'акт');
+  my @names = ('номер акта', 'дата акта', 'договор/номер','договор/дата начала', 'договор/дата завершения', 'контрагент/title', 'ИНН', 'объект', 'сумма/num');
+  #~ my $filename=sprintf("static/tmp/%s-реестр-актов.xlsx", $c->auth_user->{id}, $month);
+  
+  open my $xfh, '>', \my $fdata or die "Failed to open filehandle: $!";
+  my $workbook  = Excel::Writer::XLSX->new( $xfh );
+  my $worksheet = $workbook->add_worksheet();
+  my $n = 0;
+  $worksheet->write_row($n++,0, \@names);
+  $worksheet->write_row($n++,0, [@$_{@names}])
+    for @$data;
+  $workbook->close();
+  #~ return $fdata;
+  #~ $c->render(data=>$fdata, format=>'xlsx');
+  # Render data from memory as file
+  $c->render_file('data' => $fdata, 'filename' => 'реестр-актов.xlsx', format=>'xlsx');
+}
 1;

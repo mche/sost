@@ -21,13 +21,14 @@
 
 <thead>
   <tr>
-    <td style="width:1%;">
+    <td class="padd-05" style="width:1%;">
+        <!-- фильтр арендатора -->
         <div class="input-field" style=" width:9rem; max-width:calc(10vw);"><!-- стили ширины соотв. стилям первой колонки position:absolute; top:-2.3rem; left:0;-->
           <a v-show=" filters['арендаторы'] && filters['арендаторы'].length " @click=" ClearFilter('арендаторы') " href="javascript:" style="position: absolute; z-index: 1; right:0.5rem; top:0.3rem; "><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"  class="red-fill fill-darken-1" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#left-clear-fill"></use></svg></a>
           <input type="text" name="арендаторы"  v-model="filters['арендаторы']" @input=" OnChangeFilter " :placeholder=" 'поиск арендатора' " class="">
         </div>
     </td>
-    <td class="relative vbottom" style="width:1%;">
+    <td class="relative vbottom padd-05" style="width:1%;">
       <!-- фильтр истекшие договоры -->
       <div class="input-field nowrap" style="position:absolute; top:-2rem;margin-left:0.3rem;">
         <input type="checkbox" id="архивные крыжики" v-model="filters['архивные договоры']" @change="ChbChange('архивные договоры')">
@@ -48,16 +49,17 @@
         </h6></a>
       </div>
     </td>
-    <td style="width:calc(30vw);">
+    <td class="padd-05" style="width:calc(30vw);">
       <table>
         <thead>
           <tr class="line-height-10-000">
             <th class="vbottom">
-              <div v-if=" rentObjects.length " style-000="width:calc(20vw);">
-                <!-- <v-object-select v-if=" rentObjects.length " :select=" item['$объект'] " :data-list=" rentObjects " @on-select-object=" SelectObjectFilter "></v-object-select>-->
-                <v-select :select=" filters['объект'] " :items=" rentObjects " :param=" {'без поля поиска': true} " @on-select=" SelectObjectFilter ">
+              <!-- фильтр по объекту :data-list=" rentObjects "-->
+              <div v0000-if=" rentObjects.length " style-000="width:calc(20vw);">
+                <v-object-select  :select=" filters['объект'] " :data-url=" 'аренда/объекты-ук' " @on-select-object=" SelectObjectFilter "></v-object-select>
+                <!--v-select :select=" filters['объект'] " :items=" rentObjects " :param=" {'без поля поиска': true} " @on-select=" SelectObjectFilter ">
                   <template v-slot:selected="{ selected }">
-                    <h5 class="fw500 blue-text text-darken-3 animated fadeIn" style="">{{ (selected && selected.$item && selected.$item.name) || 'По объекту' }}</h5>
+                    <h5 class="fw500 blue-text text-darken-3 animated fadeIn slow hover-bottom-shadow-blue-darken-3" style="">{{ (selected && selected.$item && selected.$item.name) || 'По объекту' }}</h5>
                   </template>
                   <template v-slot:listItem="{ listItem, selected }">
                     <h4 class0000=" ItemClass(obj) " class=" blue-text text-darken-3 relative"  :class="{'bold': listItem === selected}"  style="">
@@ -65,7 +67,7 @@
                         <span class="grey-text fs7" style="position:absolute; right:0; bottom:0;">#{{ listItem.id }}</span>
                     </h4>
                   </template>
-                </v-select>
+                </v-select--->
               </div>
             </th>
             <th class="vbottom" style="width:1%;"><!--h6 class="bold" style="width: calc(5vw);">Площадь</h6--></th>
@@ -102,13 +104,13 @@
         <!-- крыжик -->
         <!--div class="input-field"-->
           <input type="checkbox" :id="`крыжик-${item.id}`" v-model="item['крыжик']">
-          <label :for="`крыжик-${item.id}`" class="hover-shadow3d chb-yellow-lighten-4 orange-text chip yellow lighten-4" style="position:absolute; left:-2rem; bottom: 0; padding-left:17px;" ></label>
+          <label :for="`крыжик-${item.id}`" class="hover-shadow3d chb-yellow-lighten-4 orange-text chip yellow lighten-4" style="position:absolute; left:-2rem; bottom: 0; padding-left:16px;" ></label>
         <!--/div-->
       </div>
       
     </td>
     <td class="padd-05">
-      <div style-000="item_idx  > 0 ? {'max-height':'10rem', 'overflow':'auto'} : {}"><table class="bordered highlight striped lime lighten-4">
+      <div style-000="item_idx  > 0 ? {'max-height':'10rem', 'overflow':'auto'} : {}"><table class="bordered highlight"><!-- striped lime lighten-4 -->
       <!---thead v-if=" item_idx === 0 " ></thead--->
       
       <tbody>
@@ -164,9 +166,9 @@
           </td>
         </tr>
         <!--- Строка суммы за помещения -->
-        <tr v-if="item['@помещения'] && item['@помещения'].length > 1" class="grey lighten-4">
+        <tr v-if="item['@помещения'] && item['@помещения'].length > 1" class="grey-000 lighten-4">
           <td colspan="3">
-            <div v-show="item['коммент'] && !!item['коммент'].length " class="card-000 padd-0-05 truncate-000 pre-wrap fs8 grey-text line-height-8" style="max-height:2rem; overflow:auto;" :title=" item['коммент'] ">{{ item['коммент'] }}</div>
+            <div v-show="item['коммент'] && !!item['коммент'].length " class="card-000 padd-0-05 truncate-000 pre-wrap fs8 grey-text line-height-8 grey lighten-2" style="max-height:2rem; overflow:auto;" :title=" item['коммент'] ">{{ item['коммент'] }}</div>
           </td>
           <td class="right-align"><h5 class="nowrap lime-text text-darken-4">
             <span class="bold ">{{ RoomsSquare(item).toLocaleString().replace(/([.,]\d{2})\d+/, '$1') }}</span>
@@ -182,7 +184,7 @@
           <td></td>
         </tr>
       </tbody></table>
-      <div v-show="!item['@помещения'] || item['@помещения'].length == 1 &&  item['коммент'] && item['коммент'].length" class="padd-0-05 pre-wrap fs8 grey-text line-height-8 border-bottom" style="max-height:2rem; overflow:auto;" :title=" item['коммент'] ">{{ item['коммент'] }}</div>
+      <div v-show="!item['@помещения'] || item['@помещения'].length == 1 &&  item['коммент'] && item['коммент'].length" class="padd-0-05 pre-wrap fs8 grey-text line-height-8 border-bottom grey lighten-2" style="max-height:2rem; overflow:auto;" :title=" item['коммент'] ">{{ item['коммент'] }}</div>
       </div>
     </td>
     <!--td style="width:1%;"></td-->
@@ -228,7 +230,7 @@
   </div><!-- modal-content -->
   <div class="modal-footer center">
     <a @click=" PrintPay(payMonth) " href="javascript:" class="modal-action waves-effect waves-green btn-flat z-depth-1 green lighten-4 green-text text-darken-4" style="float:none;"><svg ng-hide="$c.cancelerHttp" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="blue-fill " style="height: 1.7rem;"><use xlink:href="/fonts/icons.svg#ms-word" class=""></use></svg><span>Получить распечатку</span></a>
-    <a @click=" Reestr(payMonth) " href="javascript:" class="modal-action waves-effect waves-green btn-flat z-depth-1 blue lighten-4 blue-text text-darken-4" style="float:none;"><!--svg ng-hide="$c.cancelerHttp" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="blue-fill " style="height: 1.7rem;"><use xlink:href="/fonts/icons.svg#ms-word" class=""></use></svg--><span>Копировать реестр актов</span></a>
+    <a @click=" Reestr(payMonth) " href="javascript:" class="modal-action waves-effect waves-green btn-flat z-depth-1 blue lighten-4 blue-text text-darken-4" style="float:none;"><!--svg ng-hide="$c.cancelerHttp" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="blue-fill " style="height: 1.7rem;"><use xlink:href="/fonts/icons.svg#ms-word" class=""></use></svg--><span>Реестр актов</span></a>
     <a  href="javascript:" class="modal-action modal-close waves-effect waves-red btn-flat z-depth-1 red lighten-3 red-text text-darken-3"><i class="material-icons">cancel</i><span>Отмена</span></a>
   </div>
 </div>

@@ -40,21 +40,21 @@ input[disabled] + label, [type="radio"]:disabled + label {
   }
 }
 
-.addr_type[type="radio"]:checked + label::after {
+/*.addr_type[type="radio"]:checked + label::after {
   background-color: color("lime", "darken-4");
   border: 2px solid color("lime", "darken-4");
 }
 .addr_type[type="checkbox"]:checked + label::before {
   border-right: 2px solid color("lime", "darken-4");
   border-bottom: 2px solid color("lime", "darken-4");
-}
+}*/
 
 
 [type="checkbox"]:checked + label.through {
   text-decoration: none;//line-through
 }
 
-input[type="tel"]:focus:not([readonly]) {
+/*input[type="tel"]:focus:not([readonly]) {
   border-bottom: 1px solid color("deep-orange", "darken-1");
   box-shadow: 0 1px 0 0 color("deep-orange", "darken-1");
 }
@@ -68,7 +68,7 @@ input[type="tel"], input[type="tel"]:focus:not([readonly]) + label, .input-field
 input[type="tel"], .tel.prefix {
   font-size: 1.5rem;
   
-}
+}*/
 
 .select-wrapper input.select-dropdown {
   height: 2rem;
@@ -109,7 +109,7 @@ textarea.materialize-textarea,
   position:relative;
   
   // Hovered input style
-  &:hover:not([readonly]):not([disabled]), &.picker__input:hover:not([disabled]) {
+  &:hover:not([readonly]):not([disabled]), &.picker__input:hover:not([disabled])  {
     ///border-bottom: 1px solid $input-focus-color;
     box-shadow: 0 3px 0 0 $input-focus-color;
     border-color: transparent;
@@ -120,5 +120,4 @@ textarea.materialize-textarea,
   }
         
 }
-
 
