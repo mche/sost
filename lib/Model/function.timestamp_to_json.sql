@@ -1,4 +1,5 @@
-CREATE OR REPLACE FUNCTION "timestamp_to_json"(timestamp) RETURNS json AS $$ 
+CREATE OR REPLACE FUNCTION "timestamp_to_json"(timestamp)
+RETURNS json AS $$ 
 select row_to_json(d) from (
   select 
   ---date_part('century', $1) as century,
@@ -26,12 +27,18 @@ select row_to_json(d) from (
   to_char($1, 'TMday') as "день недели", ---полное название дня недели в нижнем регистре (дополненное пробелами до 9 символов)
   to_char($1, 'TMdy') as "день нед",---сокращённое название дня недели в нижнем регистре (3 буквы в английском; в других языках длина может меняться)
   to_char($1, 'TMmon') as "мес",
-  to_char($1, 'TMmonth') as "месяц"
+  to_char($1, 'TMmonth') as "месяц",
+  m.title as "месяц"
+  from 
+    (VALUES (1, 'январь'), (2, 'февраль'), (3, 'март'), (4, 'апрель'), (5, 'май'), (6, 'июнь'), (7, 'июль'), (8, 'август'), (9, 'сентябрь'), (10, 'октябрь'), (11, 'ноябрь'), (12, 'декабрь'))
+    m(num, title)
+  where m.num=date_part('month', $1)
 ) d;
 $$ LANGUAGE SQL IMMUTABLE STRICT;
 
 
-CREATE OR REPLACE FUNCTION "timestamp_to_json"(timestamp with time zone) RETURNS json AS $$ 
+CREATE OR REPLACE FUNCTION "timestamp_to_json"(timestamp with time zone)
+RETURNS json AS $$ 
 select row_to_json(d) from (
   select 
   ---date_part('century', $1) as century,

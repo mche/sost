@@ -27,7 +27,9 @@ var Component = function  ($scope, $timeout,  $element) {//
     //~ console.trace();
     if (!$c.param) $c.param = {};
     //~ if (!$c.param.selectedItemClass) $c.param.selectedItemClass = 'chip padd-0-05 brown lighten-4 shadow-inset-10  brown-text text-darken-3 nowrap';
-    if ($c.data && $c.data.then) $c.data.then(function(resp){$c.data = resp.data || resp; $c.InitData();});
+    //~ console.log("$onInit", $c.data);
+    if (!$c.data) $c.data = [];
+    if (/*$c.data && */$c.data.then) $c.data.then(function(resp){$c.data = resp.data || resp; $c.InitData();});
     else $timeout(function(){ $c.InitData(); });
   };
   
