@@ -70,19 +70,22 @@ ALTER TABLE "аренда/договоры-помещения" ADD COLUMN IF NOT
 /***********************************/
 ---drop  table IF  EXISTS "аренда/расходы";
 
-create table IF NOT EXISTS "аренда/расходы" (---- кроме самой аренды
+create table IF NOT EXISTS "аренда/расходы" (---- кроме самой аренды --- возмещения доп расходов
   id integer  NOT NULL DEFAULT nextval('{%= $sequence %}'::regclass) primary key,
   ts  timestamp without time zone NOT NULL DEFAULT now(),
   uid int, --- автор записи
   "дата" date not null,
+  "номер" text not null DEFAULT nextval('счета'::regclass)::text, --
   "коммент" text
 /* связи:
 id1("аренда/договоры")->id2("аренда/расходы")
 id1("аренда/расходы")->id2("аренда/расходы/позиции")
 */
 );
+ALTER TABLE "аренда/расходы" ADD COLUMN IF NOT EXISTS  "номер" text not null DEFAULT nextval('счета'::regclass)::text;
 
-create table IF NOT EXISTS "аренда/расходы/позиции" (---- кроме самой аренды
+
+create table IF NOT EXISTS "аренда/расходы/позиции" (---- кроме самой аренды --- возмещения доп расходов
   id integer  NOT NULL DEFAULT nextval('{%= $sequence %}'::regclass) primary key,
   ts  timestamp without time zone NOT NULL DEFAULT now(),
   uid int, --- автор записи
@@ -104,7 +107,7 @@ CREATE SEQUENCE IF NOT EXISTS "счета";
 CREATE SEQUENCE IF NOT EXISTS "акты";
 ---DROP TABLE IF EXISTS "счета";
 
-create table IF NOT EXISTS "счета/аренда/помещения" ( ---- счета за помещения
+create table IF NOT EXISTS "счета/аренда/помещения" ( ---- счета за аренду помещений (без других платежей)
   id integer  NOT NULL DEFAULT nextval('{%= $sequence %}'::regclass) primary key,
   ts  timestamp without time zone NOT NULL DEFAULT now(),
   uid int, --- автор записи
@@ -116,7 +119,7 @@ id1("аренда/договоры")->id2("счета/аренда/помеще�
 );
 CREATE INDEX  IF NOT EXISTS "счета/аренда/помещения/idx/месяц" ON "счета/аренда/помещения" ("месяц");---date_trunc('month', "месяц")--- ERROR:  functions in index expression must be marked IMMUTABLE
 
-create table IF NOT EXISTS "акты/аренда/помещения" ( ---- акты вып за помещения
+create table IF NOT EXISTS "акты/аренда/помещения" ( ---- акты вып за аренду помещений (без других платежей)
   id integer  NOT NULL DEFAULT nextval('{%= $sequence %}'::regclass) primary key,
   ts  timestamp without time zone NOT NULL DEFAULT now(),
   uid int, --- автор записи
@@ -233,6 +236,164 @@ RETURN QUERY
 END;
 $func$ LANGUAGE plpgsql;
 
+DROP VIEW IF EXISTS "движение ДС/аренда/счета" CASCADE;--- расходные записи движения по аренде
+CREATE OR REPLACE VIEW "движение ДС/аренда/счета" as
+-- 
+select d.id, d.ts, /*d."дата1", */d1."дата"::date, -1::numeric*sum."сумма"*d1."доля дней" as "сумма",
+  -1::numeric as "sign", --- счет-расход
+  ---"категории/родители узла/id"(c.id, true) as "категории",
+  ---"категории/родители узла/title"(c.id, false) as "категория",
+  coalesce(d1."@категории/id", cat.parents_id||cat.id) as "категории",
+  coalesce(d1."@категории/title", cat.parents_title[2:]||cat.title) as "категория",
+  k.title as "контрагент", k.id as "контрагент/id",
+  row_to_json(ob) as "$объект/json", ob.id as "объект/id", ob.name as "объект",
+  null::int as "кошелек2", --- left join
+  null::text as "профиль", null::int as "профиль/id",
+  --array[[w."проект", w.title], [w2."проект", w2.title]]::text[][] as "кошельки", ---  проект+кошелек, ...
+  --array[[w."проект/id", w.id], [w2."проект/id", w2.id]]::int[][] as "кошельки/id", ---  проект+кошелек, ...
+  null::text[][] as "кошельки", --- пока не знаю
+  null::int[][] as "кошельки/id",  --- пока не знаю
+  'счет по дог. № ' || d."номер" || E'\n' || ' ★ ' || ob.name || ' (' || array_to_string(sum."@помещения-номера", ', ') || case when d1."доля дней"=1 and coalesce(d1."коммент", '')!~'предоплата' then '' else d1."коммент" end || E')\n' || coalesce(d."коммент", ''::text) as "примечание"
+  
+from
+  "аренда/договоры" d
+  
+  join refs rk on d.id=rk.id2
+  join "контрагенты" k on k.id=rk.id1
+  
+  join (-- сумма в мес по договору
+    select
+      d.id as "договор/id", ---p.id as "помещение/id"
+      array_agg(distinct ob.id) as "@объекты/id",
+      array_agg(p."номер-название" order by p."номер-название") as "@помещения-номера",---для коммента
+      sum(coalesce(dp."сумма", dp."ставка"*p."площадь")) as "сумма"
+
+    from
+      "аренда/договоры" d
+      
+      join refs r on d.id=r.id1
+      join "аренда/договоры-помещения" dp on dp.id=r.id2
+    
+      join refs r1 on dp.id=r1.id2
+      join "аренда/помещения" p on p.id=r1.id1
+      
+      join refs r2 on p.id=r2.id2
+      join "аренда/объекты" o on o.id=r2.id1
+      
+      join refs ro on o.id=ro.id2
+      join "roles" ob on ob.id=ro.id1
+      
+    group by d.id
+  ) sum on d.id=sum."договор/id"
+  
+  join  "roles" ob on ob.id=sum."@объекты/id"[1]
+  
+  ---join (select array_agg("id" order by level desc) as "@id", (array_agg("title" order by level desc))[2:] as "@title" from "категории/родители узла"(121952::int, true)) cc on true
+  join "категории/родители"() cat on cat.id=121952 -- аренда офисов
+  
+  join lateral (--- повторить по месяцам договоров
+    --- тут один первый месяц договора (возможно неполный)
+    select d."дата1" as "дата", extract(day FROM date_trunc('month', d."дата1"+interval '1 month') - d."дата1")/extract(day FROM date_trunc('month', d."дата1") + interval '1 month - 1 day') as "доля дней",--- первого неполного месяца
+    extract(day FROM date_trunc('month', d."дата1"+interval '1 month') - d."дата1") as "за дней",
+    ' за ' || extract(day FROM date_trunc('month', d."дата1"+interval '1 month') - d."дата1")::text || ' дн. неполн. мес.' as "коммент",
+    null::int[] as "@категории/id", null::text[] as "@категории/title"
+    union all
+    --- тут остальные полные месяцы
+    select date_trunc('month', d."дата1"+interval '1 month')+make_interval(months=>m), 1, null, null, /*полная сумма*/ null, null
+    from
+      (select age(date_trunc('month', coalesce(d."дата расторжения", d."дата2")), date_trunc('month', d."дата1"+interval '2 month')) as "age") a
+      join lateral (
+        select generate_series(0, (extract(year from a."age")*12 + extract(month from a."age"))::int/*колич полных месяцев*/, 1) as m
+      ) m on true
+      
+    union all
+    --- тут один  последний месяц договора (возможно неполный)
+    select  date_trunc('month', coalesce(d."дата расторжения", d."дата2")), extract(day FROM coalesce(d."дата расторжения", d."дата2")/* тут важно до какой даты включительно- interval '1 day'*/)/extract(day FROM date_trunc('month', coalesce(d."дата расторжения", d."дата2")) + interval '1 month - 1 day'),--- доля дней в последнем месяце
+    extract(day FROM coalesce(d."дата расторжения", d."дата2")/* тут важно до какой даты включительно- interval '1 day'*/), --- колич дней
+    ' за ' || extract(day FROM coalesce(d."дата расторжения", d."дата2")/* тут важно до какой даты включительно- interval '1 day'*/)::text || ' дн. неполн. мес.' as "коммент", null, null
+    union all
+    --- тут возможно предоплата одного мес
+    select d."дата1" as "дата", 1, null, ' предоплата (обеспечительный платеж)', --- полная сумма
+      ---cc."@id", cc."@title"
+      cc.parents_id||cc.id as "@id", cc.parents_title||cc.title as "@title"
+    from 
+      generate_series(0, 0, 1) s,
+      ---(select array_agg("id" order by level desc) as "@id", (array_agg("title" order by level desc))[2:] as "@title" from "категории/родители узла"(929979::int, true)) cc
+      "категории/родители"() cc
+    where d."предоплата"=true and cc.id=929979
+  ) d1 on true
+
+;
+
+DROP VIEW IF EXISTS "аренда/счета доп платежей" CASCADE;--- расходные записи движения по аренде
+CREATE OR REPLACE VIEW "аренда/счета доп платежей" as
+-- 
+select r.id, r.ts, /*d."дата1", */r."дата"::date, -1::numeric*pos."сумма",
+  -1::numeric as "sign", --- счет-расход
+  pos."категории", pos."категория",
+  k.title as "контрагент", k.id as "контрагент/id",
+  to_json(ob) as "$объект/json", ob.id as "объект/id", ob.name as "объект",
+  null::int as "кошелек2", --- left join
+  null::text as "профиль", null::int as "профиль/id",
+  array[[pr.name, /*w.title*/ null], [/*w2."проект", w2.title*/null, null]]::text[][] as "кошельки", ---  проект+кошелек, ...
+  array[[pr.id, /*w.id*/ null], [/*w2."проект/id", w2.id]*/null, null]]::int[][] as "кошельки/id", ---  проект+кошелек, ...
+  'счет доп платежей арендатора по дог. № ' || d."номер" || E'\n' || ' ★ ' || ob.name /*|| ' (' || array_to_string(sum."@помещения-номера", ', ') || case when d1."доля дней"=1 and coalesce(d1."коммент", '')!~'предоплата' then '' else d1."коммент" end || E')\n'*/ || E'\n' || coalesce(r."коммент", ''::text) as "примечание"
+  
+from
+  "аренда/договоры" d
+  join refs _r on d.id=_r.id2
+  join "контрагенты" k on k.id=_r.id1
+  
+  --- по объекту (одна строка из арендованных помещений)
+  ---join refs _rp on d.id=_rp.id1
+  /*left*/ join (
+    select dp."договор/id",
+      ---jsonb_agg(dp order by dp.id) as "@помещения/json",
+      ---array_agg(dp."помещение/id" order by dp.id) as "@кабинеты/id",
+      ---array_agg(dp.id  order by dp.id) as "@договоры/помещения/id",
+      ---array_agg(dp."$объект/json"  order by dp.id) as "@объекты/json",
+      array_agg(dp."объект/id" order by dp.id) as "@объекты/id"
+      ---sum(dp."площадь помещения") as "площадь помещений",
+      ---sum(dp."оплата за помещение") as "оплата"
+    from ---"аренда/договоры" d 
+      ---join refs r on d.id=r.id1
+      --join (
+        ( {%= $DICT->render('договоры/помещения') %} ) dp
+      --) dp on dp."договор/id"=d.id
+    group by "договор/id"--d.id
+  ) dp on d.id=dp."договор/id"
+  
+  join  "roles" ob on ob.id=dp."@объекты/id"[1]--- один объект
+  
+  join refs _rr on d.id=_rr.id1
+  join "аренда/расходы" r on r.id=_rr.id2
+  
+  join refs _rpr on r.id=_rpr.id2
+  join (
+    select distinct id, name---, descr, disable
+    from "проекты"
+  ) pr on pr.id=_rpr.id1
+  
+  join (--- позиции
+    select 
+      r.id as "расход/id",
+      ---to_json(r) as "$расход/json",
+      ---d.id as "договор/id",
+      ---to_json(d) as "$договор/json",
+      cat.id as "категория/id",
+      ---to_json(cat) as "$категория/json",
+      cat.parents_id||cat.id as "категории",
+      cat.parents_title[2:]||cat.title as "категория",
+      pos.*,
+      pos."количество"*pos."цена" as "сумма"
+    from "аренда/расходы" r
+      join refs r1 on r.id=r1.id1
+      join "аренда/расходы/позиции" pos on pos.id=r1.id2
+      join refs rn on pos.id=rn.id2
+      join "категории/родители"() cat on cat.id=rn.id1
+  ) pos on pos."расход/id"=r.id
+  
+
 /*конец схемы*/
 
 
@@ -267,14 +428,22 @@ select d.*,
   timestamp_to_json(d."дата1"::timestamp) as "$дата1/json",
   timestamp_to_json(d."дата2"::timestamp) as "$дата2/json",
   timestamp_to_json(d."дата расторжения"::timestamp) as "$дата расторжения/json",
-  row_to_json(k) as "$контрагент/json",
+  row_to_json(k) as "$контрагент/json", 
   k.id as "контрагент/id",
+  pr.id as "проект/id", ---to_json(pr) as "$проект/json",
   dp.*,
   dp."@кабинеты/id" as "@помещения/id"
 from 
   "аренда/договоры" d
   join refs r on d.id=r.id2
   join "контрагенты" k on k.id=r.id1
+  
+  left join (---арендодатель
+    select pr.*, r.id2
+    from "roles" pr
+      join refs r on pr.id=r.id1
+  ) pr on pr.id2=d.id
+  
   left join (
     select dp."договор/id",
       jsonb_agg(dp order by dp.id) as "@помещения/json",
@@ -316,7 +485,7 @@ from
 {%= $limit || '' %}
 
 @@ счета и акты
---- для docx
+--- за аренду помещений и предоплату для docx
 WITH param as (
   select *, to_char(d."дата", 'YYYY') as "год", date_trunc('month', d."дата") as "month"
   from (VALUES (1, 'январь'), (2, 'февраль'), (3, 'март'), (4, 'апрель'), (5, 'май'), (6, 'июнь'), (7, 'июль'), (8, 'август'), (9, 'сентябрь'), (10, 'октябрь'), (11, 'ноябрь'), (12, 'декабрь'))
@@ -336,6 +505,8 @@ num as (---нумерация счетов
 
 select {%= $select || '*' %} from (
 select
+  pr."реквизиты"||to_jsonb(pr) as "$арендодатель", --- as "арендодатель/реквизиты",
+
   coalesce(num1."номер", '000')/*(random()*1000)::int*/ as "номер счета",
   coalesce(num1.ts, now())::date as "дата счета",
   timestamp_to_json(coalesce(num1.ts, now())) as "$дата счета",
@@ -371,6 +542,12 @@ from
   ) d on param."month" between date_trunc('month', d."дата1") and (date_trunc('month', coalesce(d."дата расторжения", d."дата2") + interval '1 month') - interval '1 day') ---только действующие договоры
   join refs r on d.id=r.id2
   join "контрагенты" k on k.id=r.id1
+  
+  left join (---арендодатель
+    select pr.*, r.id2
+    from "контрагенты/проекты"  pr
+      join refs r on pr."проект/id"=r.id1
+  ) pr on pr.id2=d.id
   
   /*** Waltex/Report.pm.dict.sql ***/
   ---join "движение ДС/аренда/счета" dp on d.id=dp.id and param."month"=date_trunc('month', dp."дата") and dp."примечание"!~'предоплата'
@@ -421,16 +598,142 @@ from
 {%= $order_by || 'order by d."дата1" desc, d.id desc  ' %}
 ) s
 
-@@ номенклатура
+@@ счета и акты/доп расходы
+---  для docx
+WITH param as (
+  select *, to_char(param."дата", 'YYYY') as "год", date_trunc('month', param."дата") as "month"
+  from (VALUES (1, 'январь'), (2, 'февраль'), (3, 'март'), (4, 'апрель'), (5, 'май'), (6, 'июнь'), (7, 'июль'), (8, 'август'), (9, 'сентябрь'), (10, 'октябрь'), (11, 'ноябрь'), (12, 'декабрь'))
+    m(num, "месяц")
+  join (VALUES (?::date, ?::int[])) param("дата", "аренда/расходы/id") on m.num=date_part('month', param."дата")
+)
+---конец with
+
+select {%= $select || '*' %} from (
+select
+   pr."реквизиты"||to_jsonb(pr) as "$арендодатель", ---as "арендодатель/реквизиты", --- item['арендодатель/реквизиты']
+/***
+%# {{ (item['$арендодатель'] and item['$арендодатель']['банк'] ) or seller['банк'] }}
+%# {{ (item['$арендодатель'] and item['$арендодатель']['БИК']) or seller['БИК'] }}
+%# {{ (item['$арендодатель'] and item['$арендодатель']['кор. счет']) or seller['кор. счет'] }}
+%# {{ (item['$арендодатель'] and item['$арендодатель']['расч. счет']) or seller['расч. счет'] }}
+%# {{ (item['$арендодатель'] and item['$арендодатель']['КПП']) or seller['КПП'] }}
+%# {{ (item['$арендодатель'] and item['$арендодатель']['ИНН']) or seller['ИНН'] }}
+%# {{ (item['$арендодатель'] and (item['$арендодатель']['полное наименование'] or item['$арендодатель']['наименование'] or item['$арендодатель']['title'] )) or seller['полное наименование'] or seller['наименование'] }}
+%# {{  (item['$арендодатель'] and item['$арендодатель']['title']) or seller['наименование'] }}, ИНН {{  (item['$арендодатель'] and item['$арендодатель']['ИНН']) or seller['ИНН'] }}, {{ (item['$арендодатель'] and (item['$арендодатель']['юр. адрес'] or item['$арендодатель']['почт. адрес'] or item['$арендодатель']['адрес'])) or seller['юр. адрес'] or seller['почт. адрес'] or seller['адрес'] }}, тел. {{ (item['$арендодатель'] and item['$арендодатель']['тел'] and item['$арендодатель']['тел'][0]) or (seller['тел'] and seller['тел'][0]) }}
+%# {{ (item['$арендодатель'] and item['$арендодатель']['расшифровка подписи']) or seller['расшифровка подписи'] }}
+%# {{ (item['$арендодатель'] and (item['$арендодатель']['полное наименование'] or item['$арендодатель']['наименование'] or item['$арендодатель']['title'])) or seller['полное наименование'] or seller['наименование'] }}, ИНН {{ (item['$арендодатель'] and item['$арендодатель']['ИНН']) or seller['ИНН'] }}, {{ (item['$арендодатель'] and (item['$арендодатель']['юр. адрес'] or item['$арендодатель']['почт. адрес'] or item['$арендодатель']['адрес'])) or seller['юр. адрес'] or seller['почт. адрес'] or seller['адрес'] }}, тел. {{ (item['$арендодатель'] and item['$арендодатель']['тел'] and item['$арендодатель']['тел'][0]) or (seller['тел'] and seller['тел'][0]) }}, р/с {{ (item['$арендодатель'] and item['$арендодатель']['расч. счет']) or seller['расч. cчет'] }}, в банке {{ (item['$арендодатель'] and item['$арендодатель']['банк'] ) or seller['банк'] }}, БИК {{ (item['$арендодатель'] and item['$арендодатель']['БИК']) or seller['БИК'] }}, к/с {{ (item['$арендодатель'] and item['$арендодатель']['кор. счет']) or seller['кор. счет'] }}
+***/
+  coalesce(r."номер", '000')/*(random()*1000)::int*/ as "номер счета",
+  r."дата" as "дата счета",
+  timestamp_to_json(r."дата"::timestamp) as "$дата счета",
+  
+  ---coalesce(num2."номер", '000')/*(random()*1000)::int*/ as "номер акта",
+  ---coalesce(/*num2.ts*/date_trunc('month', num2."месяц")+interval '1 month'-interval '1 day', /*now()*/null)::date as "дата акта",--- на последнее число мес
+  ---timestamp_to_json(coalesce(/*num2.ts*/(date_trunc('month', num2."месяц")+interval '1 month'-interval '1 day')::timestamp, now())) as "$дата акта",--- на последнее число мес
+  
+  ob.name as "объект",
+  row_to_json(d) as "$договор", 
+  d."номер!" as "договор/номер",
+  d."дата1" as "договор/дата начала",
+  coalesce(d."дата расторжения", d."дата2") as "договор/дата завершения",
+  row_to_json(k) as "$контрагент",
+  k.id as "контрагент/id",
+  k.title as "контрагент/title", coalesce(k."реквизиты",'{}'::jsonb)->>'ИНН' as "ИНН",
+  pos."сумма", replace(pos."сумма"::numeric::text, '.', ',') as "сумма/num",
+  /*** хитрая функция sql/пропись.sql ***/
+  firstCap(to_text(pos."сумма"::numeric, 'рубль', scale_mode => 'int')) as "сумма прописью",
+  ---ARRAY(select (select to_json(a) from (select ('{"Арендная плата за нежилое помещение за '||param."месяц"||' '||param."год"||' г."}')::text[] as "номенклатура", -1::numeric*dp."сумма" as "сумма" ) a)) as "@позиции",
+  pos."@позиции",
+  pos."всего позиций"
+from
+  param,
+  (
+    select d.*,
+      upper(replace(d."номер", '№', '')) as "номер!",
+      timestamp_to_json(coalesce(d."дата договора", d."дата1")::timestamp) as "$дата договора",
+      timestamp_to_json(d."дата1"::timestamp) as "$дата1",
+      timestamp_to_json(d."дата2"::timestamp) as "$дата2"
+    from "аренда/договоры" d
+  ) d
+  join refs _r on d.id=_r.id2
+  join "контрагенты" k on k.id=_r.id1
+  
+  --- по объекту (одна строка из арендованных помещений)
+  ---join refs _rp on d.id=_rp.id1
+  /*left*/ join (
+    select dp."договор/id",
+      ---jsonb_agg(dp order by dp.id) as "@помещения/json",
+      ---array_agg(dp."помещение/id" order by dp.id) as "@кабинеты/id",
+      ---array_agg(dp.id  order by dp.id) as "@договоры/помещения/id",
+      ---array_agg(dp."$объект/json"  order by dp.id) as "@объекты/json",
+      array_agg(dp."объект/id" order by dp.id) as "@объекты/id"
+      ---sum(dp."площадь помещения") as "площадь помещений",
+      ---sum(dp."оплата за помещение") as "оплата"
+    from ---"аренда/договоры" d 
+      ---join refs r on d.id=r.id1
+      --join (
+        ( {%= $DICT->render('договоры/помещения') %} ) dp
+      --) dp on dp."договор/id"=d.id
+    group by "договор/id"--d.id
+  ) dp on d.id=dp."договор/id"
+  
+  join  "roles" ob on ob.id=dp."@объекты/id"[1]--- один объект
+  
+  join refs _rr on d.id=_rr.id1
+  join "аренда/расходы" r on r.id=_rr.id2
+  
+  join refs _rpr on r.id=_rpr.id2
+  join "контрагенты/проекты"  pr on pr."проект/id"=_rpr.id1
+  
+  join (--- позиции
+    select 
+      "расход/id",
+      sum(pos."сумма") as "сумма",
+      array_agg(row_to_json(pos) order by pos."order_by") as "@позиции",
+      count(pos) as "всего позиций"
+    from (
+      select 
+        r.id as "расход/id",
+        ---to_json(r) as "$расход/json",
+        ---d.id as "договор/id",
+        ---to_json(d) as "$договор/json",
+        cat.id as "категория/id",
+        ---to_json(cat) as "$категория/json",
+        ---cat.parents_id||cat.id as "категории",
+        ---cat.parents_title[2:]||cat.title as "категория",
+        ('{"' || cat.title || ' за '||param."месяц"||' '||param."год"||' г."}')::text[]  as "номенклатура",
+        pos.id as "order_by",
+        pos.*,
+        pos."количество"*pos."цена" as "сумма"
+      from
+        param,
+        "аренда/расходы" r
+        join refs r1 on r.id=r1.id1
+        join "аренда/расходы/позиции" pos on pos.id=r1.id2
+        join refs rn on pos.id=rn.id2
+        join "категории/родители"() cat on cat.id=rn.id1
+      where r.id IN (---=any(param."аренда/расходы/id")-- сделать IN unnest
+        select id from unnest(param."аренда/расходы/id") un(id)
+      )
+    ) pos
+    group by pos."расход/id"
+  ) pos on pos."расход/id"=r.id
+
+where r.id IN (---=any(param."аренда/расходы/id")-- сделать IN unnest
+        select id from unnest(param."аренда/расходы/id") un(id)
+      )
+) a
+
+@@ категории
 --- для расходов с ед и ценой
 select {%= $select || '*' %} from (
-select n.*, pos.*
-from "номенклатура/родители"(null) n
+select cat.*, pos.*
+from "категории/родители"() cat
 left join lateral (
   select to_json(pos) as "$позиция/json"
   from
     "аренда/расходы/позиции" pos
-    join refs r on r.id1=n.id and pos.id=r.id2
+    join refs r on r.id1=cat.id and pos.id=r.id2
   order by pos.id desc
   limit 1
 ) pos on true
@@ -438,20 +741,7 @@ left join lateral (
 {%= $order_by || '' %}
 ) q
 
-
-@@ расходы
-select {%= $select || '*' %} from (
-select 
-  to_json(d) as "$договор/json",
-  d.id as "договор/id",
-  to_json(k) as "$контрагент/json",
-  k.id as "контрагент/id",
-  dp."@объекты/id"[1] as "объект/id", dp."@объекты/json"[1] as "$объект/json",
-  pr.id as "проект/id",
-  r.*,
-  timestamp_to_json(r."дата"::timestamp) as "$дата/json",
-  pos.*--- позиции сгруппированы
-from 
+@@ расходы/join
   "аренда/договоры" d
   join refs _r on d.id=_r.id2
   join "контрагенты" k on k.id=_r.id1
@@ -470,7 +760,7 @@ from
     from ---"аренда/договоры" d 
       ---join refs r on d.id=r.id1
       --join (
-        ( {%= $dict->render('договоры/помещения') %} ) dp
+        ( {%= $DICT->render('договоры/помещения') %} ) dp
       --) dp on dp."договор/id"=d.id
     group by "договор/id"--d.id
   ) dp on d.id=dp."договор/id"
@@ -485,18 +775,34 @@ from
   ) pr on pr.id=_rp.id1
   
   left join (
-    select r.id as "расход/id",
+    select pos."расход/id",
       jsonb_agg(pos order by pos.id) as "@позиции/json",
       array_agg(pos.id  order by pos.id) as "@позиции/id",
       sum(pos."сумма") as "сумма"
       
-    from "аренда/расходы" r
-      join refs _r on r.id=_r.id1
-      join (
+    from ---"аренда/расходы" r
+      ---join refs _r on r.id=_r.id1
+      (
         {%= $dict->render('расходы/позиции') %}
-      ) pos on pos.id=_r.id2
-    group by r.id
+      ) pos ----on pos."расход/id"=_r.id2
+    group by pos."расход/id"
   ) pos on r.id=pos."расход/id"
+
+
+@@ расходы
+select {%= $select || '*' %} from (
+select 
+  to_json(d) as "$договор/json",
+  d.id as "договор/id",
+  to_json(k) as "$контрагент/json",
+  k.id as "контрагент/id",
+  dp."@объекты/id"[1] as "объект/id", dp."@объекты/json"[1] as "$объект/json",
+  pr.id as "проект/id",
+  r.*,
+  timestamp_to_json(r."дата"::timestamp) as "$дата/json",
+  pos.*--- позиции сгруппированы
+from 
+{%= $DICT->render('расходы/join') %}
 {%= $where || '' %}
 {%= $order_by || '' %} ---order by d."дата1" desc, d.id desc  
 ) q
@@ -507,15 +813,15 @@ select
   ---to_json(r) as "$расход/json",
   d.id as "договор/id",
   ---to_json(d) as "$договор/json",
-  n.id as "номенклатура/id",
-  to_json(n) as "$номенклатура/json",
+  cat.id as "категория/id",
+  to_json(cat) as "$категория/json",
   pos.*,
   pos."количество"*pos."цена" as "сумма"
 from "аренда/расходы" r
   join refs r1 on r.id=r1.id1
   join "аренда/расходы/позиции" pos on pos.id=r1.id2
   join refs rn on pos.id=rn.id2
-  join "номенклатура/родители"(null) n on n.id=rn.id1
+  join "категории/родители"() cat on cat.id=rn.id1
   join refs r2 on r.id=r2.id2
   join "аренда/договоры" d on d.id=r2.id1
   ---join refs ro on o.id=ro.id2
@@ -536,20 +842,38 @@ pip install docxtpl
 from docxtpl import DocxTemplate, InlineImage, R, Listing
 %#from docx.shared import Mm, Inches, Pt
 from docx.shared import Mm
+import os.path
+%#os.path.exists(file_path)
+%#os.path.isfile(file_path)
 tpl=DocxTemplate(u'{%= $docx_template_file %}')
-%#logo=InlineImage(tpl,u'''{%= $logo_image %}''', width=Mm(70)) if u'''{%= $logo_image %}''' else ''
-sign_image=InlineImage(tpl,u'''{%= $sign_image %}''', width=Mm(40)) if u'''{%= $sign_image %}''' else ''
-%#'top_details': [{%= $top_details %}], # 
-
+%#logo=InlineImage(tpl, u'''{%= $logo_image %}''', width=Mm(70)) if u'''{%= $logo_image %}''' else ''
+%#sign_image=InlineImage(tpl, u'''{%= $sign_image %}''', width=Mm(40)) if u'''{%= $sign_image %}''' else ''
 undefined = ''
 true = ''
 false = ''
 null = ''
+seller={%= $seller %}
+sign_images={}
+if seller.get('id') and os.path.exists('static/i/logo/sign-'+str(seller.get('id'))+'.png'):
+    sign_images[str(seller.get('id'))]=InlineImage(tpl, 'static/i/logo/sign-'+str(seller.get('id'))+'.png', width=Mm(40))
+
+%#'top_details': [{%= $top_details %}], # 
+items={%= $data %}
+
+for it in items:
+    if it.get('$арендодатель') and not sign_images.get(str(it['$арендодатель']['id'])):
+        file_path='static/i/logo/sign-'+str(it['$арендодатель']['id'])+'.png'
+        if os.path.exists(file_path):
+          sign_images[str(it['$арендодатель']['id'])]=InlineImage(tpl, file_path, width=Mm(40))
+
 context = {
-    'items' : {%= $data %},
-    'seller': {%= $seller %},
-    'sign_image': sign_image,
+    'items' : items,
+    'seller': seller,
+    'sign_images': sign_images,
+    'str':str,
 }
+
+
 
 tpl.render(context)
 tpl.save(u'{%= $docx_out_file %}')

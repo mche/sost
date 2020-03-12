@@ -853,95 +853,6 @@ select ?::money + ?::money;
 @@ функции
 
 
-DROP VIEW IF EXISTS "движение ДС/аренда/счета" CASCADE;--- расходные записи движения по аренде
-CREATE OR REPLACE VIEW "движение ДС/аренда/счета" as
--- 
-select d.id, d.ts, /*d."дата1", */d1."дата"::date, -1::numeric*sum."сумма"*d1."доля дней" as "сумма",
-  -1::numeric as "sign", --- счет-расход
-  ---"категории/родители узла/id"(c.id, true) as "категории",
-  ---"категории/родители узла/title"(c.id, false) as "категория",
-  coalesce(d1."@категории/id", cat.parents_id||cat.id) as "категории",
-  coalesce(d1."@категории/title", cat.parents_title[2:]||cat.title) as "категория",
-  k.title as "контрагент", k.id as "контрагент/id",
-  row_to_json(ob) as "$объект/json", ob.id as "объект/id", ob.name as "объект",
-  null::int as "кошелек2", --- left join
-  null::text as "профиль", null::int as "профиль/id",
-  --array[[w."проект", w.title], [w2."проект", w2.title]]::text[][] as "кошельки", ---  проект+кошелек, ...
-  --array[[w."проект/id", w.id], [w2."проект/id", w2.id]]::int[][] as "кошельки/id", ---  проект+кошелек, ...
-  null::text[][] as "кошельки", --- пока не знаю
-  null::int[][] as "кошельки/id",  --- пока не знаю
-  'счет по дог. № ' || d."номер" || E'\n' || ' ★ ' || ob.name || ' (' || array_to_string(sum."@помещения-номера", ', ') || case when d1."доля дней"=1 and coalesce(d1."коммент", '')!~'предоплата' then '' else d1."коммент" end || E')\n' || coalesce(d."коммент", ''::text) as "примечание"
-  
-from
-  "аренда/договоры" d
-  
-  join refs rk on d.id=rk.id2
-  join "контрагенты" k on k.id=rk.id1
-  
-  join (-- сумма в мес по договору
-    select
-      d.id as "договор/id", ---p.id as "помещение/id"
-      array_agg(distinct ob.id) as "@объекты/id",
-      array_agg(p."номер-название" order by p."номер-название") as "@помещения-номера",---для коммента
-      sum(coalesce(dp."сумма", dp."ставка"*p."площадь")) as "сумма"
-
-    from
-      "аренда/договоры" d
-      
-      join refs r on d.id=r.id1
-      join "аренда/договоры-помещения" dp on dp.id=r.id2
-    
-      join refs r1 on dp.id=r1.id2
-      join "аренда/помещения" p on p.id=r1.id1
-      
-      join refs r2 on p.id=r2.id2
-      join "аренда/объекты" o on o.id=r2.id1
-      
-      join refs ro on o.id=ro.id2
-      join "roles" ob on ob.id=ro.id1
-      
-    group by d.id
-  ) sum on d.id=sum."договор/id"
-  
-  join  "roles" ob on ob.id=sum."@объекты/id"[1]
-  
-  ---join (select array_agg("id" order by level desc) as "@id", (array_agg("title" order by level desc))[2:] as "@title" from "категории/родители узла"(121952::int, true)) cc on true
-  join "категории/родители"() cat on cat.id=121952 -- аренда офисов
-  
-  join lateral (--- повторить по месяцам договоров
-    --- тут один первый месяц договора (возможно неполный)
-    select d."дата1" as "дата", extract(day FROM date_trunc('month', d."дата1"+interval '1 month') - d."дата1")/extract(day FROM date_trunc('month', d."дата1") + interval '1 month - 1 day') as "доля дней",--- первого неполного месяца
-    extract(day FROM date_trunc('month', d."дата1"+interval '1 month') - d."дата1") as "за дней",
-    ' за ' || extract(day FROM date_trunc('month', d."дата1"+interval '1 month') - d."дата1")::text || ' дн. неполн. мес.' as "коммент",
-    null::int[] as "@категории/id", null::text[] as "@категории/title"
-    union all
-    --- тут остальные полные месяцы
-    select date_trunc('month', d."дата1"+interval '1 month')+make_interval(months=>m), 1, null, null, /*полная сумма*/ null, null
-    from
-      (select age(date_trunc('month', coalesce(d."дата расторжения", d."дата2")), date_trunc('month', d."дата1"+interval '2 month')) as "age") a
-      join lateral (
-        select generate_series(0, (extract(year from a."age")*12 + extract(month from a."age"))::int/*колич полных месяцев*/, 1) as m
-      ) m on true
-      
-    union all
-    --- тут один  последний месяц договора (возможно неполный)
-    select  date_trunc('month', coalesce(d."дата расторжения", d."дата2")), extract(day FROM coalesce(d."дата расторжения", d."дата2")/* тут важно до какой даты включительно- interval '1 day'*/)/extract(day FROM date_trunc('month', coalesce(d."дата расторжения", d."дата2")) + interval '1 month - 1 day'),--- доля дней в последнем месяце
-    extract(day FROM coalesce(d."дата расторжения", d."дата2")/* тут важно до какой даты включительно- interval '1 day'*/), --- колич дней
-    ' за ' || extract(day FROM coalesce(d."дата расторжения", d."дата2")/* тут важно до какой даты включительно- interval '1 day'*/)::text || ' дн. неполн. мес.' as "коммент", null, null
-    union all
-    --- тут возможно предоплата одного мес
-    select d."дата1" as "дата", 1, null, ' предоплата (обеспечительный платеж)', --- полная сумма
-      ---cc."@id", cc."@title"
-      cc.parents_id||cc.id as "@id", cc.parents_title||cc.title as "@title"
-    from 
-      generate_series(0, 0, 1) s,
-      ---(select array_agg("id" order by level desc) as "@id", (array_agg("title" order by level desc))[2:] as "@title" from "категории/родители узла"(929979::int, true)) cc
-      "категории/родители"() cc
-    where d."предоплата"=true and cc.id=929979
-  ) d1 on true
-
-;
-
 DROP VIEW IF EXISTS "движение ДС/внешние платежи";---переименовал
 DROP VIEW IF EXISTS "движение ДС/все платежи";
 CREATE OR REPLACE VIEW "движение ДС/все платежи" as
@@ -999,7 +910,11 @@ from
   
 union all
 select *
-from "движение ДС/аренда/счета" --- без реальных приходов
+from "движение ДС/аренда/счета" ---только аренда помещений и предоплата
+
+union all
+select *
+from "аренда/счета доп платежей" --- по аренде доп платежи арендаторов
 ;
 
 DROP VIEW IF EXISTS "движение ДС/внутр перемещения";

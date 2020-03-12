@@ -59,21 +59,22 @@
                   <h4 v-if="selected" class="relative padd-0-05 blue-text text-darken-4 animated slideInRight hover-bottom-shadow-blue-darken-3">
                     
                     <span class="chip padd-0-05">{{ selected.$контрагент.title }}</span>
+                    <span class="chip padd-0-05"><span class="fs8 grey-text">ИНН:</span> {{ selected.$контрагент['реквизиты'] && selected.$контрагент['реквизиты']['ИНН'] }}</span>
                     <span class="chip padd-0-05" title="объект и помещения">
                       <span><i class="material-icons ">place</i></span>
                       <span>{{ selected['@помещения'] && selected['@помещения'][0] && selected['@помещения'][0].$объект.name  }}</span>
                       <span class="fs10 padd-0-05">
-                        <span>к./оф.: </span>
+                        <span class="fs8 grey-text">к./оф.: </span>
                         <span v-for="room in selected['@помещения']" :key="room.id"> {{ room.$помещение['номер-название'] }},</span>
                       </span>
                     </span>
                     <span class="chip padd-0-05" title="номер договора">
                       <!--svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32" class="blue-fill-darken-3" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#handshake"></use></svg-->
-                      дог. № {{ selected['номер'].replace('№', '') }} от {{ selected['дата договора'] || selected['дата1'] }}
+                      <span class="fs8 grey-text">дог. №</span> {{ selected['номер'].replace('№', '') }} <span class="fs8 grey-text">от</span> {{ selected['дата договора'] || selected['дата1'] }}
                     </span>
                     <!--span class="grey-text fs7" style="position:absolute; right:0; bottom:0;">#{{ selected.id }}</span-->
                   </h4>
-                  <h5 v-else class="grey-text">Выбрать арендатора</h5>
+                  <h5 v-else class="grey-text">Выбрать договор арендатора</h5>
                 </template>
                 
                 <template v-slot:listItem="{ listItem, selected, highlighted }">
@@ -113,34 +114,34 @@
               
             </td>
             <td class="relative padd-05 vtop">
-              <!-- Номенклатура-->
-              <v-suggest v-model.trim="pos['$номенклатура'].title" :item="pos" :items=" nomenData " :param="{placeholder: 'выбрать наименование или ввести новое', ulDropDownClass: ['striped teal lighten-4'],}" :onInputChange="OnNomenInput" :onItemSelect="OnNomenSelect">
+              <!-- категория-->
+              <v-suggest v-model.trim="pos['$категория'].title" :item="pos" :items=" categoryData " :param="{placeholder: 'выбрать наименование или ввести новое', ulDropDownClass: ['striped teal lighten-4'],}" :onInputChange="OnCategoryInput" :onItemSelect="OnCategorySelect">
                 <template v-slot:item="{ item, idx, activeItem }">
                   <h5 class="relative hover-shadow3d"  :class="{'bold fs12': item.title == form.title, 'fw500': item === activeItem}"  style="">
                     <span>{{  item.title }}</span>
-                    <span v-if="!!item['$позиция']" class="chip padd-0-05">по <span class="">{{ item['$позиция']['цена'] }}</span></span>
-                    <span v-if="!!item['$позиция']" class="chip padd-0-05">за 1 {{ item['$позиция']['ед'] }}</span>
+                    <span v-if="!!item['$позиция']" class="chip padd-0-05"><span class="fs8 grey-text">цена</span> <span class="">{{ item['$позиция']['цена'] }}</span></span>
+                    <span v-if="!!item['$позиция']" class="chip padd-0-05"><span class="fs8 grey-text">за 1</span> {{ item['$позиция']['ед'] }}</span>
                   </h5>
                 </template>
               </v-suggest>
-              <span  v-show="!pos['$номенклатура'].id && pos['$номенклатура'].title.length > 0" class="chip red-text text-darken-3 fs8"  style="position: absolute;">* новое наименование *</span>
-              <span  v-show="pos['$номенклатура'].id" class="grey-text fs7 " style="position: absolute; right:0.5rem;">#{{ pos['$номенклатура'].id }}</span>
+              <span  v-show="!pos['$категория'].id && pos['$категория'].title.length > 0" class="chip red-text text-darken-3 fs8"  style="position: absolute;">* новое наименование *</span>
+              <span  v-show="pos['$категория'].id" class="grey-text fs7 " style="position: absolute; right:0.5rem;">#{{ pos['$категория'].id }}</span>
             </td>
             <td class="padd-05" style="width:7rem;">
               <div class="input-field row" :class="{}">
-                <input type="text" v-model.trim="pos['количество']"  @input="PosSum(pos, 'количество')"placeholder="количество" class="right-align" title="количество" :disabled="!pos['$номенклатура'].title.length">
+                <input type="text" v-model.trim="pos['количество']"  @input="PosSum(pos, 'количество')"placeholder="количество" class="right-align" title="количество" :disabled="!pos['$категория'].title.length">
               </div>
             </td>
             
             <td class="padd-05" style="width:5rem;">
               <div class="input-field row" :class="{}">
-                <input type="text" v-model.trim="pos['ед']" placeholder="ед. изм."  title="единицы измерения" :disabled="!pos['$номенклатура'].title.length">
+                <input type="text" v-model.trim="pos['ед']" placeholder="ед. изм."  title="единицы измерения" :disabled="!pos['$категория'].title.length">
               </div>
             </td>
             
             <td class="padd-05" style="width:7rem;">
               <div class="input-field row" :class="{}">
-                <input type="text" v-model.trim="pos['цена']" @input="PosSum(pos, 'цена')" class="right-align"  placeholder="цена, ₽"  title="цена, ₽" :disabled="!pos['$номенклатура'].title.length">
+                <input type="text" v-model.trim="pos['цена']" @input="PosSum(pos, 'цена')" class="right-align"  placeholder="цена, ₽"  title="цена, ₽" :disabled="!pos['$категория'].title.length">
               </div>
             </td>
             

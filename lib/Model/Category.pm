@@ -51,18 +51,26 @@ sub expand_node {
 
 sub сохранить_категорию {
   my ($self, $cat) = @_;
-  my @new_category = grep $_->{title}, @{$cat->{newItems} || []};
+  my @new = grep $_->{title}, @{$cat->{newItems} || []};
   
   $cat->{newItems} = [];# сбросить обязательно для кэша
   
   return "нет категории"
-    unless ($cat->{selectedItem} && $cat->{selectedItem}{id}) || @new_category;
+    unless $cat->{id} || ($cat->{selectedItem} && $cat->{selectedItem}{id}) || @new;
+  
+  if (!@new && (my $id = $cat->{id} || ($cat->{selectedItem} && $cat->{selectedItem}{id}))) {#проверить в базе
+    my $r = $self->_select($self->{template_vars}{schema}, 'категории', ["id"], {id=>$id})
+      or return "Нет такой категории id=$id";
+    $cat->{id} ||= $id;
+    return $cat;
+  }
   
   my $parent = ( $cat->{selectedItem} && $cat->{selectedItem}{id} ) 
     // ( $cat->{topParent} && $cat->{topParent}{id} )
+    // $cat->{parent}
     // 3;
   
-  for (@new_category) {
+  for (@new) {
     $_->{parent} = $parent;# для проверки
     my $new= eval {$self->сохранить($_)};# || $@;
     $new = $@
@@ -73,17 +81,17 @@ sub сохранить_категорию {
     $parent = $new->{id};
     #~ push @{$cat->{selectedPath} ||= []}, $new;
     push @{$cat->{newItems}}, $new;# для проверки и кэшировагния
+    
   }
   
   $cat->{selectedItem} = $cat->{newItems}[-1]
-    if @new_category;
+    if @new;
     #~ unless $cat->{selectedItem} && $cat->{selectedItem}{id};
   
   $cat->{id} = $cat->{selectedItem}{id};
   
   #~ $c->model_category->кэш($c, 3) !!! тошлько после успешной транз!
     #~ if @new_category;
-  
   
   return $cat;
   

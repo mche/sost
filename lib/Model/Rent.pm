@@ -6,7 +6,7 @@ our $DATA = ['Rent.pm.dict.sql'];
 
 #~ has model_obj => sub {shift->app->models->{'Object'}};
 #~ has model_transport => sub {shift->app->models->{'Transport'}};
-has model_nomen => sub {shift->app->models->{'Nomen'}};
+has model_category => sub {shift->app->models->{'Category'}};
 
 sub init {
   #~ state $self = shift->SUPER::new(@_);
@@ -117,9 +117,11 @@ sub сохранить_договор {
   } @{$prev->{'@договоры/помещения/id'}}# @кабинеты/id
     if $prev;
   
-  my $rk = $self->связь($data->{'контрагент/id'}, $r->{id});
-  $self->связь_удалить(id1=>$prev->{'контрагент/id'}, id2=>$r->{id})
-    if $prev && $prev->{'контрагент/id'} ne $data->{'контрагент/id'};
+  map {
+    my $rk = $self->связь($data->{"$_/id"}, $r->{id});
+    $self->связь_удалить(id1=>$prev->{"$_/id"}, id2=>$r->{id})
+      if $prev && $prev->{"$_/id"} ne $data->{"$_/id"};
+  } qw(проект контрагент);
   
   return $self->список_договоров( id=>$r->{id} )->[0];
   
@@ -178,9 +180,12 @@ sub счет_оплата_docx {# и акты
     docx_template_file=>$param->{docx_template_file} || "static/аренда-счет.template.docx",
     docx_out_file=>$r->{docx_out_file},
     data=>$data,# $self->app->json->encode($data),
-    seller=>$self->dbh->selectrow_array('select k."реквизиты" from "контрагенты" k  where id=123222'),# пока один датель
-    sign_image=>-f "static/i/logo/sign-123222.png" && "static/i/logo/sign-123222.png",#
+    seller=>$self->dbh->selectrow_array(q<select k."реквизиты"||to_jsonb(k) from "контрагенты" k  where id=123222>),# арендодатель по умолчанию
+    #~ sign_image=>-f "static/i/logo/sign-123222.png" && "static/i/logo/sign-123222.png",#
+    #~ {% if item['$арендодатель'] and sign_images.get(str(item['$арендодатель']['id'])) %} {{ sign_images.get(str(item['$арендодатель']['id'])) }} {% elif sign_images.get(str(seller['id'])) %} {{ sign_images.get(str(seller['id'])) }} {% endif %}
   );
+  
+  #~ $self->app->log->error($r->{python});
   
   return $r;#для отладки - коммент линию
 }
@@ -189,6 +194,26 @@ sub счет_расходы_docx {
   my $self  =  shift;
   my $param = ref $_[0] ? shift : {@_};
   
+  my ($where, @bind) = $self->SqlAb->where({
+    # ничего
+  });
+  unshift @bind, $param->{'месяц'}, $param->{'аренда/расходы/id'};
+  my $data = $self->dbh->selectrow_array($self->sth('счета и акты/доп расходы', select=>' jsonb_agg(a) as "json" ', where=>$where), undef, @bind);
+  #~ return $data;
+  my $r = {};
+  $r->{docx} = $param->{docx} || "счет-$param->{uid}.docx";
+  $r->{docx_out_file} = "static/tmp/$r->{docx}";
+  
+  $r->{data} = $data;
+  $r->{python} = $self->dict->{'счет.docx'}->render(
+    docx_template_file=>$param->{docx_template_file} || "static/аренда-счет.template.docx",
+    docx_out_file=>$r->{docx_out_file},
+    data=>$data,# $self->app->json->encode($data),
+    seller=>'{}', #$self->dbh->selectrow_array('select k."реквизиты" from "контрагенты" k  where id=123222'),# пока один датель
+    #~ sign_image=>undef, #-f "static/i/logo/sign-123222.png" && "static/i/logo/sign-123222.png",#
+  );
+  
+  return $r;#для отладки - коммент линию
 }
 
 sub реестр_актов {
@@ -204,26 +229,25 @@ sub реестр_актов {
   $self->dbh->selectall_arrayref($self->sth('счета и акты', where=>$where), {Slice=>{}}, @bind);
 }
 
-sub расходы_номенклатура {
+sub расходы_категории {
   my $self  =  shift;
   my $param = ref $_[0] ? shift : {@_};
-  #~ $self->model_nomen->список_без_потомков(501876);
   my ($where, @bind) = $self->SqlAb->where({
-    ' n."parents_id"[1] ' => 501876,
+    ' cat."parents_title"[2:3] ' => \[ ' = ?::text[] ', ['аренда офисов', 'дополнительные платежи']],
     #~ '  c.childs ' => undef #  is null
   });
   
-  $self->dbh->selectall_arrayref($self->sth('номенклатура', select=>$param->{select} || '*', where=>$where, order_by=>' order by "parents_title" || title '), {Slice=>{}}, @bind);
+  $self->dbh->selectall_arrayref($self->sth('категории', select=>$param->{select} || '*', where=>$where, order_by=>' order by "parents_title" || title '), {Slice=>{}}, @bind);
 }
 
-sub сохранить_номенклатуру {
+sub сохранить_категорию {
   my $self  =  shift;
   my $data = ref $_[0] ? shift : {@_};
   #~ $self->app->log->error($self->app->dumper($data));
   $data->{newItems} = [$data]
     unless $data->{id};
-  $data->{parent} = 501876;
-  $self->model_nomen->сохранить_номенклатуру($data);
+  $data->{parent} = 931814; # дополнительные платежи
+  $self->model_category->сохранить_категорию($data);
 }
 
 sub сохранить_позицию_расхода {
@@ -231,9 +255,9 @@ sub сохранить_позицию_расхода {
   $prev ||= $self->позиции_расхода(id=>$data->{id})->[0]
     if $data->{id};
   my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, 'аренда/расходы/позиции', ["id"], $data);
-  $self->связь($data->{'номенклатура/id'}, $r->{id});
-  $self->связь_удалить(id1=>$prev->{'номенклатура/id'}, id2=>$r->{id})
-    if $prev && $prev->{'номенклатура/id'} ne $data->{'номенклатура/id'};
+  $self->связь($data->{'категория/id'}, $r->{id});
+  $self->связь_удалить(id1=>$prev->{'категория/id'}, id2=>$r->{id})
+    if $prev && $prev->{'категория/id'} ne $data->{'категория/id'};
   return $r;
 }
 

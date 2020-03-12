@@ -16,10 +16,12 @@ try {angular.module(moduleName); return;} catch(e) { }
 var module = angular.module(moduleName, ['Компонент::Контрагент', 'Контрагенты', 'EventBus',/* 'Компонент::Поиск в списке',*/ 'Компонент::Выбор в списке',  'Uploader::Файлы', /*'Uploader'*/]);
 
 module
-.factory('$КомпонентАрендаДоговорФорма', function($templateCache, $http, $timeout, appRoutes, $КомпонентКонтрагент, $Контрагенты, $EventBus, /*$КомпонентПоискВСписке,*/ $КомпонентВыборВСписке, Util, $КомпонентФайлы /*$Uploader*/) {// factory
+.factory('$КомпонентАрендаДоговорФорма', function($templateCache, $http, $q, $timeout, appRoutes, $КомпонентКонтрагент, $Контрагенты, $EventBus, /*$КомпонентПоискВСписке,*/ $КомпонентВыборВСписке, Util, $Список, $КомпонентФайлы /*$Uploader*/) {// factory
 
 //~ var rentRoomsData;///синглетон для данных объектов аренды
 $Контрагенты.Load();
+var projectList = new $Список(appRoutes.url_for('список проектов'));
+projectList.Load();
 
 const props = {
   "item": {
@@ -60,7 +62,7 @@ Ready(){/// метод
 
   vm.ready = true;
   $timeout(function(){
-    $('input[type="text"]', $(vm.$el)).first().focus();
+    //~ $('input[type="text"]', $(vm.$el)).first().focus();
     
     vm.InitDatepicker($('.datepicker', $(vm.$el)));
     
@@ -83,6 +85,20 @@ InitDatepicker(el){
   
 },
 
+ProjectData(){
+  var vm = this;
+  return projectList.Load().then(function(){
+    vm.projectData = projectList.Data();
+    
+  });
+},
+
+SelectProject(item){
+  //~ this.form['$проект'] = item;
+  this.$set(this.form, '$проект', item);
+  
+},
+
 ContragentData(){
   var vm = this;
   return $Контрагенты.Load().then(function(){
@@ -98,6 +114,7 @@ InitForm(item){/// обязательные реактивные поля
   item["дата1"] = item["дата1"] || d.toISOString().replace(/T.+/, '');
   item["дата2"] = item["дата2"] || (new Date(d.setMonth(d.getMonth() + 11))).toISOString().replace(/T.+/, '');
   if (!item['контрагент']) item['контрагент'] = {"id": item['контрагент/id'], /*"реквизиты":{},*/};
+  if (!item['$проект']) item['$проект'] = {"id": item['проект/id']};
   //~ if (!item['контрагент']['реквизиты']) item['контрагент']['реквизиты']={};
   //~ console.log("InitForm", angular.copy(item['контрагент']));
   //~ vm.KontragentRecv(item);
@@ -109,6 +126,26 @@ InitForm(item){/// обязательные реактивные поля
   return item;
 },
 
+Valid(){
+  var vm = this;
+  /*if (name == 'контрагент') return !!(vm.form['контрагент'].id || vm.form['контрагент'].title);
+  else if (name == '$проект') return !!(vm.form[name] && vm.form[name].id);
+  else if (name) return !!vm.form[name];*/
+  
+  
+  
+  var test =
+    !!(vm.form['$проект'] && vm.form['$проект'].id)
+    && !!(vm.form['номер'] && vm.form['номер'].length)
+    && !!(vm.form['дата1'] && vm.form['дата2'])
+    && !!(vm.form['контрагент'] && (vm.form['контрагент'].id || vm.form['контрагент'].title))
+    //~ && vm.ValidPos()
+    && vm.form['@помещения'].length > 1
+    && vm.form['@помещения'].slice(0, -1).every(function(room){ return !!room['помещение/id'] && !!(room['ставка'] || room['сумма']); })
+  ;
+  console.log("Valid", test);
+  return test;
+},
 
 Save(){
   var vm = this;
@@ -132,23 +169,8 @@ Save(){
     });
 },
 
-Valid(name){
-  var vm = this;
-  if (name == 'контрагент') return !!(vm.form['контрагент'].id || vm.form['контрагент'].title);
-  else if (name) return !!vm.form[name];
-  
-  return vm.form['номер'] && vm.form['номер'].length
-    && vm.form['дата1'] && vm.form['дата2'] && vm.form['контрагент'] && (vm.form['контрагент'].id || vm.form['контрагент'].title)
-    && vm.ValidPos()
-  ;
-},
 
-ValidPos(){
-  var vm = this;
-  return vm.form['@помещения'].length > 1
-    && vm.form['@помещения'].every(function(room){ return !room['помещение/id'] || room['ставка'] || room['сумма']; });
-  
-},
+
 
 CancelBtn(){
   this.$emit('on-save', this.item.id ? {"id": this.item.id} : undefined);
@@ -243,6 +265,15 @@ TotalSqure(){
   return s;
 },
 
+
+
+
+//~ ValidPos(){
+  //~ var vm = this;
+  //~ return ;
+  
+//~ },
+
 };
 
 const idMaker = IdMaker();/// глобал util/IdMaker.js
@@ -268,7 +299,7 @@ const mounted = function(){
     //~ window.uploader = this.$refs.uploader.uploader;
   //~ });
   var vm = this;
-  vm.ContragentData().then(function(){
+  $q.all([vm.ContragentData(), vm.ProjectData()]).then(function(){
     //~ if (!rentRoomsData) 
     $EventBus.$emit('Дайте список объектов аренды', function(loader){/// один раз выполнится
       loader.then(function(data){

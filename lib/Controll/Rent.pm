@@ -89,8 +89,11 @@ sub удалить_объект {
 sub сохранить_договор {
   my $c = shift;
   my $data = $c->req->json;
+  
+  $data->{'проект/id'} = $data->{'$проект'}{id};
+  
   return $c->render(json=>{error=>"Не заполнен договор"})
-    unless (scalar grep($data->{$_}, qw(номер дата1 дата2))) eq 3;
+    unless (scalar grep($data->{$_}, qw(проект/id номер дата1 дата2))) eq 4;
   
   my $prev = $c->model->список_договоров({id=>$data->{id}})->[0]
     if $data->{id};
@@ -106,6 +109,7 @@ sub сохранить_договор {
   
   return $c->render(json=>{error=>"Нет контрагента"})
     unless $k->{id};
+  
   
   $data->{'контрагент/id'} = $k->{id};
   
@@ -159,10 +163,10 @@ sub расходы_список {
   $c->render(json=>$c->model->список_расходов($param));
 }
 
-sub расходы_номенклатура {
+sub расходы_категории {
   my $c = shift;
   my $param = $c->req->json;
-  $c->render(json=>$c->model->расходы_номенклатура($param || ()));
+  $c->render(json=>$c->model->расходы_категории($param || ()));
 }
 
 sub сохранить_расход {
@@ -185,12 +189,12 @@ sub сохранить_расход {
   $data->{'@позиции'} = [map {
     my $pos = $_;
     
-    my $n = eval {$c->model->сохранить_номенклатуру($pos->{'$номенклатура'})};
+    my $n = eval {$c->model->сохранить_категорию($pos->{'$категория'})};
     $n ||= $@
       and $c->log->error($n)
       and return $c->render(json=>{error=>$n})
       unless $n && ref $n;
-    $pos->{'номенклатура/id'} = $n->{id};
+    $pos->{'категория/id'} = $n->{id};
     
     return $c->render(json=>{error=>"Не заполнена позиция"})
       unless (scalar grep($pos->{$_}, qw(количество ед цена))) eq 3;
@@ -212,7 +216,7 @@ sub сохранить_расход {
     
     $r;
     
-  } grep { $_->{'$номенклатура'} && ($_->{'$номенклатура'}{id} || $_->{'$номенклатура'}{title}) } @{ $data->{'@позиции'} }];
+  } grep { $_->{'$категория'} && ($_->{'$категория'}{id} || $_->{'$категория'}{title}) } @{ $data->{'@позиции'} }];
   
   $data->{uid} = $c->auth_user->{id}
     unless $data->{id};
@@ -296,10 +300,10 @@ sub счет_расходы_docx {# сделать docx во врем папке
   my $param =  $c->req->json || {};
   return $c->render(json=>{error=>'не указан месяц'})
     unless $param->{'месяц'};
-  return $c->render(json=>{error=>'не указаны счета'})
+  return $c->render(json=>{error=>'не указаны счета(id)'})
     unless $param->{'аренда/расходы/id'};
   
-  $param->{'счет или акт'} = 'счет-возмещение';
+  $param->{'счет или акт'} = 'счет';
   $param->{docx} = sprintf("%s-%s.docx", $param->{'счет или акт'}, $c->auth_user->{id});
   $param->{docx_template_file} = sprintf("static/аренда-%s.template.docx", $param->{'счет или акт'},);
   $param->{uid} = $c->auth_user->{id};
@@ -308,6 +312,7 @@ sub счет_расходы_docx {# сделать docx во врем папке
   $c->log->error($c->dumper($data))
     and return $c->render(json=>{error=>$data})
     unless ref $data;
+  
   return $c->render(json=>{error=>"Не найдено счетов"})
     unless $data->{data};
   
@@ -332,6 +337,7 @@ sub счет_расходы_docx {# сделать docx во врем папке
   $c->render(json=>{docx=>$data->{docx}});
 }
 
+=pod
 sub реестр_актов_xlsx111 {
   my $c = shift;
   my $month = $c->param('month');
@@ -354,6 +360,7 @@ sub реестр_актов_xlsx111 {
   );
   
 }
+=cut
 
 sub реестр_актов_xlsx {
   my $c = shift;

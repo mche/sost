@@ -87,40 +87,40 @@ ContragentContractData(){
   var vm = this;
   return $http.post(appRoutes.urlFor('аренда/договоры/список'), {"договоры на дату": vm.form['дата'], "order_by": " order by  lower(regexp_replace(k.title, '^\W', '', 'g')) "}).then(function(resp){
     vm.contragentContracts = resp.data.map(function(item){
-      item._match = `${ item['$контрагент']['title']  } ${  item['@помещения'][0]['$объект'].name } ${ item['@помещения'].map(p=>{ return p['$помещение']['номер-название']; }).join(':') } ${ item['дата1'] } ${ item['номер'] }`.toLowerCase();
+      item._match = `${ item['$контрагент']['title']  } ${ item.$контрагент['реквизиты'] && item.$контрагент['реквизиты']['ИНН'] } ${  item['@помещения'][0]['$объект'].name } ${ item['@помещения'].map(p=>{ return p['$помещение']['номер-название']; }).join(':') } ${ item['дата1'] } ${ item['номер'] }`.toLowerCase();
      /// , /*"адрес": item['адрес'],*/ "$помещение": room, "$объект": item['$объект'],});
       return item;
     });
   });
 },
 
-NomenData(){/// номенклатура позиций
+CategoryData(){/// категория позиций
   var vm = this;
-  return $http.get(appRoutes.urlFor('аренда/расходы/номенклатура')).then(function(resp){
-    vm.nomenData = resp.data.map((item)=>{
+  return $http.get(appRoutes.urlFor('аренда/расходы/категории')).then(function(resp){
+    vm.categoryData = resp.data.map((item)=>{
       item._match = `${ item.title } ${ item['$позиция'] && item['$позиция']['ед'] }`;
       return item;
     });
   });
 },
 
-OnNomenInput(query, propItem){/// из компонента выбор из списка
+OnCategoryInput(query, propItem){/// из компонента выбор из списка
   var vm = this;
   //~ console.log("OnNomenInput", query, propItem);
   if (/*query === '' || */query === null || query === undefined) return  vm.RemovePos(propItem); ///vm.MapSuggest(vm.autocomplete);
-  if (propItem['$номенклатура'].id && propItem['$номенклатура'].title != query) vm.$set(propItem, '$номенклатура', {});//Object.keys(propItem['$номенклатура']).forEach((k)=>{ delete propItem['$номенклатура'][k]; });
-  propItem['$номенклатура'].title = query;
+  if (propItem['$категория'].id && propItem['$категория'].title != query) vm.$set(propItem, '$категория', {});//Object.keys(propItem['$категория']).forEach((k)=>{ delete propItem['$категория'][k]; });
+  propItem['$категория'].title = query;
   vm.AddPos(propItem);
 },
 
-OnNomenSelect(item, idx, propItem){/// из компонента выбор из списка
-  //~ console.log("OnNomenSelect", item, idx, propItem);
+OnCategorySelect(item, idx, propItem){/// из компонента выбор из списка
+  //~ console.log("OnCategorySelect", item, idx, propItem);
   var vm = this;
   var items = vm.form['@позиции'];
   vm.AddPos(propItem);
   if (item) {
-    //~ Object.assign(propItem.$номенклатура, item);
-    vm.$set(propItem, '$номенклатура', item);
+    //~ Object.assign(propItem.$категория, item);
+    vm.$set(propItem, '$категория', item);
     if (item['$позиция']) {
       if (!propItem['ед']) propItem['ед']=item['$позиция']['ед'];
       if (!propItem['цена']) {
@@ -137,7 +137,7 @@ OnNomenSelect(item, idx, propItem){/// из компонента выбор из
 AddPos(pos, items){
   var vm = this;
   items = items || vm.form['@позиции'];
-  if (!pos || pos  === items[items.length-1])  items.push({"$номенклатура":{"title": ''}, /*"количество":'', "цена":'',*/ "сумма":'', "_id": vm.idMaker.next().value});/// тут обязательно объявить реактивные поля!
+  if (!pos || pos  === items[items.length-1])  items.push({"$категория":{"title": ''}, /*"количество":'', "цена":'',*/ "сумма":'', "_id": vm.idMaker.next().value});/// тут обязательно объявить реактивные поля!
 },
 
 RemovePos(pos){
@@ -153,7 +153,7 @@ InitForm(item){/// обязательные реактивные поля
   if (!item['договор/id']) item['договор/id'] = undefined;
   if (!item['проект/id']) item['проект/id'] = vm.param['проект'].id;
   if (!item['@позиции']) item['@позиции'] = [];
-  /*if (!item['@позиции'].length)*/ vm.AddPos(undefined, item['@позиции']);//.push({"$номенклатура":{"title": ''}, "сумма": ''});/// это поле для компутед суммы!!!
+  /*if (!item['@позиции'].length)*/ vm.AddPos(undefined, item['@позиции']);//.push({"$категория":{"title": ''}, "сумма": ''});/// это поле для компутед суммы!!!
   item['@позиции'].map(util.MapPosItem, vm);
   item._uploads = [];
   item._id = vm.idMaker.next().value;
@@ -196,7 +196,7 @@ Valid(name){
 
 ValidPos(pos){
   var vm = this;
-  if (pos) return pos['$номенклатура'] && (pos['$номенклатура'].id || pos['$номенклатура'].title)  && !!vm.ParseNum(pos['количество']) && !!vm.ParseNum(pos['цена']);
+  if (pos) return pos['$категория'] && (pos['$категория'].id || pos['$категория'].title)  && !!vm.ParseNum(pos['количество']) && !!vm.ParseNum(pos['цена']);
   return vm.form['@позиции'].length > 1
     && vm.form['@позиции'].slice(0,-1).every(function(pos){
       return vm.ValidPos(pos);
@@ -295,7 +295,7 @@ const data = function() {
 const mounted = function(){
 
   var vm = this;
-  $q.all([vm.ContragentContractData(), vm.NomenData()]).then(function(){
+  $q.all([vm.ContragentContractData(), vm.CategoryData()]).then(function(){
     vm.Ready();
   });
 };/// конец mounted
