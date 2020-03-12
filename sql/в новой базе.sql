@@ -6,7 +6,7 @@ DECLARE
 BEGIN
 /********************************************/
 FOR d IN
-        select id from "табель"
+  select id from "табель"
 LOOP
   PERFORM  "удалить объект"('public', 'табель', 'refs', d.id, 1732);
   ---RAISE NOTICE ' id: %', d.id;
