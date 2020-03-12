@@ -4,6 +4,13 @@ $do$
 DECLARE
    d record;
 BEGIN
+/********************************************/
+FOR d IN
+        select id from "табель"
+LOOP
+  PERFORM  "удалить объект"('public', 'табель', 'refs', d.id, 1732);
+  ---RAISE NOTICE ' id: %', d.id;
+END LOOP;
 
 /********************************************/
 FOR d IN
@@ -13,6 +20,13 @@ LOOP
   ---RAISE NOTICE ' id: %', d.id;
 END LOOP;
 
+/********************************************/
+FOR d IN
+        select id from "тмц"
+LOOP
+  PERFORM  "удалить объект"('public', 'тмц', 'refs', d.id, 1732);
+  ---RAISE NOTICE ' id: %', d.id;
+END LOOP;
 /********************************************/
 FOR d IN
         select id from "тмц/заявки"
