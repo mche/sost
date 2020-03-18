@@ -19,21 +19,21 @@
 %# <!--a href="<%= url_for('медкол заново цепочка сессий') %>" class="right hover-shadow3d btn-flat padd-0 z-depth-1" title="сбросить и начать заново"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 252 252" class="prefix000 red-fill fill-darken-3" style="height: 1.7rem;"><use xlink:href="/fonts/icons.svg#exit"></use></svg></a-->
 </h2>
 
-<div class="z-depth-3" style="overflow-x: auto;"><table class="striped bordered blue lighten-4 ">
+<div class="z-depth-3" style="overflow-x: auto;"><table class="striped bordered green lighten-4 ">
 <thead><tr class-000="green lighten-4">
-  <th class="center"><h4 class="fw500">Тест</h4></th>
-  <th class="center"><h4 class="fw500">Начало</h4></th>
-  <th class="center"><h4 class="purple-text fw500">Время</h4></th>
-  <th class="center" style="width:1%;"><h4 class="fw500">Задано<br>вопросов</h4></th>
-  <th class="center" style="width:1%;"><h4 class="green-text text-darken-3 fw500">Правильных<br>ответов</h4></th>
-  <th class="center" style="width:1%;"><h4 class="fw500">% успеха</h4></th>
-  <th class="center" style="width:1%;"><h4 class="navy-text fw500 fs8">код<br>результата</h4></th>
+  <th class="center padd-05"><h4 class="fw500">Тест</h4></th>
+  <th class="center padd-05"><h4 class="fw500">Начало</h4></th>
+  <th class="center padd-05"><h4 class="orange-text text-darken-3 fw500">Время</h4></th>
+  <th class="center padd-05" style="width:1%;"><h4 class="fw500 line-height-12">Задано<br>вопросов</h4></th>
+  <th class="center padd-05" style="width:1%;"><h4 class="green-text text-darken-3 fw500 line-height-12">Правильных<br>ответов</h4></th>
+  <th class="center padd-05" style="width:1%;"><h4 class="fw500 line-height-12">% успеха</h4></th>
+  <th class="center padd-05" style="width:1%;"><h4 class="navy-text fw500 fs8 line-height-12">код<br>результата</h4></th>
 </tr></thead>
 <tbody>
 % for my $r (@$res) {
 <tr >
 
-  <td class="center000"><h5 class="fw500"><a class=" hover-shadow3d blue-text-darken-3 " href="<%= url_for('МедКол/детальный результат', 'sess_sha1'=>$r->{'сессия/sha1'}) %>" title="<%= $r->{'сессия/id-000'} %>">
+  <td class="padd-05"><h5 class="fw500 line-height-12"><a class=" hover-shadow3d blue-text-darken-3 " href="<%= url_for('МедКол/детальный результат', 'sess_sha1'=>$r->{'сессия/sha1'}) %>" title="<%= $r->{'сессия/id-000'} %>">
     % for (grep defined, @{$r->{'@тест/название/родители'} || $r->{'@название теста/родители'} || []}) {
     <span class="breadcrumb"><%= $_ %></span>
     % }
@@ -44,14 +44,14 @@
   <td class="right-align nowrap" style="padding: 0 0.5rem;" title="<%= $r->{'сессия/ts'} %>"><%= $t->{'день нед'} %>, <%= $t->{'day'} %> <%= $t->{'месяца'} %> <%= (length($t->{'hour'}) eq 1 ? '0' : '').$t->{'hour'} %>:<%= (length($t->{'minute'}) eq 1 ? '0' : '').$t->{'minute'} %></td>
 %# :<%= (length($sec) eq 1 ? '0' : '').$sec %>
 % $sec = ($r->{'время тестирования/секунды'}  =~ /^(\d+)\.?/)[0];
-  <td class="right-align purple-text" style="padding: 0 0.5rem;" >
+  <td class="right-align orange-text-darken-3" style="padding: 0 0.5rem;" >
     <span class=""><%= length($r->{'время тестирования/часы'}) eq 1 ? '' : '' %><%= $r->{'время тестирования/часы'} || '00' %>:</span><span class=""><%= length($r->{'время тестирования/минуты'}) eq 1 && $r->{'время тестирования/минуты'} ne '0' ? '0' : '' %><%= $r->{'время тестирования/минуты'} || '00' %>:</span><span class=""><%= length($sec) eq 1 ? '0' : '' %><%= $sec %></span>
   </td>
-  <td class="right-align" style="padding: 0 0.5rem;"><%= $r->{'задано вопросов'} %></td>
-  <td class="right-align green-text text-darken-3" style="padding: 0 0.5rem;"><%= $r->{'правильных ответов'} %></td>
+  <td class="right-align-000 center" style="padding: 0 0.5rem;"><%= $r->{'задано вопросов'} %></td>
+  <td class="right-align-000 center green-text text-darken-3 bold" style="padding: 0 0.5rem;"><%= $r->{'правильных ответов'} %></td>
 %# my $percent = $r->{'сессия/задать вопросов'} || $r->{'задать вопросов'} || $r->{'/задать вопросов'} ? $r->{'правильных ответов'}/($r->{'сессия/задать вопросов'} || $r->{'задать вопросов'} || $r->{'/задать вопросов'})*100 : 0;
   <td class="right-align <%= $r->{'%'} >= 70 ? 'green-darken-2 white-text bold' : 'grey-text' %>" style="padding: 0 0.5rem;"><%= sprintf("%.1f", $r->{'%'}).'%' %></td>
-  <td class="navy-text right-align"><%= substr($r->{'сессия/sha1'}, 0, 4) %></td>
+  <td class="navy-text right-align-000 center"><%= substr($r->{'сессия/sha1'}, 0, 4) %></td>
 </tr>
 
 % }
@@ -76,11 +76,11 @@
 % } else {
 
 <h2 style="">Пройти тест</h2>
-<ul class="collection card green lighten-4 striped">
+<ul class="collection card blue lighten-4 striped">
 % for (@$list) {
 % my $url = $c->url_for('вопрос', );
 % $url->query->param(t=>$_->{id_digest});
-  <li class="collection-item  <%= @$res ? 'right-align-000' : '' %>" >
+  <li class="collection-item padd-05 <%= @$res ? 'right-align-000' : '' %>" >
     <h4 class="fw500"><a href="<%= $url  %>" class="hover-shadow3d blue-text-darken-3 ">
       % for (grep defined, @{$_->{'@название/родители'} || []}) {
       <span class="breadcrumb"><%= $_ %></span>
