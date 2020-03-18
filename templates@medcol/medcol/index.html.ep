@@ -12,22 +12,22 @@
 %# <div class="chip right" style="margin-top:-4rem;">Пароль: <%= substr($res->[-1]{'сессия/sha1'}, 0, 5) %></div>
 
 <div class="col s12 m12 <%= $sess->{'название теста'} || @$list ? 'l8' : '' %>">
-<h2 class="">Мои результаты <span class="chip padd-0-05 shadow-inset-10 bold"><%= scalar @$res %></span>
+<h2 class="">Мои результаты <span class="chip padd-0-05 shadow-inset-10 fw500"><%= scalar grep $_->{'%'}>=70, @$res %> из <%= scalar @$res %></span>
 % if (@$res > 12) {
 <a href="#test_list" class="hide-on-large-only right hover-shadow3d btn-flat00">Выбор теста</a>
 % }
 %# <!--a href="<%= url_for('медкол заново цепочка сессий') %>" class="right hover-shadow3d btn-flat padd-0 z-depth-1" title="сбросить и начать заново"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 252 252" class="prefix000 red-fill fill-darken-3" style="height: 1.7rem;"><use xlink:href="/fonts/icons.svg#exit"></use></svg></a-->
 </h2>
 
-<div class="z-depth-3" style="overflow-x: auto;"><table class="striped bordered green lighten-4 ">
+<div class="z-depth-3" style="overflow-x: auto;"><table class="striped bordered blue lighten-4 ">
 <thead><tr class-000="green lighten-4">
   <th class="center"><h4 class="fw500">Тест</h4></th>
   <th class="center"><h4 class="fw500">Начало</h4></th>
   <th class="center"><h4 class="purple-text fw500">Время</h4></th>
-  <th class="center"><h4 class="fw500">Задано<br>вопросов</h4></th>
-  <th class="center"><h4 class="green-text fw500">Правильно</h4></th>
-  <th class="center"><h4 class="fw500">% успеха</h4></th>
-  <th class="center"><h4 class="navy-text fw500 fs8">код<br>результата</h4></th>
+  <th class="center" style="width:1%;"><h4 class="fw500">Задано<br>вопросов</h4></th>
+  <th class="center" style="width:1%;"><h4 class="green-text text-darken-3 fw500">Правильных<br>ответов</h4></th>
+  <th class="center" style="width:1%;"><h4 class="fw500">% успеха</h4></th>
+  <th class="center" style="width:1%;"><h4 class="navy-text fw500 fs8">код<br>результата</h4></th>
 </tr></thead>
 <tbody>
 % for my $r (@$res) {
@@ -48,9 +48,9 @@
     <span class=""><%= length($r->{'время тестирования/часы'}) eq 1 ? '' : '' %><%= $r->{'время тестирования/часы'} || '00' %>:</span><span class=""><%= length($r->{'время тестирования/минуты'}) eq 1 && $r->{'время тестирования/минуты'} ne '0' ? '0' : '' %><%= $r->{'время тестирования/минуты'} || '00' %>:</span><span class=""><%= length($sec) eq 1 ? '0' : '' %><%= $sec %></span>
   </td>
   <td class="right-align" style="padding: 0 0.5rem;"><%= $r->{'задано вопросов'} %></td>
-  <td class="right-align green-text" style="padding: 0 0.5rem;"><%= $r->{'правильных ответов'} %></td>
-% my $percent = $r->{'сессия/задать вопросов'} || $r->{'задать вопросов'} || $r->{'/задать вопросов'} ? $r->{'правильных ответов'}/($r->{'сессия/задать вопросов'} || $r->{'задать вопросов'} || $r->{'/задать вопросов'})*100 : 0;
-  <td class="right-align <%= $percent >= 70 ? 'green-darken-2 white-text bold' : 'grey-text' %>" style="padding: 0 0.5rem;"><%= sprintf("%.1f", $percent).'%' %></td>
+  <td class="right-align green-text text-darken-3" style="padding: 0 0.5rem;"><%= $r->{'правильных ответов'} %></td>
+%# my $percent = $r->{'сессия/задать вопросов'} || $r->{'задать вопросов'} || $r->{'/задать вопросов'} ? $r->{'правильных ответов'}/($r->{'сессия/задать вопросов'} || $r->{'задать вопросов'} || $r->{'/задать вопросов'})*100 : 0;
+  <td class="right-align <%= $r->{'%'} >= 70 ? 'green-darken-2 white-text bold' : 'grey-text' %>" style="padding: 0 0.5rem;"><%= sprintf("%.1f", $r->{'%'}).'%' %></td>
   <td class="navy-text right-align"><%= substr($r->{'сессия/sha1'}, 0, 4) %></td>
 </tr>
 
