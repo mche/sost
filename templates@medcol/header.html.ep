@@ -10,6 +10,8 @@
             <span class="white-text"><%= stash('header-title') || title %></span>
             <span class="green-text-darken-1"> • <%= (stash('Проект') // config('Проект')) %></span><!-- 〉-->
           </h1>
+          
+          <div class="" style="position:absolute; right:0.5rem;"><%= stash('профиль') && include('header-profile-right') %></div>
         
       </div>
     

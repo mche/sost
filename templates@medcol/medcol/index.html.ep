@@ -5,15 +5,18 @@
 % $sess->{'старт сессии'} = $c->app->json->decode($sess->{'старт сессии'}) if $sess->{'старт сессии'};
 % $sess->{'старт сессии'}{'секунды'}  = ($sess->{'старт сессии'}{'second'} =~ /^(\d+)\.?/)[0] if $sess->{'старт сессии'};
 
-<div class="row">
+<div class="row ">
+<!--div class="chip right" style="margin-top:-4rem;"><%= $sess->{'сессия/sha1'} %></div-->
 % if (@$res) {
 
+%# <div class="chip right" style="margin-top:-4rem;">Пароль: <%= substr($res->[-1]{'сессия/sha1'}, 0, 5) %></div>
+
 <div class="col s12 m12 <%= $sess->{'название теста'} || @$list ? 'l8' : '' %>">
-<h2 class="">Мои результаты<sup><%= scalar @$res %></sup>
+<h2 class="">Мои результаты <span class="chip padd-0-05 shadow-inset-10 bold"><%= scalar @$res %></span>
 % if (@$res > 12) {
 <a href="#test_list" class="hide-on-large-only right hover-shadow3d btn-flat00">Выбор теста</a>
 % }
-<a href="<%= url_for('медкол заново цепочка сессий') %>" class="right hover-shadow3d btn-flat padd-0 z-depth-1" title="сбросить и начать заново"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 252 252" class="prefix000 red-fill fill-darken-3" style="height: 1.7rem;"><use xlink:href="/fonts/icons.svg#exit"></use></svg></a>
+%# <!--a href="<%= url_for('медкол заново цепочка сессий') %>" class="right hover-shadow3d btn-flat padd-0 z-depth-1" title="сбросить и начать заново"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 252 252" class="prefix000 red-fill fill-darken-3" style="height: 1.7rem;"><use xlink:href="/fonts/icons.svg#exit"></use></svg></a-->
 </h2>
 
 <div class="z-depth-3" style="overflow-x: auto;"><table class="striped bordered green lighten-4 ">
@@ -38,7 +41,7 @@
   </a></h5></td>
 % my $t = $c->app->json->decode($r->{'старт сессии'});
 % my $sec = ($t->{'second'} =~ /^(\d+)\.?/)[0];
-  <td class="right-align nowrap" style="padding: 0 0.5rem;" title="<%= $r->{'сессия/ts'} %>"><%= $t->{'день нед'} %>, <%= $t->{'day'} %> <%= $t->{'месяц'} %> <%= (length($t->{'hour'}) eq 1 ? '0' : '').$t->{'hour'} %>:<%= (length($t->{'minute'}) eq 1 ? '0' : '').$t->{'minute'} %></td>
+  <td class="right-align nowrap" style="padding: 0 0.5rem;" title="<%= $r->{'сессия/ts'} %>"><%= $t->{'день нед'} %>, <%= $t->{'day'} %> <%= $t->{'месяца'} %> <%= (length($t->{'hour'}) eq 1 ? '0' : '').$t->{'hour'} %>:<%= (length($t->{'minute'}) eq 1 ? '0' : '').$t->{'minute'} %></td>
 %# :<%= (length($sec) eq 1 ? '0' : '').$sec %>
 % $sec = ($r->{'время тестирования/секунды'}  =~ /^(\d+)\.?/)[0];
   <td class="right-align purple-text" style="padding: 0 0.5rem;" >
@@ -47,7 +50,7 @@
   <td class="right-align" style="padding: 0 0.5rem;"><%= $r->{'задано вопросов'} %></td>
   <td class="right-align green-text" style="padding: 0 0.5rem;"><%= $r->{'правильных ответов'} %></td>
 % my $percent = $r->{'сессия/задать вопросов'} || $r->{'задать вопросов'} || $r->{'/задать вопросов'} ? $r->{'правильных ответов'}/($r->{'сессия/задать вопросов'} || $r->{'задать вопросов'} || $r->{'/задать вопросов'})*100 : 0;
-  <td class="right-align <%= $percent >= 70 ? 'green-text-darken-2 bold' : 'grey-text' %>" style="padding: 0 0.5rem;"><%= sprintf("%.1f", $percent).'%' %></td>
+  <td class="right-align <%= $percent >= 70 ? 'green-darken-2 white-text bold' : 'grey-text' %>" style="padding: 0 0.5rem;"><%= sprintf("%.1f", $percent).'%' %></td>
   <td class="navy-text right-align"><%= substr($r->{'сессия/sha1'}, 0, 4) %></td>
 </tr>
 
@@ -58,13 +61,22 @@
 </div>
 % }
 
+<div id="test_list" class="col s12 m12  <%= @$res ? 'l4' : 'l6' %>">
 % if ($sess->{'название теста'}) {# && $sess->{'получено ответов'}
-<h3><a href="<%= $c->url_for('вопрос') %>" class=" hover-shadow3d ">Продолжить начатый тест <span class="chip blue white-text"><%= $sess->{'название теста'} %></span><span class="chip black-text"><%= $sess->{'старт сессии'}{'день недели'} %>, <%= $sess->{'старт сессии'}{'day'} %> <%= $sess->{'старт сессии'}{'месяц'} %> <%= (length($sess->{'старт сессии'}{'hour'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'hour'} %>:<%= (length($sess->{'старт сессии'}{'minute'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'minute'} %>:<%= (length($sess->{'старт сессии'}{'секунды'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'секунды'} %></span></a></h3>
+<h3 class=""><a href="<%= $c->url_for('вопрос') %>" class=" hover-shadow3d ">
+  Продолжить незавершенный тест:  
+  <span class="chip blue white-text"><%#= $sess->{'название теста'} %>
+    % for (grep defined, @{$sess->{'@тест/название/родители'} || $sess->{'@название теста/родители'} || []}) {
+      <span class="breadcrumb fw500"><%= $_ %></span>
+    % }
+    <span class="breadcrumb fw500"><%= $sess->{'название'} || $sess->{'название теста'} || $sess->{'тест/название'} %></span>
+  </span>
+  <span class="chip black-text"><%= $sess->{'старт сессии'}{'день недели'} %>, <%= $sess->{'старт сессии'}{'day'} %> <%= $sess->{'старт сессии'}{'месяца'} %> <%= (length($sess->{'старт сессии'}{'hour'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'hour'} %>:<%= (length($sess->{'старт сессии'}{'minute'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'minute'} %>:<%= (length($sess->{'старт сессии'}{'секунды'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'секунды'} %></span></a></h3>
  
 % } else {
-<div id="test_list" class="col s12 m12  <%= @$res ? 'l4' : 'l6' %>">
+
 <h2 style="">Пройти тест</h2>
-<ul class="collection card green lighten-5">
+<ul class="collection card green lighten-4 striped">
 % for (@$list) {
 % my $url = $c->url_for('вопрос', );
 % $url->query->param(t=>$_->{id_digest});
@@ -89,7 +101,7 @@
   </li>
 % }
 </ul>
-</div>
 % }
+</div>
 
 </div>

@@ -57,6 +57,37 @@ create table IF NOT EXISTS "медкол"."таблицы/изменения" (
   uid int
 );
 
+CREATE TABLE IF NOT EXISTS "медкол"."профили" (
+  "id" int NOT NULL PRIMARY KEY default nextval('"медкол"."ИД"'::regclass),
+  "ts" timestamp without time zone not null default now(), --время вопроса
+  "логин" text not null unique,
+  "пароль" text
+);
+
+CREATE OR REPLACE FUNCTION "медкол"."профили/логин-цифры"()
+RETURNS int
+AS $func$
+
+BEGIN
+   RETURN (
+    SELECT  s.num
+    FROM
+      GENERATE_SERIES (1000, 9999) AS s(num)--- потом можно пять цифр от 10000 до 99999
+      left join (
+        select *
+        from "медкол"."профили"
+        where "логин"~ '^\d+$'
+      ) p on p."логин"=s.num::text
+    where p.id is null
+    ORDER BY RANDOM()
+    LIMIT    1
+   );
+END
+
+$func$ LANGUAGE plpgsql;
+
+ALTER TABLE  "медкол"."профили" ALTER COLUMN "логин" SET DEFAULT "медкол"."профили/логин-цифры"()::text;
+
 /**CREATE TABLE IF NOT EXISTS "медкол", "умолчания" (
   "задать вопросов" int,
   "всего время" int --- секунд
@@ -68,21 +99,18 @@ DROP FUNCTION IF EXISTS "медкол"."названия тестов/родит
 CREATE OR REPLACE FUNCTION "медкол"."названия тестов/родители"(int)
 RETURNS TABLE("id" int, title text, /*"название" text,*/ parent int, "parents_id" int[], "parents_title" text[], /*"@parents/название" text[],*/ level int) 
 AS $func$
-
 /***
 1 - id теста или null- все тесты
-
 ***/
-
 WITH RECURSIVE rc AS (
    SELECT n.id,  n."название" as title, p.id as "parent", p."название" as "parent_title", p.id as "parent_id", 0::int AS "level"
    FROM "медкол"."названия тестов" n
-    left join (
+    left join (--- 
     select n.*, r.id2
     from "медкол"."названия тестов" n
       join "медкол"."связи" r on n.id=r.id1
     ) p on n.id= p.id2
-   where n.id=coalesce($1, n.id)
+   where n.id=coalesce($1, n.id) ----and p.id is null
     
    UNION
    
@@ -107,6 +135,79 @@ group by id, title, parent
 ;
 
 $func$ LANGUAGE SQL;
+
+/*----------------------------------------*/
+DROP FUNCTION IF EXISTS "медкол"."цепочки сессий/родители"();
+CREATE OR REPLACE FUNCTION "медкол"."цепочки сессий/родители"()
+RETURNS TABLE("id" int, "parents_id" int[], "step" int) 
+AS $func$
+---
+
+{%= $DICT->render('цепочки сессий/рекурсия вниз') %}
+
+select
+  id,
+  array_agg("parent_id" order by "step" desc) as "parents_id",
+  max("step") as "step"
+from rc
+---where "step"!=0
+group by id
+;
+
+$func$ LANGUAGE SQL;
+
+/****** конец функций *********/
+
+@@ цепочки сессий/рекурсия вниз
+--- от топ концевых сессий по родителям
+WITH RECURSIVE rc AS (
+   SELECT s.id, /*s.ts,*/ s.id as parent_id, 0::int AS "step"---, s."задать вопросов"
+   FROM "медкол"."сессии" s 
+   left join (---нет дочерней сессии
+    select p.id, r.id1
+    from 
+      "медкол"."связи" r ---on s.id=r.id1
+      join "медкол"."сессии" p on p.id=r.id2
+   ) p on s.id=p.id1
+  {%= $where || 'where  p.id is null' %}---5828
+    
+   UNION
+   
+   --- к родительской начальной сессии
+   SELECT rc.id, /*c.ts,*/   p.id, rc.step + 1---, c."задать вопросов"
+   FROM rc 
+      join "медкол"."связи" r on rc.parent_id=r.id2
+      join "медкол"."сессии" p on p.id=r.id1
+    ---where c."задать вопросов" is not null--- признак завершенной сессии для вычисления процента
+) ---конец рекурсии
+
+@@ цепочки сессий/рекурсия вверх
+WITH RECURSIVE rc AS (
+--- от любой нижней сессии
+   SELECT s.id, s.id as child_id, 0::int AS "step"
+   FROM "медкол"."сессии" s
+   ---where s.id =  472249--430774
+  {%= $where || '' %}
+   
+   UNION
+   --- вверх к концевой сессии
+   SELECT rc.id, c.id, rc.step + 1
+   FROM rc 
+      join "медкол"."связи" r on rc.child_id=r.id1 --childs_id[array_length(rc.childs_id, 1)]=r.id1
+      join "медкол"."сессии" c on c.id=r.id2
+) ---конец рекурсии
+{%= $query || '' %}
+/*select id, (array_agg(child_id order by "step"))[2:] as "childs_id", max("step") as "step"
+from rc
+group by id
+having max("step")!=0
+*/
+
+/*select *
+from rc
+where id != child_id
+*/
+
 
 @@ сессия
 -- любая
@@ -153,6 +254,13 @@ from "медкол"."сессии" s
   ) p on true
 ) s
 {%= $where || '' %};
+
+@@ профили
+select p.*, regexp_replace(encode(digest(p."ts"::text, 'sha1'),'hex'), '\D', '', 'g') as "ts/sha1/d", s.id as "сессия/id"
+from "медкол"."профили" p
+  join "медкол"."связи" r on p.id=r.id1
+  join "медкол"."сессии" s on s.id=r.id2
+{%= $where || '' %}
 
 @@ названия тестов
 select n.*, 
@@ -285,6 +393,8 @@ returning *
 ;
 
 @@ новый вопрос
+--- по по всем сессиям вопросы
+{%= $DICT->render('цепочки сессий/рекурсия вниз', where=>'where s.id =? ') %}
 --- связать "сессия" -> "процесс сдачи" -> "тестовые вопросы"
 select q.id
 from "медкол"."названия тестов" t
@@ -292,16 +402,22 @@ from "медкол"."названия тестов" t
   join "медкол"."сессии" s on s.id=r1.id2
   join "медкол"."связи" r2 on t.id=r2.id1
   join "медкол"."тестовые вопросы" q on q.id=r2.id2
-  left join (-- которые были в этой сессии
-    select q.id, r.id1 --- ид сессии
-    from "медкол"."связи" r
+  left join (-- которые были
+    select q.id, count(q.id) as "cnt",
+      sum(p."ответ")::numeric/count(q.id)::numeric as "правильность ответов"
+      ---max(q.ts) as "вопрос/ts/last"---, r.id1 --- ид сессии
+    from 
+      rc --- все сессии цепочки
+      join "медкол"."связи" r on rc.parent_id=r.id1
       join "медкол"."процесс сдачи" p on p.id=r.id2
       join "медкол"."связи" r2 on p.id=r2.id1
       join "медкол"."тестовые вопросы" q on q.id=r2.id2
-  ) pq on s.id=pq.id1
+    where p."ответ" is not null
+    group by q.id
+  ) pq on q.id=pq.id---s.id=pq.id1
 where s.id=?
-  and  q.id<>coalesce(pq.id, 0)  ----pq.id is null 
-order by random()
+  ---and  q.id<>coalesce(pq.id, 0)  ----pq.id is null 
+order by pq.id is not null /*не задавались в начало*/,  pq."правильность ответов"desc, pq."cnt",/*pq."вопрос/ts/last",*/ random()
 limit 1
 ;
 
@@ -378,7 +494,7 @@ WITH  rc AS (--RECURSIVE
 {%= $DICT->render('результаты', where=>$where || '', limit=>$limit || '', offset=>$offset || '',) %}
 ;
 
-@@ сессии-цепочки рекурсия к топ
+@@ 0000сессии-цепочки рекурсия к топ
 WITH RECURSIVE rc AS (
 --- от сессии
    SELECT s.id, s.ts, array[]::int[] as childs_id, 0::int AS "step"
@@ -387,7 +503,7 @@ WITH RECURSIVE rc AS (
     {%= $where1 || '' %}
     
    UNION
-   --- вниз к концевой сессии
+   --- вверх к концевой сессии
    SELECT c.id, c.ts, rc.childs_id || rc.id, rc.step + 1
    FROM rc 
       join "медкол"."связи" r on rc.id=r.id1
@@ -406,7 +522,7 @@ limit 1
 WITH rc AS (
 WITH RECURSIVE rc AS (
 --- от топ сессий
-   SELECT s.id, /*s.ts,*/ array[]::int[] as childs_id, 0::int AS "step"---, s."задать вопросов"
+   SELECT s.id, array[]::int[] as childs_id, 0::int AS "step"---, s."задать вопросов"
    FROM "медкол"."сессии" s 
    left join (---нет дочерней сессии
     select p.id, r.id1
@@ -422,21 +538,31 @@ WITH RECURSIVE rc AS (
    UNION
    
    --- к родительской сессии
-   SELECT p.id, /*c.ts,*/   rc.childs_id || rc.id, rc.step + 1---, c."задать вопросов"
+   SELECT p.id,   rc.childs_id || rc.id, rc.step + 1---, c."задать вопросов"
    FROM rc 
       join "медкол"."связи" r on rc.id=r.id2
       join "медкол"."сессии" p on p.id=r.id1
     ---where c."задать вопросов" is not null--- признак завершенной сессии для вычисления процента
 ) ---конец рекурсии
 
-  select distinct rc.childs_id[1] as pid, /*unnest(rc.childs_id)*/ id as parent_id--- это дочерний ид!, но жестко в DICT->render('результаты'....    child_id--, rc.*
+  select distinct childs_id[1] as pid,  id as parent_id--- это дочерний ид!, но жестко в DICT->render('результаты'....    child_id--, rc.*
   from rc
+
+/*
+%# {%= $DICT->render('цепочки сессий/рекурсия вниз') %}
+
+  select distinct parent_id as pid, id as parent_id--- это дочерний ид!, но жестко в DICT->render('результаты'....    child_id--, rc.*
+  from rc
+  where parent_id != id
+*/
   ---where "задать вопросов" is not null--- признак завершенной сессии для вычисления процента
 
   ---select * from rc
 ) ---конец with, далее rc
 
-select {%= $select || '*' %} from (
+select {%= $select || '*' %}
+from (
+select g.*, to_json(p) as "$профиль" from (
 select 
   s1.id as "последняя сессия/id",---  первая!
   s1.ts as "последняя сессия/ts",
@@ -460,12 +586,18 @@ from (
 %# обязательно order_by пустая строка append_select=>', rc.step as "всего сессий", rc.ts as "последняя сессия/ts", rc.id as "последняя сессия/id" '
 {%= $DICT->render('результаты', where=>$where1 || '', order_by=>'', append_select=>', rc.* ') %}
 ) g 
-  join "медкол"."сессии" s1 on g.pid=s1.id--- первая сессия
+  join "медкол"."сессии" s1 on g.pid=s1.id--- последняя сессия
 group by s1.id, s1.ts
 ) g
+
+  left join (
+  {%= $DICT->render('профили') %}
+  ) p on p."сессия/id"=g."сессия/id"[array_length(g."сессия/id", 1)]
+
 {%= $where2 || '' %}
 {%= $order_by || '' %}
 {%= $limit || '' %} {%= $offset || '' %}
+) g
 ;
 
 @@ ответы в сессии

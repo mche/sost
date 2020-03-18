@@ -24,7 +24,7 @@
     <a href="javascript:" class="submit btn hover-shadow3d" disabled="disabled"> <i class="material-icons">send</i> <span>Ответить</span> </a>
     <!--input type="submit" name="btn" value ="Ответить" class="btn" disabled-->
     
-    <div class="progress iblock" style="height: inherit; width:20%; display:none !important;"><div class="center green-text text-darken-2">Далее...</div><div class="indeterminate"></div></div>
+    <div class="progress chip" style="height: inherit; width:30%; display:none !important;"><div class="center green-text text-darken-2">Далее...</div><div class="indeterminate green darken-3"></div></div>
     
     <span id="session-expiration" class="hide"><%= $sess->{'всего время'} || $c->время_теста %></span>
     <!--span>время вопроса <%= $q->{'время вопроса'} %></span>

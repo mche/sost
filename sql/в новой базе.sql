@@ -81,5 +81,7 @@ LOOP
   ---RAISE NOTICE ' id: %', d.id;
 END LOOP;
 
+VACUUM  FULL  VERBOSE  ANALYZE;
+
 END
 $do$;

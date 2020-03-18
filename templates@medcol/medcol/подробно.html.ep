@@ -20,7 +20,7 @@
   % for my $ans (@{$data->{'ответы'}}) {
   % my $id = $data->{id}.'-ans-'.$i++;
         <li class="collection-item <%= $i eq 1 ? ' green ' : ' red ' %> lighten-4 ">
-          <input type="radio" id="<%= $id %>" name="q-<%= $data->{id} %>" data-value="<%= $data->{'ответ'} %>" <%= $i eq $data->{'ответ'} ? 'checked' : '' %> disabled >
+          <input type="radio" id="<%= $id %>" name="q-<%= $data->{id} %>" data-value="<%= $data->{'ответ'} %>" <%= $i eq $data->{'ответ'} ? 'checked' : 'disabled' %>  >
           <label class="before-white hover-shadow3d " for="<%= $id %>"><h5 class="<%= $i eq 1 ? ' green-text' : ' red-text' %> text-darken-4 <%= $i eq $data->{'ответ'} ? 'fw500' : '' %>"><%= $ans %></h5></label>
         </li>
   % }
@@ -54,7 +54,7 @@
   <span class="chip shadow-inset-10 black-text">задано: <span class="bold"><%= $sess->{'задано вопросов'} %></span></span>
   <span class="chip shadow-inset-10 green-text">правильно: <span class="bold"><%= $sess->{'правильных ответов'} %></span></span>
 % my $percent =  sprintf("%.2f", $sess->{'правильных ответов'}/($sess->{'задать вопросов'} || $sess->{'тест/задать вопросов'} || $c->задать_вопросов)*100);
-  <span class="chip shadow-inset-10 green-text"><i class="material-icons">thumb_up</i><span class="bold"><%= ($percent =~ /^(\d+)/)[0] %>%</span><span class="fs10 grey-text">.<%= ($percent =~ /(\d+)$/)[0] %></span>
+  <span class="chip shadow-inset-10  <%= $percent < 70 ? 'grey-text' : 'green-text-darken-2' %>"><i class="material-icons fs10 padd-0-05 <%= $percent < 70 ? 'rotate180' : '' %>">thumb_up</i><span class="bold"><%= ($percent =~ /^(\d+)/)[0] %>%</span><span class="fs8 grey-text">.<%= ($percent =~ /(\d+)$/)[0] %></span>
   </span>
   
 % my $sec = ($sess->{'время тестирования/секунды'}  =~ /^(\d+)\.?/)[0];

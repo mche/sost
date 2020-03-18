@@ -10,3 +10,7 @@
 *:not(table, thead, tbody).striped.blue.lighten-4 > *:nth-child(odd) {
   background-color: color("blue", "lighten-5");
 }
+
+*:not(table, thead, tbody).striped.green.lighten-4 > *:nth-child(odd) {
+  background-color: color("green", "lighten-5");
+}

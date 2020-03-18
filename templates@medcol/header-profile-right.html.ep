@@ -1,0 +1,50 @@
+% my $профиль=stash('профиль');
+<div class="chip ">
+<div class="input-field">
+%# if ($профиль->{'логин'}) {
+  <span class="fw100"><%= $профиль->{'логин'} ? 'Мой профиль' : 'Вход' %> №</span>
+%# }
+  <input type="text" value="<%= $профиль->{'логин'} || '' %>" name="login" class="padd-0 bold" style="width:3rem;" placeholder="логин" title="логин"/>
+  <!--a onclick="togglePw(event)" href="javascript:"><i class="material-icons">vpn_key</i></a-->
+  <input onclick="TogglePw(event, 'text')" onblur="TogglePw(event, 'password')" name="pw" type="password" value="<%= substr($профиль->{'ts/sha1/d'} || '', 0, 4) %>" class="padd-0" style="width:4rem; font-size: inherit;" placeholder="пароль" title="пароль" />
+  <!--a onclick="togglePw(event)" href="javascript:"><i class="material-icons">visibility</i></a-->
+% if ($профиль->{'логин'}) {
+  <a href="<%= url_for('медкол заново цепочка сессий') %>" class="hoverable" title="выйти или новый логин"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 252 252" class="prefix000 red-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#exit"></use></svg></a>
+% } else {
+  <a onclick="MedcolLogin(event)" href="javascript:" class="hoverable" title="вход"><i class="icon-login"></i></a>
+% }
+</div>
+
+<!--div class="input-field">
+
+</div-->
+
+<script>
+function TogglePw(event, type){
+  let i = $(event.target);
+  let div = i.closest('div');
+  let f = $('input[name=pw]', div)[0];
+  if (f.type == 'password') {
+    f.type = type || 'text';
+//~     i.text('visibility_off');
+  }
+  else {
+    f.type = type || 'password';
+//~     i.text('visibility');
+  }
+//~   console.log("togglePw", );
+}
+
+let loginUrl='<%= url_for('медкол вход', login=>':login', pw=>':pw') %>';
+function MedcolLogin(event){
+  let div = $(event.target).closest('div');
+  let a = $('a', div);
+  let login = $('input[name=login]', div);
+  let pw = $('input[name=pw]', div);
+  a.attr('href', loginUrl.replace(':login', login.val()).replace(':pw', pw.val()));
+//~   console.log("MedcolLogin", a[0].href);
+  return false;
+}
+</script>
+
+</div>

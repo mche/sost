@@ -71,7 +71,6 @@ sub фиксировать_сессию {# и можно переключить 
     #~ $self->app->log->debug($self->app->dumper($sess));
     #~ $self->сессию_продлить($old->{id});
     return $sess; # снова запросить
-    
   }
   
   my $cnt = $old->{'тест/задать вопросов'} || $self->задать_вопросов;
@@ -81,6 +80,38 @@ sub фиксировать_сессию {# и можно переключить 
   my $new = $self->сессия_или_новая();
   $self->связь($old->{id}, $new->{id});
   return $new;
+}
+
+sub профиль_или_новый {
+  my ($self, $sess_id) = @_;
+  my ($where, @bind) = $self->SqlAb->where({
+    ' s.id '=>$sess_id,
+  });
+  my $sth = $self->sth('профили', where=>$where);
+  my $p = $self->dbh->selectrow_hashref($sth, undef, @bind);
+  return $p
+    if $p && $p->{id};
+  $p = $self->_insert_default_values("медкол", "профили");
+  $self->связь($p->{id}, $sess_id);
+  
+  return $self->dbh->selectrow_hashref($sth, undef, @bind);
+}
+
+sub профиль_вход  {
+  my ($self, $login) = @_;
+  my ($where, @bind) = $self->SqlAb->where({
+    ' p."логин" '=>$login,
+  });
+  $self->dbh->selectrow_hashref($self->sth('профили', where=>$where), undef, @bind);
+  #~ 
+}
+
+sub цепочка_сессий_вверх {
+  my ($self, $sess_id) = @_;
+  my ($where, @bind) = $self->SqlAb->where({
+    ' s.id '=>$sess_id,
+  });
+  $self->dbh->selectrow_hashref($self->sth('цепочки сессий/рекурсия вверх', where=>$where, query=>qq{ select * from rc order by "step" desc limit 1 }), undef, @bind);
 }
 
 sub сохранить_название {
@@ -162,7 +193,7 @@ sub начало_теста {# связать список тестов с се�
 
 sub новый_вопрос {# закинуть в процесс вопрос
   my ($self, $sess_id) = @_;
-  my $q = $self->dbh->selectrow_hashref($self->sth('новый вопрос'), undef, $sess_id)
+  my $q = $self->dbh->selectrow_hashref($self->sth('новый вопрос'), undef, ($sess_id) x 2)
     or return;
   # связать "сессия" -> "процесс сдачи"(создать запись) -> "тестовые вопросы"(новый вопрос)
   my $p = $self->_insert_default_values("медкол", "процесс сдачи");#, undef, {}, {ts=>'default'});
@@ -204,6 +235,7 @@ sub результаты_сессий_цепочки {
     defined($param->{'успехов'}) && $param->{'успехов'} ne '' ? (' "%больше70" ' => {'>=', $param->{'успехов'}}) : (),
     #~ defined($param->{'тест'}) && $param->{'тест'} ne '' ? (' ?::int = any("тест/id") ' => { '' => \["", $param->{'тест'}] },) : (),#date_entered => { '>' => \["to_date(?, 'MM/DD/YYYY')", "11/26/2008"] },
     defined($param->{'sha1'}) && $param->{'sha1'} ne '' ? (q|?| => \[ q| = any("сессия/sha1/substr")|, lc($param->{'sha1'}),]) : (),# length($param->{'sha1'})+1,
+    defined($param->{'логин'}) && $param->{'логин'} ne '' ? ( ' p."логин" '=>$param->{'логин'}) : (),#' p."логин" '=> {'!='=>undef},
   });
   my ($where1, @bind1) = $self->SqlAb->where({
     # фильтрация по тесту для кода цепочки в шаблоне 
@@ -254,7 +286,8 @@ sub войти_в_сессию {
   my ($where, @bind) = $self->SqlAb->where({
     q|substring(encode(digest(s."ts"::text, 'sha1'),'hex'), 0, ?)| => \[ "= ?", length($sha1)+1, lc($sha1) ]
   });
-  my $s = $self->dbh->selectrow_hashref($self->sth('сессии-цепочки рекурсия к топ', where1=>$where), undef, @bind);
+  #~ my $s = $self->dbh->selectrow_hashref($self->sth('сессии-цепочки рекурсия к топ', where1=>$where), undef, @bind);
+  $self->dbh->selectrow_hashref($self->sth('цепочки сессий/рекурсия вверх', where=>$where, query=>qq{ select child_id as id from rc order by step desc limit 1 }), undef, @bind);
   #~ $self->сессия($s->{id})
     #~ if $s;
 }
