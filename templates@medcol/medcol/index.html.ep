@@ -6,7 +6,7 @@
 % $sess->{'старт сессии'}{'секунды'}  = ($sess->{'старт сессии'}{'second'} =~ /^(\d+)\.?/)[0] if $sess->{'старт сессии'};
 
 <div class="row ">
-<!--div class="chip right" style="margin-top:-4rem;"><%= $sess->{'сессия/sha1'} %></div-->
+<div class="chip right" style=""><%= $sess->{'id'} %></div>
 % if (@$res) {
 
 %# <div class="chip right" style="margin-top:-4rem;">Пароль: <%= substr($res->[-1]{'сессия/sha1'}, 0, 5) %></div>

@@ -522,7 +522,7 @@ limit 1
 WITH rc AS (
 WITH RECURSIVE rc AS (
 --- от топ сессий
-   SELECT s.id, array[]::int[] as childs_id, 0::int AS "step"---, s."задать вопросов"
+   SELECT s.id, array[/*s.id*/]::int[] as childs_id, 0::int AS "step"---, s."задать вопросов"
    FROM "медкол"."сессии" s 
    left join (---нет дочерней сессии
     select p.id, r.id1
@@ -551,7 +551,7 @@ WITH RECURSIVE rc AS (
 /*
 %# {%= $DICT->render('цепочки сессий/рекурсия вниз') %}
 
-  select distinct parent_id as pid, id as parent_id--- это дочерний ид!, но жестко в DICT->render('результаты'....    child_id--, rc.*
+  select id as pid, parent_id--- это дочерний ид!, но жестко в DICT->render('результаты'....    child_id--, rc.*
   from rc
   where parent_id != id
 */
