@@ -852,7 +852,7 @@ undefined = ''
 true = ''
 false = ''
 null = ''
-seller={%= $seller %}
+seller={}# %= $seller %
 sign_images={}
 if seller.get('id') and os.path.exists('static/i/logo/sign-'+str(seller.get('id'))+'.png'):
     sign_images[str(seller.get('id'))]=InlineImage(tpl, 'static/i/logo/sign-'+str(seller.get('id'))+'.png', width=Mm(40))
