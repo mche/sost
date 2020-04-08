@@ -32,7 +32,7 @@ sub список_объектов {
   my ($where, @bind) = $self->SqlAb->where({
     $data->{id} ? (' o.id ' => $data->{id}) : (),
     });
-  $self->dbh->selectall_arrayref($self->sth('объекты/список или позиция', where=>$where), {Slice=>{}}, @bind);
+  $self->dbh->selectall_arrayref($self->sth('объекты/список или позиция', where=>$where, order_by_room=>q! order by case when p."номер-название"~'^\d+$' then repeat('0', 5 - char_length(p."номер-название")) || p."номер-название" else p."номер-название" end !), {Slice=>{}}, @bind);
 }
 
 sub сохранить_объект {

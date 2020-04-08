@@ -84,7 +84,7 @@
 </thead>
 
 <tbody>
-  <tr v-for=" (item, item_idx) in filteredData " :key=" item.id " class="" :class="{'selected': item === selectedContract}">
+  <tr v-for=" (item, item_idx) in filteredData " :key=" item.id " :id=" `item-${item.id}` " class="" :class="{'selected': item === selectedContract}">
     <td class="vtop padd-05">
 
       <h5 class="truncate line-height-12" :class="{'bold': item._edit}" style="width:10rem; max-width:calc(10vw);" :title="item['$контрагент'].title">

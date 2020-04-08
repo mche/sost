@@ -79,7 +79,7 @@ InitDatepicker(el){
     "onSet": function (context) {
       var s = this.component.item.select;
       if (!s) return;
-      vm.$set(vm.form,this._hidden.name , [s.year, s.month+1, s.date].join('-'));
+      vm.$set(vm.form, this._hidden.name , [s.year, s.month+1, s.date].join('-'));
     },//$(this._hidden).val().replace(/^\s*-/, this.component.item.select.year+'-'); },
   });//{closeOnSelect: true,}
   
@@ -143,7 +143,7 @@ Valid(){
     && vm.form['@помещения'].length > 1
     && vm.form['@помещения'].slice(0, -1).every(function(room){ return !!room['помещение/id'] && !!(room['ставка'] || room['сумма']); })
   ;
-  console.log("Valid", test);
+  //~ console.log("Valid", test);
   return test;
 },
 
@@ -157,6 +157,7 @@ Save(){
       vm.cancelerHttp = undefined;
       if (resp.data.error) return Materialize.toast(resp.data.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
       Materialize.toast('Сохранено успешно', 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
+      if (vm.form['копия/id']) resp.data.success['копия/id'] = vm.form['копия/id'];
       vm.$emit('on-save', resp.data.success);
       $Контрагенты.RefreshData();
       vm.ContragentData();
@@ -232,15 +233,39 @@ ParseNum(num){
   return parseFloat(Util.numeric(num));
 },
 
-ClearDate(name){
+ClearDate(name, val){
   var vm = this;
-  vm.form[name] = null;
+  vm.form[name] = val;
   vm.keys[name] = vm.idMaker.next().value;/// передернуть
   setTimeout(()=>{
     var el = $(`input[name="${ name }"]`, $(vm.$el));
+    //~ if(val) vm.form[name] = val;
     vm.InitDatepicker(el);
     //~ console.log("ClearDate", el);
   });
+},
+
+Copy(){
+  var vm = this;
+  var init = vm.InitForm(angular.copy(vm.form));///vm.form;
+  init.id = undefined;
+  init['номер'] = undefined;
+  init['коммент'] = undefined;
+  init['копия/id'] = vm.form.id;
+  init['предоплата'] = false;
+  //~ init._edit = undefined;
+  //~ init['@помещения'] = angular.copy(vm.form['@помещения']);
+  //~ init['$проект'] = angular.copy(vm.form['$проект']);
+  //~ init['контрагент'] = angular.copy(vm.form['контрагент']);
+  vm.form = init;
+  
+  vm.ClearDate('дата договора', init['дата договора']);
+  vm.ClearDate('дата1', init['дата1']);
+  vm.ClearDate('дата2', init['дата2']);
+  vm.ClearDate('дата расторжения', init['дата расторжения']);
+  //~ form['оплата до числа'] = undefined;
+  //~ form._uploads = [];
+
 },
 
 }; /// конец methods

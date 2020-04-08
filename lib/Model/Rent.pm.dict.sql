@@ -414,7 +414,7 @@ from "аренда/объекты" o
   join refs ro on o.id=ro.id2
   join roles ob on ob.id=ro.id1
   left join (
-    select o.id, jsonb_agg(p order by p.id) as "@кабинеты/json", array_agg(p.id order by p.id) as "@кабинеты/id"
+    select o.id, jsonb_agg(p {%= $order_by_room || ' order by p.id' %}) as "@кабинеты/json", array_agg(p.id {%= $order_by_room || ' order by p.id' %}) as "@кабинеты/id"
     from "аренда/объекты" o
       join "refs" r on o.id=r.id1
       join "аренда/помещения" p on p.id=r.id2

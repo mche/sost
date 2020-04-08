@@ -96,18 +96,28 @@ OnSave(data){ ///  из события сохранения формы
   var vm = this;
   if (vm.newContract) vm.newContract = undefined;
   if (data) {
-    var f = vm.data.find(util.IsEqualId, data);
+    
     if (data['удалить']) {
       vm.data.removeOf(f);
       return vm.FilterData();
     }
+    var f = data.id && vm.data.find(util.IsEqualId, data);
     if (f) { /// редакт
       if (f._edit) f._edit = undefined;
       Object.assign(f, data);
     } else {/// новая
-      vm.data.push(data);
+      if (data['копия/id']) f = vm.data.find(util.IsEqualId, {"id": data['копия/id']});
+      if (f) {
+        f._edit = undefined;
+        //~ vm.data.splice(vm.data.indexOf(f), 0, data);
+      } ///else 
+      vm.data.unshift(data);
+      //~ console.log("новый договор", data, f);
     }
     vm.FilterData();
+    setTimeout(()=>{
+      $(`#item-${ data.id }`, $(vm.$el)).get(0).scrollIntoView();
+    })
   }
 },
 
@@ -212,7 +222,8 @@ FilterData(){
   var vm = this;
   //~ if (!vm.filters['арендаторы'].length) return vm.data;
   vm.archLen = 0;
-   vm.filteredData = ///vm.filters['арендаторы'].length || (vm.filters['объект'] && vm.filters['объект'].id) /// || (vm.filters['архивные договоры'] !== undefined)
+  //~ vm.filteredData.length = 0;
+  vm.filteredData = ///vm.filters['арендаторы'].length || (vm.filters['объект'] && vm.filters['объект'].id) /// || (vm.filters['архивные договоры'] !== undefined)
     vm.data.filter((item)=>{
       
       const cur = dateFns.isWithinRange(new Date(), new Date(/*item['дата1']*/ '2000-01-01'), new Date(item['дата расторжения'] || item['дата2']));
