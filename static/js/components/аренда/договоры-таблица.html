@@ -139,7 +139,7 @@
             <div class="nowrap line-height-10 lime-text-darken-4" style="width: calc(5vw);">
               <!--span class="bold">{{ ParseNum(room.$помещение['площадь']).toLocaleString() }}</span>
               <span class="fs8 grey-text">м<sup>2</sup></span-->
-              <span class="nowrap " class-000="{'right': item['@помещения'].length == 1, 'chip padd-0-05': item['@помещения'].length > 1}"><span class="" :class="{'fw500': item['@помещения'].length == 1}">{{ ParseNum(room.$помещение['площадь']).toLocaleString() }}</span><span class="fs8 grey-text"> м²</span></span>
+              <span class="nowrap " class-000="{'right': item['@помещения'].length == 1, 'chip padd-0-05': item['@помещения'].length > 1}"><span class="" :class="{'fw500': item['@помещения'].length == 1}">{{ ParseNum(room['площадь'] || room.$помещение['площадь']).toLocaleString() }}</span><span class="fs8 grey-text"> м²</span></span>
             </div>
           </td>
           <td class="right-align" style="width:1%;">

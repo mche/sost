@@ -141,7 +141,7 @@ Valid(){
     && !!(vm.form['контрагент'] && (vm.form['контрагент'].id || vm.form['контрагент'].title))
     //~ && vm.ValidPos()
     && vm.form['@помещения'].length > 1
-    && vm.form['@помещения'].slice(0, -1).every(function(room){ return !!room['помещение/id'] && !!(room['ставка'] || room['сумма']); })
+    //~ && vm.form['@помещения'].slice(0, -1).every(function(room){ return !!room['помещение/id'] && !!(room['ставка'] || room['сумма']); })
   ;
   //~ console.log("Valid", test);
   return test;
@@ -201,14 +201,15 @@ OnRoomSelect(item, propSelect){/// из компонента выбор из с�
     room.$помещение = item && item.$помещение;
     ((room['ставка|сумма'] == 'ставка') && vm.InputMetr(room)) || vm.InputSum(room);
   } else {///удалить строку формы
-    rooms.removeOf(room);
+    //~ rooms.removeOf(room);
+    room['помещение/id'] = undefined;
   }
 },
 
 InputMetr(room){///ставка за1м/мес
   var vm = this;
-  if (!room.$помещение || !room['ставка']) return;
-  var s = vm.RoomSum(room);
+  if (/*!room.$помещение ||*/ !room['ставка']) return;
+  var s = vm.ParseNum(room['ставка']) * vm.RoomSquare(room);
   room['сумма'] = s.toLocaleString({"currency": 'RUB'});
   room['ставка|сумма'] = 'ставка';
   return room['сумма'];
@@ -216,17 +217,28 @@ InputMetr(room){///ставка за1м/мес
 
 InputSum(room){/// сумма за мес
   var vm = this;
-  if (!room.$помещение || !room['сумма']) return;
-  var s = vm.ParseNum(room['сумма'])/vm.ParseNum(room.$помещение ? room.$помещение['площадь'] : room['площадь']);
+  if (/*!room.$помещение ||*/ !room['сумма']) return;
+  var s = vm.ParseNum(room['сумма'])/vm.RoomSquare(room);
   room['ставка'] = s.toLocaleString({"currency": 'RUB'});
   room['ставка|сумма'] = 'сумма';
   return room['ставка'];
 },
 
-RoomSum(room){
+InputSquare(room){
   var vm = this;
-  //~ console.log("RoomSum", room.$помещение ? room.$помещение['площадь'] : room['площадь'], room['ставка']);
-  return vm.ParseNum(room.$помещение ? room.$помещение['площадь'] : room['площадь'])*vm.ParseNum(room['ставка']);
+  if (room['площадь'].length && !/^\d+$|[.,]\d*$/.test(room['площадь'])) {
+    var s = vm.ParseNum(room['площадь']);
+    room['площадь'] = s.toLocaleString('ru-RU', {"minimumFractionDigits":1});
+  }
+  //~ console.log("InputSquare", s);  
+  if (room['ставка|сумма'] == 'сумма') vm.InputSum(room);
+  if (room['ставка|сумма'] == 'ставка') vm.InputMetr(room);
+},
+
+RoomSquare(room){
+  var vm = this;
+  //~ console.log("RoomSquare", room.$помещение ? room.$помещение['площадь'] : room['площадь'], room['ставка']);
+  return vm.ParseNum(room['площадь'] || (room.$помещение && room.$помещение['площадь']));
 },
 
 ParseNum(num){
@@ -248,24 +260,28 @@ ClearDate(name, val){
 Copy(){
   var vm = this;
   var init = vm.InitForm(angular.copy(vm.form));///vm.form;
+  //~ debugger;
   init.id = undefined;
   init['номер'] = undefined;
   init['коммент'] = undefined;
   init['копия/id'] = vm.form.id;
   init['предоплата'] = false;
-  //~ init._edit = undefined;
-  //~ init['@помещения'] = angular.copy(vm.form['@помещения']);
-  //~ init['$проект'] = angular.copy(vm.form['$проект']);
-  //~ init['контрагент'] = angular.copy(vm.form['контрагент']);
+  init['договор/id'] = undefined;
+  init['@помещения/id'] = undefined;
+  init['@помещения'].forEach((room)=>{
+    room.id = undefined;
+    room.uid = undefined;
+    room['договор/id'] = undefined;
+    
+    
+  });
+
   vm.form = init;
   
   vm.ClearDate('дата договора', init['дата договора']);
   vm.ClearDate('дата1', init['дата1']);
   vm.ClearDate('дата2', init['дата2']);
   vm.ClearDate('дата расторжения', init['дата расторжения']);
-  //~ form['оплата до числа'] = undefined;
-  //~ form._uploads = [];
-
 },
 
 }; /// конец methods
@@ -284,8 +300,8 @@ TotalSum(){
 TotalSqure(){
   var vm = this;
   var s = vm.form['@помещения'].reduce(function(a, room){
-    if (!room || !room.$помещение) return a;
-    return a + vm.ParseNum(room.$помещение['площадь']);
+    if (!room || !(room['площадь'] || room.$помещение)) return a;
+    return a + vm.ParseNum(room['площадь'] || room.$помещение['площадь']);
   }, 0.0);
   return s;
 },

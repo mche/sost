@@ -214,9 +214,9 @@
                   <h5 v-if="selected" class="relative padd-0-05 lime-text text-darken-4 animated slideInRight hover-bottom-shadow-teal-darken-3 ">
                     <span><i class="material-icons fs8 padd-0">place</i></span>
                     <span>{{ selected.$объект['name'] }}</span>
-                    <span class="nowrap chip padd-0-05"><span class="fs8 grey-text">№</span><span class="">{{ selected.$помещение['номер-название'] }}</span></span>
-                    <span class="nowrap chip padd-0-05"><span class="">{{ selected.$помещение['этаж'] }}</span><span class="fs8 grey-text">эт.</span></span>
-                    <span class="nowrap chip padd-0-05"><span class="">{{ ParseNum(selected.$помещение['площадь']).toLocaleString() }}</span><span class="fs8 grey-text">м<sup>2</sup></span></span>
+                    <span class="nowrap chip padd-0-05"><span class="fs8 grey-text">№</span> <span class="bold">{{ selected.$помещение['номер-название'] }}</span></span>
+                    <span class="nowrap chip padd-0-05"><span class="">{{ selected.$помещение['этаж'] }}</span> <span class="fs8 grey-text">эт.</span></span>
+                    <span class="nowrap chip padd-0-05"><span class="bold" :class="{'through': !!room['площадь']}">{{ ParseNum(selected.$помещение['площадь']).toLocaleString() }}</span> <span class="fs8 grey-text">м<sup>2</sup></span></span>
                     <!--span class="grey-text fs7" style="position:absolute; right:0; bottom:0;">#{{ selected.id }}</span-->
                   </h5>
                   <h5 v-else class="grey-text">Выбрать помещение</h5>
@@ -225,9 +225,9 @@
                   <h6 class="padd-0-05 lime-text text-darken-4 hover-shadow3d relative"  :class="{'bold fs12': listItem === selected, 'fw500': listItem === highlighted}"  style="">
                     <span><i class="material-icons fs8 padd-0">place</i></span>
                     <span >{{ listItem.$объект['name'] }}</span>
-                    <span class="nowrap chip padd-0-05"><span class="fs8 grey-text">№</span><span class="">{{ listItem.$помещение['номер-название'] }}</span></span>
-                    <span class="nowrap chip padd-0-05"><span class="">{{ listItem.$помещение['этаж'] }}</span><span class="fs8 grey-text">эт.</span></span>
-                    <span class="nowrap chip padd-0-05"><span class="">{{ ParseNum(listItem.$помещение['площадь']).toLocaleString() }}</span><span class="fs8 grey-text">м<sup>2</sup></span></span>
+                    <span class="nowrap chip padd-0-05"><span class="fs8 grey-text">№</span> <span class="">{{ listItem.$помещение['номер-название'] }}</span></span>
+                    <span class="nowrap chip padd-0-05"><span class="">{{ listItem.$помещение['этаж'] }}</span> <span class="fs8 grey-text">эт.</span></span>
+                    <span class="nowrap chip padd-0-05"><span class="">{{ ParseNum(listItem.$помещение['площадь']).toLocaleString() }}</span> <span class="fs8 grey-text">м<sup>2</sup></span></span>
                     <span class="grey-text fs7" style="position:absolute; right:0; bottom:0;">#{{ listItem.id }}</span>
                   </h6>
                 </template>
@@ -235,11 +235,19 @@
               
               <span  v-show="room['помещение/id']" class="grey-text fs7 " style="position: absolute; right:0.5rem;">#{{ room['помещение/id']}}</span>
               <span  v-show="!room['помещение/id'] " class="chip padd-0-05 red-text fs8 " style="position: absolute; right:0;">не выбрано</span>
+              
+              <div class="right-align" style="margin-top:3rem;">
+                <h5 class="iblock middle">Точная площадь аренды, м²</h5>
+                <div class="input-field iblock middle000" :class="{'chip lime lighten-3  z-depth-1': room['площадь']}" style="width:5rem;">
+                  <input  type="text" v-model="room['площадь']" @input="InputSquare(room)" placeholder="м²" class="right-align" style="">
+                </div>
+              </div>
+              
             </td>
             <td class="padd-05" style="width:20%;">
               <div class="input-field row" :class="{'chip lime lighten-3 z-depth-1': room['ставка|сумма'] == 'ставка'}">
                 <input type="text" v-model.trim="room['ставка']" placeholder="ставка за 1 м²/мес."  title="ставка за 1 м²/мес." @input=" InputMetr(room) " :disabled="!room['помещение/id']">
-                <!---div v-show="room['помещение/id'] && room['ставка']" class="right-align grey-text" title="сумма за месяц">{{ RoomSum(room).toLocaleString() }}  ₽</div--->
+                <!---div v-show="room['помещение/id'] && room['ставка']" class="right-align grey-text" title="сумма за месяц">{{ RoomSquare(room).toLocaleString() }}  ₽</div--->
               </div>
               
               <div class="input-field row" :class="{'chip lime lighten-3 z-depth-1': room['ставка|сумма'] == 'сумма'}">
@@ -262,15 +270,25 @@
             </td>
           </tr>
           <!-- итогововая строка -->
-          <tr>
+          <tr class="grey-lighten-2">
             <td></td>
             <td class="right-align">
-              <h4 class="nowrap">Итого по договору <span class="bold">{{ TotalSqure.toLocaleString().replace(/([\.,]\d{2})\d+$/, '$1') }} м²</span></h4>
+              <h4 class="nowrap">
+                Итого по договору
+                  <span class="bold chip lime lighten-3  z-depth-1">
+                    <span>{{ TotalSqure.toLocaleString().replace(/([\.,]\d{2})\d+$/, '$1') }} </span>
+                    <span class="grey-text fw100"> м²</span>
+                  </span>
+                
+              </h4>
             </td>
             <td class="right-align">
               <h4>
-                <span class="bold">{{ TotalSum.toLocaleString({"currency": 'RUB'}).replace(/[\.,]\d+$/, '') }}</span>
-                <span class="grey-text fs8"> ₽/мес.</span>
+                <span class="bold chip lime lighten-3  z-depth-1">
+                  <span>{{ TotalSum.toLocaleString({"currency": 'RUB'}).replace(/[\.,]\d+$/, '') }} </span>
+                  <span class="grey-text fw100"> ₽/мес.</span>
+                </span>
+                
               
               </h4>
             </td>

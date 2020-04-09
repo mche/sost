@@ -127,6 +127,8 @@ sub сохранить_договор {
     
     $room->{$_} = &Util::money($room->{$_})
       for grep defined $room->{$_}, qw(ставка сумма);
+    $room->{$_} = &Util::numeric($room->{$_})
+      for grep defined $room->{$_}, qw(площадь);
     
     $room->{uid} = $c->auth_user->{id}
       unless $room->{uid};

@@ -75,11 +75,11 @@ ParseNum(num){
 },
 
 RoomMetr(room){
-  return this.ParseNum(room['ставка']) || this.ParseNum(room['сумма'])/this.ParseNum(room.$помещение['площадь']);
+  return this.ParseNum(room['ставка']) || this.ParseNum(room['сумма'])/this.ParseNum(room['площадь'] || room.$помещение['площадь']);
 },
 
 RoomSum(room){
-  return this.ParseNum(room['сумма']) || this.ParseNum(room['ставка'])*this.ParseNum(room.$помещение['площадь']);
+  return this.ParseNum(room['сумма']) || this.ParseNum(room['ставка'])*this.ParseNum(room['площадь'] || room.$помещение['площадь']);
 },
 
 RoomsSum(item){///итого за все помещения
@@ -88,7 +88,7 @@ RoomsSum(item){///итого за все помещения
 },
 RoomsSquare(item){///итого площадь все помещения
   var vm = this;
-  return item['@помещения'].reduce(function(a, room){ return a + vm.ParseNum(room.$помещение['площадь']); }, 0.0);
+  return item['@помещения'].reduce(function(a, room){ return a + vm.ParseNum(room['площадь'] || room.$помещение['площадь']); }, 0.0);
 },
 
 
