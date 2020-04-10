@@ -83,10 +83,10 @@
                     <span class="chip padd-0-05" title="объект и помещения">
                       <span><i class="material-icons">place</i></span>
                       <span>{{ listItem['@помещения'] && listItem['@помещения'][0] && listItem['@помещения'][0].$объект.name  }}</span>
-                      <span class="fs10 padd-0-05">
+                      <!---span class="fs10 padd-0-05">
                         <span>к./оф.: </span>
                         <span v-for="room in listItem['@помещения']" :key="room.id"> {{ room.$помещение['номер-название'] }},</span>
-                      </span>
+                      </span-->
                     </span>
                     <span class="chip padd-0-05" title="номер договора">дог. № {{ listItem['номер'].replace('№', '') }} от {{ listItem['дата договора'] || listItem['дата1'] }}</span>
                     <!--span class="grey-text fs7" style="position:absolute; right:0; bottom:0;">#{{ selected.id }}</span-->

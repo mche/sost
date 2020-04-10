@@ -87,8 +87,9 @@ ContragentContractData(){
   var vm = this;
   return $http.post(appRoutes.urlFor('аренда/договоры/список'), {"договоры на дату": vm.form['дата'], "order_by": " order by  lower(regexp_replace(k.title, '^\W', '', 'g')) "}).then(function(resp){
     vm.contragentContracts = resp.data.map(function(item){
-      item._match = `${ item['$контрагент']['title']  } ${ item.$контрагент['реквизиты'] && item.$контрагент['реквизиты']['ИНН'] } ${  item['@помещения'][0]['$объект'].name } ${ item['@помещения'].map(p=>{ return p['$помещение']['номер-название']; }).join(':') } ${ item['дата1'] } ${ item['номер'] }`.toLowerCase();
+      item._match = `${ item['$контрагент']['title']  } ${ item.$контрагент['реквизиты'] && item.$контрагент['реквизиты']['ИНН'] } ${  item['@помещения'] && item['@помещения'][0]['$объект'].name } ${ item['дата1'] } ${ item['номер'] }`.toLowerCase();
      /// , /*"адрес": item['адрес'],*/ "$помещение": room, "$объект": item['$объект'],});
+      ///${ item['@помещения'].map(p=>{ return p['$помещение']['номер-название']; }).join(':') } 
       return item;
     });
   });

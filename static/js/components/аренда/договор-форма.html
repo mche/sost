@@ -112,8 +112,8 @@
   </div><!-- row -->
   
   <div class="row" style="margin-bottom:3rem;">
-    <div class="col s4 ">
-      <h4 class="right-align">
+    <div class="col s4 right-align">
+      <h4 class="">
         <i class="material-icons">today</i>
         <span>Срок аренды</span>
       </h4>
@@ -129,6 +129,15 @@
         <h6 class=" nowrap" style="position:absolute; top:-0.9rem;">завершение срока</h6>
         <input name="дата2" type="text" class="datepicker"  :data-value=" form['дата2'] ">
       </div>
+    </div>
+    
+    <div class="col s4">
+      <div class="input-field chip">
+        <input :id=" 'chb-pred-' + form._id " name="" type="checkbox" class="" v-model=" form['продление срока'] " >
+        <label :for="'chb-pred-' + form._id " class="before-yellow before-lighten-4 brown-text text-darken-3 chip yellow lighten-4" style="padding-left:16px;"></label>
+        <label :for="'chb-pred-' + form._id " class=""><h5 class="inline" style="">Продление срока аренды</h5></label>
+      </div>
+    
     </div>
   </div><!-- row -->
   
@@ -273,7 +282,7 @@
           <!-- итогововая строка -->
           <tr class="grey-lighten-2">
             <td></td>
-            <td class="right-align">
+            <td class="right-align padd-05">
               <h4 class="nowrap">
                 Итого по договору
                   <span class="bold chip lime lighten-3  z-depth-1">
@@ -283,7 +292,7 @@
                 
               </h4>
             </td>
-            <td class="right-align">
+            <td class="right-align padd-05">
               <h4>
                 <span class="bold chip lime lighten-3  z-depth-1">
                   <span>{{ TotalSum.toLocaleString({"currency": 'RUB'}).replace(/[\.,]\d+$/, '') }} </span>
