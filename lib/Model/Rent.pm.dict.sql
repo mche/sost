@@ -241,20 +241,17 @@ $func$ LANGUAGE plpgsql;
 DROP VIEW IF EXISTS "движение ДС/аренда/счета" CASCADE;--- расходные записи движения по аренде
 CREATE OR REPLACE VIEW "движение ДС/аренда/счета" as
 -- 
-select d.id, d.ts, /*d."дата1", */d1."дата"::date, -1::numeric*sum."сумма"*d1."доля дней" as "сумма",
-  -1::numeric as "sign", --- счет-расход
-  ---"категории/родители узла/id"(c.id, true) as "категории",
-  ---"категории/родители узла/title"(c.id, false) as "категория",
+select d.id  as "договор/id", d.ts as "договор/ts", d1."дата"::date,
+  /*-1::numeric**/sum."сумма"*d1."доля дней" as "сумма", sum."сумма безнал"*d1."доля дней" as "сумма безнал",
+  --~ -1::numeric as "sign", --- счет-расход
   coalesce(d1."@категории/id", cat.parents_id||cat.id) as "категории",
   coalesce(d1."@категории/title", cat.parents_title[2:]||cat.title) as "категория",
   k.title as "контрагент", k.id as "контрагент/id",
   row_to_json(ob) as "$объект/json", ob.id as "объект/id", ob.name as "объект",
-  null::int as "кошелек2", --- left join
-  null::text as "профиль", null::int as "профиль/id",
-  --array[[w."проект", w.title], [w2."проект", w2.title]]::text[][] as "кошельки", ---  проект+кошелек, ...
-  --array[[w."проект/id", w.id], [w2."проект/id", w2.id]]::int[][] as "кошельки/id", ---  проект+кошелек, ...
-  null::text[][] as "кошельки", --- пока не знаю
-  null::int[][] as "кошельки/id",  --- пока не знаю
+  --~ null::int as "кошелек2", --- left join
+  --~ null::text as "профиль", null::int as "профиль/id",
+  --~ null::text[][] as "кошельки", --- пока не знаю
+  --~ null::int[][] as "кошельки/id",  --- пока не знаю
   'счет по дог. № ' || d."номер" || E'\n' || ' ★ ' || ob.name || ' (' || array_to_string(sum."@помещения-номера", ', ') || case when d1."доля дней"=1 and coalesce(d1."коммент", '')!~'предоплата' then '' else d1."коммент" end || E')\n' || coalesce(d."коммент", ''::text) as "примечание"
   
 from
@@ -268,7 +265,8 @@ from
       d.id as "договор/id", ---p.id as "помещение/id"
       array_agg(distinct ob.id) as "@объекты/id",
       array_agg(p."номер-название" order by p."номер-название") as "@помещения-номера",---для коммента
-      sum(coalesce(dp."сумма", dp."ставка"*p."площадь")) as "сумма"
+      sum(coalesce(dp."сумма", dp."ставка"*coalesce(dp."площадь", p."площадь"))) as "сумма безнал", --- без налички
+      sum(coalesce(dp."сумма", dp."ставка"*coalesce(dp."площадь", p."площадь")) + coalesce(dp."сумма нал", 0::money)) as "сумма"
 
     from
       "аренда/договоры" d
@@ -555,13 +553,13 @@ from
   ---join "движение ДС/аренда/счета" dp on d.id=dp.id and param."month"=date_trunc('month', dp."дата") and dp."примечание"!~'предоплата'
   join lateral (
     select 
-      sum(dp."сумма") as "сумма",
+      sum(dp."сумма безнал") as "сумма",
       array_agg(row_to_json(dp) order by dp."order_by") as "@позиции",
       array_agg(dp."объект/id" order by dp."order_by") as "@объекты/id",
       count(dp) as "всего позиций"
     from (
       select
-        -1::numeric*dp."сумма" as "сумма",
+        /*-1::numeric**/dp."сумма безнал",
         dp."объект/id",
         not 929979=any(dp."категории") as "order_by",
         case when 929979=any(dp."категории")---ид категории
@@ -570,7 +568,7 @@ from
         end  as "номенклатура"
       from "движение ДС/аренда/счета" dp
        --- join "аренда/договоры" dd on dp.id=dd.id
-      where  d.id=dp.id
+      where  d.id=dp."договор/id"
         and param."month"=date_trunc('month', dp."дата")
         and not ?::int = any(dp."категории")
         ---and not coalesce(dd."оплата наличкой", false)

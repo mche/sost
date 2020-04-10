@@ -67,7 +67,8 @@
       <!--div class="border fs8">{{ form['контрагент'] }}</div-->
       <v-contragent :item=" form['контрагент'] " :param=" {'редактировать':true, 'реквизиты': {'ИНН':'', 'юр. адрес': '', 'физ. лицо': false,}, suggest:{ ulDropDownClass: ['striped teal lighten-4'],}} " :data=" contragentData " @on-select=" SelectContragent ">
         <template v-slot:form=" { form } ">
-          <span  v-show="!form.id && form.title.length > 1" class="chip padd-0-05 red-text text-darken-2 fs8"  style="">* новый арендатор, проверьте *</span>
+          <span  v-show="!!form._isEdit" class="chip padd-0-05 green-text text-darken-2 fs8"  style="">* редактирование *</span>
+          <span  v-show="!form.id && form.title.length > 1" class="chip padd-0-05 red-text text-darken-2 fs8"  style="">* новый арендатор? проверьте *</span>
           <span  v-show="form.id" class="grey-text fs7 " style="position: absolute; right:0;">#{{form.id}}</span>
         </template>
       </v-contragent>

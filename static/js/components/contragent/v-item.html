@@ -14,18 +14,19 @@
     </template>
   </v-suggest>
   <slot name="form" :form=" form ">
-    <span  v-show="!form.id && form.title.length > 1" class="chip padd-0-05 red-text text-darken-2 fs8"  style="position: absolute; /*right:0;*/">* новый контрагент *</span>
+    <span  v-show="!form.id && form.title.length > 1" class="chip padd-0-05 red-text text-darken-2 fs8"  style="position: absolute; /*right:0;*/">* новый контрагент? проверьте *</span>
     <span  v-show="form.id" class="grey-text fs7 " style="position: absolute; right:0;">#{{form.id}}</span>
   </slot>
   <div v-show="param['редактировать'] && form.id" style="position:absolute; right:2rem;">
-    <input type="checkbox" id="крыжик-редактировать" v-model="chbEdit">
-    <label for="крыжик-редактировать" class="hover-shadow3d chb-yellow-lighten-4 brown-text chip yellow lighten-4" style="position:absolute; left:-2rem; bottom: 0; padding-left:16px;"  title="редактировать наименование"></label>
+    <!--input type="checkbox" id="крыжик-редактировать" v-model="chbEdit">
+    <label for="крыжик-редактировать" class="hover-shadow3d chb-yellow-lighten-4 brown-text chip yellow lighten-4" style="position:absolute; left:-2rem; bottom: 0; padding-left:16px;"  title="редактировать наименование"></label-->
+    <a @click="ChbEdit" href="javascript:" class="circle  hoverable" :class="{'green darken-3 white-text':!!chbEdit}" style="position:absolute; left:-2rem; bottom: 0; padding:0.2rem;" title="редактировать наименование"><span class="material-icons">edit</span></a>
   </div>
   
   <div v-if="param['реквизиты']" class="row">
     <div class="col s4 ">
       <div v-show="param['реквизиты'].hasOwnProperty('ИНН')" class="input-field">
-        <input v-if=" form['реквизиты']" type="text" v-model=" form['реквизиты']['ИНН'] " placeholder="ИНН" title="ИНН">
+        <input v-if=" form['реквизиты']" type="text" name="ИНН" v-model=" form['реквизиты']['ИНН'] " @input="InputExtra" placeholder="ИНН" title="ИНН">
       </div>
       <div v-show="param['реквизиты'].hasOwnProperty('физ. лицо')" class="input-field chip padd-0 transparent">
         <input :id=" 'chb-fl-' + form._id " name="" type="checkbox" class="" v-model="  form['реквизиты']['физ. лицо'] " >
@@ -34,7 +35,7 @@
       </div>
     </div>
     <div v-show="param['реквизиты'].hasOwnProperty('юр. адрес')" class="col s8 input-field">
-      <textarea v-if=" form['реквизиты']" v-model.trim="form['реквизиты']['юр. адрес']" placeholder="юр. адрес" class="materialize-textarea padd-0 fs8" style="min-height: 3rem;" title="юр. адрес"></textarea>
+      <textarea name="юр. адрес" v-if=" form['реквизиты']" v-model.trim="form['реквизиты']['юр. адрес']" @input="InputExtra" placeholder="юр. адрес" class="materialize-textarea padd-0 fs8" style="min-height: 3rem;" title="юр. адрес"></textarea>
     </div>
     
   </div>

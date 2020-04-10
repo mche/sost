@@ -291,8 +291,8 @@ const computed = {
 TotalSum(){
   var vm = this;
   var s = vm.form['@помещения'].reduce(function(a, room){
-    if (!room || !room['сумма']) return a;
-    return a + vm.ParseNum(room['сумма']);
+    if (!room || !(room['сумма'] || room['сумма нал'])) return a;
+    return a + vm.ParseNum(room['сумма'])+ vm.ParseNum(room['сумма нал'] || 0);
   }, 0);
   return s;
 },

@@ -178,6 +178,17 @@ OnSuggestSelect(item, idx){///, propItem, vmSuggest
   //~ console.log("onSuggestSelect", vm.form, item, vmSuggest.options);
 },
 
+ChbEdit(){
+  let vm = this;
+  vm.chbEdit = !vm.chbEdit;
+  //~ vm.form._isEdit = vm.chbEdit;
+},
+
+InputExtra(event){///доп реквизиты
+  console.log("InputExtra", event.target.name);
+  
+},
+
 }; /** конец methods **/
 
 var computed = {

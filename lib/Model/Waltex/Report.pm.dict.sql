@@ -909,7 +909,17 @@ from
   ) rent on k.id=rent."контрагент/id" and m."дата" between rent."дата1" and rent."дата2"
   
 union all
-select *
+select 
+"договор/id" as id, "договор/ts" as ts, "дата", -1::numeric*"сумма" as "сумма",
+  -1::numeric as "sign", --- счет-расход
+  "категории", "категория",
+  "контрагент", "контрагент/id",
+  "$объект/json", "объект/id", "объект",
+  null::int as "кошелек2", --- left join
+  null::text as "профиль", null::int as "профиль/id",
+  null::text[][] as "кошельки", --- пока не знаю
+  null::int[][] as "кошельки/id",  --- пока не знаю
+  "примечание"
 from "движение ДС/аренда/счета" ---только аренда помещений и предоплата
 
 union all

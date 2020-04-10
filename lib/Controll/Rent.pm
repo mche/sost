@@ -126,7 +126,7 @@ sub сохранить_договор {
       unless (scalar grep($room->{$_}, qw(ставка сумма))) eq 1;
     
     $room->{$_} = &Util::money($room->{$_})
-      for grep defined $room->{$_}, qw(ставка сумма);
+      for grep defined $room->{$_}, qw(ставка сумма), 'сумма нал';
     $room->{$_} = &Util::numeric($room->{$_})
       for grep defined $room->{$_}, qw(площадь);
     
