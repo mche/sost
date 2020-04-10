@@ -267,6 +267,7 @@ const Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, 
       //~ console.log('снаб OnLoad', this);
       var ka = $Контрагенты.$Data();
       data.map(function(item){
+        if (!item['@грузоотправители/id']) console.log("НЕТ @грузоотправители/id", item);
         item['@грузоотправители'] = (item['@грузоотправители/id'] || []).map(function(kid){ return ka[kid] || {}; });
         //~ if (item['на объект/id']) item['@позиции тмц'].map(function(row){ row['через базу/id'] = item['на объект/id']; });///для приема ТМЦ на эту базу
       });
