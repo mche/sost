@@ -32,7 +32,7 @@
       <!-- фильтр истекшие договоры -->
       <div class="input-field nowrap" style="position:absolute; top:-2rem;margin-left:0.3rem;">
         <input type="checkbox" id="архивные крыжики" v-model="filters['архивные договоры']" @change="ChbChange('архивные договоры')">
-        <label for="архивные крыжики" class="hover-shadow3d chb-maroon-lighten-5 maroon-text chip maroon lighten-5" style="position:absolute; left:-2rem; bottom: 0; padding-left:16px;" ></label>
+        <label for="архивные крыжики" class="hover-shadow3d chb-maroon-lighten-5 maroon-text chip maroon lighten-5 hoverable" style="position:absolute; left:-2rem; bottom: 0; padding-left:16px;" ></label>
         <label for="архивные крыжики" class="hover-shadow3d " style=""><h5 class="maroon-text">
           <span>архив</span>
           <sup class="chip white z-depth-1">{{ archLen }}</sup>
@@ -42,11 +42,11 @@
       <!-- все крыжики-->
       <div v-show=" FilteredDataLen " class="input-field nowrap" style="margin-left:0.3rem;">
         <input type="checkbox" id="все крыжики" v-model="allChbs" @change="AllChbsChange">
-        <label for="все крыжики" class="hover-shadow3d chb-yellow-lighten-4 orange-text chip yellow lighten-4" style="position:absolute; left:-2rem; bottom: 0; padding-left:16px;" ></label>
-        <a @click="AllChbsChange(!allChbs)" href="javascript:"><h6 class="orange-text text-darken-4">
+        <label for="все крыжики" class="hover-shadow3d chb-yellow-lighten-4 orange-text chip yellow lighten-4 hoverable" style="position:absolute; left:-2rem; bottom: 0; padding-left:16px;" ></label>
+        <label for="все крыжики" click0000="AllChbsChange(!allChbs)" href="javascript:"><h6 class="orange-text text-darken-4 hover-shadow3d">
           <span>{{ allChbs ? 'снять' : 'отметить' }}</span>
           <sup class="chip white z-depth-1">{{ FilteredDataLen }}</sup>
-        </h6></a>
+        </h6></label>
       </div>
     </td>
     <td class="padd-05" style="width:calc(30vw);">
@@ -104,7 +104,7 @@
         <!-- крыжик -->
         <!--div class="input-field"-->
           <input type="checkbox" :id="`крыжик-${item.id}`" v-model="item['крыжик']">
-          <label :for="`крыжик-${item.id}`" class="hover-shadow3d chb-yellow-lighten-4 orange-text chip yellow lighten-4" style="position:absolute; left:-2rem; bottom: 0; padding-left:16px;" ></label>
+          <label :for="`крыжик-${item.id}`" class="hover-shadow3d chb-yellow-lighten-4 orange-text chip yellow lighten-4 hoverable" style="position:absolute; left:-2rem; bottom: 0; padding-left:16px;" ></label>
         <!--/div-->
       </div>
       
@@ -202,17 +202,24 @@
         <h3 class="">За какой месяц</h3>
         <input name="месяц" type="text" class="datepicker pay-month fs18 fw500" style="margin-bottom:1rem;" :data-value=" payMonth ">
         <!-- переключатель -->
-        <div class="input-field chip">
-          <input type="radio" id="radioSchet" v-model="radioSchetAkt" :value=" 'счет' ">
-          <label for="radioSchet"  class="hover-shadow3d before-yellow-lighten-4 brown-text-darken-3 checked-after-brown-darken-3"  style="padding-right:1rem;"><h5 class="brown-text text-darken-3">Счета</h5></label>
-          <input type="radio" id="radioAkt" v-model="radioSchetAkt" :value=" 'акт' ">
-          <label for="radioAkt" class="hover-shadow3d before-yellow-lighten-4 brown-text-darken-3 checked-after-brown-darken-3" style=""><h5 class="brown-text text-darken-3">Акты</h5></label>
+        <div class="chip">
+          <div class="iblock">
+            <input type="radio" id="radioSchet" v-model="radioSchetAkt" :value=" 'счет' ">
+            <label for="radioSchet"  class="before-yellow-lighten-4 brown-text-darken-3 checked-after-brown-darken-3" ></label>
+            <label for="radioSchet"><h5 class="brown-text text-darken-3 hover-shadow3d">Счета</h5></label>
+          </div>
+          <span class="grey-text padd-0-05"> или </span>
+          <div class="iblock">
+            <input type="radio" id="radioAkt" v-model="radioSchetAkt" :value=" 'акт' ">
+            <label for="radioAkt" class=" before-yellow-lighten-4 brown-text-darken-3 checked-after-brown-darken-3" style=""></label>
+            <label for="radioAkt"><h5 class="brown-text text-darken-3 hover-shadow3d">Акты</h5></label>
+          </div>
         </div>
         <!-- крыжик -->
         <div class="input-field chip">
           <input type="checkbox" id="крыжик-нумеровать-счета" v-model="payNums">
-          <label for="крыжик-нумеровать-счета" class="hover-shadow3d chb-yellow-lighten-4 orange-text chip yellow lighten-4 middle" style="padding-left:16px;" ></label><!-- это лабел квадратика крыжика -->
-          <label for="крыжик-нумеровать-счета" class="middle"><h5 class="hover-shadow3d chb-yellow-lighten-4 orange-text inline">Присвоить номера счетам/актам</h5></label>
+          <label for="крыжик-нумеровать-счета" class="hover-shadow3d chb-yellow-lighten-4 orange-text chip yellow lighten-4 hoverable" style="padding-left:16px;" ></label><!-- это лабел квадратика крыжика -->
+          <label for="крыжик-нумеровать-счета" class=""><h5 class="hover-shadow3d chb-yellow-lighten-4 orange-text inline">Присвоить номера счетам/актам</h5></label>
         </div>
       </div>
       

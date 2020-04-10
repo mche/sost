@@ -29,25 +29,6 @@ input[disabled] + label, [type="radio"]:disabled + label {
   cursor: default;
 }
 
-[type="radio"]:not(:checked) + label {
-  ///color: inherit;
-  ///font-weight: normal;
-}
-[type="radio"]:checked + label {
-  font-weight: bold;
-  h4, h5 {/// medcol
-    font-weight: 500;
-  }
-}
-
-/*.addr_type[type="radio"]:checked + label::after {
-  background-color: color("lime", "darken-4");
-  border: 2px solid color("lime", "darken-4");
-}
-.addr_type[type="checkbox"]:checked + label::before {
-  border-right: 2px solid color("lime", "darken-4");
-  border-bottom: 2px solid color("lime", "darken-4");
-}*/
 
 
 [type="checkbox"]:checked + label.through {

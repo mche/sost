@@ -24,10 +24,7 @@ form p:last-child {
 [type="checkbox"] {
   // Text Label Style
   + label {
-    position: relative;
     padding-left: 35px;
-    cursor: pointer;
-    display: inline-block;
     height: 28px;
     line-height: 28px;
     font-size: 1rem;
@@ -36,6 +33,13 @@ form p:last-child {
     -moz-user-select: none; /* mozilla browsers */
     -khtml-user-select: none; /* webkit (konqueror) browsers */
     -ms-user-select: none; /* IE10+ */
+  }
+  ~ label {
+    position: relative;
+    
+    cursor: pointer;
+    display: inline-block;
+    
   }
 
   /* checkbox aspect */
