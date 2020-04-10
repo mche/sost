@@ -206,7 +206,7 @@
     <h2 class="row">По объекту
     
       <span class="chip z-depth-1 blue-text-darken-3 shadow-inset-10 fw500">
-        {{ $c.moveDetailTMC['объект'].name }} ({{ $c.moveDetailTMC['объект']['$проект'].name }})
+        {{ $c.moveDetailTMC['объект'].name }} <!--({{ $c.moveDetailTMC['объект']['$проект'].name }}) -->
       </span>
     </h2>
     
@@ -285,8 +285,8 @@
               <i class="icon-left fs10  before-rotate180"></i>
               <span ng-if="row['объект2/id'] != 0">
                 <span ng-if=" !row['$объект2'] && !row['$на объект']" ng-repeat="k in row['@грузоотправители']" class="middle leaf green white-text fw500">{{ k.title }} {{ k['проект000'] }}</span>
-                <span ng-if=" !row['$объект2'] && !!row['$на объект']" class="chip shadow-inset-10 blue-text-darken-3  middle fw500">★ {{ row['$на объект'].name }} ({{ row['$на объект']['$проект'].name }})</span>
-                <span ng-if=" !!row['$объект2'] && row['объект2/id'] != row['объект/id']" class="chip shadow-inset-10 blue-text-darken-3 middle fw500">★ {{ row['$объект2'].name }} ({{ row['$объект2']['$проект'].name }})</span><!--- если row['объект2/id'] == row['объект/id'] тогда это списание с объекта--->
+                <span ng-if=" !row['$объект2'] && !!row['$на объект']" class="chip shadow-inset-10 blue-text-darken-3  middle fw500">★ {{ row['$на объект'].name }} <!--({{ row['$на объект']['$проект'].name }}) --></span>
+                <span ng-if=" !!row['$объект2'] && row['объект2/id'] != row['объект/id']" class="chip shadow-inset-10 blue-text-darken-3 middle fw500">★ {{ row['$объект2'].name }} <!-- ({{ row['$объект2']['$проект'].name }})--></span><!--- если row['объект2/id'] == row['объект/id'] тогда это списание с объекта--->
               </span>
               <span ng-if="row['объект2/id'] == 0 ||  row['списание'] " class="chip shadow-inset-10">в списание</span>
               <!--span ng-if="!row['$объект2'] && !!row['$с объекта']" class="orange-text text-darken-3 middle">{{ row['$с объекта'].name }} </span>

@@ -232,7 +232,7 @@ $c.InitRowNomen = function(nid, index){
 
 $c.OrderByObject = function(oid){
   var o = $c.$объекты[oid];
-  return o.name.toLowerCase()+o['$проект'].name.toLowerCase();
+  return o.name.toLowerCase()+(o['$проект'] ? o['$проект'].name.toLowerCase() : '');
   
 };
 
