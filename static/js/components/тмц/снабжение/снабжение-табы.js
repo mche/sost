@@ -402,7 +402,7 @@ const Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, 
       //~ console.log('снаб OnLoad', this);
       var ka = $Контрагенты.$Data();
       data.map(function(item){
-        if (!item['@грузоотправители/id']) console.log("НЕТ @грузоотправители/id", item);
+        if (!item['@грузоотправители/id']) console.log("!!! НЕТ @грузоотправители/id", item);
         item['@грузоотправители'] = (item['@грузоотправители/id'] || []).map(function(kid){ return ka[kid] || {}; });
       });
     };
