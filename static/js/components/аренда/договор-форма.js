@@ -13,10 +13,10 @@
 */
 var moduleName = "Аренда::Договор::Форма";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Компонент::Контрагент', 'Контрагенты', 'EventBus',/* 'Компонент::Поиск в списке',*/ 'Компонент::Выбор в списке',  'Uploader::Файлы', /*'Uploader'*/]);
+var module = angular.module(moduleName, ['Компонент::Контрагент', 'Контрагенты', 'EventBus',/* 'Компонент::Поиск в списке',*/ 'Компонент::Выбор в списке', 'Аренда::Договор::Помещения::Форма', 'Uploader::Файлы', /*'Uploader'*/]);
 
 module
-.factory('$КомпонентАрендаДоговорФорма', function($templateCache, $http, $q, $timeout, appRoutes, $КомпонентКонтрагент, $Контрагенты, $EventBus, /*$КомпонентПоискВСписке,*/ $КомпонентВыборВСписке, Util, $Список, $КомпонентФайлы /*$Uploader*/) {// factory
+.factory('$КомпонентАрендаДоговорФорма', function($templateCache, $http, $q, $timeout, appRoutes, $КомпонентКонтрагент, $Контрагенты, $EventBus, /*$КомпонентПоискВСписке,*/ $КомпонентВыборВСписке, Util, $Список, $КомпонентАрендаДоговорПомещенияФорма, $КомпонентФайлы /*$Uploader*/) {// factory
 
 //~ var rentRoomsData;///синглетон для данных объектов аренды
 $Контрагенты.Load();
@@ -34,26 +34,9 @@ const props = {
   
 const util = {/*разное*/
   //~ IsEqualId(it){ return (it.id || it) == this.id; },
-  MapItemRooms(room){
-    var vm = this;
-    //~ console.log("MapItemRooms", room);
-    //~ var r = room['помещение/id'] && rentRoomsData.find(util.IsEqualId, {"id": room['помещение/id']});
-    //~ room['объект-помещение'] = room.$помещение ? `${ room.$объект['name'] }: №${ room.$помещение['номер-название'] }, ${ room.$помещение['этаж'] } эт., ${ parseFloat(room.$помещение['площадь']).toLocaleString() } м²` : '';
-    room._id = vm.idMaker.next().value;
-    //~ if (room.id && room['ставка']) room['ставка|сумма'] = 'ставка';
-    //~ if (room.id && room['сумма']) room['ставка|сумма'] = 'сумма';
-    vm.InputMetr(room) || vm.InputSum(room);
-  },
-  FilterRooms(item){
-    return item._match.indexOf(this.match) !== -1;
-  },
-  //~ MapRoom(item){
-    //~ return item['объект-помещение'];
-  //~ },
 };///конец util
 
 const methods = {/*методы*/
-
 
 Ready(){/// метод
   var vm = this;
@@ -71,17 +54,20 @@ Ready(){/// метод
 
 },
 
-InitDatepicker(el){
+InitDatepicker(el, param, setCallback){
   var vm = this;
-  el.pickadate({// все настройки в файле русификации ru_RU.js
+  el.pickadate(Object.assign({// все настройки в файле русификации ru_RU.js
     //~ "clear": 'Очистить',
     "formatSkipYear": false,// доп костыль - дописывать год при установке
+    //~ "clear":'Очистить',
+    //~ "closeOnClear": true,
     "onSet": function (context) {
       var s = this.component.item.select;
       if (!s) return;
+      if (setCallback) return setCallback([s.year, s.month+1, s.date].join('-'));
       vm.$set(vm.form, this._hidden.name , [s.year, s.month+1, s.date].join('-'));
     },//$(this._hidden).val().replace(/^\s*-/, this.component.item.select.year+'-'); },
-  });//{closeOnSelect: true,}
+  }, param || {}));//{closeOnSelect: true,}
   
 },
 
@@ -120,9 +106,11 @@ InitForm(item){/// обязательные реактивные поля
   //~ vm.KontragentRecv(item);
   if (!item['@помещения']) item['@помещения'] = [];
   if (!item['@помещения'].length) item['@помещения'].push({"сумма": ''});/// это поле для компутед суммы!!!
-  item['@помещения'].map(util.MapItemRooms, vm);
+  //~ item['@помещения'].map(util.MapItemRooms, vm);
   item._uploads = [];
   item._id = vm.idMaker.next().value;
+  if (item.id && !item['@доп.соглашения']) item['@доп.соглашения'] = [];
+  if (item['@доп.соглашения']) item['@доп.соглашения'].push({"_id":vm.idMaker.next().value});
   return item;
 },
 
@@ -131,8 +119,6 @@ Valid(){
   /*if (name == 'контрагент') return !!(vm.form['контрагент'].id || vm.form['контрагент'].title);
   else if (name == '$проект') return !!(vm.form[name] && vm.form[name].id);
   else if (name) return !!vm.form[name];*/
-  
-  
   
   var test =
     !!(vm.form['$проект'] && vm.form['$проект'].id)
@@ -150,6 +136,7 @@ Valid(){
 Save(){
   var vm = this;
   
+  //~ return console.log("Save", JSON.stringify(vm.form['@доп.соглашения']));
   //~ vm.form['контрагент']['реквизиты'] = JSON.stringify({"ИНН": vm.form['контрагент/ИНН'], "юр. адрес": vm.form['контрагент/юр. адрес']});
   
   vm.cancelerHttp =  $http.post(appRoutes.urlFor('аренда/сохранить договор'), vm.form)
@@ -171,8 +158,6 @@ Save(){
 },
 
 
-
-
 CancelBtn(){
   this.$emit('on-save', this.item.id ? {"id": this.item.id} : undefined);
 },
@@ -183,66 +168,6 @@ SelectContragent(data){///из компонента
   vm.form['контрагент'] = data;
   vm.form['$контрагент'] = data;
   //~ if (!data._isEdit) vm.KontragentRecv(vm.form);
-},
-
-
-OnRoomSelect(item, propSelect){/// из компонента выбор из списка помещений
-  //~ console.log("OnRoomSelect", item, propSelect);
-  var vm = this;
-  var rooms = vm.form['@помещения'];
-  var room = propSelect.room;
-  
-  if ( room === rooms[rooms.length-1])  rooms.push({"сумма":'', /*"объект-помещение": '',*/ "_id": vm.idMaker.next().value});/// тут обязательно объявить реактивные поля!
-  //~ rooms.splice(rooms.indexOf(room), 1, {"id": item['помещение'].id, "объект-помещение": val, "ставка": room['ставка'], });
-  //~ room.id = item['помещение'].id;
-  //~ Object.assign(room, item['помещение']);
-  if (item) {
-    room['помещение/id'] = item && item.$помещение.id;
-    room.$помещение = item && item.$помещение;
-    ((room['ставка|сумма'] == 'ставка') && vm.InputMetr(room)) || vm.InputSum(room);
-  } else {///удалить строку формы
-    //~ rooms.removeOf(room);
-    room['помещение/id'] = undefined;
-  }
-},
-
-InputMetr(room){///ставка за1м/мес
-  var vm = this;
-  if (/*!room.$помещение ||*/ !room['ставка']) return;
-  var s = vm.ParseNum(room['ставка']) * vm.RoomSquare(room);
-  room['сумма'] = s.toLocaleString({"currency": 'RUB'});
-  room['ставка|сумма'] = 'ставка';
-  return room['сумма'];
-},
-
-InputSum(room){/// сумма за мес
-  var vm = this;
-  if (/*!room.$помещение ||*/ !room['сумма']) return;
-  var s = vm.ParseNum(room['сумма'])/vm.RoomSquare(room);
-  room['ставка'] = s.toLocaleString({"currency": 'RUB'});
-  room['ставка|сумма'] = 'сумма';
-  return room['ставка'];
-},
-
-InputSquare(room){
-  var vm = this;
-  if (room['площадь'].length && !/^\d+$|[.,]\d*$/.test(room['площадь'])) {
-    var s = vm.ParseNum(room['площадь']);
-    room['площадь'] = s.toLocaleString('ru-RU', {"minimumFractionDigits":1});
-  }
-  //~ console.log("InputSquare", s);  
-  if (room['ставка|сумма'] == 'сумма') vm.InputSum(room);
-  if (room['ставка|сумма'] == 'ставка') vm.InputMetr(room);
-},
-
-RoomSquare(room){
-  var vm = this;
-  //~ console.log("RoomSquare", room.$помещение ? room.$помещение['площадь'] : room['площадь'], room['ставка']);
-  return vm.ParseNum(room['площадь'] || (room.$помещение && room.$помещение['площадь']));
-},
-
-ParseNum(num){
-  return parseFloat(Util.numeric(num));
 },
 
 ClearDate(name, val){
@@ -262,19 +187,14 @@ Copy(){
   var init = vm.InitForm(angular.copy(vm.form));///vm.form;
   //~ debugger;
   init.id = undefined;
+  init.uid = undefined;
   init['номер'] = undefined;
   init['коммент'] = undefined;
   init['копия/id'] = vm.form.id;
   init['предоплата'] = false;
   init['договор/id'] = undefined;
   init['@помещения/id'] = undefined;
-  init['@помещения'].forEach((room)=>{
-    room.id = undefined;
-    room.uid = undefined;
-    room['договор/id'] = undefined;
-    
-    
-  });
+  init['@помещения'].forEach(vm.CopyRoom);
 
   vm.form = init;
   
@@ -284,31 +204,88 @@ Copy(){
   vm.ClearDate('дата расторжения', init['дата расторжения']);
 },
 
+CopyRoom(room){
+  room.id = undefined;
+  room._id=this.idMaker.next().value;
+  room.uid = undefined;
+  room['договор/id'] = undefined;
+  return room;
+},
+
+
+DopTable(idx){/// доп соглашения
+  var vm = this;
+  //~ if (!vm.form['@доп.соглашения']) vm.$set(vm.form, '@доп.соглашения', []);
+  if (!vm.form['@доп.соглашения'][idx-1]) vm.form['@доп.соглашения'][idx-1] = {
+    "_id": vm.idMaker.next().value,
+  };
+  if (!vm.form['@доп.соглашения'][idx-1]['@помещения']) 
+    vm.form['@доп.соглашения'][idx-1]['@помещения'] = angular.copy(vm.form['@помещения']).map(vm.CopyRoom);
+  if (vm.roomsTableIdx == idx) return;
+  //~ vm.roomsTableIdx = undefined;
+  //~ setTimeout(()=>{
+    vm.roomsTableIdx = idx;
+    vm.ClearDateDop('дата1', vm.form['@доп.соглашения'][idx-1]['дата1']);///, (new Date).toISOString().replace(/T.+/, '')
+  //~ });
+  
+},
+
+ClearDateDop(name, val){
+  var vm = this;
+  var idx = vm.roomsTableIdx;
+  //~ vm.keys[`${ name } доп соглашения ${ idx }`] = undefined;
+  vm.$set(vm.form['@доп.соглашения'][idx-1], name, val);
+  //~ console.log("ClearDateDop", vm.form['@доп.соглашения'][idx-1]);
+  //~ setTimeout(()=>{
+    //~ vm.keys[`${ name } доп соглашения ${ idx }`] = vm.idMaker.next().value;
+    setTimeout(()=>{
+      var el = $(`input[name="${ name } доп соглашения ${ idx }"]`, $(vm.$el));
+      //~ console.log("ClearDateDop", el);
+      vm.InitDatepicker(el, undefined, function(date){
+        //~ vm.$set(vm.form['@доп.соглашения'][idx-1], name, undefined);
+        //~ setTimeout(()=>{
+        if (!vm.form['@доп.соглашения'][idx-1][name]) Materialize.toast('Новое доп соглашение', 3000, 'green-text text-darken-3 green lighten-4 fw500 border animated zoomInUp slow');
+        var foo = vm.form['предоплата'];/// тупой передерг
+        vm.form['предоплата'] = undefined;
+          vm.$set(vm.form['@доп.соглашения'][idx-1], name, dateFns.format(new Date(date), 'YYYY-MM-DD'));////new Date('2020-4-20').toISOString() ---  хрень
+          vm.form['предоплата'] = foo;
+        //~ });
+        //~ console.log("setCallback", vm.form['@доп.соглашения'][idx-1][name]);
+      });
+    });
+    
+  //~ });
+  
+},
+
+RemoveDop(idx){
+  var vm = this;
+  vm.ClearDateDop('дата1');
+  vm.roomsTableIdx -= 1;
+  //~ vm.form['@доп.соглашения'].splice(idx, 1);
+  //~ vm.form['@доп.соглашения'][idx]['@помещения'].length = 0;
+  vm.form['@доп.соглашения'][idx]['@помещения'] = undefined;
+  Materialize.toast('Доп соглашение будет удалено', 3000, 'green-text text-darken-3 orange lighten-4 fw500 border animated zoomInUp slow');
+},
+
+OnTableSum(sum){/// сумма по таблице
+  var vm = this;
+  console.log("OnTableSum", sum);
+  vm.tableSum =  sum;
+  
+},
+
 }; /// конец methods
 
 const computed = {
 
 TotalSum(){
   var vm = this;
-  var s = vm.form['@помещения'].reduce(function(a, room){
-    if (!room || !(room['сумма'] || room['сумма нал'])) return a;
-    return a + vm.ParseNum(room['сумма'])+ vm.ParseNum(room['сумма нал'] || 0);
-  }, 0);
-  return s;
-},
-
-TotalSqure(){
-  var vm = this;
-  var s = vm.form['@помещения'].reduce(function(a, room){
-    if (!room || !(room['площадь'] || room.$помещение)) return a;
-    return a + vm.ParseNum(room['площадь'] || room.$помещение['площадь']);
-  }, 0.0);
-  return s;
-},
-
-
-
-
+  //~ if (!vm.tableSum) return;
+  if (vm.roomsTableIdx == 0 && vm.form['сумма нал'])  return parseFloat(vm.form['сумма нал'] || 0) + vm.tableSum;
+  if (vm.roomsTableIdx > 0 && vm.form['@доп.соглашения'][vm.roomsTableIdx-1]['сумма нал'] ) return parseFloat(vm.form['@доп.соглашения'][vm.roomsTableIdx-1]['сумма нал'] || 0) + vm.tableSum;
+  return vm.tableSum;
+}
 //~ ValidPos(){
   //~ var vm = this;
   //~ return ;
@@ -329,7 +306,9 @@ const data = function() {
     "ready": false,
     "cancelerHttp": undefined,
     "form": form,
-    "keys": {"дата расторжения": vm.idMaker.next().value, "дата договора":vm.idMaker.next().value}, ///передерг рендер
+    "keys": {"дата расторжения": vm.idMaker.next().value, "дата договора":vm.idMaker.next().value, "дата1":vm.idMaker.next().value, "дата2":vm.idMaker.next().value,}, ///передерг рендер
+    "roomsTableIdx": 0, /// отображение таблицы арендуемых помещений (0 - основной договор, 1,2,... - доп соглашениия)
+    "tableSum": 0, /// общая сумма по таблице и наличке
     //~ "uploads": [],
   };
   //);
@@ -377,6 +356,7 @@ const $Конструктор = function (/*data, $c, $scope*/){
   $Компонент.components['v-contragent'] =  new $КомпонентКонтрагент();
   //~ $Компонент.components['v-suggest'] = new $КомпонентПоискВСписке();
   $Компонент.components['v-select'] = new $КомпонентВыборВСписке();
+  $Компонент.components['contract-rooms'] = new $КомпонентАрендаДоговорПомещенияФорма();
   $Компонент.components['v-uploads'] = new $КомпонентФайлы();
   //~ $Компонент.components['v-uploader'] = new $Uploader();
   //~ console.log($Компонент);

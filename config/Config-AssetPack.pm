@@ -753,6 +753,7 @@ sub map_grep_mode {
         js/c/аренда/index.js
         js/c/аренда/договоры-таблица.js
         js/c/аренда/договор-форма.js
+        js/c/аренда/договор-помещения-форма.js
         js/c/аренда/объекты-таблица.js
         js/c/аренда/объект-форма.js
         js/c/contragent/data.js
@@ -772,6 +773,7 @@ sub map_grep_mode {
         ['аренда.html' => grep !/^--/, qw(
         js/c/аренда/договоры-таблица.html
         js/c/аренда/договор-форма.html
+        js/c/аренда/договор-помещения-форма.html
         js/c/аренда/объекты-таблица.html
         js/c/аренда/объект-форма.html
         js/c/contragent/v-item.html
