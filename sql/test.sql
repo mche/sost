@@ -54,6 +54,7 @@ from
     group by "договор/id"--d.id
   ) dp on d.id=dp."договор/id"
 
-where d.id=917512
+where -- d.id=917512
+  dp."договор/id" is null
 order by d."дата1" desc, d.id desc
 ;
