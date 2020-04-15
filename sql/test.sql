@@ -2,15 +2,15 @@ select d.*,
   timestamp_to_json(d."дата1"::timestamp) as "$дата1/json",
   timestamp_to_json(d."дата2"::timestamp) as "$дата2/json",
   timestamp_to_json(d."дата расторжения"::timestamp) as "$дата расторжения/json",
-  row_to_json(k) as "$контрагент/json", 
-  k.id as "контрагент/id",
+  --~ row_to_json(k) as "$контрагент/json", 
+  --~ k.id as "контрагент/id",
   pr.id as "проект/id", ---to_json(pr) as "$проект/json",
   dp.*,
   dp."@кабинеты/id" as "@помещения/id"
 from 
   "аренда/договоры" d
-  join refs r on d.id=r.id2
-  join "контрагенты" k on k.id=r.id1
+  --~ join refs r on d.id=r.id2
+  --~ join "контрагенты" k on k.id=r.id1
   
   left join (---арендодатель
     select pr.*, r.id2
