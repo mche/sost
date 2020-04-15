@@ -275,6 +275,10 @@ OnTableSum(sum){/// сумма по таблице
   
 },
 
+ParseNum(num){
+  return parseFloat(Util.numeric(num));
+},
+
 }; /// конец methods
 
 const computed = {
@@ -282,8 +286,8 @@ const computed = {
 TotalSum(){
   var vm = this;
   //~ if (!vm.tableSum) return;
-  if (vm.roomsTableIdx == 0 && vm.form['сумма нал'])  return parseFloat(vm.form['сумма нал'] || 0) + vm.tableSum;
-  if (vm.roomsTableIdx > 0 && vm.form['@доп.соглашения'][vm.roomsTableIdx-1]['сумма нал'] ) return parseFloat(vm.form['@доп.соглашения'][vm.roomsTableIdx-1]['сумма нал'] || 0) + vm.tableSum;
+  if (vm.roomsTableIdx == 0 && vm.form['сумма нал'])  return vm.ParseNum(vm.form['сумма нал'] || 0) + vm.tableSum;
+  if (vm.roomsTableIdx > 0 && vm.form['@доп.соглашения'][vm.roomsTableIdx-1]['сумма нал'] ) return vm.ParseNum(vm.form['@доп.соглашения'][vm.roomsTableIdx-1]['сумма нал'] || 0) + vm.tableSum;
   return vm.tableSum;
 }
 //~ ValidPos(){

@@ -98,6 +98,9 @@ sub сохранить_договор {
   my $prev = $c->model->список_договоров({id=>$data->{id}})->[0]
     if $data->{id};
   
+  $data->{$_} = &Util::money($data->{$_})
+    for grep defined $data->{$_}, qw(), 'сумма нал';
+  
   my $tx_db = $c->model->dbh->begin;
   local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
   

@@ -239,8 +239,8 @@
       </div>
       <div class="col s3 ">
         <div class="input-field">
-          <input  v-if="roomsTableIdx == 0" name="сумма нал" type="number" class="" v-model.trim=" form['сумма нал'] " placeholder="сумма налички, руб">
-          <input  v-if="roomsTableIdx > 0" name="сумма нал" type="number" class="" v-model.trim=" form['@доп.соглашения'][roomsTableIdx-1]['сумма нал'] " placeholder="сумма налички, руб">
+          <input  v-if="roomsTableIdx == 0" name="сумма нал" type="text" class="" v-model.trim=" form['сумма нал'] " placeholder="сумма налички, руб">
+          <input  v-if="roomsTableIdx > 0" name="сумма нал" type="text" class="" v-model.trim=" form['@доп.соглашения'][roomsTableIdx-1]['сумма нал'] " placeholder="сумма налички, руб">
         </div>
       </div>
       <div v-show="roomsTableIdx == 0 || form['@доп.соглашения'][roomsTableIdx-1]['дата1']" class="col s5 ">

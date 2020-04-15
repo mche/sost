@@ -270,7 +270,7 @@ from
       array_agg(distinct ob.id) as "@объекты/id",
       array_agg(p."номер-название" order by p."номер-название") as "@помещения-номера",---для коммента
       sum(coalesce(dp."сумма", dp."ставка"*coalesce(dp."площадь", p."площадь"))) as "сумма безнал", --- без налички
-      sum(coalesce(dp."сумма", dp."ставка"*coalesce(dp."площадь", p."площадь")) + coalesce(dp."сумма нал", 0::money)) as "сумма"
+      sum(coalesce(dp."сумма", dp."ставка"*coalesce(dp."площадь", p."площадь")) /*+ coalesce(dp."сумма нал", 0::money)*/) + coalesce(d."сумма нал", 0::money) as "сумма"
 
     from
       "аренда/договоры" d
