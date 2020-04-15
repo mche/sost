@@ -92,8 +92,8 @@
                 <a v-show=" ValidRoom(room) "  @click=" CopyRoom(room)" href="javascript:" class="btn-flat padd-0 " style="" title="копировать">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" class="green-fill fill-darken-3 ng-scope" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#copy"></use></svg>
                 </a>
-                <a @click=" DeleteRoom(room) " href="javascript:" class="btn-flat padd-0" style="" title="удалить">
-                  <i class="material-icons red-text-darken-3  ">delete_forever</i>
+                <a @click=" DeleteRoom(room) " href="javascript:" class="btn-flat padd-0" :disabled=" form['@аренда/договоры-помещения/id'] && form['@аренда/договоры-помещения/id'][index] " style="" title="удалить">
+                  <i class="material-icons   " :class="{'red-text-darken-3': !(form['@аренда/договоры-помещения/id'] && form['@аренда/договоры-помещения/id'][index]), 'grey-text-darken-2':!!(form['@аренда/договоры-помещения/id'] && form['@аренда/договоры-помещения/id'][index]), }">delete_forever</i>
                 </a>
                 <a v000-show=" index == form['@кабинеты'].length - 1 || !form.id" @click=" AddRoom(index+1) " href="javascript:" class="btn-flat padd-0" style="" title="добавить">
                   <i class="material-icons lime-text-darken-3 ">add_box</i>
@@ -163,7 +163,7 @@
           <i class="material-icons">save</i>
           <span>Сохранить</span>
         </a>
-        <a v-show=" form.id " class="btn red lighten-3" href="javascript:" @click=" Remove "  title=""> <i class="material-icons white-text">delete</i> <span class="white-text">Удалить</span> </a>
+        <!--a v-show=" form.id " class="btn red lighten-3" href="javascript:" @click=" Remove "  title=""> <i class="material-icons white-text">delete</i> <span class="white-text">Удалить</span> </a-->
         <a @click=" CancelBtn() " href="javascript:" class="right btn-flat z-depth-1 red-text white">
           <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
           <span>Отмена</span>

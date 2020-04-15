@@ -84,11 +84,11 @@ RoomSum(room){
 
 RoomsSum(item){///итого за все помещения
   var vm = this;
-  return item['@помещения'].reduce(function(a, room){ return a + vm.RoomSum(room); }, 0);
+  return (item['@помещения'] || []).reduce(function(a, room){ return a + vm.RoomSum(room); }, 0);
 },
 RoomsSquare(item){///итого площадь все помещения
   var vm = this;
-  return item['@помещения'].reduce(function(a, room){ return a + vm.ParseNum(room['площадь'] || room.$помещение['площадь']); }, 0.0);
+  return (item['@помещения'] || []).reduce(function(a, room){ return a + vm.ParseNum(room['площадь'] || room.$помещение['площадь']); }, 0.0);
 },
 
 
@@ -230,7 +230,7 @@ FilterData(){
       if (!cur) vm.archLen += 1;
       const test = (vm.filters['архивные договоры'] ? !cur : cur)
         && (vm.filters['арендаторы'] ? item['$контрагент'].title.toLowerCase().indexOf(vm.filters['арендаторы'].toLowerCase()) >= 0 : true)
-        && ( vm.filters['объект'] && vm.filters['объект'].id ? item['@помещения'][0].$объект.id == vm.filters['объект'].id : true);
+        && ( (vm.filters['объект'] && vm.filters['объект'].id && item['@помещения']) ? item['@помещения'][0].$объект.id == vm.filters['объект'].id : true);
       //~ console.log("filteredData", test);
       return test;
     });
