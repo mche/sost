@@ -1,0 +1,100 @@
+@@@ аренда/договор/помещения/форма
+
+  <table class="z-depth-1 bordered ">
+    <tbody class="striped " :class="extParam['bgClass'] || 'lime lighten-4' ">
+      <tr v-for="(room, idx) in dataRooms" :key=" room._id ">
+        <td class="right-align relative padd-05 vtop" style="width:1%;">
+          {{idx+1}}
+          <span v-if=" !!room.id " class="fs7 grey-text" style="position: absolute; z-index: 1; bottom:0; left:0;">#{{ room.id }}</span>
+          <span v-else class="orange-text" style="position: absolute; z-index: 1; bottom:0; left:0;">✱</span>
+          
+        </td>
+        <td class="relative padd-05 vtop">
+          
+          <v-select :select=" {'id': room.$помещение && room.$помещение.id, room: room} " :items=" allRooms " :param=" {placeholder: 'поиск помещения', ulDropDownClass: ['striped']} " @on-select=" OnRoomSelect ">
+            <template v-slot:selected="{ selected }">
+              <h5 v-if="selected" class="relative padd-0-05 lime-text text-darken-4 animated slideInRight hover-bottom-shadow-teal-darken-3 ">
+                <span><i class="material-icons fs8 padd-0">place</i></span>
+                <span>{{ selected.$объект['name'] }}</span>
+                <span class="nowrap chip padd-0-05"><span class="fs8 grey-text">№</span> <span class="bold">{{ selected.$помещение['номер-название'] }}</span></span>
+                <span class="nowrap chip padd-0-05"><span class="">{{ selected.$помещение['этаж'] }}</span> <span class="fs8 grey-text">эт.</span></span>
+                <span class="nowrap chip padd-0-05"><span class="bold" :class="{'through': !!room['площадь']}">{{ ParseNum(selected.$помещение['площадь']).toLocaleString() }}</span> <span class="fs8 grey-text">м<sup>2</sup></span></span>
+                <!--span class="grey-text fs7" style="position:absolute; right:0; bottom:0;">#{{ selected.id }}</span-->
+              </h5>
+              <h5 v-else class="grey-text">Выбрать помещение</h5>
+            </template>
+            <template v-slot:listItem="{ listItem, selected, highlighted }">
+              <h6 class="padd-0-05 lime-text text-darken-4 hover-shadow3d relative"  :class="{'bold fs12': listItem === selected, 'fw500': listItem === highlighted}"  style="">
+                <span><i class="material-icons fs8 padd-0">place</i></span>
+                <span >{{ listItem.$объект['name'] }}</span>
+                <span class="nowrap chip padd-0-05"><span class="fs8 grey-text">№</span> <span class="">{{ listItem.$помещение['номер-название'] }}</span></span>
+                <span class="nowrap chip padd-0-05"><span class="">{{ listItem.$помещение['этаж'] }}</span> <span class="fs8 grey-text">эт.</span></span>
+                <span class="nowrap chip padd-0-05"><span class="">{{ ParseNum(listItem.$помещение['площадь']).toLocaleString() }}</span> <span class="fs8 grey-text">м<sup>2</sup></span></span>
+                <span class="grey-text fs7" style="position:absolute; right:0; bottom:0;">#{{ listItem.id }}</span>
+              </h6>
+            </template>
+          </v-select>
+          
+          <span  v-show="room['помещение/id']" class="grey-text fs7 " style="position: absolute; right:0.5rem;">#{{ room['помещение/id']}}</span>
+          <span  v-show="!room['помещение/id'] " class="chip padd-0-05 red-text fs8 " style="position: absolute; right:0;">не выбрано помещение, при сохранении позиция будет удалена!</span>
+          
+          <div class="right-align" style="margin-top:2rem;">
+            <h5 class="iblock middle">Точная площадь аренды, м²</h5>
+            <div class="input-field iblock middle000" :class="{'chip lime lighten-3  z-depth-1': room['площадь']}" style="width:5rem;">
+              <input  type="text" v-model.number.trim="room['площадь']" @input="InputSquare(room)" placeholder="м²" class="right-align" style="">
+            </div>
+          </div>
+          
+        </td>
+        <td class="padd-05" style="width:20%;">
+          <div class="input-field row" :class="{'chip lime lighten-3 z-depth-1': room['ставка|сумма'] == 'ставка'}">
+            <input type="text" v-model.trim="room['ставка']" placeholder="ставка за 1 м²/мес."  title="ставка за 1 м²/мес." @input=" InputMetr(room) " :disabled="!room['помещение/id']">
+            <!---div v-show="room['помещение/id'] && room['ставка']" class="right-align grey-text" title="сумма за месяц">{{ RoomSquare(room).toLocaleString() }}  ₽</div--->
+          </div>
+          
+          <div class="input-field row" :class="{'chip lime lighten-3 z-depth-1': room['ставка|сумма'] == 'сумма'}">
+            <p class="fs8 grey-text line-height-8"> или вся сумма за месяц</p>
+            <input type="text" v-model.trim="room['сумма']" placeholder="сумма за месяц"  title="сумма за месяц" @input=" InputSum(room)" :disabled="!room['помещение/id']">
+          </div>
+          
+          
+          <!--div class="input-field " :class="{'chip lime lighten-3  z-depth-1': room['сумма нал'] && room['сумма нал'].length}">
+            <p class="fs8 grey-text line-height-8"> и еще платит наличкой</p>
+            <input type="text" v-model.trim="room['сумма нал']" placeholder="доп. сумма нал."  title="доп. сумма нал." :disabled="!room['помещение/id']">
+          </div-->
+        </td>
+        <td class="vtop" style="width:20%;">
+          <div class="card00 padd-0-05 grey-lighten-3-000">
+            <div class="input-field">
+              <textarea v-model.trim="room['коммент']" class="materialize-textarea padd-0" style="min-height: 7rem; font-size:0.8rem;" placeholder="примечание"></textarea>
+            </div>
+          </div>
+        </td>
+      </tr>
+      <!-- итогововая строка -->
+      <tr class="grey-lighten-2">
+        <td></td>
+        <td class="right-align padd-05">
+          <h4 class="nowrap">
+            Итого по помещениям
+              <span class="bold chip lime lighten-3  z-depth-1 nowrap">
+                <span>{{ TotalSqure.toLocaleString().replace(/([\.,]\d{2})\d+$/, '$1') }} </span>
+                <span class="grey-text fw100"> м²</span>
+              </span>
+            
+          </h4>
+        </td>
+        <td class="right-align padd-05">
+          <h4>
+            <span class="bold chip lime lighten-3  z-depth-1 nowrap">
+              <span>{{ TotalSum.toLocaleString({"currency": 'RUB'}).replace(/[\.,]\d+$/, '') }} </span>
+              <span class="grey-text fw100"> ₽/мес.</span>
+            </span>
+            
+          
+          </h4>
+        </td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
