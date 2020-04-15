@@ -9,8 +9,8 @@ select d.*,
   dp."@кабинеты/id" as "@помещения/id"
 from 
   "аренда/договоры" d
-  --~ join refs r on d.id=r.id2
-  --~ join "контрагенты" k on k.id=r.id1
+  join refs r on d.id=r.id2
+  join "контрагенты" k on k.id=r.id1
   
   left join (---арендодатель
     select pr.*, r.id2
