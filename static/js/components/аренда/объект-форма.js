@@ -16,7 +16,7 @@ try {angular.module(moduleName); return;} catch(e) { }
 var module = angular.module(moduleName, ['Компонент::Выбор объекта']);
 
 module
-.factory('$КомпонентАрендаОбъектФорма',  function($templateCache, $http, $timeout, appRoutes, $КомпонентВыборОбъекта) {// factory
+.factory('$КомпонентАрендаОбъектФорма',  function($templateCache, $http, $timeout, appRoutes, Util, $КомпонентВыборОбъекта) {// factory
 
 const props = {
   "item": {
@@ -134,7 +134,46 @@ Remove(){
       vm.cancelerHttp = undefined;
     });
 },
+
+ParseNum(num){
+  return parseFloat(Util.numeric(num));
+},
+
+
 }; ///конец методы
+
+const floors = {
+  "-1": '              подвал',
+  "0": '               цокольный этаж',
+  "1": '1 этаж',
+  "2": '2 этаж',
+  "3": '3 этаж',
+  "4": '4 этаж',
+};
+
+const computed = {
+
+TotalSqure(){
+  var vm = this;
+  var s = vm.form['@кабинеты'].reduce(function(a, room){
+    if (!room || !room['площадь']) return a;
+    return a + vm.ParseNum(room['площадь']);
+  }, 0.0);
+  return s;
+},
+
+FloorSquares(){// площади по этажам
+  var vm = this;
+  var s = vm.form['@кабинеты'].reduce(function(a, room){
+    if (!room || !room['площадь']) return a;
+    if (!a[floors[room['этаж']]]) a[floors[room['этаж']]] = 0;
+    a[floors[room['этаж']]] += vm.ParseNum(room['площадь']);
+    return a;
+  }, {});
+  return s;
+},
+  
+};
 
 const data = function() {
   let vm = this;
@@ -156,11 +195,7 @@ var $Компонент = {
   props,
   data,
   methods,
-  /*"computed": {
-    "edit": function(){
-      return this.InitItem(angular.copy(this.item));
-    }
-  },*/
+  computed,
   //~ "created"() {  },
   "mounted"() {
     //~ console.log('mounted', this);
