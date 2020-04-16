@@ -92,8 +92,8 @@
                 <a v-show=" ValidRoom(room) "  @click=" CopyRoom(room)" href="javascript:" class="btn-flat padd-0 " style="" title="копировать">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" class="green-fill fill-darken-3 ng-scope" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#copy"></use></svg>
                 </a>
-                <a @click=" DeleteRoom(room) " href="javascript:" class="btn-flat padd-0" :disabled=" form['@аренда/договоры-помещения/id'] && form['@аренда/договоры-помещения/id'][index] " style="" title="удалить">
-                  <i class="material-icons   " :class="{'red-text-darken-3': !(form['@аренда/договоры-помещения/id'] && form['@аренда/договоры-помещения/id'][index]), 'grey-text-darken-2':!!(form['@аренда/договоры-помещения/id'] && form['@аренда/договоры-помещения/id'][index]), }">delete_forever</i>
+                <a @click=" DeleteRoom(room) " href="javascript:" class="btn-flat padd-0" :disabled=" form['@помещение в договоре аренды'] && form['@помещение в договоре аренды'][index] " style="" title="удалить">
+                  <i class="material-icons   " :class="{'red-text-darken-3': !(form['@помещение в договоре аренды'] && form['@помещение в договоре аренды'][index]), 'grey-text-darken-2':!!(form['@помещение в договоре аренды'] && form['@помещение в договоре аренды'][index]), }">delete_forever</i>
                 </a>
                 <a v000-show=" index == form['@кабинеты'].length - 1 || !form.id" @click=" AddRoom(index+1) " href="javascript:" class="btn-flat padd-0" style="" title="добавить">
                   <i class="material-icons lime-text-darken-3 ">add_box</i>

@@ -49,7 +49,8 @@ sub сохранить_объект {
   
   my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, 'аренда/объекты', ["id"], $data);
   
-  $self->app->log->error($self->app->dumper($self->связь($oid, $r->{id})));
+  #~ $self->app->log->error(
+  $self->app->dumper($self->связь($oid, $r->{id}));
   $self->app->log->error($self->app->dumper($self->связь_удалить(id1=>$prev->{'объект/id'}, id2=>$r->{id})))
     if $prev && $prev->{'объект/id'} ne $oid;
   
@@ -63,7 +64,7 @@ sub сохранить_объект {
     my $id = $prev->{'@кабинеты/id'}[$_];
     
     return "Нельзя удалять помещение, уже в договоре"
-      if $prev->{'@аренда/договоры-помещения/id'} && $prev->{'@аренда/договоры-помещения/id'}[$_];
+      if $prev->{'@помещение в договоре аренды'} && $prev->{'@помещение в договоре аренды'}[$_];
       
     $self->_удалить_строку('аренда/помещения', $id)
       unless $ref{"$r->{id}:$id"};
@@ -238,7 +239,8 @@ sub расходы_категории {
   my $self  =  shift;
   my $param = ref $_[0] ? shift : {@_};
   my ($where, @bind) = $self->SqlAb->where({
-    ' cat."parents_title"[2:3] ' => \[ ' = ?::text[] ', ['аренда офисов', 'дополнительные платежи']],
+    #~ ' cat."parents_title"[2:3] ' => \[ ' = ?::text[] ', ['аренда офисов', 'дополнительные платежи']],
+    ' cat."parents_title"[2] ' => \[ ' = ?::text[] ', ['коммунальные платежи']],
     #~ '  c.childs ' => undef #  is null
   });
   
@@ -251,7 +253,8 @@ sub сохранить_категорию {
   #~ $self->app->log->error($self->app->dumper($data));
   $data->{newItems} = [$data]
     unless $data->{id};
-  $data->{parent} = 931814; # дополнительные платежи
+  #~ $data->{parent} = 1009623; # дополнительные платежи
+  $data->{parent} = 353551; # коммунальные платежи
   $self->model_category->сохранить_категорию($data);
 }
 

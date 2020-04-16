@@ -413,16 +413,16 @@ from "roles/родители"(null)
 select o.*,
   ob.id as "объект/id",
   row_to_json(ob) as "$объект/json",
-  p."@кабинеты/json", p."@кабинеты/id", p."@аренда/договоры-помещения/id"
+  p."@кабинеты/json", p."@кабинеты/id", p."@помещение в договоре аренды"
 from "аренда/объекты" o
   join refs ro on o.id=ro.id2
   join roles ob on ob.id=ro.id1
   left join (
-    select o.id, jsonb_agg(p {%= $order_by_room || ' order by p.id' %}) as "@кабинеты/json", array_agg(p.id {%= $order_by_room || ' order by p.id' %}) as "@кабинеты/id", array_agg(p."аренда/договоры-помещения/id" {%= $order_by_room || ' order by p.id' %}) as "@аренда/договоры-помещения/id"
+    select o.id, jsonb_agg(p {%= $order_by_room || ' order by p.id' %}) as "@кабинеты/json", array_agg(p.id {%= $order_by_room || ' order by p.id' %}) as "@кабинеты/id", array_agg(p."помещение в договоре аренды" {%= $order_by_room || ' order by p.id' %}) as "@помещение в договоре аренды"
     from "аренда/объекты" o
       join "refs" r on o.id=r.id1
       join (
-        select p.*, dp.id as "аренда/договоры-помещения/id"--- проверка
+        select distinct p.*, coalesce(dp.id, 0)::boolean as "помещение в договоре аренды"--- проверка
         from
           "аренда/помещения" p 
           left join (--- для проверки удаления строк помещений из объекта

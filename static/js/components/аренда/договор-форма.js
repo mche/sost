@@ -270,7 +270,7 @@ RemoveDop(idx){
 
 OnTableSum(sum){/// сумма по таблице
   var vm = this;
-  console.log("OnTableSum", sum);
+  //~ console.log("OnTableSum", sum);
   vm.tableSum =  sum;
   
 },
