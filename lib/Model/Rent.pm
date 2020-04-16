@@ -240,7 +240,7 @@ sub расходы_категории {
   my $param = ref $_[0] ? shift : {@_};
   my ($where, @bind) = $self->SqlAb->where({
     #~ ' cat."parents_title"[2:3] ' => \[ ' = ?::text[] ', ['аренда офисов', 'дополнительные платежи']],
-    ' cat."parents_title"[2] ' => \[ ' = ?::text[] ', ['коммунальные платежи']],
+    ' cat."parents_title"[2] ' => \[ ' = ?::text ', 'коммунальные платежи'],
     #~ '  c.childs ' => undef #  is null
   });
   
