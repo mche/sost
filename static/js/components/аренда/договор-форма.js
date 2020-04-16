@@ -258,7 +258,7 @@ ClearDateDop(name, val){
   
 },
 
-RemoveDop(idx){
+RemoveDop(idx){///удалить доп соглашение
   var vm = this;
   vm.ClearDateDop('дата1');
   vm.roomsTableIdx -= 1;
@@ -270,7 +270,7 @@ RemoveDop(idx){
 
 OnTableSum(sum){/// сумма по таблице
   var vm = this;
-  //~ console.log("OnTableSum", sum);
+  //~ console.log("OnTableSum", vm.form['@помещения'] === propRooms);
   vm.tableSum =  sum;
   
 },

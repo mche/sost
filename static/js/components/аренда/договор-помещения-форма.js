@@ -45,9 +45,12 @@ const util = {/*разное*/
     //~ var r = room['помещение/id'] && rentRoomsData.find(util.IsEqualId, {"id": room['помещение/id']});
     //~ room['объект-помещение'] = room.$помещение ? `${ room.$объект['name'] }: №${ room.$помещение['номер-название'] }, ${ room.$помещение['этаж'] } эт., ${ parseFloat(room.$помещение['площадь']).toLocaleString() } м²` : '';
     room._id = vm.idMaker.next().value;
-    //~ if (room.id && room['ставка']) room['ставка|сумма'] = 'ставка';
-    //~ if (room.id && room['сумма']) room['ставка|сумма'] = 'сумма';
-    vm.InputMetr(room) || vm.InputSum(room);
+    if (room.id && !room['ставка|сумма'] && room['ставка']) room['ставка|сумма'] = 'ставка';
+    else if (room.id && !room['ставка|сумма'] && room['сумма']) room['ставка|сумма'] = 'сумма';
+    //~ if (room['ставка|сумма'] == 'ставка')  vm.InputMetr(room);
+    //~ else vm.InputSum(room);
+    //~ vm.InputMetr(room) || vm.InputSum(room);
+    vm.InputSquare(room);
   },
   FilterRooms(item){
     return item._match.indexOf(this.match) !== -1;
@@ -76,6 +79,7 @@ OnRoomSelect(item, propSelect){/// из компонента выбор из с�
   //~ rooms.splice(rooms.indexOf(room), 1, {"id": item['помещение'].id, "объект-помещение": val, "ставка": room['ставка'], });
   //~ room.id = item['помещение'].id;
   //~ Object.assign(room, item['помещение']);
+  //~ debugger;
   if (item) {
     room['помещение/id'] = item && item.$помещение.id;
     room.$помещение = item && item.$помещение;
@@ -107,7 +111,7 @@ InputSum(room){/// сумма за мес
 
 InputSquare(room){
   var vm = this;
-  if (room['площадь'].length && !/^\d+$|[.,]\d*$/.test(room['площадь'])) {
+  if (room['площадь']  && !/^\d+$|[.,]\d*$/.test(room['площадь'])) {
     var s = vm.ParseNum(room['площадь']);
     room['площадь'] = s.toLocaleString('ru-RU', {"minimumFractionDigits":1});
   }

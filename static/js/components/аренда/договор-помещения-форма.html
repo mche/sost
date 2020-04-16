@@ -57,7 +57,7 @@
             <input type="text" v-model.trim="room['сумма']" placeholder="сумма за месяц"  title="сумма за месяц" @input=" InputSum(room)" :disabled="!room['помещение/id']">
           </div>
           
-          
+          <div>{{  room['ставка|сумма']  }}</div>
           <!--div class="input-field " :class="{'chip lime lighten-3  z-depth-1': room['сумма нал'] && room['сумма нал'].length}">
             <p class="fs8 grey-text line-height-8"> и еще платит наличкой</p>
             <input type="text" v-model.trim="room['сумма нал']" placeholder="доп. сумма нал."  title="доп. сумма нал." :disabled="!room['помещение/id']">

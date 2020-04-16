@@ -5,7 +5,7 @@
 
 <div v-if="ready" class="padd-05 relative">
   <div style="position:absolute; top:-1rem; right:0.5rem; z-index:1;">
-    <a @click.stop="expandUploads = !expandUploads" href="javascript:" class="chip transparent hoverable padd-0" title="развернуть/свернуть список файлов"><i class="material-icons" :class="{'rotate180': expandUploads}">arrow_drop_down</i><sup style="position: absolute; top:0.3rem; right:0.5rem;">{{ UploadsLen }}</sup></a>
+    <a @click.stop="expandUploads = !expandUploads" href="javascript:" class="chip blue lighten-3 z-depth-1 hoverable padd-0" title="развернуть/свернуть список файлов"><i class="material-icons" :class="{'rotate180': expandUploads}">arrow_drop_down</i><sup style="position: absolute; top:0.3rem; right:0.5rem;">{{ UploadsLen }}</sup></a>
   </div>
   <ul v-if=" UploadsLen " class="collection card blue-lighten-5" style="overflow:auto; /*border:none;*/" :style="expandUploads ? {} : {'max-height': 'calc(30vh)'}">
     <li v-for="file in uploads" :key="file.id" class="collection-item relative hover-childs-show" :class="{'animated slideInRight': !!file._file}">
