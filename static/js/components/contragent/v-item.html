@@ -28,7 +28,7 @@
       <div v-show="param['реквизиты'].hasOwnProperty('ИНН')" class="input-field">
         <input v-if=" form['реквизиты']" type="text" name="ИНН" v-model=" form['реквизиты']['ИНН'] " @input="InputExtra" placeholder="ИНН" title="ИНН">
       </div>
-      <div v-show="param['реквизиты'].hasOwnProperty('физ. лицо')" class="input-field chip shadow-inset-10">
+      <div v-show="param['реквизиты'].hasOwnProperty('физ. лицо')" class="input-field chip shadow-inset-10 hoverable">
         <input :id=" 'chb-fl-' + form._id " name="" type="checkbox" class="" v-model="  form['реквизиты']['физ. лицо'] " >
         <label :for="'chb-fl-' + form._id " class="before-yellow before-lighten-4 brown-text text-darken-3 chip yellow lighten-4 hoverable" style="padding-left:16px;"></label>
         <label :for="'chb-fl-' + form._id " class=""><h5 class="inline" style="">Физ. лицо</h5></label>
