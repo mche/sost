@@ -136,7 +136,7 @@ Valid(){
 Save(){
   var vm = this;
   
-  return console.log("Save", JSON.stringify(vm.form['@доп.соглашения']));
+  //~ return console.log("Save", JSON.stringify(vm.form['@доп.соглашения']));
   //~ vm.form['контрагент']['реквизиты'] = JSON.stringify({"ИНН": vm.form['контрагент/ИНН'], "юр. адрес": vm.form['контрагент/юр. адрес']});
   
   vm.cancelerHttp =  $http.post(appRoutes.urlFor('аренда/сохранить договор'), vm.form)
