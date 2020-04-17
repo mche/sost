@@ -58,19 +58,19 @@
                 <template v-slot:selected="{ selected }">
                   <h4 v-if="selected" class="relative padd-0-05 blue-text text-darken-4 animated slideInRight hover-bottom-shadow-blue-darken-3">
                     
-                    <span class="chip padd-0-05">{{ selected.$контрагент.title }}</span>
-                    <span class="chip padd-0-05"><span class="fs8 grey-text">ИНН:</span> {{ selected.$контрагент['реквизиты'] && selected.$контрагент['реквизиты']['ИНН'] }}</span>
-                    <span class="chip padd-0-05" title="объект и помещения">
-                      <span><i class="material-icons ">place</i></span>
-                      <span>{{ selected['@помещения'] && selected['@помещения'][0] && selected['@помещения'][0].$объект.name  }}</span>
-                      <span class="fs10 padd-0-05">
-                        <span class="fs8 grey-text">к./оф.: </span>
-                        <span v-for="room in selected['@помещения']" :key="room.id"> {{ room.$помещение['номер-название'] }},</span>
-                      </span>
-                    </span>
+                    <span class="chip padd-0-05 fw500">{{ selected.$контрагент.title }}</span>
+                    <span class="chip padd-0-05 fs10"><span class="fs8 grey-text">ИНН:</span> {{ selected.$контрагент['реквизиты'] && selected.$контрагент['реквизиты']['ИНН'] }}</span>
                     <span class="chip padd-0-05" title="номер договора">
                       <!--svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32" class="blue-fill-darken-3" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#handshake"></use></svg-->
                       <span class="fs8 grey-text">дог. №</span> {{ selected['номер'].replace('№', '') }} <span class="fs8 grey-text">от</span> {{ selected['дата договора'] || selected['дата1'] }}
+                    </span>
+                    <span class="chip padd-0-05 fs10" title="объект и помещения">
+                      <span><i class="material-icons fs10">place</i></span>
+                      <span>{{ selected['@помещения'] && selected['@помещения'][0] && selected['@помещения'][0].$объект.name  }}</span>
+                      <!--span class="fs10 padd-0-05">
+                        <span class="fs8 grey-text">к./оф.: </span>
+                        <span v-for="room in selected['@помещения']" :key="room.id"> {{ room.$помещение['номер-название'] }},</span>
+                      </span-->
                     </span>
                     <!--span class="grey-text fs7" style="position:absolute; right:0; bottom:0;">#{{ selected.id }}</span-->
                   </h4>
@@ -80,15 +80,17 @@
                 <template v-slot:listItem="{ listItem, selected, highlighted }">
                   <h6 class="padd-0-05 blue-text text-darken-4 relative hover-shadow3d"  :class="{'bold fs12': listItem === selected, 'fw500': listItem === highlighted, 'nowrap': listItem !== selected}"  style="">
                     <span class="chip padd-0-05">{{ listItem.$контрагент.title }}</span>
+                    <span class="chip padd-0-05 fs8"><span class="fs8 grey-text">ИНН:</span> {{ listItem.$контрагент['реквизиты'] && listItem.$контрагент['реквизиты']['ИНН'] }}</span>
+                    
+                    <span class="chip padd-0-05" title="номер договора"><span class="fs8 grey-text">дог.</span> № {{ listItem['номер'].replace('№', '') }} от {{ listItem['дата договора'] || listItem['дата1'] }}</span>
                     <span class="chip padd-0-05" title="объект и помещения">
-                      <span><i class="material-icons">place</i></span>
-                      <span>{{ listItem['@помещения'] && listItem['@помещения'][0] && listItem['@помещения'][0].$объект.name  }}</span>
+                      <span><i class="material-icons fs10">place</i></span>
+                      <span class="fs8">{{ listItem['@помещения'] && listItem['@помещения'][0] && listItem['@помещения'][0].$объект.name  }}</span>
                       <!---span class="fs10 padd-0-05">
                         <span>к./оф.: </span>
                         <span v-for="room in listItem['@помещения']" :key="room.id"> {{ room.$помещение['номер-название'] }},</span>
                       </span-->
                     </span>
-                    <span class="chip padd-0-05" title="номер договора">дог. № {{ listItem['номер'].replace('№', '') }} от {{ listItem['дата договора'] || listItem['дата1'] }}</span>
                     <!--span class="grey-text fs7" style="position:absolute; right:0; bottom:0;">#{{ selected.id }}</span-->
                   </h6>
                 </template>
@@ -129,30 +131,31 @@
             </td>
             <td class="padd-05" style="width:7rem;">
               <div class="input-field row" :class="{}">
-                <input type="text" v-model.trim="pos['количество']"  @input="PosSum(pos, 'количество')"placeholder="количество" class="right-align" title="количество" :disabled="!pos['$категория'].title.length">
+                <input type="text" v-model.trim="pos['количество']"  @input="PosSum(pos, 'количество')"placeholder="количество" class="right-align" title="количество" :disabled="!pos['$категория'].title.length || !!pos['сумма']">
               </div>
             </td>
             
             <td class="padd-05" style="width:5rem;">
               <div class="input-field row" :class="{}">
-                <input type="text" v-model.trim="pos['ед']" placeholder="ед. изм."  title="единицы измерения" :disabled="!pos['$категория'].title.length">
+                <input type="text" v-model.trim="pos['ед']" placeholder="ед. изм."  title="единицы измерения" :disabled="!pos['$категория'].title.length || !!pos['сумма']">
               </div>
             </td>
             
             <td class="padd-05" style="width:7rem;">
               <div class="input-field row" :class="{}">
-                <input type="text" v-model.trim="pos['цена']" @input="PosSum(pos, 'цена')" class="right-align"  placeholder="цена, ₽"  title="цена, ₽" :disabled="!pos['$категория'].title.length">
+                <input type="text" v-model.trim="pos['цена']" @input="PosSum(pos, 'цена')" class="right-align"  placeholder="цена, ₽"  title="цена, ₽" :disabled="!pos['$категория'].title.length || !!pos['сумма']">
               </div>
             </td>
             
             <td class="padd-05" style="width:7rem;">
               <div class="input-field row" :class="{}">
-                <input type="text" v-model.trim=" pos['сумма2'] " class="right-align fw500 teal-text text-darken-3" placeholder="сумма, ₽"  title="сумма, ₽" :disabled="!0">
+                <input v-show="!pos['количество']" type="text" v-model.trim=" pos['сумма'] " @input="PosSum(pos, 'сумма')" class="right-align fw500 teal-text text-darken-3" placeholder="сумма, ₽"  title="сумма, ₽">
+                <input v-show="!!pos['количество']" type="text" v-model.trim=" pos['сумма2'] " class="right-align fw500 teal-text text-darken-3" placeholder="сумма, ₽"  title="сумма, ₽" :disabled=" !0">
               </div>
             </td>
             
-            <td class="vtop" style="width:20%;">
-              <div class="card padd-0-05 grey-lighten-3">
+            <td class="vtop padd-05" style="width:20%;">
+              <div class="card-000 padd-0-05 grey-lighten-3-000 hoverable">
                 <div class="input-field">
                   <textarea v-model.trim="pos['коммент']" class="materialize-textarea padd-0" style="min-height: 3rem; font-size:0.8rem;" placeholder="примечание"></textarea>
                 </div>
@@ -163,7 +166,7 @@
           <tr>
             <td colspan=5></td>
             <td class="right-align">
-              <h4>
+              <h4 class="nowrap">
                 <span class="bold">{{ TotalSum.toLocaleString({"currency": 'RUB'}) }}</span>
                 <span class=""> ₽</span>
               

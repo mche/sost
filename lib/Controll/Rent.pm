@@ -202,12 +202,12 @@ sub сохранить_расход {
     $pos->{'категория/id'} = $n->{id};
     
     return $c->render(json=>{error=>"Не заполнена позиция"})
-      unless (scalar grep($pos->{$_}, qw(количество ед цена))) eq 3;
+      unless (scalar grep($pos->{$_}, qw(сумма))) || (scalar grep($pos->{$_}, qw(количество ед цена))) eq 3 ;
     
     $pos->{$_} = &Util::numeric($pos->{$_})
       for grep defined $pos->{$_}, qw(количество);
     $pos->{$_} = &Util::money($pos->{$_})
-      for grep defined $pos->{$_}, qw(цена);
+      for grep defined $pos->{$_}, qw(цена сумма);
     
     $pos->{uid} = $c->auth_user->{id}
       unless $pos->{uid};

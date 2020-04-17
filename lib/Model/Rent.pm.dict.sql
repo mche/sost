@@ -95,17 +95,19 @@ create table IF NOT EXISTS "аренда/расходы/позиции" (---- к
   id integer  NOT NULL DEFAULT nextval('{%= $sequence %}'::regclass) primary key,
   ts  timestamp without time zone NOT NULL DEFAULT now(),
   uid int, --- автор записи
-  "количество" numeric not null,
+  "количество" numeric, --- not null,
   "ед" text,
   "цена" money,
-  ---"сумма" money,
+  "сумма" money,
   "коммент" text
 /* связи:
 id1("номенклатура")->id2("аренда/расходы/позиции")
 id1("аренда/расходы")->id2("аренда/расходы/позиции")
 */
 );
-ALTER TABLE "аренда/расходы/позиции" DROP COLUMN IF EXISTS  "сумма";
+---ALTER TABLE "аренда/расходы/позиции" DROP COLUMN IF EXISTS  "сумма";
+ALTER TABLE "аренда/расходы/позиции" ADD COLUMN IF NOT EXISTS  "сумма" money;
+ALTER TABLE "аренда/расходы/позиции" ALTER COLUMN  "количество" DROP NOT NULL;
 drop  table IF  EXISTS "аренда/расходы/виды";
 
 /*******************************************/
@@ -332,7 +334,7 @@ from
 DROP VIEW IF EXISTS "аренда/счета доп платежей" CASCADE;--- расходные записи движения по аренде
 CREATE OR REPLACE VIEW "аренда/счета доп платежей" as
 -- 
-select r.id, r.ts, /*d."дата1", */r."дата"::date, -1::numeric*pos."сумма",
+select r.id, r.ts, /*d."дата1", */r."дата"::date, -1::numeric*coalesce(pos."сумма", pos."сумма2") as "сумма",
   -1::numeric as "sign", --- счет-расход
   pos."категории", pos."категория",
   k.title as "контрагент", k.id as "контрагент/id",
@@ -389,7 +391,7 @@ from
       cat.parents_id||cat.id as "категории",
       cat.parents_title[2:]||cat.title as "категория",
       pos.*,
-      pos."количество"*pos."цена" as "сумма"
+      pos."количество"*pos."цена" as "сумма2"
     from "аренда/расходы" r
       join refs r1 on r.id=r1.id1
       join "аренда/расходы/позиции" pos on pos.id=r1.id2
@@ -701,7 +703,7 @@ from
   join (--- позиции
     select 
       "расход/id",
-      sum(pos."сумма") as "сумма",
+      sum(coalesce(pos."сумма", pos."сумма2")) as "сумма",
       array_agg(row_to_json(pos) order by pos."order_by") as "@позиции",
       count(pos) as "всего позиций"
     from (
@@ -717,7 +719,7 @@ from
         ('{"' || cat.title || ' за '||param."месяц"||' '||param."год"||' г."}')::text[]  as "номенклатура",
         pos.id as "order_by",
         pos.*,
-        pos."количество"*pos."цена" as "сумма"
+        pos."количество"*pos."цена" as "сумма2"
       from
         param,
         "аренда/расходы" r
@@ -791,7 +793,7 @@ left join lateral (
     select pos."расход/id",
       jsonb_agg(pos order by pos.id) as "@позиции/json",
       array_agg(pos.id  order by pos.id) as "@позиции/id",
-      sum(pos."сумма") as "сумма"
+      sum(coalesce(pos."сумма", pos."сумма2")) as "сумма"
       
     from ---"аренда/расходы" r
       ---join refs _r on r.id=_r.id1
@@ -829,7 +831,7 @@ select
   cat.id as "категория/id",
   to_json(cat) as "$категория/json",
   pos.*,
-  pos."количество"*pos."цена" as "сумма"
+  pos."количество"*pos."цена" as "сумма2"
 from "аренда/расходы" r
   join refs r1 on r.id=r1.id1
   join "аренда/расходы/позиции" pos on pos.id=r1.id2

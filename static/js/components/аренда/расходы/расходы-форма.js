@@ -41,7 +41,7 @@ const util = {/*разное*/
   MapPosItem(pos){
     var vm = this;
     pos._id = vm.idMaker.next().value;
-    vm.PosSum(pos);
+    if (!pos['сумма']) vm.PosSum(pos);
     //~ vm.InputMetr(room) || vm.InputSum(room);
   },
   FilterPos(item){
@@ -138,7 +138,7 @@ OnCategorySelect(item, idx, propItem){/// из компонента выбор �
 AddPos(pos, items){
   var vm = this;
   items = items || vm.form['@позиции'];
-  if (!pos || pos  === items[items.length-1])  items.push({"$категория":{"title": ''}, /*"количество":'', "цена":'',*/ "сумма":'', "_id": vm.idMaker.next().value});/// тут обязательно объявить реактивные поля!
+  if (!pos || pos  === items[items.length-1])  items.push({"$категория":{"title": ''}, /*"количество":'', "цена":'', "сумма":'',*/ "_id": vm.idMaker.next().value});/// тут обязательно объявить реактивные поля!
 },
 
 RemovePos(pos){
@@ -197,7 +197,7 @@ Valid(name){
 
 ValidPos(pos){
   var vm = this;
-  if (pos) return pos['$категория'] && (pos['$категория'].id || pos['$категория'].title)  && !!vm.ParseNum(pos['количество']) && !!vm.ParseNum(pos['цена']);
+  if (pos) return pos['$категория'] && (pos['$категория'].id || pos['$категория'].title)  && !!pos['сумма'] || (!!vm.ParseNum(pos['количество']) && !!vm.ParseNum(pos['цена']));
   return vm.form['@позиции'].length > 1
     && vm.form['@позиции'].slice(0,-1).every(function(pos){
       return vm.ValidPos(pos);
@@ -227,13 +227,20 @@ OnContragentSelect(item, propSelect){/// из компонента выбор и
 
 PosSum(pos, name){
   var vm = this;
-  //~ console.log("PosSum", pos['количество']);
+  //~ console.log("PosSum", JSON.stringify(pos));
   if (name && /[,.]$/.test(pos[name])) return;
+  if (name == 'сумма') {
+    pos['количество'] = pos['цена'] = pos['ед'] = null;
+    return;
+    
+  }
+  
   pos['количество'] = vm.ParseNum(pos['количество']);
   pos['цена'] = vm.ParseNum(pos['цена']);
-  pos['сумма'] = pos['количество'] * pos['цена'];
+  let sum = pos['количество'] * pos['цена'];
   pos['цена'] = pos['цена'] || '';
-  vm.$set(pos, 'сумма2', pos['сумма'] && pos['сумма'].toLocaleString({"currency": 'RUB'}) +' ₽');
+  vm.$set(pos, 'сумма2', /*pos['сумма'] && pos['сумма']*/sum.toLocaleString({"currency": 'RUB'}) +' ₽');
+  pos['сумма'] = null;
 },
 
 ParseNum(num){
@@ -258,8 +265,9 @@ const computed = {
 TotalSum(){
   var vm = this;
   var s = vm.form['@позиции'].reduce(function(a, pos){
-    if (!pos || !pos['сумма']) return a;
-    return a + pos['сумма'];
+    //~ if (!pos || !pos['сумма'] || !pos['сумма2']) return a;
+    //~ console.log("TotalSum", JSON.stringify(pos));
+    return a + vm.ParseNum(pos['сумма'])+vm.ParseNum(pos['сумма2']);
   }, 0);
   return s;
 },

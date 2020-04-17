@@ -136,7 +136,7 @@ Valid(){
 Save(){
   var vm = this;
   
-  //~ return console.log("Save", JSON.stringify(vm.form['@доп.соглашения']));
+  return console.log("Save", JSON.stringify(vm.form['@доп.соглашения']));
   //~ vm.form['контрагент']['реквизиты'] = JSON.stringify({"ИНН": vm.form['контрагент/ИНН'], "юр. адрес": vm.form['контрагент/юр. адрес']});
   
   vm.cancelerHttp =  $http.post(appRoutes.urlFor('аренда/сохранить договор'), vm.form)
@@ -188,6 +188,7 @@ Copy(){
   //~ debugger;
   init.id = undefined;
   init.uid = undefined;
+  init.ts = undefined;
   init['номер'] = undefined;
   init['коммент'] = undefined;
   init['копия/id'] = vm.form.id;
@@ -208,6 +209,7 @@ CopyRoom(room){
   room.id = undefined;
   room._id=this.idMaker.next().value;
   room.uid = undefined;
+  room.ts = undefined;
   room['договор/id'] = undefined;
   return room;
 },

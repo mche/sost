@@ -31,10 +31,11 @@
             <span>{{ allChbs ? 'снять' : 'отметить' }}</span>
             <sup class="chip white z-depth-1">{{ FilteredDataLen }}</sup>
           </h6></label>
+          <br>
           <a v-show="checkedData.length" @click="Print()" href="javascript:" class="btn-flat  z-depth-1 orange lighten-4 black-text padd-0">
             <i class="material-icons">print</i>
-            <!--span>Печать</span-->
-            <sup class="">{{ checkedData.length }}</sup>
+            <span class="fs8">Печать</span>
+            <sup class="chip white">{{ checkedData.length }}</sup>
           </a>
         </div>
         
@@ -88,7 +89,7 @@
         </h4>
         <span class-000="chip padd-0-05">дог. {{ row.$договор['номер'] }}</span>
         <h5 class="right iblock blue-text text-darken-3">
-          <i class="material-icons">place</i>
+          <i class="material-icons fs8">place</i>
           <span>{{ row.$объект.name }}</span>
         </h5>
       </div>
@@ -100,7 +101,7 @@
               <td class="right-align"><div class="truncate nowrap right-align" style="width:5rem;">{{ pos['количество'] }}</div></td>
               <td><div class="truncate nowrap" style="width:3rem;">{{ pos['ед'] }}</div></td>
               <td class="right-align"><div class="truncate nowrap" style="width:5rem;">{{ pos['цена'] }}</div></td>
-              <td class="right-align"><div class="truncate nowrap" style="width:5rem;">{{ pos['сумма'] }}</div></td>
+              <td class="right-align"><div class="truncate nowrap" style="width:5rem;">{{ pos['сумма'] || pos['сумма2']  }}</div></td>
               <td><div class="truncate nowrap" style="width:10rem;">{{ pos['коммент'] }}</div></td>
             </tr>
           </tbody>

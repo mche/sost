@@ -3,7 +3,7 @@
 <div ng-hide="$c.ready" ng-include=" 'progress/load' "></div>
 
 <div class="row" ng-if="$c.ready">
-<a ng-click="$c.Print()" href="javascript:" class="btn-flat shadow-inset-10 z-depth-1 black-text right">
+<a ng-click="$c.Print()" href="javascript:" class="btn-flat shadow-inset-10 hoverable z-depth-1 black-text right">
   <i class="material-icons">print</i>
   <span>Квитки расчета</span>
 </a>
@@ -33,7 +33,7 @@
 </ul-->
 
 <div class="col s12 m8">
-<div class="row chip block teal lighten-4 shadow-inset-10" ng-hide="$c.param['общий список бригад'] || $c.param['бригада']">
+<div class="row chip block teal lighten-4 shadow-inset-10 hoverable" ng-hide="$c.param['общий список бригад'] || $c.param['бригада']">
 <div ng-hide="$c.param['общий список']" class="input-field">
   
   <object-select data-param="{'все объекты': true}" data-data="$c.data['объекты']" data-on-select-obj="$c.SelectObj(obj)"></object-select>
@@ -46,7 +46,7 @@
 </div>
 </div><!-- объекты-->
 
-<div class="row chip block lighten-4 shadow-inset-10" ng-if-000="$c.data['данные'] && $c.data['данные'].length" ng-hide="$c.param['общий список'] || $c.param['объект']">
+<div class="row chip block lighten-4 shadow-inset-10 hoverable" ng-if-000="$c.data['данные'] && $c.data['данные'].length" ng-hide="$c.param['общий список'] || $c.param['объект']">
 <div ng-hide="$c.param['общий список бригад']" class="input-field">
   <i class="material-icons" style="position: absolute; z-index: 1; right:0;">arrow_drop_down</i>
   <!--i ng-show="$c.param['бригада']" ng-click=" $c.param['бригада']=undefined " class="material-icons orange-text" style="position: absolute; right:2rem; cursor:pointer;">cancel</i-->
@@ -97,7 +97,7 @@
 
 <div ng-show=" !$c.refreshTable " ng-if-000="$c.param['общий список'] || $c.param['объект'] || $c.param['общий список бригад'] || $c.param['бригада']" class="row">
   <!-- фильтровать ИТР" -->
-  <span class="chip shadow-inset-10 input-field  teal lighten-4">
+  <span class="chip shadow-inset-10 hoverable input-field  teal lighten-4">
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg>
     <h5 class="inline">ИТР</h5>
     <span>
@@ -107,7 +107,7 @@
   </span>
 
   <!--- фильтр  -->
-  <span class="chip shadow-inset-10 input-field  teal lighten-4">
+  <span class="chip shadow-inset-10 hoverable  input-field  teal lighten-4">
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg>
     <h5 class="inline">Начисления</h5>
     <span>
@@ -117,7 +117,7 @@
   </span>
   
   <!--- фильтр  -->
-  <span class="chip shadow-inset-10 input-field  teal lighten-4">
+  <span class="chip shadow-inset-10 hoverable input-field  teal lighten-4">
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg>
     <h5 class="inline">Расчет ЗП</h5>
     <span>
@@ -127,7 +127,7 @@
   </span>
   
   <!-- фильтровать Офис" -->
-  <span class="chip shadow-inset-10 input-field  teal lighten-4">
+  <span class="chip shadow-inset-10 hoverable input-field  teal lighten-4">
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg>
     <h5 class="inline">Офис</h5>
     <span ng-init-000=" $c.param['фильтры']['офис'] = !1; ">
@@ -137,7 +137,7 @@
   </span>
   
   <!-- фильтровать Путевые листы..." -->
-  <span class="chip shadow-inset-10 input-field  teal lighten-4">
+  <span class="chip shadow-inset-10 hoverable input-field  teal lighten-4">
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg>
     <h5 class="inline" title="путевые листы"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#driver"></use></svg><span>ПЛ</span></h5>
     <span ng-init=" name = 'путевые листы' ">
@@ -147,7 +147,7 @@
   </span>
   
   <!-- фильтровать доп ngIf: !!row['профиль1/id']  ngIf: !!row._row2  -->
-  <span ng-if="$c.CountFilter($c['FilterДоплата'], true)" ng-if-000="$c['показать фильтр доплат']" class="chip shadow-inset-10 input-field  teal lighten-4">
+  <span ng-if="$c.CountFilter($c['FilterДоплата'], true)" ng-if-000="$c['показать фильтр доплат']" class="chip shadow-inset-10 hoverable input-field  teal lighten-4">
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg>
     <h5 class="inline"><i class="material-icons">group</i><span>Доплата</span></h5>
     <span>
@@ -203,13 +203,13 @@
             <a ng-class="{'grey-text text-darken-2': !!row['профиль1/id'], 'blue-text text-darken-3':!!row['РасчетЗП/флажок'] }" ng-click="$c.ShowDetail(row)" href="javascript:" data-target="modal-detail" class="hover-shadow3d">{{ FIO }}</a>
             
           </h5>
-          <h6 ng-if="!!row._row2" class="nowrap right-align" style0000="position: absolute; z-index: 1; bottom:0;"><a ng-href="#profile{{ row._row2._profile.id }}" class="grey-text text-darken-2 hover-shadow3d chip shadow-inset-10  padd-0-05">
+          <h6 ng-if="!!row._row2" class="nowrap right-align" style0000="position: absolute; z-index: 1; bottom:0;"><a ng-href="#profile{{ row._row2._profile.id }}" class="grey-text text-darken-2 hover-shadow3d chip shadow-inset-10 hoverable padd-0-05">
             <i class="icon-left before-rotate90left"></i>
             <i class="material-icons">group</i>
             <span class="truncate iblock" style="padding: 0 0.1rem; max-width:12rem;">{{row._row2._profile.names.join(' ')}}</span>
             </a></h6>
           <h6 ng-if="!!row['профиль1/id']" class="nowrap right-align" style000="position: absolute; z-index: 1; bottom:0;">
-            <a ng-href="#profile{{ row['профиль1/id'] }}" class="hover-shadow3d chip shadow-inset-10 padd-0-05">
+            <a ng-href="#profile{{ row['профиль1/id'] }}" class="hover-shadow3d chip shadow-inset-10 hoverable padd-0-05">
               <i class="icon-left before-rotate180 fs10"></i>
               <i class="material-icons">group</i>
               <span class="truncate iblock" style="padding: 0 0.1rem; max-width:12rem;">{{ row._profile1.names.join(' ') }}</span>
