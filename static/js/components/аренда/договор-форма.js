@@ -177,7 +177,7 @@ ClearDate(name, val){
   setTimeout(()=>{
     var el = $(`input[name="${ name }"]`, $(vm.$el));
     //~ if(val) vm.form[name] = val;
-    vm.InitDatepicker(el);
+    vm.f(el);
     //~ console.log("ClearDate", el);
   });
 },

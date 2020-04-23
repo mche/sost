@@ -162,6 +162,18 @@ BEGIN
     from 
       ---(select param.*) p
       "аренда/договоры" d
+
+      /***left join (--- доп соглашения
+        select dop.*, r.id1
+        from "refs" r
+          join "аренда/договоры" dop on dop.id=r.id2
+        where
+          ---date_trunc('month', $1) between date_trunc('month', dop."дата1") and (date_trunc('month', d."дата2" + interval '1 month') - interval '1 day') ---только действующие соглашения
+          date_trunc('month', $1) >= date_trunc('month', dop."дата1")
+        order by date_trunc('month', $1) - date_trunc('month', dop."дата1")--- минимальная разница
+        limit 1
+      ) dop on dop.id1=d.id***/
+      
       left join (
         select r.id1
         from "счета/аренда/помещения" s 
@@ -303,6 +315,7 @@ from
     extract(day FROM date_trunc('month', d."дата1"+interval '1 month') - d."дата1") as "за дней",
     ' за ' || extract(day FROM date_trunc('month', d."дата1"+interval '1 month') - d."дата1")::text || ' дн. неполн. мес.' as "коммент",
     null::int[] as "@категории/id", null::text[] as "@категории/title"
+    
     union all
     --- тут остальные полные месяцы
     select date_trunc('month', d."дата1"+interval '1 month')+make_interval(months=>m), 1, null, null, /*полная сумма*/ null, null
@@ -317,9 +330,10 @@ from
     select  date_trunc('month', coalesce(d."дата расторжения", d."дата2")), extract(day FROM coalesce(d."дата расторжения", d."дата2")/* тут важно до какой даты включительно- interval '1 day'*/)/extract(day FROM date_trunc('month', coalesce(d."дата расторжения", d."дата2")) + interval '1 month - 1 day'),--- доля дней в последнем месяце
     extract(day FROM coalesce(d."дата расторжения", d."дата2")/* тут важно до какой даты включительно- interval '1 day'*/), --- колич дней
     ' за ' || extract(day FROM coalesce(d."дата расторжения", d."дата2")/* тут важно до какой даты включительно- interval '1 day'*/)::text || ' дн. неполн. мес.' as "коммент", null, null
+    
     union all
     --- тут возможно предоплата одного мес
-    select d."дата1" as "дата", 1, null, ' предоплата (обеспечительный платеж)', --- полная сумма
+    select d."дата1" as "дата", 1 /*доля - полная сумма*/, null, ' предоплата (обеспечительный платеж)', --- 
       ---cc."@id", cc."@title"
       cc.parents_id||cc.id as "@id", cc.parents_title||cc.title as "@title"
     from 

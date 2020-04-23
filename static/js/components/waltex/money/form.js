@@ -204,7 +204,7 @@ const Component = function($scope, $rootScope, $element, $timeout, $http, $q, ap
       $('.modal', $($element[0])).modal();
 
       $('.datepicker', $($element[0])).pickadate({// все настройки в файле русификации ru_RU.js
-        onSet: function(context){ var s = this.component.item.select; $c.data['дата'] = [s.year, s.month+1, s.date].join('-'); }//$c.SetDate,
+        onSet: function(context){ var s = this.component.item.select; $c.data['дата'] = dateFns.format(new Date([s.year, s.month+1, s.date].join('-')), 'YYYY-MM-DD'); }//$c.SetDate,
         //~ min: $c.data.id ? undefined : new Date()
         //~ editable: $c.data.transport ? false : true
       });//{closeOnSelect: true,}
@@ -259,6 +259,7 @@ const Component = function($scope, $rootScope, $element, $timeout, $http, $q, ap
         if (resp.data.success) {
           Materialize.toast('Сохранено успешно', 4000, 'green-text text-darken-4 green lighten-4 fw500 border animated zoomInUp slow');
           $rootScope.$broadcast('Движение ДС/запись сохранена', resp.data.success);
+          $c.param['дата'] = $c.data['дата'];
           /*if ($c.data.id) {
             $c.parseSum(resp.data.success);
             angular.forEach(resp.data.success, function(val, key){$c.data[key]=val;});
