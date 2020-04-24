@@ -582,13 +582,13 @@ from
   ---join "движение ДС/аренда/счета" dp on d.id=dp.id and param."month"=date_trunc('month', dp."дата") and dp."примечание"!~'предоплата'
   join lateral (
     select 
-      sum(dp."сумма безнал") as "сумма",
+      sum(dp."сумма") as "сумма",
       array_agg(row_to_json(dp) order by dp."order_by") as "@позиции",
       array_agg(dp."объект/id" order by dp."order_by") as "@объекты/id",
       count(dp) as "всего позиций"
     from (
       select
-        /*-1::numeric**/dp."сумма безнал",
+        /*-1::numeric**/dp."сумма безнал" as "сумма",
         dp."объект/id",
         not 929979=any(dp."категории") as "order_by",
         case when 929979=any(dp."категории")---ид категории
