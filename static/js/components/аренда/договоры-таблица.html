@@ -143,7 +143,7 @@
               <span class="nowrap " class-000="{'right': item['@помещения'].length == 1, 'chip padd-0-05': item['@помещения'].length > 1}"><span class="" :class="{'fw500': item['@помещения'].length == 1}">{{ ParseNum(room['площадь'] || room.$помещение['площадь']).toLocaleString() }}</span><span class="fs8 grey-text"> м²</span></span>
             </div>
           </td>
-          <td class="right-align" style="width:1%;">
+          <td class="right-align" style="width:5rem;">
             <div class="nowrap line-height-10" style="width: calc(5vw);">
               <span class="" title="руб. за м²/мес. ">{{ RoomMetr(room).toLocaleString().replace(/[.,]\d+/, '') }}</span>
               <span class="fs8 grey-text">₽</span>
@@ -151,7 +151,7 @@
             
           </td>
           
-          <td class="right-align" style="width:1%;">
+          <td class="right-align" style="width:5rem;">
             <div v-show="item['@помещения'].length > 1" class="nowrap line-height-10" style="width: calc(5vw);">
               <span class="bold " :class000="{'bold': item['@помещения'].length == 1}" title=" руб./мес. ">{{ RoomSum(room).toLocaleString().replace(/[.,]\d+/, '') }}</span>
               <span class="fs8 grey-text"> ₽</span>
@@ -162,7 +162,7 @@
             </h5>
           </td>
           
-          <td class="relative" style="width:1%;">
+          <td class="relative" style="width:0.1rem;">
             <div v-show="room['коммент'] && !!room['коммент'].length " class="padd-0-05 truncate pre-wrap fs8 grey-text line-height-10" style="width: 10rem; max-height:2rem; position:absolute; top:0;" :title=" room['коммент'] ">{{ room['коммент'] }}</div>
           </td>
         </tr>
