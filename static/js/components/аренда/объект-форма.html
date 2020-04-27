@@ -43,6 +43,12 @@
         <sup class="chip ">{{ form['@кабинеты'].length }}</sup>
       </h4>
       
+      <h4 class="fw500 helmet tab-shadow  z-depth-1  lime-000--lighten-4">
+        <!--i class="material-icons">format_list_numbered</i-->
+        <span>1 эт.</span>
+        <sup class="chip ">{{ form['@кабинеты'].length }}</sup>
+      </h4>
+      
       <div class="" style="position:absolute; top:0.5rem; right:0.5rem; z-index:1;"><a @click="expandRooms = !expandRooms" href="javascript:" class="chip hoverable padd-0 z-depth-1"><i class="material-icons" :class="{'rotate180': expandRooms}">arrow_drop_down</i></a></div>
       
       <div class="z-depth-1" style="overflow:auto;" :style="expandRooms ? {} : {'max-height': 'calc(30vh)'}"><table class="tmc top striped bordered lime lighten-4 ">
