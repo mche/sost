@@ -32,7 +32,7 @@ sub список_объектов {
   my ($where, @bind) = $self->SqlAb->where({
     $data->{id} ? (' o.id ' => $data->{id}) : (),
     });
-  $self->dbh->selectall_arrayref($self->sth('объекты/список или позиция', where=>$where, order_by_room=>q! order by case when p."номер-название"~'^\d+$' then repeat('0', 5 - char_length(p."номер-название")) || p."номер-название" else p."номер-название" end !), {Slice=>{}}, @bind);
+  $self->dbh->selectall_arrayref($self->sth('объекты/список или позиция', where=>$where, order_by_room=>q! order by case when p."номер-название"~'^\d' then repeat('0', 5 - char_length(regexp_replace(p."номер-название", '\D+', '', 'g'))) || p."номер-название" else p."номер-название" end !), {Slice=>{}}, @bind);
 }
 
 sub сохранить_объект {
@@ -63,8 +63,8 @@ sub сохранить_объект {
   map {
     my $id = $prev->{'@кабинеты/id'}[$_];
     
-    return "Нельзя удалять помещение, уже в договоре"
-      if $prev->{'@помещение в договоре аренды'} && $prev->{'@помещение в договоре аренды'}[$_];
+    return "Нельзя удалять помещение @{[ %{ @{ $self->app->json->decode($prev->{'@кабинеты/json'}) }[$_] } ]}, уже в договоре"
+      if !$ref{"$r->{id}:$id"} && $prev->{'@помещение в договоре аренды'} && $prev->{'@помещение в договоре аренды'}[$_];
       
     $self->_удалить_строку('аренда/помещения', $id)
       unless $ref{"$r->{id}:$id"};

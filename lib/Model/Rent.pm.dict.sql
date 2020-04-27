@@ -256,6 +256,132 @@ RETURN QUERY
 END;
 $func$ LANGUAGE plpgsql;
 
+/************************************/
+DROP VIEW IF EXISTS "аренда/даты платежей" CASCADE;
+CREATE OR REPLACE VIEW "аренда/даты платежей" as
+/* даты платежей за аренду по всем месяцам
+  вспомогательно для расстановки сумм платежей
+*/
+select d.id as "договор/id",
+  d1.*
+from 
+"аренда/договоры" d ----без доп соглашений
+join lateral (--- повторить по месяцам договоров
+--- тут один первый месяц договора (возможно неполный)
+select d."дата1" as "дата", ---date_trunc('month', d."дата1") as "месяц",
+---extract(day FROM date_trunc('month', d."дата1"+interval '1 month') - d."дата1")/extract(day FROM date_trunc('month', d."дата1") + interval '1 month - 1 day') as "доля дней",--- первого неполного месяца
+  extract(day FROM date_trunc('month', d."дата1"+interval '1 month') - d."дата1") as "дней оплаты",
+  ---' за ' || extract(day FROM date_trunc('month', d."дата1"+interval '1 month') - d."дата1")::text || ' дн. неполн. мес.' as "коммент",
+  ---null::int[] as "@категории/id", null::text[] as "@категории/title"
+  cc.parents_id||cc.id as "@категории/id", cc.parents_title||cc.title as "@категории/title"
+from "категории/родители"() cc
+where cc.id=121952--- аренда офисов
+
+union all
+--- тут остальные полные месяцы
+select date_trunc('month', d."дата1"+interval '1 month')+make_interval(months=>m), /*1,*/
+  null/* если нулл - весь месяц*/,
+  cc.parents_id||cc.id as "@категории/id", cc.parents_title||cc.title as "@категории/title"
+  ---null,
+  --null, null
+from
+  "категории/родители"() cc,
+  (select age(date_trunc('month', coalesce(d."дата расторжения", d."дата2")), date_trunc('month', d."дата1"+interval '2 month')) as "age") a
+  join lateral (
+    select generate_series(0, (extract(year from a."age")*12 + extract(month from a."age"))::int/*колич полных месяцев*/, 1) as m
+  ) m on true
+where cc.id=121952--- аренда офисов
+
+union all
+--- тут один  последний месяц договора (возможно неполный)
+select  date_trunc('month', coalesce(d."дата расторжения", d."дата2")),
+  ---extract(day FROM coalesce(d."дата расторжения", d."дата2")/* тут важно до какой даты включительно- interval '1 day'*/)/extract(day FROM date_trunc('month', coalesce(d."дата расторжения", d."дата2")) + interval '1 month - 1 day'),--- доля дней в последнем месяце
+  extract(day FROM coalesce(d."дата расторжения", d."дата2")/* тут важно до какой даты включительно- interval '1 day'*/), --- дней оплаты
+  ---' за ' || extract(day FROM coalesce(d."дата расторжения", d."дата2")/* тут важно до какой даты включительно- interval '1 day'*/)::text || ' дн. неполн. мес.' as "коммент", 
+  --null, null
+  cc.parents_id||cc.id as "@категории/id", cc.parents_title||cc.title as "@категории/title"
+from "категории/родители"() cc
+where cc.id=121952--- аренда офисов
+
+union all
+--- тут возможно предоплата одного мес
+select d."дата1",---- /*as "дата"*/ /*1 /*доля - полная сумма*/
+  null, 
+  ---' предоплата (обеспечительный платеж)', --- 
+  ---cc."@id", cc."@title"
+  cc.parents_id||cc.id as "@id", cc.parents_title||cc.title as "@title"
+from 
+  generate_series(0, 0, 1) s,
+  ---(select array_agg("id" order by level desc) as "@id", (array_agg("title" order by level desc))[2:] as "@title" from "категории/родители узла"(929979::int, true)) cc
+  "категории/родители"() cc
+where d."предоплата"=true and cc.id=929979
+) d1 on true
+;--- конец view
+
+/************************************/
+
+DROP VIEW IF EXISTS "аренда/суммы платежей" CASCADE;
+CREATE OR REPLACE VIEW "аренда/суммы платежей" as
+/* суммы аренды с учетом изменений по до соглашениям
+*/
+select
+  d.id as "договор/id", ---p.id as "помещение/id"
+  /*date_trunc('month', */d."дата1", ---) as "сумма с даты",
+  array_agg(distinct ob.id) as "@объекты/id",
+  array_agg(p."номер-название" order by p."номер-название") as "@помещения-номера",---для коммента
+  sum(coalesce(dp."сумма", dp."ставка"*coalesce(dp."площадь", p."площадь"))) as "сумма безнал", --- без налички
+  sum(coalesce(dp."сумма", dp."ставка"*coalesce(dp."площадь", p."площадь")) /*+ coalesce(dp."сумма нал", 0::money)*/) + coalesce(d."сумма нал", 0::money) as "сумма"
+
+from
+  "аренда/договоры" d
+  
+  join refs r on d.id=r.id1
+  join "аренда/договоры-помещения" dp on dp.id=r.id2
+
+  join refs r1 on dp.id=r1.id2
+  join "аренда/помещения" p on p.id=r1.id1
+  
+  join refs r2 on p.id=r2.id2
+  join "аренда/объекты" o on o.id=r2.id1
+  
+  join refs ro on o.id=ro.id2
+  join "roles" ob on ob.id=ro.id1
+  
+group by d.id, d."дата1"
+
+--- доп соглашения
+union all
+select
+  d.id as "договор/id", ---p.id as "помещение/id"
+  /*date_trunc('month', */dop."дата1",
+  array_agg(distinct ob.id) as "@объекты/id",
+  array_agg(p."номер-название" order by p."номер-название") as "@помещения-номера",---для коммента
+  sum(coalesce(dp."сумма", dp."ставка"*coalesce(dp."площадь", p."площадь"))) as "сумма безнал", --- без налички
+  sum(coalesce(dp."сумма", dp."ставка"*coalesce(dp."площадь", p."площадь")) /*+ coalesce(dp."сумма нал", 0::money)*/) + coalesce(d."сумма нал", 0::money) as "сумма"
+from 
+  "аренда/договоры" d
+  
+  join "refs" rd on d.id=rd.id1
+  join "аренда/договоры" dop on dop.id=rd.id2
+  
+  join refs r on dop.id=r.id1
+  join "аренда/договоры-помещения" dp on dp.id=r.id2
+
+  join refs r1 on dp.id=r1.id2
+  join "аренда/помещения" p on p.id=r1.id1
+  
+  join refs r2 on p.id=r2.id2
+  join "аренда/объекты" o on o.id=r2.id1
+  
+  join refs ro on o.id=ro.id2
+  join "roles" ob on ob.id=ro.id1
+  
+group by d.id, dop."дата1"
+
+;--- конец view
+
+
+/************************************/
 DROP VIEW IF EXISTS "движение ДС/аренда/счета" CASCADE;--- расходные записи движения по аренде
 CREATE OR REPLACE VIEW "движение ДС/аренда/счета" as
 -- 
@@ -277,6 +403,7 @@ from
   
   join refs rk on d.id=rk.id2
   join "контрагенты" k on k.id=rk.id1
+  
   
   join (-- сумма в мес по договору
     select
@@ -434,7 +561,10 @@ from "аренда/объекты" o
   join refs ro on o.id=ro.id2
   join roles ob on ob.id=ro.id1
   left join (
-    select o.id, jsonb_agg(p {%= $order_by_room || ' order by p.id' %}) as "@кабинеты/json", array_agg(p.id {%= $order_by_room || ' order by p.id' %}) as "@кабинеты/id", array_agg(p."помещение в договоре аренды" {%= $order_by_room || ' order by p.id' %}) as "@помещение в договоре аренды"
+    select o.id, 
+      jsonb_agg(p {%= $order_by_room || ' order by p.id' %}) as "@кабинеты/json",
+      array_agg(p.id {%= $order_by_room || ' order by p.id' %}) as "@кабинеты/id",
+      array_agg(p."помещение в договоре аренды" {%= $order_by_room || ' order by p.id' %}) as "@помещение в договоре аренды"
     from "аренда/объекты" o
       join "refs" r on o.id=r.id1
       join (

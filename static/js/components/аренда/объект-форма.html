@@ -92,7 +92,7 @@
                 <a v-show=" ValidRoom(room) "  @click=" CopyRoom(room)" href="javascript:" class="btn-flat padd-0 " style="" title="копировать">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" class="green-fill fill-darken-3 ng-scope" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#copy"></use></svg>
                 </a>
-                <a @click=" DeleteRoom(room) " href="javascript:" class="btn-flat padd-0" :disabled=" form['@помещение в договоре аренды'] && form['@помещение в договоре аренды'][index] " style="" title="удалить">
+                <a ng-show=" !(form['@помещение в договоре аренды'] && form['@помещение в договоре аренды'][index])" @click=" DeleteRoom(room) " href="javascript:" class="btn-flat padd-0" style="" title="удалить">
                   <i class="material-icons   " :class="{'red-text-darken-3': !(form['@помещение в договоре аренды'] && form['@помещение в договоре аренды'][index]), 'grey-text-darken-2':!!(form['@помещение в договоре аренды'] && form['@помещение в договоре аренды'][index]), }">delete_forever</i>
                 </a>
                 <a v000-show=" index == form['@кабинеты'].length - 1 || !form.id" @click=" AddRoom(index+1) " href="javascript:" class="btn-flat padd-0" style="" title="добавить">
