@@ -41,7 +41,7 @@
           <div class="right-align" style="margin-top:2rem;">
             <h5 class="iblock middle">Точная площадь аренды, м²</h5>
             <div class="input-field iblock middle000" :class="{'chip lime lighten-3  z-depth-1': room['площадь']}" style="width:5rem;">
-              <input  type="text" v-model.number.trim="room['площадь']" @input="InputSquare(room)" placeholder="м²" class="right-align" style="">
+              <input  type="text" v-model.trim="room['площадь']" @input="InputSquare(room)" placeholder="м²" class="right-align" style="">
             </div>
           </div>
           
