@@ -120,21 +120,21 @@
               <input  type="text" v-model="room['номер-название']" placeholder="номер | название" class="right-align" style="">
             </div>
           </td>
-          <td class="padd-05-000" style="padding-top:0.34rem;">
+          <td class="padd-05-000" style-000="padding-top:0.34rem;">
             <div class="input-field">
               <!--input  type="text" v-model="room['этаж']" placeholder="этаж" class="right-align" style=""-->
               <v-select-floor :select=" {'id': room['этаж'], 'room':room,} " :items=" ListFloors " :param=" {'без поля поиска': true, ulDropDownClass: ['striped']} " @on-select=" OnFloorSelect ">
                 <template v-slot:selected="{ selected }">
-                  <h5 v-if="selected" class="padd-0-05 lime-text text-darken-4  hover-bottom-shadow-teal-darken-3 fw500">
+                  <h4 v-if="selected" class="padd-0-05 lime-text text-darken-4  hover-bottom-shadow-teal-darken-3 fw500">
                     <span>{{ selected.floor }}</span>
-                  </h5>
-                  <h5 v-else class="lime-text text-darken-4">Выбрать этаж</h5>
+                  </h4>
+                  <h4 v-else class="grey-text text-darken-4">Выбрать этаж</h4>
                 </template>
                 <template v-slot:listItem="{ listItem, selected, highlighted }">
-                  <h6 class="padd-0-05 lime-text text-darken-4 hover-shadow3d"  :class="{'bold fs12': listItem === selected, 'fw500': listItem === highlighted}"  style="">
+                  <h4 class="padd-0-05 lime-text text-darken-4 hover-shadow3d"  :class="{'bold': listItem === selected, 'fw500': listItem === highlighted}"  style="">
                     <span >{{ listItem.floor }}</span>
                     <!--a><i class="material-icons red-text" style="">cancel</i></a-->
-                  </h6>
+                  </h4>
                 </template>
               </v-select-floor>
             </div>

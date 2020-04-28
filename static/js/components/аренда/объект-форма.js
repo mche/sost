@@ -102,8 +102,8 @@ AddRoom(room){// индекс вставки, если undefined или -1 - в�
     //~ }
   form['@кабинеты'].splice(idx, 0, n);
   
-  if ( vm.showFloor &&  vm.showFloor.id) {
-    vm.ShowFloor();
+  if ( vm.showFloor ) {
+    vm.ShowFloor();/// сброс вкладки
     setTimeout(()=>{
       $(`#room-row-${ n._id }`, $(vm.$el)).get(0).scrollIntoView();
     });
@@ -123,6 +123,14 @@ CopyRoom(room){
   copy.id = undefined;
   copy._id = vm.idMaker.next().value;
   vm.form['@кабинеты'].splice(idx, 0, copy);
+  if ( vm.showFloor ) {
+    //~ var showFloor = vm.showFloor;
+    vm.ShowFloor();/// сброс вкладки
+    setTimeout(()=>{
+      $(`#room-row-${ copy._id }`, $(vm.$el)).get(0).scrollIntoView();
+      //~ vm.ShowFloor(vm.showFloor);
+    });
+  }
 },
 
 Save(){
@@ -203,6 +211,7 @@ TotalSqure(){
 },
 
 FloorSquares(){// площади по этажам
+  //~ console.log("FloorSquares");
   var vm = this;
   var s = vm.form['@кабинеты'].reduce(function(a, room){
     if (!room || !room['площадь']) return a;
@@ -215,6 +224,7 @@ FloorSquares(){// площади по этажам
 },
 
 ListFloors(){///выбор в списке этажей
+  //~ console.log("ListFloors");
   return Object.keys(floors).sort((a,b)=>{
     if (parseFloat(a) > parseFloat(b))  return 1; 
     if (parseFloat(a) < parseFloat(b)) return -1; 
