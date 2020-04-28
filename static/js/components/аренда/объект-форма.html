@@ -36,26 +36,33 @@
     </div>
     
     <div class="row"><div class=" col s12 relative">
+    
+      <h4><i class="material-icons">format_list_numbered</i> <span>Помещения и кабинеты объекта</span></h4>
 
-      <h4 class="fw500 helmet tab-shadow active z-depth-1  lime lighten-4">
-        <i class="material-icons">format_list_numbered</i>
-        <span>Помещения и кабинеты объекта</span>
-        <sup class="chip ">{{ form['@кабинеты'].length }}</sup>
-      </h4>
-      
-      <h4 class="fw500 helmet tab-shadow  z-depth-1  lime-000--lighten-4">
-        <!--i class="material-icons">format_list_numbered</i-->
-        <span>1 эт.</span>
-        <sup class="chip ">{{ form['@кабинеты'].length }}</sup>
-      </h4>
+      <div class="nowrap">
+        <h6 class="fw500 helmet tab-shadow z-depth-1 " :class="{'active lime lighten-4': !showFloor}">
+          <a @click="ShowFloor()" href="javascript:" class="hover-shadow3d">
+            <span>Все</span>
+            <sup class="chip fs8">{{ form['@кабинеты'].length }}</sup>
+          </a>
+        </h6>
+        
+        <h6 v-for="(item, floor) in FloorSquares" class="fw500 helmet tab-shadow  z-depth-1  " :class="{'active lime lighten-4': showFloor && showFloor.name == floor}">
+          <a @click="ShowFloor(item)" href="javascript:" class="hover-shadow3d">
+            <!--i class="material-icons">format_list_numbered</i-->
+            <span>{{ floor }}</span>
+            <sup class="chip fs8">{{ item['помещения'].length }}</sup>
+          </a>
+        </h6>
+      </div>
       
       <div class="" style="position:absolute; top:0.5rem; right:0.5rem; z-index:1;"><a @click="expandRooms = !expandRooms" href="javascript:" class="chip hoverable padd-0 z-depth-1"><i class="material-icons" :class="{'rotate180': expandRooms}">arrow_drop_down</i></a></div>
       
-      <div class="z-depth-1" style="overflow:auto;" :style="expandRooms ? {} : {'max-height': 'calc(30vh)'}"><table class="tmc top striped bordered lime lighten-4 ">
+      <div class="z-depth-1" style="" :style="expandRooms ? {} : {'max-height': 'calc(30vh)', overflow:'auto',}"><table class="tmc top striped bordered lime lighten-4 ">
         <thead class=""><tr>
           <th style="width:1%;"></th>
           <th class="center vbottom" style="width:1%;">
-            <a v000-show="!form.id" @click=" AddRoom(0) " href="javascript:" class="btn-flat" style="padding: 0;" title="добавить">
+            <a v000-show="!form.id" @click=" AddRoom() " href="javascript:" class="btn-flat" style="padding: 0;" title="добавить">
               <i class="material-icons lime-text-darken-3 fs18">add_box</i>
             </a>
           </th>
@@ -69,7 +76,7 @@
           <th class="center vbottom" style="width:10%;">
             <h5 class="fw500 relative">
               <span>Этаж</span>
-              <sup v-show=" !ValidRooms('этаж') " class="chip red white-text" style="position: absolute; z-index: 1; top:0;padding:0.3rem;"></sup>
+              <sup v-show=" !ValidRooms('этаж', 'length') " class="chip red white-text" style="position: absolute; z-index: 1; top:0;padding:0.3rem;"></sup>
             </h5>
           </th>
           <!--th class="center" style="width:5rem;">Ед. изм.</th-->
@@ -86,10 +93,11 @@
           </th>
         </tr></thead>
       <tbody >
-        <tr v-for="(room, index) in form['@кабинеты'] " :key=" index " :id=" `room-index-${ index }` ">
+        <tr v-for="(room, index) in tableRooms " :key=" room._id " :id=" `room-row-${ room._id }` ">
           <td class="right-align relative" style=" vertical-align:middle;">
             <span>{{ index+1 }}</span>
             <span v-show=" !!room.id " class="fs7 grey-text" style="position: absolute; z-index: 1; bottom:0; left:0;">#{{ room.id }}</span>
+            <span v-show=" !room.id " class="fs7 grey-text" style="position: absolute; z-index: 1; top:0; left:0;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="orange-fill-darken-3" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#asterisk"></use></svg></span>
           </td>
           <td class="center middle" style="">
             <div class="hover-childs-show relative">
@@ -98,10 +106,10 @@
                 <a v-show=" ValidRoom(room) "  @click=" CopyRoom(room)" href="javascript:" class="btn-flat padd-0 " style="" title="копировать">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" class="green-fill fill-darken-3 ng-scope" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#copy"></use></svg>
                 </a>
-                <a v-show=" !(form['@помещение в договоре аренды'] && form['@помещение в договоре аренды'][index])" @click=" DeleteRoom(room) " href="javascript:" class="btn-flat padd-0" style="" title="удалить">
+                <a v-show="!room._id || !(form['@помещение в договоре аренды'] && form['@помещение в договоре аренды'][index])" @click=" DeleteRoom(room) " href="javascript:" class="btn-flat padd-0" style="" title="удалить">
                   <i class="material-icons   " :class="{'red-text-darken-3': !(form['@помещение в договоре аренды'] && form['@помещение в договоре аренды'][index]), 'grey-text-darken-2':!!(form['@помещение в договоре аренды'] && form['@помещение в договоре аренды'][index]), }">delete_forever</i>
                 </a>
-                <a v000-show=" index == form['@кабинеты'].length - 1 || !form.id" @click=" AddRoom(index+1) " href="javascript:" class="btn-flat padd-0" style="" title="добавить">
+                <a v000-show=" index == form['@кабинеты'].length - 1 || !form.id" @click=" AddRoom(room) " href="javascript:" class="btn-flat padd-0" style="" title="добавить">
                   <i class="material-icons lime-text-darken-3 ">add_box</i>
                 </a>
               </span>
@@ -112,9 +120,23 @@
               <input  type="text" v-model="room['номер-название']" placeholder="номер | название" class="right-align" style="">
             </div>
           </td>
-          <td class="padd-05-000">
+          <td class="padd-05-000" style="padding-top:0.34rem;">
             <div class="input-field">
-              <input  type="text" v-model="room['этаж']" placeholder="этаж" class="right-align" style="">
+              <!--input  type="text" v-model="room['этаж']" placeholder="этаж" class="right-align" style=""-->
+              <v-select-floor :select=" {'id': room['этаж'], 'room':room,} " :items=" ListFloors " :param=" {'без поля поиска': true, ulDropDownClass: ['striped']} " @on-select=" OnFloorSelect ">
+                <template v-slot:selected="{ selected }">
+                  <h5 v-if="selected" class="padd-0-05 lime-text text-darken-4  hover-bottom-shadow-teal-darken-3 fw500">
+                    <span>{{ selected.floor }}</span>
+                  </h5>
+                  <h5 v-else class="lime-text text-darken-4">Выбрать этаж</h5>
+                </template>
+                <template v-slot:listItem="{ listItem, selected, highlighted }">
+                  <h6 class="padd-0-05 lime-text text-darken-4 hover-shadow3d"  :class="{'bold fs12': listItem === selected, 'fw500': listItem === highlighted}"  style="">
+                    <span >{{ listItem.floor }}</span>
+                    <!--a><i class="material-icons red-text" style="">cancel</i></a-->
+                  </h6>
+                </template>
+              </v-select-floor>
             </div>
           </td>
           <td class="padd-05-000">
@@ -145,7 +167,7 @@
     </h4>
     <h4 class="helmet tab-shadow active blue lighten-5 z-depth-1">Площадь по этажам</h4>
     <ul class="z-depth-1 marg-0 blue lighten-4 striped" style="width:70%;">
-      <li v-for="(square, floor) in FloorSquares"><h5 class="iblock right-align" style="width:7rem;">{{ floor }}</h5> <h4 class="iblock bold right-align" style="width:10rem;">{{ square.toLocaleString().replace(/([\.,]\d{2})\d+$/, '$1') }}</h4><span class="grey-text"> м²</span></li>
+      <li v-for="(item, floor) in FloorSquares"><h5 class="iblock right-align" style="width:7rem;">{{ floor }}</h5> <h4 class="iblock bold right-align" style="width:10rem;">{{ item['площадь'].toLocaleString().replace(/([\.,]\d{2})\d+$/, '$1') }}</h4><span class="grey-text"> м²</span></li>
     </ul>
     
     </div></div><!-- col+row -->

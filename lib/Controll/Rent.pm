@@ -57,7 +57,7 @@ sub сохранить_объект {
     for qw(площадь);
     
     return $c->render(json=>{error=>"Не заполнен кабинет"})
-      unless (scalar grep($room->{$_}, qw(номер-название этаж площадь))) eq 3;
+      unless (scalar grep($room->{$_}, qw(номер-название площадь))) eq 2 && defined $room->{'этаж'};
     
     $room->{uid} = $c->auth_user->{id}
       unless $room->{id};

@@ -66,7 +66,7 @@ Ready(){
   var vm = this;
   vm.ready = true;
   
-  if (vm.select !== undefined && vm.select.id) vm.Select(vm.items.find(util.FilterByID, vm.select));
+  if (vm.select !== undefined && (vm.select.id || vm.select.id === 0)) vm.Select(vm.items.find(util.FilterByID, vm.select));
   
   vm.QueryItems();
   vm.SelectedPage();

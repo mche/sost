@@ -117,7 +117,7 @@ OnSave(data){ ///  из события сохранения формы
     vm.FilterData();
     setTimeout(()=>{
       $(`#item-${ data.id }`, $(vm.$el)).get(0).scrollIntoView();
-    })
+    });
   }
 },
 

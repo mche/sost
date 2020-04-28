@@ -13,10 +13,10 @@
 */
 var moduleName = "Аренда::Объект::Форма";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Компонент::Выбор объекта']);
+var module = angular.module(moduleName, ['Компонент::Выбор объекта', 'Компонент::Выбор в списке',]);
 
 module
-.factory('$КомпонентАрендаОбъектФорма',  function($templateCache, $http, $timeout, appRoutes, Util, $КомпонентВыборОбъекта) {// factory
+.factory('$КомпонентАрендаОбъектФорма',  function($templateCache, $http, $timeout, appRoutes, Util, $КомпонентВыборОбъекта, $КомпонентВыборВСписке) {// factory
 
 const props = {
   "item": {
@@ -29,7 +29,7 @@ const props = {
 
 const util = {/*разное*/
   IsValidRoom(room){
-    return !!room[this.name];
+    return this.prop ? !!(room[this.name] && room[this.name][this.prop]) : !!room[this.name];
   },
   reqFields: ['номер-название', 'этаж', 'площадь'],
   IsValidField(name){
@@ -38,6 +38,18 @@ const util = {/*разное*/
 }; ///конец util
 
 const methods = {/*методы*/
+
+InitForm(form){
+  let vm = this;
+  if (!form["@кабинеты"]) form["@кабинеты"] = [{ }];
+  form["@кабинеты"].map((room)=>{
+    room._id = idMaker.next().value;
+    
+  });
+  return form;
+  
+},
+  
 Ready(){/// метод
   var vm = this;
 
@@ -48,15 +60,16 @@ Ready(){/// метод
 },
 
 SelectObject(obj){
-  console.log("SelectObject", obj);
+  //~ console.log("SelectObject", obj);
   this.form.$объект = obj;
   
 },
 
 Valid(){
   var form = this.form;
+  //~ console.log("Valid", this.ValidRooms('этаж', 'length'));
   return /*form['адрес']  && form['адрес'].length*/ this.form.$объект
-    && this.ValidRooms('номер-название') && this.ValidRooms('этаж') && this.ValidRooms('площадь');
+    && this.ValidRooms('номер-название') && this.ValidRooms('этаж', 'length') && this.ValidRooms('площадь');
   ;
 },
 
@@ -64,10 +77,10 @@ CancelBtn(){
   this.$emit('on-save', this.item.id ? {"id": this.item.id} : undefined);
 },
 
-ValidRooms(name){///проверка строк кабинетов
+ValidRooms(name, prop){///проверка строк кабинетов
   var form = this.form;
   if (!form["@кабинеты"] || !form["@кабинеты"].length) return true;
-  return form["@кабинеты"].every(util.IsValidRoom, {"name": name});
+  return form["@кабинеты"].every(util.IsValidRoom, {"name": name, "prop":prop,});
   
 },
 
@@ -75,17 +88,27 @@ ValidRoom(room){
   return util.reqFields.every(util.IsValidField, room);
 },
 
-AddRoom(idx){// индекс вставки, если undefined или -1 - вставка в конец; 0 - в начало
+AddRoom(room){// индекс вставки, если undefined или -1 - вставка в конец; 0 - в начало
   var vm = this;
   var form = vm.form;
-  var n = {};
+  var n = {"_id": vm.idMaker.next().value, /*"этаж": vm.showFloor && vm.showFloor.id*/};
   
-  if (idx === undefined) idx = form["@кабинеты"].length + 1;
+  var idx = room ? form["@кабинеты"].indexOf(room) : 0;
+  
+  //~ if (idx === undefined) idx = form["@кабинеты"].length + 1;
     //~ var prevRow = data["@позиции тмц"][ idx === 0 ? idx : (idx < 0 ? data["@позиции тмц"].length - idx : idx-1) ];
     //~ if (prevRow) {
       //~ if (prevRow['$объект'] && prevRow['$объект'].id) n['$объект'] = angular.copy(prevRow['$объект']);
     //~ }
   form['@кабинеты'].splice(idx, 0, n);
+  
+  if ( vm.showFloor &&  vm.showFloor.id) {
+    vm.ShowFloor();
+    setTimeout(()=>{
+      $(`#room-row-${ n._id }`, $(vm.$el)).get(0).scrollIntoView();
+    });
+  }
+  
 },
 
 DeleteRoom(room){
@@ -98,6 +121,7 @@ CopyRoom(room){
   var idx = vm.form['@кабинеты'].indexOf(room);
   if (idx < 0) return;
   copy.id = undefined;
+  copy._id = vm.idMaker.next().value;
   vm.form['@кабинеты'].splice(idx, 0, copy);
 },
 
@@ -139,6 +163,22 @@ ParseNum(num){
   return parseFloat(Util.numeric(num));
 },
 
+ShowFloor(item, floor){
+  this.showFloor = item;
+  if (item) this.tableRooms = item['помещения'];
+  else this.tableRooms = this.form['@кабинеты'];
+  
+},
+
+OnFloorSelect(item, propSel){
+  //~ console.log("OnFloorSelect", item, propSel.room);
+  propSel.room['этаж'] = item && item.id;
+  //~ var s = propSel.room['площадь'];
+  //~ propSel.room['площадь'] = undefined;
+  //~ setTimeout(()=>{
+    //~ propSel.room['площадь'] = s;
+  //~ });
+},
 
 }; ///конец методы
 
@@ -166,26 +206,44 @@ FloorSquares(){// площади по этажам
   var vm = this;
   var s = vm.form['@кабинеты'].reduce(function(a, room){
     if (!room || !room['площадь']) return a;
-    if (!a[floors[room['этаж']]]) a[floors[room['этаж']]] = 0;
-    a[floors[room['этаж']]] += vm.ParseNum(room['площадь']);
+    if (!a[floors[room['этаж']]]) a[floors[room['этаж']]] = {"площадь":0, "помещения":[], "name": floors[room['этаж']]};
+    a[floors[room['этаж']]]['площадь'] += vm.ParseNum(room['площадь']);
+    a[floors[room['этаж']]]['помещения'].push(room);
     return a;
   }, {});
   return s;
 },
+
+ListFloors(){///выбор в списке этажей
+  return Object.keys(floors).sort((a,b)=>{
+    if (parseFloat(a) > parseFloat(b))  return 1; 
+    if (parseFloat(a) < parseFloat(b)) return -1; 
+    return 0;
+  }).map((id)=>{
+    return {"id": id, "floor": floors[id]};
+    
+  });
+  
+},
   
 };
 
+const idMaker = IdMaker();/// глобал util/IdMaker.js
+
 const data = function() {
   let vm = this;
-  var form = angular.copy(vm.item);
-  if (!form["@кабинеты"]) form["@кабинеты"] = [{}];
+  vm.idMaker = idMaker;
+  var form = vm.InitForm(angular.copy(vm.item));
+
   return {//angular.extend(// return dst
     //data,// dst
     //{/// src
     "ready": false,
     "cancelerHttp": undefined,
     "form": form,
-    "expandRooms": false,
+    "expandRooms":  form["@кабинеты"].length < 10,
+    "showFloor": undefined,///вкладки этажей
+    "tableRooms": form["@кабинеты"],
     };
   //);
 };///  конец data
@@ -211,6 +269,7 @@ const $Конструктор = function (/*data, $c, $scope*/){
   //~ data = data || {};
   $Компонент.template = $templateCache.get('аренда/объект/форма');
   $Компонент.components['v-object-select'] = new $КомпонентВыборОбъекта();
+  $Компонент.components['v-select-floor'] = new $КомпонентВыборВСписке();
   //~ console.log($Компонент);
   return $Компонент;
 };
