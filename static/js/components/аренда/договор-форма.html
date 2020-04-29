@@ -219,7 +219,7 @@
             <input :name=" `дата1 доп соглашения ${ idx+1 }` " type="text" class="datepicker"  :data-value=" dop['дата1'] || '' " placeholder="дата доп. соглашения">
             
           </div>
-          <h5 v-show="!dop['дата1']" class="red-text">Новое соглашение</h5>
+          <h5 v-show="!dop['дата1']" class="red-text">Указать дату нового соглашения</h5>
         </div>
         
 
@@ -230,17 +230,26 @@
       
     </div><!-- col -->
     </div><!-- row -->
-    <div class="row">
-      <div class="col s4 ">
-        <h4 class="right-align">
-          <!--i class="material-icons">today</i-->
-          <span>Еще наличка, руб</span>
-        </h4>
-      </div>
-      <div class="col s3 ">
-        <div class="input-field">
-          <input  v-if="roomsTableIdx == 0" name="сумма нал" type="text" class="" v-model.trim=" form['сумма нал'] " placeholder="сумма налички, руб">
-          <input  v-if="roomsTableIdx > 0" name="сумма нал" type="text" class="" v-model.trim=" form['@доп.соглашения'][roomsTableIdx-1]['сумма нал'] " placeholder="сумма налички, руб">
+    <div class="row " :class="{'card marg-05 padd-05  shadow-inset-10 teal lighten-5': roomsTableIdx > 0}">
+      <div class="col s7  row">
+        <div class="col s7 ">
+          <h4 class="right-align">
+            <!--i class="material-icons">today</i-->
+            <span v-show="roomsTableIdx == 0">Еще наличка к договору, руб</span>
+            <span v-show="roomsTableIdx > 0">Наличка к доп.соглашению, руб</span>
+          </h4>
+        </div>
+        <div class="col s5 ">
+          <div class="input-field">
+            <input  v-if="roomsTableIdx == 0" name="сумма нал" type="text" class="" v-model.trim=" form['сумма нал'] " placeholder="сумма налички, руб">
+            <input  v-if="roomsTableIdx > 0" name="сумма нал" type="text" class="" v-model.trim=" form['@доп.соглашения'][roomsTableIdx-1]['сумма нал'] " placeholder="сумма налички доп.согл., руб">
+          </div>
+        </div>
+        <div v-if="roomsTableIdx > 0" class="col s12 ">
+          <h4 class="">Примечание к доп. соглашению</h4>
+          <div class="rounded-05 padd-05 teal lighten-4 input-field">
+            <textarea v-model.trim="form['@доп.соглашения'][roomsTableIdx-1]['коммент']" class="materialize-textarea padd-0 fs8" style="min-height: 4rem;"></textarea>
+          </div>
         </div>
       </div>
       <div v-show="roomsTableIdx == 0 || form['@доп.соглашения'][roomsTableIdx-1]['дата1']" class="col s5 ">
@@ -268,7 +277,7 @@
   
   <div class="row">
     <div class="col s12 ">
-      <h4 class="">Примечание</h4>
+      <h4 class="">Примечание к договору</h4>
     </div>
     <div class="col s12 ">
       <div class="rounded-05 padd-05 teal lighten-5 input-field">

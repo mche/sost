@@ -5,21 +5,26 @@
    --~ d record;
 --~ BEGIN
 /********************************************/
-select *
-  ,case when "даты1" is null then "дней оплаты" else coalesce("всего дней в месяце"-"дней оплаты", "всего дней в месяце") end
+select 
+  "договор/id", "дата",
+   "сумма безнал", "сумма",
+   "всего дней в месяце",
+  case when "даты1" is null then "дней оплаты доп" else coalesce("всего дней в месяце"-"дней оплаты осн", "всего дней в месяце")  end as "дней оплаты"
 from (
 
 select  "договор/id", "дата",---"месяц"
-  , unnest("суммы"[1:case when /*array_length("дней", 1) = 1 or*/ "дней"[1] < interval '0 days' then 2 else 1 end]) as "сумма"
-  , unnest("даты1"[1:1]) as "даты1"
-  , extract(day FROM date_trunc('month', "месяц") + interval '1 month - 1 day') as "всего дней в месяце"
-  , case when array_length("дней", 1) > 1 and "дней"[1] < interval '0 days' then extract(day FROM -1*"дней"[1]) else "дней оплаты" end as "дней оплаты"
+  unnest("суммы безнал"[1:case when /*array_length("дней", 1) = 1 or*/ "дней оплаты доп"[1] < interval '0 days' then 2 else 1 end]) as "сумма безнал",
+  unnest("суммы"[1:case when /*array_length("дней", 1) = 1 or*/ "дней оплаты доп"[1] < interval '0 days' then 2 else 1 end]) as "сумма",
+  unnest("даты1"[1:1]) as "даты1",
+  extract(day FROM date_trunc('month', "дата") + interval '1 month - 1 day') as "всего дней в месяце",
+  "дней оплаты осн",
+  case when array_length("дней оплаты доп", 1) > 1 and "дней оплаты доп"[1] < interval '0 days' then extract(day FROM -1*"дней оплаты доп"[1]) /*else "дней оплаты"*/ end as "дней оплаты доп"
 from (
-  select d1."договор/id", d1."дата", d1."дней оплаты", sum."@объекты/id",
+  select d1."договор/id", d1."дата", d1."дней оплаты" as "дней оплаты осн", sum."@объекты/id",
     array_agg(sum."сумма безнал" order by d1."дата"-sum."дата1") as "суммы безнал",
     array_agg(sum."сумма" order by d1."дата"-sum."дата1") as "суммы",
     array_agg(sum."дата1" order by d1."дата"-sum."дата1") as "даты1",
-    array_agg(d1."дата"-sum."дата1"order by d1."дата"-sum."дата1") as "дней" --- если тут первый интервал отрицательный - месяц разделяется доп соглашением (две суммы)
+    array_agg(d1."дата"-sum."дата1"order by d1."дата"-sum."дата1") as "дней оплаты доп" --- если тут первый интервал отрицательный - месяц разделяется доп соглашением (две суммы)
 
   from
     --~ (

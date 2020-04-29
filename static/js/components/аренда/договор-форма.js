@@ -177,7 +177,7 @@ ClearDate(name, val){
   setTimeout(()=>{
     var el = $(`input[name="${ name }"]`, $(vm.$el));
     //~ if(val) vm.form[name] = val;
-    vm.f(el);
+    vm.InitDatepicker(el);
     //~ console.log("ClearDate", el);
   });
 },
@@ -196,6 +196,8 @@ Copy(){
   init['договор/id'] = undefined;
   init['@помещения/id'] = undefined;
   init['@помещения'].forEach(vm.CopyRoom);
+  init['@доп.соглашения'] = [];
+  vm.roomsTableIdx = 0;
 
   vm.form = init;
   

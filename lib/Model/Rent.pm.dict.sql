@@ -52,6 +52,19 @@ ALTER TABLE "аренда/договоры" ADD COLUMN IF NOT EXISTS "дата �
 ALTER TABLE "аренда/договоры" DROP COLUMN IF  EXISTS "оплата наличкой";
 ---ALTER TABLE "аренда/договоры" ADD CONSTRAINT "аренда/договоры/дата2>дата1" check("дата2">="дата1");
 
+create table IF NOT EXISTS "аренда/договоры/доп.согл." (
+  id integer  NOT NULL DEFAULT nextval('{%= $sequence %}'::regclass) primary key,
+  ts  timestamp without time zone NOT NULL DEFAULT now(),
+  uid int, --- автор записи
+  "дата1" date not null, -- доп соглашение с этой даты
+  "сумма нал" money, --- ALTER TABL
+  "коммент" text
+/* связи:
+id1("аренда/договоры")->id2("аренда/договоры/доп.согл.")
+id1("аренда/договоры/доп.согл.")->id2("аренда/договоры-помещения") 
+*/
+);
+
 
 create table IF NOT EXISTS "аренда/договоры-помещения" (
   id integer  NOT NULL DEFAULT nextval('{%= $sequence %}'::regclass) primary key,
@@ -261,6 +274,7 @@ DROP VIEW IF EXISTS "аренда/даты платежей" CASCADE;
 CREATE OR REPLACE VIEW "аренда/даты платежей" as
 /* даты платежей за аренду по всем месяцам
   вспомогательно для расстановки сумм платежей
+  без доп соглашений
 */
 select d.id as "договор/id",
   d1.*
@@ -357,12 +371,12 @@ select
   array_agg(distinct ob.id) as "@объекты/id",
   array_agg(p."номер-название" order by p."номер-название") as "@помещения-номера",---для коммента
   sum(coalesce(dp."сумма", dp."ставка"*coalesce(dp."площадь", p."площадь"))) as "сумма безнал", --- без налички
-  sum(coalesce(dp."сумма", dp."ставка"*coalesce(dp."площадь", p."площадь")) /*+ coalesce(dp."сумма нал", 0::money)*/) + coalesce(d."сумма нал", 0::money) as "сумма"
+  sum(coalesce(dp."сумма", dp."ставка"*coalesce(dp."площадь", p."площадь")) /*+ coalesce(dp."сумма нал", 0::money)*/) + coalesce(coalesce(dop."сумма нал", d."сумма нал"), 0::money) as "сумма"
 from 
   "аренда/договоры" d
   
   join "refs" rd on d.id=rd.id1
-  join "аренда/договоры" dop on dop.id=rd.id2
+  join "аренда/договоры/доп.согл." dop on dop.id=rd.id2
   
   join refs r on dop.id=r.id1
   join "аренда/договоры-помещения" dp on dp.id=r.id2
@@ -376,7 +390,7 @@ from
   join refs ro on o.id=ro.id2
   join "roles" ob on ob.id=ro.id1
   
-group by d.id, dop."дата1"
+group by d.id, dop."дата1", dop."сумма нал"
 
 ;--- конец view
 
@@ -539,7 +553,59 @@ from
       join refs rn on pos.id=rn.id2
       join "категории/родители"() cat on cat.id=rn.id1
   ) pos on pos."расход/id"=r.id
-  
+;
+
+/***********************************************/
+CREATE OR REPLACE VIEW "аренда/доп.соглашения" as
+/***
+сборка доп соглашений в договоры
+***/
+select
+  d.id as "договор/id", ---dop.id as "доп.согл./id"
+  jsonb_agg(dop order by dop.id) as "@доп.соглашения/json",
+  array_agg(dop.id order by dop.id) as "@доп.соглашения/id"
+from
+  "аренда/договоры" d
+  join "refs" r on d.id=r.id1
+  join (
+    select
+      dop.*,
+      dp.*
+    from 
+      "аренда/договоры/доп.согл." dop ---on dop.id=rd.id2
+      join (---- список помещений по доп
+        select dp."доп.согл./id",
+          jsonb_agg(dp order by dp.id) as "@помещения/json",
+          array_agg(dp."помещение/id" order by dp.id) as "@кабинеты/id",
+          array_agg(dp.id  order by dp.id) as "@договоры/помещения/id",
+          array_agg(dp."объект/id" order by dp.id) as "@объекты/id",
+          sum(dp."площадь помещения") as "площадь помещений",
+          sum(dp."оплата за помещение") as "оплата"
+        from (
+          select
+            p.id as "помещение/id", row_to_json(p) as "$помещение/json",
+            o.id as "аренда/объект/id", row_to_json(o) as "$аренда/объект/json",
+            ob.id as "объект/id", row_to_json(ob) as "$объект/json",
+            p."площадь" as "площадь помещения",
+            coalesce(dp."сумма", dp."ставка"*p."площадь") as "оплата за помещение",
+            dp.*,
+            dop.id as "доп.согл./id"
+          from 
+             "аренда/договоры/доп.согл." dop
+            join refs r on dop.id=r.id1
+            join "аренда/договоры-помещения" dp on dp.id=r.id2
+            join refs r1 on dp.id=r1.id2
+            join "аренда/помещения" p on p.id=r1.id1
+            join refs r2 on p.id=r2.id2
+            join "аренда/объекты" o on o.id=r2.id1
+            join refs ro on o.id=ro.id2
+            join "roles" ob on ob.id=ro.id1
+          ) dp
+        group by dp."доп.согл./id"
+    ) dp on dop.id=dp."доп.согл./id"
+  ) dop on dop.id=r.id2
+group by d.id
+;
 
 /*конец схемы*/
 
@@ -591,7 +657,8 @@ select d.*,
   k.id as "контрагент/id",
   pr.id as "проект/id", ---to_json(pr) as "$проект/json",
   dp.*,
-  dp."@кабинеты/id" as "@помещения/id"
+  dp."@кабинеты/id" as "@помещения/id",
+  dop."@доп.соглашения/json", dop."@доп.соглашения/id"
 from 
   "аренда/договоры" d
   join refs r on d.id=r.id2
@@ -603,7 +670,7 @@ from
       join refs r on pr.id=r.id1
   ) pr on pr.id2=d.id
   
-  left join (
+  left join (--- список помещений
     select dp."договор/id",
       jsonb_agg(dp order by dp.id) as "@помещения/json",
       array_agg(dp."помещение/id" order by dp.id) as "@кабинеты/id",
@@ -618,11 +685,15 @@ from
       --) dp on dp."договор/id"=d.id
     group by "договор/id"--d.id
   ) dp on d.id=dp."договор/id"
+  
+  left join "аренда/доп.соглашения"/*view*/ dop on d.id=dop."договор/id"
+  
 {%= $where || '' %}
 {%= $order_by || 'order by d."дата1" desc, d.id desc  ' %}
 
 @@ договоры/помещения
-select p.id as "помещение/id", row_to_json(p) as "$помещение/json",
+select
+  p.id as "помещение/id", row_to_json(p) as "$помещение/json",
   o.id as "аренда/объект/id", row_to_json(o) as "$аренда/объект/json",
   ob.id as "объект/id", row_to_json(ob) as "$объект/json",
   p."площадь" as "площадь помещения",

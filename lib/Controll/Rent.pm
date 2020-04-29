@@ -117,26 +117,7 @@ sub сохранить_договор {
   $data->{'контрагент/id'} = $k->{id};
   
   $data->{'@помещения'} = [map {
-    my $room = $_;
-    
-    $room->{'сумма'} = undef
-      if ($room->{'ставка|сумма'}) eq 'ставка';
-      
-    $room->{'ставка'} = undef
-      if ($room->{'ставка|сумма'}) eq 'сумма';
-    
-    return $c->render(json=>{error=>"Не заполнена ставка или сумма аренды помещения"})
-      unless (scalar grep($room->{$_}, qw(ставка сумма))) eq 1;
-    
-    $room->{$_} = &Util::money($room->{$_})
-      for grep defined $room->{$_}, qw(ставка сумма), 'сумма нал';
-    $room->{$_} = &Util::numeric($room->{$_})
-      for grep defined $room->{$_}, qw(площадь);
-    
-    $room->{uid} = $c->auth_user->{id}
-      unless $room->{uid};
-    
-    my $r = eval {$c->model->сохранить_помещение_договора($room)};# строка договора
+    my $r = eval {$c->сохранить_помещение_договора($_)};
     
     $r ||= $@
       and $c->log->error($r)
@@ -144,7 +125,6 @@ sub сохранить_договор {
       unless $r && ref $r;
     
     $r;
-    
   } grep {$_->{'помещение/id'}} @{ $data->{'@помещения'} }];
   
   $data->{uid} = $c->auth_user->{id}
@@ -156,10 +136,78 @@ sub сохранить_договор {
     and return $c->render(json=>{error=>$r})
     unless $r && ref $r;
   
+  #~ $data->{'@доп.соглашения'} = [map {
+    #~ my $r = eval {$c->сохранить_доп_соглашение($_, $prev)};
+    
+    #~ $r ||= $@
+      #~ and $c->log->error($r)
+      #~ and return $c->render(json=>{error=>$r})
+      #~ unless $r && ref $r;
+    
+    #~ $r;
+  #~ } grep {$_->{'дата1'}} @{$data->{'@доп.соглашения'}}];
+
+  
   $tx_db->commit;
   $c->model_contragent->почистить_таблицу();# только после связей!{uid=>$c->auth_user->{id}}
   
   $c->render(json=>{success=>$r});
+}
+
+sub сохранить_помещение_договора {# и доп соглашения
+  my ($c, $room) = @_;
+  
+  $room->{'сумма'} = undef
+    if ($room->{'ставка|сумма'}) eq 'ставка';
+    
+  $room->{'ставка'} = undef
+    if ($room->{'ставка|сумма'}) eq 'сумма';
+  
+  return "Не заполнена ставка или сумма аренды помещения" #$c->render(json=>{error=>"Не заполнена ставка или сумма аренды помещения"})
+    unless (scalar grep($room->{$_}, qw(ставка сумма))) eq 1;
+  
+  $room->{$_} = &Util::money($room->{$_})
+    for grep defined $room->{$_}, qw(ставка сумма), 'сумма нал';
+  $room->{$_} = &Util::numeric($room->{$_})
+    for grep defined $room->{$_}, qw(площадь);
+  
+  $room->{uid} = $c->auth_user->{id}
+    unless $room->{uid};
+  
+  my $r = eval {$c->model->сохранить_помещение_договора($room)};# строка договора
+  
+  $r ||= $@
+    #~ and $c->log->error($r)
+    #~ and return $r # $c->render(json=>{error=>$r})
+    unless $r && ref $r;
+  
+  return $r;
+}
+
+sub сохранить_доп_соглашение {# к договору
+  my ($c, $data, $prev) = @_;
+  $data->{'@помещения'} = [map {
+    my $r = eval {$c->сохранить_помещение_договора($_)};
+    
+    $r ||= $@
+      #~ and $c->log->error($r)
+      and return $r # $c->render(json=>{error=>$r})
+      unless $r && ref $r;
+    
+    $r;
+  } grep {$_->{'помещение/id'}} @{ $data->{'@помещения'} }];
+  
+  $data->{uid} = $c->auth_user->{id}
+    unless $data->{id};
+  
+  my $r = eval {$c->model->сохранить_доп_соглашение($data, $prev)};
+  
+  $r ||= $@
+    and $c->log->error($r)
+    and return $c->render(json=>{error=>$r})
+    unless $r && ref $r;
+  
+  return $r;
 }
 
 sub расходы_список {
