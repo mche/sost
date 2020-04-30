@@ -110,7 +110,10 @@ InitForm(item){/// обязательные реактивные поля
   item._uploads = [];
   item._id = vm.idMaker.next().value;
   if (item.id && !item['@доп.соглашения']) item['@доп.соглашения'] = [];
-  if (item['@доп.соглашения']) item['@доп.соглашения'].push({"_id":vm.idMaker.next().value});
+  if (item['@доп.соглашения']) {
+    item['@доп.соглашения'].push({});/// новое доп
+    item['@доп.соглашения'].forEach((dop)=>{ dop._id = vm.idMaker.next().value; });///
+  }
   return item;
 },
 
@@ -217,19 +220,20 @@ CopyRoom(room){
 },
 
 
-DopTable(idx){/// доп соглашения
+DopTable(dop){/// доп соглашения
   var vm = this;
   //~ if (!vm.form['@доп.соглашения']) vm.$set(vm.form, '@доп.соглашения', []);
-  if (!vm.form['@доп.соглашения'][idx-1]) vm.form['@доп.соглашения'][idx-1] = {
-    "_id": vm.idMaker.next().value,
-  };
-  if (!vm.form['@доп.соглашения'][idx-1]['@помещения']) 
-    vm.form['@доп.соглашения'][idx-1]['@помещения'] = angular.copy(vm.form['@помещения']).map(vm.CopyRoom);
-  if (vm.roomsTableIdx == idx) return;
+  //~ if (!vm.form['@доп.соглашения'][idx-1]) vm.form['@доп.соглашения'][idx-1] = {
+    //~ "_id": vm.idMaker.next().value,
+  //~ };
+  var idx = vm.form['@доп.соглашения'].indexOf(dop);
+  if (!dop['@помещения']) 
+    dop['@помещения'] = angular.copy(vm.form['@помещения']).map(vm.CopyRoom);
+  if (vm.roomsTableIdx == idx+1) return;
   //~ vm.roomsTableIdx = undefined;
   //~ setTimeout(()=>{
-    vm.roomsTableIdx = idx;
-    vm.ClearDateDop('дата1', vm.form['@доп.соглашения'][idx-1]['дата1']);///, (new Date).toISOString().replace(/T.+/, '')
+    vm.roomsTableIdx = idx+1;
+    vm.ClearDateDop('дата1', dop['дата1']);///, (new Date).toISOString().replace(/T.+/, '')
   //~ });
   
 },

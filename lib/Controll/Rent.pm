@@ -98,7 +98,7 @@ sub сохранить_договор {
   my $prev = $c->model->список_договоров({id=>$data->{id}})->[0]
     if $data->{id};
   
-  $data->{$_} = &Util::money($data->{$_})
+  $data->{$_} = &Util::money($data->{$_}) || undef
     for grep defined $data->{$_}, qw(), 'сумма нал';
   
   my $tx_db = $c->model->dbh->begin;
@@ -129,27 +129,25 @@ sub сохранить_договор {
   
   $data->{uid} = $c->auth_user->{id}
     unless $data->{id};
-  my $r = eval {$c->model->сохранить_договор($data, $prev)};
   
+  my $r = eval {$c->model->сохранить_договор($data, $prev)};
   $r ||= $@
     and $c->log->error($r)
     and return $c->render(json=>{error=>$r})
     unless $r && ref $r;
   
-  #~ $data->{'@доп.соглашения'} = [map {
-    #~ my $r = eval {$c->сохранить_доп_соглашение($_, $prev)};
-    
-    #~ $r ||= $@
-      #~ and $c->log->error($r)
-      #~ and return $c->render(json=>{error=>$r})
-      #~ unless $r && ref $r;
-    
-    #~ $r;
-  #~ } grep {$_->{'дата1'}} @{$data->{'@доп.соглашения'}}];
-
+  # после сохранения договора!
+  my $dop = $c->сохранить_доп_соглашения($data, $prev);#~ $data->{'@доп.соглашения'} = [
+  #~ $dop ||= $@
+    #~ and 
+  $c->log->error($dop)
+    and return $c->render(json=>{error=>$dop})
+    unless $dop && ref $dop;
   
   $tx_db->commit;
   $c->model_contragent->почистить_таблицу();# только после связей!{uid=>$c->auth_user->{id}}
+  
+  $r = $c->model->список_договоров({id=>$r->{id}})->[0];# еще раз договор
   
   $c->render(json=>{success=>$r});
 }
@@ -166,33 +164,58 @@ sub сохранить_помещение_договора {# и доп согл
   return "Не заполнена ставка или сумма аренды помещения" #$c->render(json=>{error=>"Не заполнена ставка или сумма аренды помещения"})
     unless (scalar grep($room->{$_}, qw(ставка сумма))) eq 1;
   
-  $room->{$_} = &Util::money($room->{$_})
+  $room->{$_} = &Util::money($room->{$_}) || undef
     for grep defined $room->{$_}, qw(ставка сумма), 'сумма нал';
-  $room->{$_} = &Util::numeric($room->{$_})
+  $room->{$_} = &Util::numeric($room->{$_}) || undef
     for grep defined $room->{$_}, qw(площадь);
   
   $room->{uid} = $c->auth_user->{id}
     unless $room->{uid};
-  
+  #~ $c->log->error($c->dumper($room));
   my $r = eval {$c->model->сохранить_помещение_договора($room)};# строка договора
   
   $r ||= $@
-    #~ and $c->log->error($r)
+    and $c->log->error($r)
     #~ and return $r # $c->render(json=>{error=>$r})
     unless $r && ref $r;
   
   return $r;
 }
 
+sub сохранить_доп_соглашения {# список
+  my ($c, $data, $prev) = @_;
+  #~ my %refs = ();
+  $data->{'@доп.соглашения'} = [map {
+    my $r = $c->сохранить_доп_соглашение($_, $prev);
+    
+    #~ $r ||= $@
+      #~ and $c->log->error($r)
+      #~ and 
+    return $r # $c->render(json=>{error=>$r})
+      unless $r && ref $r;
+    
+    # не тут - в модели
+    #~ my $rr  = $self->связь($data->{id}, $r->{id});
+    #~ $refs{"$rr->{id1}:$rr->{id2}"}++;
+
+    $r;
+  } grep {$_->{'дата1'}} @{ $data->{'@доп.соглашения'} || [] }];
+  
+  $c->model->сохранить_доп_соглашения($data, $prev); # там связи с договором и удаление
+  
+}
+
 sub сохранить_доп_соглашение {# к договору
   my ($c, $data, $prev) = @_;
   $data->{'@помещения'} = [map {
-    my $r = eval {$c->сохранить_помещение_договора($_)};
+    my $r = $c->сохранить_помещение_договора($_);
     
-    $r ||= $@
-      #~ and $c->log->error($r)
-      and return $r # $c->render(json=>{error=>$r})
+    #~ $r ||= $@
+      #~ and 
+    return $r # $c->render(json=>{error=>$r})
       unless $r && ref $r;
+    
+    #~ $c->log->error("помещение доп соглашения", $c->dumper($r));
     
     $r;
   } grep {$_->{'помещение/id'}} @{ $data->{'@помещения'} }];
@@ -203,9 +226,11 @@ sub сохранить_доп_соглашение {# к договору
   my $r = eval {$c->model->сохранить_доп_соглашение($data, $prev)};
   
   $r ||= $@
-    and $c->log->error($r)
-    and return $c->render(json=>{error=>$r})
+    #~ and $c->log->error($r)
+    and return $r # $c->render(json=>{error=>$r})
     unless $r && ref $r;
+  
+  #~ $c->log->error("Доп. соглашение", $c->dumper($r));
   
   return $r;
 }

@@ -84,11 +84,11 @@ RoomSum(room){
 
 RoomsSum(item){///итого за все помещения
   var vm = this;
-  return (item['@помещения'] || []).reduce(function(a, room){ return a + vm.RoomSum(room); }, 0);
+  return ((item['@доп.соглашения'] ? item['@доп.соглашения'][item['@доп.соглашения'].length-1]['@помещения'] : item['@помещения']) || []).reduce(function(a, room){ return a + vm.RoomSum(room); }, 0);
 },
 RoomsSquare(item){///итого площадь все помещения
   var vm = this;
-  return (item['@помещения'] || []).reduce(function(a, room){ return a + vm.ParseNum(room['площадь'] || room.$помещение['площадь']); }, 0.0);
+  return ((item['@доп.соглашения'] ? item['@доп.соглашения'][item['@доп.соглашения'].length-1]['@помещения'] : item['@помещения']) || []).reduce(function(a, room){ return a + vm.ParseNum(room['площадь'] || room.$помещение['площадь']); }, 0.0);
 },
 
 

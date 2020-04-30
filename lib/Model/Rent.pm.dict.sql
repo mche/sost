@@ -486,6 +486,7 @@ from
 
 ;
 
+/*****************************/
 DROP VIEW IF EXISTS "аренда/счета доп платежей" CASCADE;--- расходные записи движения по аренде
 CREATE OR REPLACE VIEW "аренда/счета доп платежей" as
 -- 
@@ -570,6 +571,7 @@ from
   join (
     select
       dop.*,
+      timestamp_to_json(dop."дата1"::timestamp) as "$дата1/json",
       dp.*
     from 
       "аренда/договоры/доп.согл." dop ---on dop.id=rd.id2

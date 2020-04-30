@@ -107,7 +107,11 @@
           <label :for="`крыжик-${item.id}`" class="hover-shadow3d chb-yellow-lighten-4 orange-text chip yellow lighten-4 hoverable" style="position:absolute; left:-2rem; bottom: 0; padding-left:16px;" ></label>
         <!--/div-->
       </div>
-      
+      <!-- доп соглашения -->
+      <div v-for="(dop, idx) in (item['@доп.соглашения'] || [])" class="relative line-height-10 nowrap">
+        <span class="fs8 grey-text" style="">Доп. №</span><span class=" bold" style="" >{{ idx+1 }}</span>
+        <span class="chip padd-0-05 nowrap" :title=" dop['дата1'] "><span class="fs8 grey-text">c </span><span class="bold">{{ dop.$дата1.day }}</span> <span class="fs8">{{ dop.$дата1['мес'] }}</span><span v-show="(new Date).getYear()+1900 != dop.$дата1.year"> {{ dop.$дата1.year }}</span></span>
+      </div>
       
     </td>
     <td class="padd-05">
@@ -115,7 +119,7 @@
       <!---thead v-if=" item_idx === 0 " ></thead--->
       
       <tbody>
-        <tr v-for="(room, idx) in item['@помещения']" :key="room.id" class="">
+        <tr v-for="(room, idx) in (item['@доп.соглашения'] ? item['@доп.соглашения'][item['@доп.соглашения'].length-1]['@помещения'] : item['@помещения'])" :key="room.id" class="">
           <td class="relative000" style-000="width:calc(30vw);">
             <!-- не катит div style="position:absolute; left:-1rem;"><i class="material-icons fs8 lime-text-darken-4 padd-0">place</i></div-->
             <h5 class="truncate-000 nowrap blue-text-darken-4 line-height-12" style="width:calc(10vw);" :title=" room.$объект['name'] ">
@@ -167,10 +171,8 @@
           </td>
         </tr>
         <!--- Строка суммы за помещения -->
-        <tr v-if="item['@помещения'] && item['@помещения'].length > 1" class="grey-000 lighten-4">
-          <td colspan="3">
-            <!---div v-show="item['коммент'] && !!item['коммент'].length " class="card-000 padd-0-05 truncate-000 pre-wrap fs8 grey-text line-height-8 grey lighten-2" style="max-height:2rem; overflow:auto;" :title=" item['коммент'] ">{{ item['коммент'] }}</div--->
-          </td>
+        <tr v-if="item['@доп.соглашения'] ? item['@доп.соглашения'][item['@доп.соглашения'].length-1]['@помещения'].length > 1 : item['@помещения'] && item['@помещения'].length > 1" class="grey-000 lighten-4">
+          <td colspan="3"></td>
           <td class="right-align"><h5 class="nowrap lime-text text-darken-4">
             <span class="bold ">{{ RoomsSquare(item).toLocaleString().replace(/([.,]\d{2})\d+/, '$1') }}</span>
             <span class="fs8"> м²</span>
@@ -185,7 +187,7 @@
           <td></td>
         </tr>
         <!--- Строка суммы налички -->
-        <tr v-if="item['сумма нал']" class="">
+        <tr v-if="item['@доп.соглашения'] ? item['@доп.соглашения'][item['@доп.соглашения'].length-1]['сумма нал'] : item['сумма нал']" class="">
           <td colspan="3" class="right-align-000"></td>
           <td class="right-align">
             <h5 class="nowrap lime-text text-darken-4">
@@ -196,14 +198,14 @@
           </td>
           <td class="right-align">
             <h5 class="nowrap">
-              <span class="bold">{{ ParseNum(item['сумма нал']).toLocaleString().replace(/[.,]\d+/, '') }}</span>
+              <span class="bold">{{ ParseNum(item['@доп.соглашения'] ? item['@доп.соглашения'][item['@доп.соглашения'].length-1]['сумма нал'] : item['сумма нал']).toLocaleString().replace(/[.,]\d+/, '') }}</span>
               <span class="fs8"> ₽</span>
             </h5>
           </td>
           <td></td>
         </tr>
         <!--- Строка всего если наличка -->
-        <tr v-if="item['сумма нал']" class="">
+        <tr v-if="item['@доп.соглашения'] ? item['@доп.соглашения'][item['@доп.соглашения'].length-1]['сумма нал'] : item['сумма нал']" class="">
           <td colspan="3" class="right-align-000"></td>
           <td class="right-align">
             <h5 class="nowrap lime-text text-darken-4">
@@ -214,7 +216,7 @@
           </td>
           <td class="right-align">
             <h5 class="nowrap">
-              <span class="bold">{{ (RoomsSum(item) + ParseNum(item['сумма нал'])).toLocaleString().replace(/[.,]\d+/, '') }}</span>
+              <span class="bold">{{ (RoomsSum(item) + ParseNum(item['@доп.соглашения'] ? item['@доп.соглашения'][item['@доп.соглашения'].length-1]['сумма нал'] : item['сумма нал'])).toLocaleString().replace(/[.,]\d+/, '') }}</span>
               <span class="fs8"> ₽</span>
             </h5>
           </td>
@@ -223,6 +225,8 @@
       </tbody></table>
       <!-- !item['@помещения'] || item['@помещения'].length == 1 &&  -->
       <div v-show=" item['коммент'] && item['коммент'].length" class="padd-0-05 pre-wrap fs8 grey-text line-height-8 border-bottom grey lighten-2" style="min-height:1rem; max-height:3rem; overflow:auto;" :title=" item['коммент'] ">{{ item['коммент'] }}</div>
+      </div>
+      <div v-if=" item['@доп.соглашения'] && item['@доп.соглашения'][item['@доп.соглашения'].length-1]['коммент']" class="padd-0-05 pre-wrap fs8 grey-text line-height-8 border-bottom grey lighten-2" style="min-height:1rem; max-height:3rem; overflow:auto;" :title="  item['@доп.соглашения'][item['@доп.соглашения'].length-1]['коммент'] ">{{ item['@доп.соглашения'][item['@доп.соглашения'].length-1]['коммент'] }}</div>
       </div>
     </td>
     <!--td style="width:1%;"></td-->
