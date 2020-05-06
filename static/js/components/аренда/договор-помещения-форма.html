@@ -18,7 +18,7 @@
                 <span>{{ selected.$объект['name'] }}</span>
                 <span class="nowrap chip padd-0-05"><span class="fs8 grey-text">№</span> <span class="bold">{{ selected.$помещение['номер-название'] }}</span></span>
                 <span class="nowrap chip padd-0-05"><span class="">{{ selected.$помещение['этаж'] }}</span> <span class="fs8 grey-text">эт.</span></span>
-                <span class="nowrap chip padd-0-05"><span class="bold" :class="{'through': !!(room['площадь'] !== undefined || room['площадь'] === 0)}">{{ ParseNum(selected.$помещение['площадь']).toLocaleString() }}</span> <span class="fs8 grey-text">м<sup>2</sup></span></span>
+                <span class="nowrap chip padd-0-05"><span class="" :class="{'through': !!(room['площадь'] || room['площадь'] === 0), 'bold':!(room['площадь'] || room['площадь'] === 0)}">{{ ParseNum(selected.$помещение['площадь']).toLocaleString() }}</span> <span class="fs8 grey-text">м<sup>2</sup></span></span>
                 <!--span class="grey-text fs7" style="position:absolute; right:0; bottom:0;">#{{ selected.id }}</span-->
               </h5>
               <h5 v-else class="grey-text">Выбрать помещение</h5>
@@ -41,7 +41,7 @@
           <div class="right-align" style="margin-top:2rem;">
             <h5 class="iblock middle">Точная площадь аренды, м²</h5>
             <div class="input-field iblock middle000" :class="{'chip lime lighten-3  z-depth-1': room['площадь']}" style="width:5rem;">
-              <input  type="text" v-model.trim="room['площадь']" @input="InputSquare(room)" placeholder="м²" class="right-align" style="">
+              <input  type="text" v-model.trim="room['площадь']" @input="InputSquare(room)" :placeholder=" (room.$помещение && room.$помещение['площадь']) || 'м²' " class="right-align" style="">
             </div>
           </div>
           
