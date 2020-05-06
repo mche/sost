@@ -123,7 +123,7 @@ InputSquare(room){
 RoomSquare(room){
   var vm = this;
   //~ console.log("RoomSquare", room.$помещение ? room.$помещение['площадь'] : room['площадь'], room['ставка']);
-  return vm.ParseNum(room['площадь'] || (room.$помещение && room.$помещение['площадь']));
+  return vm.ParseNum(room['площадь'] || (room['площадь'] === 0 ? room['площадь'] : (room.$помещение && room.$помещение['площадь'])));
 },
 
 ParseNum(num){
@@ -150,8 +150,8 @@ TotalSum(){
 TotalSqure(){
   var vm = this;
   var s = vm./*form['@помещения']*/rooms.reduce(function(a, room){
-    if (!room || !(room['площадь'] || room.$помещение)) return a;
-    return a + vm.ParseNum(room['площадь'] || room.$помещение['площадь']);
+    if (!room || !(room['площадь'] || room['площадь'] == 0 || room.$помещение)) return a;
+    return a + vm.ParseNum(room['площадь'] || (room['площадь'] === 0 ? room['площадь'] : (room.$помещение && room.$помещение['площадь'])));
   }, 0.0);
   return s;
 },

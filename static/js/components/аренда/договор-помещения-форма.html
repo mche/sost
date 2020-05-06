@@ -18,7 +18,7 @@
                 <span>{{ selected.$объект['name'] }}</span>
                 <span class="nowrap chip padd-0-05"><span class="fs8 grey-text">№</span> <span class="bold">{{ selected.$помещение['номер-название'] }}</span></span>
                 <span class="nowrap chip padd-0-05"><span class="">{{ selected.$помещение['этаж'] }}</span> <span class="fs8 grey-text">эт.</span></span>
-                <span class="nowrap chip padd-0-05"><span class="bold" :class="{'through': !!room['площадь']}">{{ ParseNum(selected.$помещение['площадь']).toLocaleString() }}</span> <span class="fs8 grey-text">м<sup>2</sup></span></span>
+                <span class="nowrap chip padd-0-05"><span class="bold" :class="{'through': !!(room['площадь'] !== undefined || room['площадь'] === 0)}">{{ ParseNum(selected.$помещение['площадь']).toLocaleString() }}</span> <span class="fs8 grey-text">м<sup>2</sup></span></span>
                 <!--span class="grey-text fs7" style="position:absolute; right:0; bottom:0;">#{{ selected.id }}</span-->
               </h5>
               <h5 v-else class="grey-text">Выбрать помещение</h5>
@@ -77,7 +77,7 @@
           <h4 class="nowrap">
             Итого по помещениям
               <span class="bold chip lime lighten-3  z-depth-1 nowrap">
-                <span>{{ TotalSqure.toLocaleString().replace(/([\.,]\d{2})\d+$/, '$1') }} </span>
+                <span>{{ TotalSqure.toLocaleString({"minimumFractionDigits":1}) }} </span><!--! .replace(/([\.,]\d{2})\d+$/, '$1')  !-->
                 <span class="grey-text fw100"> м²</span>
               </span>
             
@@ -86,7 +86,7 @@
         <td class="right-align padd-05">
           <h4>
             <span class="bold chip lime lighten-3  z-depth-1 nowrap">
-              <span>{{ TotalSum.toLocaleString({"currency": 'RUB'}).replace(/[\.,]\d+$/, '') }} </span>
+              <span>{{ TotalSum.toLocaleString({"currency": 'RUB', "minimumFractionDigits":2,}) }} </span><!--.replace(/[\.,]\d+$/, '') !-->
               <span class="grey-text fw100"> ₽/мес.</span>
             </span>
             

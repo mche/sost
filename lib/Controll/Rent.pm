@@ -166,7 +166,7 @@ sub сохранить_помещение_договора {# и доп согл
   
   $room->{$_} = &Util::money($room->{$_}) || undef
     for grep defined $room->{$_}, qw(ставка сумма), 'сумма нал';
-  $room->{$_} = &Util::numeric($room->{$_}) || undef
+  $room->{$_} = &Util::numeric($room->{$_}) // undef
     for grep defined $room->{$_}, qw(площадь);
   
   $room->{uid} = $c->auth_user->{id}

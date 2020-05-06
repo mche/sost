@@ -145,7 +145,7 @@
             <div class="nowrap line-height-10 lime-text-darken-4" style="width: calc(5vw);">
               <!--span class="bold">{{ ParseNum(room.$помещение['площадь']).toLocaleString() }}</span>
               <span class="fs8 grey-text">м<sup>2</sup></span-->
-              <span class="nowrap " class-000="{'right': item['@помещения'].length == 1, 'chip padd-0-05': item['@помещения'].length > 1}"><span class="" :class="{'fw500': item['@помещения'].length == 1}">{{ ParseNum(room['площадь'] || room.$помещение['площадь']).toLocaleString() }}</span><span class="fs8 grey-text"> м²</span></span>
+              <span class="nowrap " class-000="{'right': item['@помещения'].length == 1, 'chip padd-0-05': item['@помещения'].length > 1}"><span class="" :class="{'fw500': item['@помещения'].length == 1}">{{ ParseNum(room['площадь'] || (room['площадь'] === 0 ? room['площадь'] : room.$помещение['площадь'])).toLocaleString() }}</span><span class="fs8 grey-text"> м²</span></span>
             </div>
           </td>
           <td class="right-align" style="width:5rem;">
@@ -162,7 +162,7 @@
               <span class="fs8 grey-text"> ₽</span>
             </div>
             <h5 v-show="item['@помещения'].length == 1" class="nowrap">
-              <span class="bold " title=" руб./мес. ">{{ RoomSum(room).toLocaleString().replace(/[.,]\d+/, '') }}</span>
+              <span class="bold " title=" руб./мес. ">{{ RoomSum(room).toLocaleString({"currency": 'RUB', "minimumFractionDigits":2,}) }}</span><!--.replace(/[.,]\d+/, '') -->
               <span class="fs8 grey-text"> ₽</span>
             </h5>
           </td>
@@ -183,7 +183,7 @@
           <td></td>
           <td class="right-align">
             <h5 class="nowrap">
-              <span class="bold">{{ RoomsSum(item).toLocaleString().replace(/[.,]\d+/, '') }}</span>
+              <span class="bold">{{ RoomsSum(item).toLocaleString({"currency": 'RUB', "minimumFractionDigits":2,}) }}</span><!-- .replace(/[.,]\d+/, '')-->
               <span class="fs8"> ₽</span>
             </h5>
           </td>
@@ -201,7 +201,7 @@
           </td>
           <td class="right-align">
             <h5 class="nowrap">
-              <span class="bold">{{ ParseNum(item['@доп.соглашения'] ? item['@доп.соглашения'][item['@доп.соглашения'].length-1]['сумма нал'] : item['сумма нал']).toLocaleString().replace(/[.,]\d+/, '') }}</span>
+              <span class="bold">{{ ParseNum(item['@доп.соглашения'] ? item['@доп.соглашения'][item['@доп.соглашения'].length-1]['сумма нал'] : item['сумма нал']).toLocaleString({"currency": 'RUB', "minimumFractionDigits":2,}) }}</span><!--.replace(/[.,]\d+/, '') -->
               <span class="fs8"> ₽</span>
             </h5>
           </td>
@@ -219,7 +219,7 @@
           </td>
           <td class="right-align">
             <h5 class="nowrap">
-              <span class="bold">{{ (RoomsSum(item) + ParseNum(item['@доп.соглашения'] ? item['@доп.соглашения'][item['@доп.соглашения'].length-1]['сумма нал'] : item['сумма нал'])).toLocaleString().replace(/[.,]\d+/, '') }}</span>
+              <span class="bold">{{ (RoomsSum(item) + ParseNum(item['@доп.соглашения'] ? item['@доп.соглашения'][item['@доп.соглашения'].length-1]['сумма нал'] : item['сумма нал'])).toLocaleString({"currency": 'RUB', "minimumFractionDigits":2,}) }}</span><!--.replace(/[.,]\d+/, '') -->
               <span class="fs8"> ₽</span>
             </h5>
           </td>

@@ -269,7 +269,7 @@
       <div v-show="roomsTableIdx == 0 || form['@доп.соглашения'][roomsTableIdx-1]['дата1']" class="col s5 ">
         <h4>Общая сумма по <span v-show="roomsTableIdx == 0">договору</span><span v-show="roomsTableIdx > 0">доп. соглашению</span></h4>
         <h3 class=" chip teal darken-4  white-text">
-          <span class="bold">{{ TotalSum.toLocaleString({"currency": 'RUB'}).replace(/[\.,]\d+$/, '') }}</span>
+          <span class="bold">{{ TotalSum.toLocaleString({"currency": 'RUB', "minimumFractionDigits":2,}) }}</span><!--.replace(/[\.,]\d+$/, '') -->
           <span>₽/мес</span>
         </h3>
       </div>
