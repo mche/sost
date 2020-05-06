@@ -145,6 +145,7 @@ ChbChange(name){
 PrintPay(month){
   var vm = this;
   var modal = $('#modal-pay', $(vm.$el));
+  console.log("PrintPay", month);
   if (!month) return modal.modal('open');
   
   var ids = vm.data.filter((item)=>{ return !!item['крыжик']; }).map((item)=>{ return item.id; });

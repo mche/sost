@@ -115,7 +115,8 @@
       
     </td>
     <td class="padd-05">
-      <div style-000="item_idx  > 0 ? {'max-height':'10rem', 'overflow':'auto'} : {}"><table class="bordered highlight"><!-- striped lime lighten-4 -->
+      <div style-000="item_idx  > 0 ? {'max-height':'10rem', 'overflow':'auto'} : {}">
+      <table class="bordered highlight"><!-- striped lime lighten-4 -->
       <!---thead v-if=" item_idx === 0 " ></thead--->
       
       <tbody>
@@ -173,10 +174,12 @@
         <!--- Строка суммы за помещения -->
         <tr v-if="item['@доп.соглашения'] ? item['@доп.соглашения'][item['@доп.соглашения'].length-1]['@помещения'].length > 1 : item['@помещения'] && item['@помещения'].length > 1" class="grey-000 lighten-4">
           <td colspan="3"></td>
-          <td class="right-align"><h5 class="nowrap lime-text text-darken-4">
-            <span class="bold ">{{ RoomsSquare(item).toLocaleString().replace(/([.,]\d{2})\d+/, '$1') }}</span>
-            <span class="fs8"> м²</span>
-          </h5></td>
+          <td class="right-align">
+            <h5 class="nowrap lime-text text-darken-4">
+              <span class="bold ">{{ RoomsSquare(item).toLocaleString().replace(/([.,]\d{2})\d+/, '$1') }}</span>
+              <span class="fs8"> м²</span>
+            </h5>
+          </td>
           <td></td>
           <td class="right-align">
             <h5 class="nowrap">
@@ -223,13 +226,13 @@
           <td></td>
         </tr>
       </tbody></table>
+      </div>
       <!-- !item['@помещения'] || item['@помещения'].length == 1 &&  -->
       <div v-show=" item['коммент'] && item['коммент'].length" class="padd-0-05 pre-wrap fs8 grey-text line-height-8 border-bottom grey lighten-2" style="min-height:1rem; max-height:3rem; overflow:auto;" :title=" item['коммент'] ">{{ item['коммент'] }}</div>
-      </div>
+      
       <div v-if=" item['@доп.соглашения'] && item['@доп.соглашения'][item['@доп.соглашения'].length-1]['коммент']" class="padd-0-05 pre-wrap fs8 grey-text line-height-8 border-bottom grey lighten-2" style="min-height:1rem; max-height:3rem; overflow:auto;" :title="  item['@доп.соглашения'][item['@доп.соглашения'].length-1]['коммент'] ">{{ item['@доп.соглашения'][item['@доп.соглашения'].length-1]['коммент'] }}</div>
-      </div>
+
     </td>
-    <!--td style="width:1%;"></td-->
   </tr>
 </tbody>
 </table>
@@ -282,6 +285,7 @@
     <a @click=" Reestr(payMonth) " href="javascript:" class="modal-action waves-effect waves-green btn-flat z-depth-1 blue lighten-4 blue-text text-darken-4" style="float:none;"><!--svg ng-hide="$c.cancelerHttp" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="blue-fill " style="height: 1.7rem;"><use xlink:href="/fonts/icons.svg#ms-word" class=""></use></svg--><span>Реестр актов</span></a>
     <a  href="javascript:" class="modal-action modal-close waves-effect waves-red btn-flat z-depth-1 red lighten-3 red-text text-darken-3"><i class="material-icons">cancel</i><span>Отмена</span></a>
   </div>
+
 </div>
 
 </div>
