@@ -451,17 +451,17 @@ from
   join lateral (
     select 
       sum(dp."сумма") as "сумма",
-      array_agg(row_to_json(dp) order by dp."order_by") as "@позиции",
+      jsonb_agg(dp order by dp."order_by") as "@позиции",
       array_agg(dp."объект/id" order by dp."order_by") as "@объекты/id",
       count(dp) as "всего позиций"
     from (
       select
         /*-1::numeric**/dp."сумма безнал" as "сумма",
-        dp."объект/id",
+        dp."объект/id", dp."номер доп.согл.",
         not 929979=any(dp."категории") as "order_by",
         case when 929979=any(dp."категории")---ид категории
           then ('{"Обеспечительный платеж"}')::text[]
-          else ('{"Арендная плата за нежилое помещение за '||param."месяц"||' '||param."год"||' г."}')::text[]
+          else ('{"Арендная плата за нежилое помещение за '||param."месяц"||' '||param."год"||' г.' || (case when dp."номер доп.согл." is not null then ' (доп. согл. ' || dp."номер доп.согл."::text || ')' else '' end) || '"}')::text[]
         end  as "номенклатура"
       from "движение ДС/аренда/счета" dp
        --- join "аренда/договоры" dd on dp.id=dd.id

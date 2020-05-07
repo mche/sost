@@ -88,7 +88,7 @@
             <span>{{ m[0] }}</span>
             <span class="fs7 grey-text" ng-class-000="{'transparent-text-000': m[1] == '00'}"> {{ m[1] }}</span>
           </div>
-          <a ng-click-000="$c.ShowItem(tr['колонки'][td.key || td.title])" href="javascript:" class="fs8">
+          <a ng-click-000="$c.ShowItem(tr['колонки'][td.key || td.title])" href="javascript:" class="fs8-000">
             <div>{{ tr['колонки'][td.key || td.title]['дата_формат'] }}</div>
             <!-- направление платежа приход-->
             <div ng-if="parseInt(td.sign || tr.sign) > 0 && !tr['профиль']" class="clearfix" style-000="vertical-align: top;">
@@ -160,7 +160,7 @@
               
             </div>
             
-            <div class="grey-text text-darken-1 pre-wrap" style="vertical-align: top;">{{tr['примечание'] }}</div>
+            <div class="grey-text text-darken-1 pre-wrap fs8 line-height-8" style="vertical-align: top;">{{tr['примечание'] }}</div>
             
           </a>
         </div>

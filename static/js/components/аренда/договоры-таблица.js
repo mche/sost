@@ -282,7 +282,7 @@ const  data = function(){
     "selectedContract": undefined,
     "allChbs": false, /// крыжик выбора всех договоров
     "payMonth":  new Date().toISOString().replace(/T.+/, ''),
-    "payNums": false, ///крыжик счета с номерами
+    "payNums": true, ///крыжик счета с номерами
     "radioSchetAkt": 'счет',/// или акт
     "filters": {"арендаторы": '', "объект": {}, "архивные договоры": false,},
     //~ "rentObjects":[],
