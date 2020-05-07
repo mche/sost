@@ -13,6 +13,7 @@ sub init {
   my $self = shift;
   #~ $self->{template_vars}{tables}{main} = $main_table;
   $self->dbh->do($self->sth('таблицы'));
+  #~ $self->app->log->error("init", $self->dict->{'таблицы'}->mt->render_file('Rent.pm.views.sql'));
   #~ $self->dbh->do($self->sth('функции'));
   return $self;
 }
