@@ -462,4 +462,5 @@ sub реестр_актов_xlsx {
   # Render data from memory as file
   $c->render_file('data' => $fdata, 'filename' => 'реестр-актов.xlsx', format=>'xlsx');
 }
+
 1;

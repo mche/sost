@@ -239,6 +239,7 @@ sub результаты_сессий_цепочки {
   });
   my ($where1, @bind1) = $self->SqlAb->where({
     # фильтрация по тесту для кода цепочки в шаблоне 
+    #~ ' "%" '=> \['>= ?', 70],
     !(defined($param->{'sha1'}) && $param->{'sha1'} ne '') && defined($param->{'тест'}) && $param->{'тест'} ne '' ? (' "тест/id" ' => $param->{'тест'}) : (),#date_entered => { '>' => \["to_date(?, 'MM/DD/YYYY')", "11/26/2008"] },
     #~ $param->{'sha1'} ? (q|substring("сессия/sha1", 0, ?)| => \[ "= ?", length($param->{'sha1'})+1, lc($param->{'sha1'}) ]) : (),
   });
