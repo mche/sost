@@ -592,7 +592,7 @@ group by s1.id, s1.ts
 
   left join (
   {%= $DICT->render('профили') %}
-  ) p on p."сессия/id"=g."сессия/id"[array_length(g."сессия/id", 1)]
+  ) p on p."сессия/id"=any(g."сессия/id") or p."сессия/id"="последняя сессия/id"--- пересортировка в массиве g."сессия/id"[array_length(g."сессия/id", 1)]
 
 {%= $where2 || '' %}
 {%= $order_by || '' %}
