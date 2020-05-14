@@ -98,24 +98,38 @@
   % if ($профиль && $профиль->{'id'}) {
     <h3 class="chip padd-0-05 z-depth-1 hoverable"><a href="<%=  url_for('медкол вход', login=>$профиль->{'логин'}, pw=>$пароль)  %>" class="" style="" title="сессия <%=  $профиль->{'сессия/id'}  %>"><i class="icon-login grey-text">профиль №</i> <span><%=  $профиль->{'логин'}  %></span>:<span><%=  $пароль  %></span></a></h3>
   % }
-  <h3 class="chip right padd-0-05"><span class="green-text-darken-3 bold"><%= $r->{'%больше70'} // '?' %></span> из <%= $r->{"всего сессий"}  %></h3>
+  <h3 class="chip-000 right padd-0-05"><span class="chip padd-0-05 green white-text darken-3 bold"><%= $r->{'%больше70'} // '?' %></span> из <span><%= $r->{"всего сессий"}  %></span></h3>
 </td></tr>
     % my $i = -1;
+    % my @cnt = (); # подсчет успехов в одной теме
     % for my $percent (@{$r->{'%'} || []}) {
     % $i++;
+    % $cnt[0]++;
+    % $cnt[1]++ if $percent >= 70;
     % next if $param->{'успехов'} && $percent < 70;
     % next if defined($param->{'sha1'}) && $param->{'sha1'} ne '' && defined($param->{'тест'}) && $param->{'тест'} ne '' && $r->{'тест/id'}[$i] ne $param->{'тест'}; # фильтр теста здесь, не в запросе, если выставлен код сессии
     % my $t = $c->app->json->decode($r->{'сессия/ts/json'}[$i]);
     % my $check = $c->app->json->decode($r->{'сессия/дата проверки/json'}[$i]) if $r->{'сессия/дата проверки'}[$i];
     <tr class="">
-      <td class="padd-0-05"style="width:50%;">
-        
+      <td class="padd-0-05 relative" style="width:50%;">
         <h5 class="fw500"><a href="<%= url_for('МедКол/детальный результат', 'sess_sha1'=>$r->{'сессия/sha1'}[$i]) %>" class="hover-shadow3d blue-text-darken-3 ">
           % for (grep defined, @{$r->{'@тест/название/родители'}[$i] || []}) {
             <span class="breadcrumb"><%= $_ %></span>
           % }
           <span class="breadcrumb"><%= $r->{'тест/название'}[$i] %></span>
         </a></h5>
+          % if ($#{$r->{'%'}} eq $i) { # последняя строка
+            % if ($cnt[2] ne $r->{'тест/id'}[$i]) {
+              <div style="position:absolute; top:0.5rem; right:0;"><span class="chip padd-0-05 green white-text darken-3 bold"><%= $percent >= 70 ? 1 : 0 %></span> из <span><%= 1 %></span></div>
+            % } else {
+              <div style="position:absolute; top:0.5rem; right:0;"><span class="chip padd-0-05 green white-text darken-3 bold"><%= $cnt[1] %></span> из <span><%= $cnt[0] %></span></div>
+            % }
+          % }
+          % if ($cnt[1] && $cnt[2] && $cnt[2] ne $r->{'тест/id'}[$i]) {
+            <div style="position:absolute; top:-2rem; right:0;"><span class="chip padd-0-05 green white-text darken-3 bold"><%= $cnt[1]-($percent >= 70 ? 1 : 0) %></span> из <span><%= $cnt[0]-1 %></span></div>
+            % @cnt = (1, $percent >= 70 ? 1 : 0);
+          % }
+          % $cnt[2] = $r->{'тест/id'}[$i];
       </td>
       <td class="right-align padd-0-05" style="width:30%;">
         <span class="" style="" title="<%= $r->{'сессия/ts'}[$i] %>"><%= $t->{'день нед'} %>, <%= $t->{'day'} %> <%= $t->{'месяца'} %> <%= $t->{'year'} %> <%= (length($t->{'hour'}) eq 1 ? '0' : '').$t->{'hour'} %>:<%= (length($t->{'minute'}) eq 1 ? '0' : '').$t->{'minute'} %></span>
@@ -131,9 +145,12 @@
         </div>
         <div class="preloader-wrapper small active hide"><div class="spinner-layer red-border border-darken-3"><div class="circle-clipper left"><div class="circle"></div></div><div class="gap-patch"><div class="circle"></div></div><div class="circle-clipper right"><div class="circle"></div></div></div></div>
       </td>
-      <td class="right-align padd-0-05"><div class="fs8 grey-text"><%= $r->{'сессия/id'}[$i] %></div></td>
-    </tr>
+      <td class="right-align padd-0-05">
+        <div class="fs8 grey-text"><%= $r->{'сессия/id'}[$i] %></div>
 
+          
+      </td>
+    </tr>
     % }
 %#  </tbody></table></td>
 
