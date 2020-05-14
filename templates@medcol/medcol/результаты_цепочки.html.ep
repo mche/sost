@@ -98,7 +98,7 @@
   % if ($профиль && $профиль->{'id'}) {
     <h3 class="chip padd-0-05 z-depth-1 hoverable"><a href="<%=  url_for('медкол вход', login=>$профиль->{'логин'}, pw=>$пароль)  %>" class="" style="" title="сессия <%=  $профиль->{'сессия/id'}  %>"><i class="icon-login grey-text">профиль №</i> <span><%=  $профиль->{'логин'}  %></span>:<span><%=  $пароль  %></span></a></h3>
   % }
-  <h3 class="chip-000 right padd-0-05"><span class="chip padd-0-05 green white-text darken-3 bold"><%= $r->{'%больше70'} // '?' %></span> из <span><%= $r->{"всего сессий"}  %></span></h3>
+  <h3 class="chip-000 right padd-0-05"><span class="chip padd-0-05  white-text <%= $r->{'%больше70'} ? 'green' : '' %> darken-3 bold"><i class="material-icons padd-0-05 ">thumb_up</i><%= $r->{'%больше70'} // '?' %></span> из <span><%= $r->{"всего сессий"}  %></span></h3>
 </td></tr>
     % my $i = -1;
     % my @cnt = (); # подсчет успехов в одной теме
@@ -118,23 +118,24 @@
           % }
           <span class="breadcrumb"><%= $r->{'тест/название'}[$i] %></span>
         </a></h5>
+          %#   начало блока счета по темам
           % if ($#{$r->{'%'}} eq $i) { # последняя строка
             % if ($cnt[2] ne $r->{'тест/id'}[$i]) {
-              <div style="position:absolute; top:0.5rem; right:0;"><span class="chip padd-0-05 green white-text darken-3 bold"><%= $percent >= 70 ? 1 : 0 %></span> из <span><%= 1 %></span></div>
+              <div style="position:absolute; top:0.5rem; right:0;"><span class="chip padd-0-05 white-text <%= $percent >= 70 ? 'green' : '' %> darken-3 bold"><i class="material-icons padd-0-05 fs10">thumb_up</i><%= $percent >= 70 ? 1 : 0 %></span> из <span><%= 1 %></span></div>
             % } else {
-              <div style="position:absolute; top:0.5rem; right:0;"><span class="chip padd-0-05 green white-text darken-3 bold"><%= $cnt[1] %></span> из <span><%= $cnt[0] %></span></div>
+              <div style="position:absolute; top:0.5rem; right:0;"><span class="chip padd-0-05 white-text <%= $cnt[1] ? 'green' : '' %> darken-3 bold"><i class="material-icons padd-0-05 fs10">thumb_up</i><%= $cnt[1] %></span> из <span><%= $cnt[0] %></span></div>
             % }
           % }
           % if ($cnt[1] && $cnt[2] && $cnt[2] ne $r->{'тест/id'}[$i]) {
-            <div style="position:absolute; top:-2rem; right:0;"><span class="chip padd-0-05 green white-text darken-3 bold"><%= $cnt[1]-($percent >= 70 ? 1 : 0) %></span> из <span><%= $cnt[0]-1 %></span></div>
-            % @cnt = (1, $percent >= 70 ? 1 : 0);
+            <div style="position:absolute; top:-2rem; right:0;"><span class="chip padd-0-05 white-text <%= $cnt[1]-($percent >= 70 ? 1 : 0) ? 'green' : '' %> darken-3 bold"><i class="material-icons padd-0-05 fs10">thumb_up</i><%= $cnt[1]-($percent >= 70 ? 1 : 0) %></span> из <span><%= $cnt[0]-1 %></span></div>
+            % @cnt = (1, $percent >= 70 ? 1 : 0); # сброс счета
           % }
-          % $cnt[2] = $r->{'тест/id'}[$i];
+          % $cnt[2] = $r->{'тест/id'}[$i]; # конец блока счета по темам
       </td>
       <td class="right-align padd-0-05" style="width:30%;">
         <span class="" style="" title="<%= $r->{'сессия/ts'}[$i] %>"><%= $t->{'день нед'} %>, <%= $t->{'day'} %> <%= $t->{'месяца'} %> <%= $t->{'year'} %> <%= (length($t->{'hour'}) eq 1 ? '0' : '').$t->{'hour'} %>:<%= (length($t->{'minute'}) eq 1 ? '0' : '').$t->{'minute'} %></span>
       </td>
-      <td class="right-align padd-05 bold <%= $percent >= 70 ? 'green darken-1 white-text ' : 'white grey-text' %>" style="width:1%;">
+      <td class="right-align padd-05 bold <%= $percent >= 70 ? 'green darken-3 white-text ' : 'white grey-text' %>" style="width:1%;">
         <span class=""><%= sprintf('%.1f', $percent)  %></span>
       </td>
       <td class="navy-text right-align padd-0-05" style="width:1%;"><span class="fs14" style="width:2rem;"><%= substr($r->{'сессия/sha1'}[$i], 0,4) %></span></td>
@@ -147,8 +148,6 @@
       </td>
       <td class="right-align padd-0-05">
         <div class="fs8 grey-text"><%= $r->{'сессия/id'}[$i] %></div>
-
-          
       </td>
     </tr>
     % }
