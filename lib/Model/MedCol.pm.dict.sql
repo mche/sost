@@ -569,17 +569,17 @@ select
   timestamp_to_json(s1.ts) as "последняя сессия/ts/json",
   count(*) as "всего сессий", --- дочерних
   
-  array_agg("%" order by "сессия/ts" desc) as "%",
+  array_agg("%" {%= $order_by_agg // 'order by "тест/id", "сессия/ts" desc' %} ) as "%",
   sum(case when "%">=70::numeric then 1 else 0 end) as "%больше70",
-  array_agg("сессия/id" order by "сессия/ts" desc) as "сессия/id",
-  array_agg("сессия/sha1" order by "сессия/ts" desc) as "сессия/sha1",
-  array_agg("сессия/ts" order by "сессия/ts" desc) as "сессия/ts",
-  array_agg("старт сессии" order by "сессия/ts" desc) as "сессия/ts/json",
-  array_agg("сессия/дата проверки"  order by "сессия/ts" desc) as "сессия/дата проверки",
-  array_agg("сессия/дата проверки/json"  order by "сессия/ts" desc) as "сессия/дата проверки/json",
-  array_agg("тест/id" order by "сессия/ts" desc) as "тест/id",
-  array_agg("тест/название" order by "сессия/ts" desc) as "тест/название",
-  array_agg("@тест/название/родители" order by "сессия/ts" desc) as "@тест/название/родители"
+  array_agg("сессия/id" {%= $order_by_agg // 'order by "тест/id", "сессия/ts" desc' %}) as "сессия/id",
+  array_agg("сессия/sha1" {%= $order_by_agg // 'order by "тест/id", "сессия/ts" desc' %}) as "сессия/sha1",
+  array_agg("сессия/ts" {%= $order_by_agg // 'order by "тест/id", "сессия/ts" desc' %}) as "сессия/ts",
+  array_agg("старт сессии" {%= $order_by_agg // 'order by "тест/id", "сессия/ts" desc' %}) as "сессия/ts/json",
+  array_agg("сессия/дата проверки"  {%= $order_by_agg // 'order by "тест/id", "сессия/ts" desc' %}) as "сессия/дата проверки",
+  array_agg("сессия/дата проверки/json"  {%= $order_by_agg // 'order by "тест/id", "сессия/ts" desc' %}) as "сессия/дата проверки/json",
+  array_agg("тест/id" {%= $order_by_agg // 'order by "тест/id", "сессия/ts" desc' %}) as "тест/id",
+  array_agg("тест/название" {%= $order_by_agg // 'order by "тест/id", "сессия/ts" desc' %}) as "тест/название",
+  array_agg("@тест/название/родители" {%= $order_by_agg // 'order by "тест/id", "сессия/ts" desc' %}) as "@тест/название/родители"
   {%= $append_select2 || '' %}
   
 from (

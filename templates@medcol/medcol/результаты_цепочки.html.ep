@@ -25,7 +25,7 @@
     <v-progress-indeterminate v-show=" !ready " :color=" 'green' " :message=" 'Загружается...' "></v-progress-indeterminate>
 
     <div v-if="ready" class="row">
-      <div class="col s12">
+      <div class="col s12 dard">
         <h3 class="fw500">Цепочки с тестом:</h3><input type="hidden" name="тест" v-model=" this['тест'] " />
         <v-tree-list :param=" {selectItemEventName: 'Выбрана позиция',} " :selected-I-D=" parseInt(this['тест']) " :data=" this['тесты'] ">
           <template v-slot:item="{ item }">
@@ -74,7 +74,7 @@
 <button type="submit" name="xls" value="1" form="form-1" class="brown-text hoverable right"><span class="fs12 uc">выгрузка .XLS</span></button>
 %}
 <h2 class="">Результаты тестов в цепочках сессий <span class="chip shadow-inset-10"><%= scalar @$res %><%= @$res eq $param->{'limit'} ? '+' : '' %></span></h2>
-<div>Сортировка цепочек по дате последнего результата. Внутри цепочки тоже сортировка по дате</div>
+<div>Сортировка цепочек по дате последнего результата. Внутри цепочки  сортировка по теме и дате</div>
 
 
 
