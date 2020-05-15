@@ -82,12 +82,13 @@
 <thead></thead>
 <tbody>
 %# my $i = 0;
+% my %uniq = ();# при ветвлении не выводить повторы
 % for my $r (@$res) {
   % next unless $r->{'%больше70'};
   % my $t = $c->app->json->decode($r->{'последняя сессия/ts/json'});
   % my $sec = ($t->{'second'} =~ /^(\d+)\.?/)[0];
-  % my $профиль = $r->{'$профиль'} && $c->app->json->decode($r->{'$профиль'});
-  % my $пароль = $профиль && ($профиль->{'пароль'} || substr($профиль->{'ts/sha1/d'} || '', 0, 4));
+  % my $профиль = $r->{'$профиль'} ? $c->app->json->decode($r->{'$профиль'}) : {};
+  % my $пароль = $профиль->{'пароль'} || substr($профиль->{'ts/sha1/d'} || '', 0, 4);
 <tr>
 %# <td><%= dumper($r) %></td>
 %#  <td class="center" title="<%= $r->{'последняя сессия/ts'} %>"><%= $t->{'день нед'} %>, <%= $t->{'day'} %> <%= $t->{'месяц'} %> <%= (length($t->{'hour'}) eq 1 ? '0' : '').$t->{'hour'} %>:<%= (length($t->{'minute'}) eq 1 ? '0' : '').$t->{'minute'} %>:<%= (length($sec) eq 1 ? '0' : '').$sec %></td>
@@ -95,10 +96,14 @@
 %#  <td class="vtop right-align padd-05" style="width:1%;"><%= ++$i %></td>
 %#  <td class="right-align padd-05"><table class="highlight bordered" style="margin:0;"><tbody>
 <tr class="orange lighten-4"><td class="vtop padd-05 relative" colspan="6">
-  % if ($профиль && $профиль->{'id'}) {
+  % if ($профиль->{'id'}) {
     <h3 class="chip padd-0-05 z-depth-1 hoverable"><a href="<%=  url_for('медкол вход', login=>$профиль->{'логин'}, pw=>$пароль)  %>" class="" style="" title="сессия <%=  $профиль->{'сессия/id'}  %>"><i class="icon-login grey-text">профиль №</i> <span><%=  $профиль->{'логин'}  %></span>:<span><%=  $пароль  %></span></a></h3>
   % }
+    % if (!$профиль->{'id'} || !$uniq{$профиль->{'id'}}++) {
   <h3 class="chip-000 right padd-0-05"><span class="chip padd-0-05  white-text <%= $r->{'%больше70'} ? 'green' : '' %> darken-3 bold"><i class="material-icons padd-0-05 ">thumb_up</i><%= $r->{'%больше70'} // '?' %></span> из <span><%= $r->{"всего сессий"}  %></span></h3>
+    % } elsif ($профиль->{'id'}) {
+      <h3 class="chip-000 right padd-0-05">Ветвление цепочки профиля <span class="chip padd-0-05"><%= $uniq{$профиль->{'id'}} %></span></h3>
+    % }
 </td></tr>
     % my $i = -1;
     % my @cnt = (); # подсчет успехов в одной теме
@@ -106,6 +111,7 @@
     % $i++;
     % $cnt[0]++;
     % $cnt[1]++ if $percent >= 70;
+    % next if $uniq{$r->{'сессия/sha1'}[$i]}++;
     % next if $param->{'успехов'} && $percent < 70;
     % next if defined($param->{'sha1'}) && $param->{'sha1'} ne '' && defined($param->{'тест'}) && $param->{'тест'} ne '' && $r->{'тест/id'}[$i] ne $param->{'тест'}; # фильтр теста здесь, не в запросе, если выставлен код сессии
     % my $t = $c->app->json->decode($r->{'сессия/ts/json'}[$i]);
