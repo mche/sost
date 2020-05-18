@@ -517,8 +517,8 @@ order by step desc
 limit 1
 ;
 
-@@ результаты сессий/цепочки
---- общий список
+@@ результаты сессий/цепочки-0000
+--- сначала была такая странная рекурсия
 WITH rc AS (
 WITH RECURSIVE rc AS (
 --- от топ сессий
@@ -560,6 +560,43 @@ WITH RECURSIVE rc AS (
   ---select * from rc
 ) ---конец with, далее rc
 
+@@ результаты сессий/цепочки
+--- общий список
+WITH rc AS (
+WITH RECURSIVE rc AS (--- от корн сессий к топ
+   SELECT s.id as parent_id, s.id as child_id, 0::int AS "step"---, s."задать вопросов"
+   FROM "медкол"."сессии" s
+    /*left*/ /*join (
+      select c.id, r.id1
+      from
+        "медкол"."связи" r ---on s.id=r.id1
+      join "медкол"."сессии" c on c.id=r.id2
+    ) c on s.id=c.id1*/
+    
+   left join (---нет родит сессии
+    select p.id, r.id2
+    from 
+      "медкол"."связи" r ---on s.id=r.id1
+      join "медкол"."сессии" p on p.id=r.id1
+   ) p on s.id=p.id2
+    
+    where   p.id is null---5828
+    
+   UNION
+   
+   --- к топ сессии
+   SELECT rc.parent_id, c.id, rc.step + 1---, c."задать вопросов"
+   FROM rc 
+      join "медкол"."связи" r on rc.child_id=r.id1
+      join "медкол"."сессии" c on c.id=r.id2
+    ---where c."задать вопросов" is not null--- признак завершенной сессии для вычисления процента
+) ---конец рекурсии
+
+---select * from rc
+select parent_id as pid,  child_id as parent_id, "step"--- это дочерний ид!, но жестко в DICT->render('результаты'.... 
+from rc
+) ---конец with, далее rc
+
 select {%= $select || '*' %}
 from (
 select g.*, to_json(p) as "$профиль" from (
@@ -583,8 +620,9 @@ select
   {%= $append_select2 || '' %}
   
 from (
-%# обязательно order_by пустая строка append_select=>', rc.step as "всего сессий", rc.ts as "последняя сессия/ts", rc.id as "последняя сессия/id" '
-{%= $DICT->render('результаты', where=>$where1 || '', order_by=>'', append_select=>', rc.* ') %}
+  %# обязательно order_by пустая строка
+  %# append_select=>', rc.step as "всего сессий", rc.ts as "последняя сессия/ts", rc.id as "последняя сессия/id" '
+  {%= $DICT->render('результаты', where=>$where1 || '', order_by=>'', append_select=>', rc.* ') %}
 ) g 
   join "медкол"."сессии" s1 on g.pid=s1.id--- последняя сессия
 group by s1.id, s1.ts
@@ -592,7 +630,7 @@ group by s1.id, s1.ts
 
   left join (
   {%= $DICT->render('профили') %}
-  ) p on p."сессия/id"=any(g."сессия/id") or p."сессия/id"="последняя сессия/id"--- пересортировка в массиве g."сессия/id"[array_length(g."сессия/id", 1)]
+  ) p on p."сессия/id"=g."последняя сессия/id"---any(g."сессия/id") or p."сессия/id"="последняя сессия/id"--- пересортировка в массиве g."сессия/id"[array_length(g."сессия/id", 1)]
 
 {%= $where2 || '' %}
 {%= $order_by || '' %}
