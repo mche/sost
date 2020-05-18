@@ -26,7 +26,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" class="green-fill" style="height: 1.5rem;" ng-include=" 'svg/copy' " />
         <span>Копия</span>
       </a>
-      <span ng-show="ask['это копия']" class="right btn-flat green-text">Это копия</span>
+      
       
       <a ng-if="ask.id && $c.PrintDocx(ask) " ng-click=" $c.PrintDocx(ask, $event) " href="javascript:" class="right btn-flat black-text">
         <svg ng-hide="$c.cancelerHttp" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="blue-fill" style="height: 1.5rem;" ng-include=" 'svg/ms-word' " />
@@ -47,6 +47,7 @@
         <input ng-hide="!ask['номер']" type="text" ng-model=" ask['номер'] " style="width: 5rem; font-size: 1.7rem;">
         <span ng-hide="!ask.id" class="grey-text text-darken-1">от {{ ask['дата заявки формат'] }}</span>
         <span ng-show="ask.id" class="grey-text fs8 left" style="padding:0.5rem;">#{{ask.id}}</span>
+        <span ng-show="ask['это копия'] && !ask.id" class="chip padd-0-05 red-text">Это копия - внимательно!</span>
       
       </h3>
       <div class="divider  row" ng-class="{'teal darken-3': ask.id, 'orange': !ask.id}" style000="height:3px;"></div>
@@ -561,11 +562,14 @@
     
     <div ng-hide="$c.cancelerHttp" class="card-action center grey lighten-3">
       <span ng-hide="$c.Validate(ask)" class="red-text text-lighten-3 right">для сохранения обязательные поля отмечены<sup class="chip red white-text" style="padding:0.5rem;" /></span>
+      
       <a class="btn" ng-click="$c.Save(ask, $event)" href="javascript:" ng-disabled="!$c.Validate(ask)">
         <!--i class="material-icons">save</i-->
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="white-fill" style="height: 1.2rem;" ng-include=" 'svg/save' " />
         <span>Сохранить</span>
       </a>
+      
+      <span ng-show="ask['это копия'] && !ask.id" class="chip red-text">Это копия - внимательно!</span>
       
       <a ng-if="ask.id && ask['транспорт/id']" class="btn-flat z-depth-1 right" ng-click="$c.Disable(ask)" href="javascript:">
         <svg ng-show="!ask['отозвать']" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill fill-darken-1" style="height: 1.2rem;" ng-include=" 'svg/break' " />

@@ -367,7 +367,14 @@ const Component = function($scope, $rootScope, $element, $timeout, $http, $q, ap
     
   };
   
-  $c.DeleteBtn =function(){
+  $c.Copy = function(){
+    $c.data['копия/id'] = $c.data.id;
+    $c.data.id = undefined;
+    $c.data.uid = undefined;
+    
+  },
+  
+  $c.DeleteBtn = function(){
     //~ console.log("DeleteBtn");
     //~ if ($c.cancelerHttp) $c.cancelerHttp.resolve();
     //~ $c.cancelerHttp = $q.defer();

@@ -8,7 +8,7 @@
       <i class="material-icons">cancel</i><span>Отмена</span>
     </a>
     
-    <a v-show="!!form.id" @click=" Copy() " href="javascript:" class="right btn-flat green-text">
+    <a v-show="!!form.id" @click=" Copy() " href="javascript:" class="right btn-flat z-depth-1 green lighten-4 green-text">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" class="green-fill" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#copy" /></svg>
         <span>Копия</span>
       </a>
@@ -16,7 +16,7 @@
     <h3 class="fw500">
         <i v-show=" !form.id " class="material-icons ">folder_special</i>
         <span v-show=" !form.id " >Новый договор аренды</span>
-        <span v-show="!!form['копия/id'] && !form.id" class="red-text"> Копия, внимательно! </span>
+        <span v-show="!!form['копия/id'] && !form.id" class="red-text chip transparent padd-0-05 animated slideInRight slow"> Копия - внимательно! </span>
         
         <i v-show=" form.id " class="material-icons ">edit</i>
         <span v-show=" form.id " >Редактировать договор аренды</span>
