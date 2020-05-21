@@ -196,7 +196,7 @@ BEGIN
       ) s on d.id=s.id1
     where 
       date_trunc('month', $1) between date_trunc('month', d."дата1") and (date_trunc('month', coalesce(d."дата расторжения", d."дата2") + interval '1 month') - interval '1 day') ---только действующие договоры
-      and d.id=any($2)
+      and ($2 is null or d.id=any($2))
       and  s.id1 is null
     order by d."дата1" desc, d.id desc
   LOOP
@@ -248,7 +248,7 @@ BEGIN
       ) s on d.id=s.id1
     where 
       date_trunc('month', $1) between date_trunc('month', d."дата1") and (date_trunc('month', coalesce(d."дата расторжения", d."дата2") + interval '1 month') - interval '1 day') ---только действующие договоры
-      and d.id=any($2)
+      and ($2 is null or d.id=any($2))
       and  s.id1 is null
     order by d."дата1" desc, d.id desc
   LOOP

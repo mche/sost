@@ -328,8 +328,10 @@ sub счет_оплата_docx {# сделать docx во врем папке �
   my $param =  $c->req->json || {};
   return $c->render(json=>{error=>'не указан месяц'})
     unless $param->{'месяц'};
-  return $c->render(json=>{error=>'не указаны договоры'})
-    unless $param->{'договоры'};
+  #~ return $c->render(json=>{error=>'не указаны договоры'})
+    #~ unless $param->{'договоры'};
+  $param->{'договоры'} = undef
+    if $param->{'договоры'} && !@{$param->{'договоры'}};
   
   $param->{docx} = sprintf("%s-%s.docx", $param->{'счет или акт'}, $c->auth_user->{id});
   $param->{docx_template_file} = sprintf("static/аренда-%s.template.docx", $param->{'счет или акт'},);

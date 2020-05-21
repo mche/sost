@@ -259,12 +259,20 @@
             <input  v-if="roomsTableIdx > 0" name="сумма нал" type="text" class="" v-model.trim=" form['@доп.соглашения'][roomsTableIdx-1]['сумма нал'] " placeholder="сумма налички доп.согл., руб">
           </div>
         </div>
+        
+        <div v-if="roomsTableIdx == 0" class="col s12 ">
+          <h4 class="">Примечание к договору</h4>
+          <div class="rounded-05 padd-05 lime lighten-3 input-field">
+            <textarea v-model.trim="form['коммент']" class="materialize-textarea padd-0 fs8" style="min-height: 4rem;"></textarea>
+          </div>
+        </div>
         <div v-if="roomsTableIdx > 0" class="col s12 ">
           <h4 class="">Примечание к доп. соглашению</h4>
           <div class="rounded-05 padd-05 teal lighten-4 input-field">
             <textarea v-model.trim="form['@доп.соглашения'][roomsTableIdx-1]['коммент']" class="materialize-textarea padd-0 fs8" style="min-height: 4rem;"></textarea>
           </div>
         </div>
+        
       </div>
       <div v-show="roomsTableIdx == 0 || form['@доп.соглашения'][roomsTableIdx-1]['дата1']" class="col s5 ">
         <h4>Общая сумма по <span v-show="roomsTableIdx == 0">договору</span><span v-show="roomsTableIdx > 0">доп. соглашению</span></h4>
@@ -289,7 +297,7 @@
     </div>
    </div><!-- row -->
   
-  <div class="row">
+  <!--div class="row">
     <div class="col s12 ">
       <h4 class="">Примечание к договору</h4>
     </div>

@@ -215,7 +215,7 @@ sub счет_оплата_docx {# и акты
   
   
   my ($where, @bind) = $self->SqlAb->where({
-    ' d.id ' => \[ ' = any(?) ', $param->{"договоры"} ],
+    $param->{"договоры"} ? (' d.id ' => \[ ' = any(?) ', $param->{"договоры"} ]) : (),
     q| not coalesce((coalesce(k."реквизиты",'{}'::jsonb)->'физ. лицо'), 'false')::boolean |=>\[],
 #    ' dp."объект/id" ' => \[ ' = any(?) ', $param->{"объекты"} ],
   });

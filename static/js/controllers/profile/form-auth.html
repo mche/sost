@@ -9,11 +9,11 @@
       <i class="icon-login"></i>
       Вход в систему
     </h2>
-    <h4>Имя (логин)</h4>
+    <h4>Логин</h4>
     <div class="input-fields">
 
       <div ng-show000="!$c.login_tel" class="input-field">
-        <input name="login" type="text" class="validate000" ng-model="$c.login" ng-keypress="$c.enterSend($event)" required>
+        <input name="login" type="text" class="validate000" ng-model="$c.login" ng-keypress="$c.enterSend($event)" required placeholder="имя или телефон">
         <!--label for="login" data-error="" data-success="" class="active">Логин</label-->
         
       </div>
@@ -32,7 +32,7 @@
       
       <h4>Пароль</h4>
       <div ng-show="!$c.forget && !$c.remem" class="input-field">
-        <input name="passwd" type="password" class="validate" ng-model="$c.passwd" ng-keypress="$c.enterSend($event)" ng-change000="$c.isCaptcha()" required>
+        <input name="passwd" type="password" class="validate" ng-model="$c.passwd" ng-keypress="$c.enterSend($event)" ng-change000="$c.isCaptcha()" required placeholder="**********">
         <!--label for="passwd" data-error="" data-success="" class="active">Пароль</label-->
       </div>
       
