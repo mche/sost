@@ -279,7 +279,7 @@ WITH cat as (
 select
   v.val[1]::date as "дата",
   timestamp_to_json(v.val[1]::timestamp) as "$дата/json",
-  v.val[2] as "ИНН",
+  trim(' ' from v.val[2]) as "ИНН",
   v.val[3]::money as "сумма",
   w.id as "кошелек/id", to_json(w) as "$кошелек/json",---v.val[4]
   cat.id as "категория/id", cat.parents_title[2:]||cat.title as "@категории", ----cat."@категории" as "@категории/json",---v.val[5]
@@ -300,7 +300,7 @@ from
   
   left join "roles" ob on ob.id=v.val[6]::int
   
-  left join "контрагенты" k on coalesce(coalesce("реквизиты",'{}'::jsonb)->>'ИНН', '0'||(k.id::text))=v.val[2]
+  left join "контрагенты" k on coalesce(trim(' ' from coalesce("реквизиты",'{}'::jsonb)->>'ИНН'), '0'||(k.id::text))=trim(' ' from v.val[2])
   left join (--- ловим похожие записи
     select m.*, cat.parents_title[2:]||cat.title as "@категории",/*to_json(c) as "$категория",*/ pr.id as "проект/id", w.id as "кошелек/id", to_json(w) as "$кошелек", k.id as "контрагент/id", to_json(ob) as "$объект"
     from 
