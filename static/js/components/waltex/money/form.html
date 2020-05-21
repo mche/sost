@@ -246,8 +246,8 @@
 <!-- Modal Structure -->
 <div id="bulk-confirm" class="card modal" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated zoomInDown" data-modal-out="animated zoomOutUp"  style="top:3%; max-height:90%; width:90%;">
   <div class="modal-content">
-    <h2 class="navy-text">Проверка пакетных записей</h2>
-    
+    <h2 class="navy-text">Проверка пакетных записей <sup v-if="$c.data['@пакет']" class="chip">{{ $c.data['@пакет'].length }}</sup></h2>
+     
     <table ng-if="$c.data['@пакет'] && $c.data['@пакет'].length" class="striped">
       <!--thead></thead-->
       <tbody>
