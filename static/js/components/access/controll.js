@@ -15,7 +15,8 @@ const Controll = function($scope, $timeout, TemplateCache, appRoutes){
     
     $scope.param = {
       "URLs": {
-        "доп. сотрудники":'доступ/доп. сотрудники',
+        "доп. сотрудники": 'доступ/доп. сотрудники',
+        "SQL": 'админка/выполнить SQL',
       },
       
     };

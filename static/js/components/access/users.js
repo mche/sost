@@ -262,7 +262,7 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes, Util
   
   $c.SelectTab = function(index) {
     $c.tab = index;
-    $c.upload = $c.download = $c.bdUsers = $c.dop = undefined;
+    $c.upload = $c.download = $c.bdUsers = $c.dop = $c.sql = undefined;
     
   };
   
@@ -512,11 +512,11 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes, Util
   $c.ShowUpload = function(){
     if($c.upload !== undefined) $c.upload = undefined;
     else $c.upload = '';
-    $c.download = $c.tab = $c.bdUsers = $c.dop = undefined;
+    $c.download = $c.tab = $c.bdUsers = $c.dop = $c.sql = undefined;
     
   };
+  
   $c.Upload = function(){
-    
     $c.error = undefined;
     
     if ($c.cancelerHttp) $c.cancelerHttp.resolve();
@@ -541,7 +541,7 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes, Util
     
   };
   $c.Download = function(){
-    $c.upload = $c.tab = $c.bdUsers = $c.dop = undefined;
+    $c.upload = $c.tab = $c.bdUsers = $c.dop = $c.sql = undefined;
     if($c.download !== undefined) return $c.download = undefined;
     
     $c.error = undefined;
@@ -652,8 +652,9 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes, Util
       && (n = d.getDate())
       && (this.bdays[n] ? this.bdays[n].push(user) : (this.bdays[n] = [user]));
   };
+  
   $c.BDays = function(){///дни рожднения в месяце
-    $c.tab = $c.upload = $c.download = $c.dop = undefined;
+    $c.tab = $c.upload = $c.download = $c.dop = $c.sql = undefined;
     if (!$c.month) $c.month =  Util.dateISO(0);//dateFns.format(new Date(), 'YYYY-MM-DD');
     $c.bdays = {};
     $c.bdUsers = $c.data.filter(FilterBDays, {"month": (new Date($c.month)).getMonth(), "bdays": $c.bdays});
@@ -684,7 +685,7 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes, Util
   };
   
   $c.Dop = function(){/// двойники
-    $c.tab = $c.upload = $c.download = $c.bdUsers = undefined;
+    $c.tab = $c.upload = $c.download = $c.bdUsers = $c.sql = undefined;
     $c.dop  =$c['доп. сотрудники'];
     
   };
@@ -707,6 +708,27 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes, Util
       $c['доп. сотрудники'].push(user);
     });
     
+  };
+  $c.SQL = function(sql){
+    
+    if (sql) {
+      $c.sql.cancelerHttp  = 1;
+      $c.sql.error = undefined;
+      $c.sql.success = undefined;
+      return $http.post(appRoutes.url_for($c.param.URLs['SQL']), {"sql": sql})
+      .then(function(resp){
+        delete $c.sql.cancelerHttp;
+        if(resp.data && resp.data.error) {
+          $c.sql.error = resp.data.error;
+        }
+        if (resp.data.success) {
+          $c.sql.success = resp.data.success;
+        }
+      });
+    }
+    if($c.sql !== undefined) $c.sql = undefined;
+    else $c.sql = {"text": ''};
+    $c.upload = $c.download = $c.bdUsers = $c.dop = $c.tab = undefined;
   };
 };
 

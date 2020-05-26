@@ -63,6 +63,12 @@
       <span>Доп</span>
     </a>
   </li>
+  <li ng-if=" $c.param.URLs['SQL'] " class="tab ">
+    <a ng-click="$c.SQL()" href="javascript:" class="hover-shadow3d" title="выполнить SQL">
+      <!--i class="material-icons">supervisor_account</i-->
+      <span>SQL</span>
+    </a>
+  </li>
   <!-- li class="tab">
     <a ng-click="$c.Refresh()" href="javascript:" title="Обновить">
       <i class="material-icons">refresh</i>
@@ -406,4 +412,21 @@
   </ul>
 </div>
 
+
+<div ng-if="$c.sql !== undefined" class="card indigo lighten-5">
+  <div class="card-title relative">
+    <h3 class="indigo-text text-darken-2">Выполнить SQL</h3>
+    <a ng-click="$c.SQL()" href="javascript:" class="btn-flat red-text" style="position:absolute; top:0.5rem; right:0.3rem;"><i class="material-icons">cancel</i></a>
+  </div>
+  <div class="card-content input-field">
+    <textarea ng-model="$c.sql.text" class="materialize-textarea" style="font-size: 0.8rem;"></textarea>
+  </div>
+  <div ng-show="$c.sql.cancelerHttp" ng-include=" 'progress/save' "></div>
+  <div ng-show="$c.sql.error" class="chip red-text">{{ $c.sql.error }}</div>
+  <div ng-show="$c.sql.success" class="chip green-text">{{ $c.sql.success }}</div>
+  <div class="card-action center grey lighten-2">
+    <a ng-hide="$c.sql.cancelerHttp" ng-click="$c.SQL($c.sql.text)" href="javascript:" class="btn-flat 000-floating indigo darken-2 white-text" title="Выполнить!" ng-disabled="!$c.sql.text || !$c.sql.text.length">
+      <i class="material-icons">file_upload</i>
+    </a>
+  </div>
 </div>

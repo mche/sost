@@ -246,7 +246,7 @@ sub users_upload {
     my @tab = map s/\s{2,}/ /gr, map s/(^\s+|\s+$)//gr, split /\t/, $_;
     next unless @tab eq 4;
     
-    my $r = eval{$c->model->закачка_пользователя({names=>[@tab[0..2]], "должность"=>$tab[3]})};
+    my $r = eval {$c->model->закачка_пользователя({names=>[@tab[0..2]], "должность"=>$tab[3]})};
     $r = $@
       and $c->app->log->error($r)
       and return $c->render(json=>{error=>$r})
@@ -269,5 +269,18 @@ sub users_download {
   } @$data;
   $c->render(json=>{success=>join("\n", @r)});
 };
+
+sub sql {
+  my $c = shift;
+  my $data = $c->req->json;
+  return $c->render(json=>{error=>'Нет SQL'})
+    unless $data->{sql};
+  my $r = eval {$c->model->dbh->selectall_arrayref($data->{sql}, {Slice=>{}})};
+  $r = $@
+      and $c->app->log->error($r)
+      and return $c->render(json=>{error=>$r})
+      if $@;
+  $c->render(json=>{success=>$r});
+}
 
 1;
