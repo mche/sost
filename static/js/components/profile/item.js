@@ -63,7 +63,13 @@ var Component = function  ($scope, $timeout, $element, ProfileData) {
     $c.autocomplete.push(...$c.data/*.filter($c.FilterData)*/.map(function(val) {
       var title = val.names.join(' ');
       return {value: title, data:val};
-    }).sort(function (a, b) { if (a.value.toLowerCase() > b.value.toLowerCase()) { return 1; } if (a.value.toLowerCase() < b.value.toLowerCase()) { return -1; } return 0;}));
+    }).sort(function (a, b) {
+      if (a.data.disable && !b.data.disable) return 1;
+      if (b.data.disable && !a.data.disable) return -1;
+      if (a.value.toLowerCase() > b.value.toLowerCase())  return 1; 
+      if (a.value.toLowerCase() < b.value.toLowerCase())  return -1; 
+      return 0;
+    }));
    
     $c.textField.autocomplete({
       "containerCss": $c.param.css && ($c.param.css['autocomplete container'] || $c.param.css['suggestions container']),
@@ -72,7 +78,8 @@ var Component = function  ($scope, $timeout, $element, ProfileData) {
       formatResult: function (suggestion, currentValue) {
         //~ return arguments[3].options.formatResultsSingle(suggestion, currentValue);
         var html = arguments[3].options.formatResultsSingle(suggestion, currentValue /*,arguments[2],  arguments[3],*/);
-        if (suggestion.data.id && $c.param.autocompleteClass) return $(html).addClass($c.param.autocompleteClass).get(0).outerHTML;
+        if (suggestion.data.id && !suggestion.data.disable && $c.param.autocompleteClass) return $(html).addClass($c.param.autocompleteClass).get(0).outerHTML;
+        if (suggestion.data.id && suggestion.data.disable && $c.param.autocompleteClass) return $(html).addClass('grey-text').get(0).outerHTML;
         return html;
       },
       onSelect: function (suggestion) {
