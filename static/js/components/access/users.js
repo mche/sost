@@ -78,14 +78,15 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes, Util
     
   };
   
-  $c.LoadRoles = function(){///хэш профиль.id => [массив ролей/id]
-    return $http.get(appRoutes.url_for(($c.param.URLs && $c.param.URLs.profileRoles) || 'доступ/роли пользователя', 0))//, {timeout: $c.cancelerHttp.promise})
+  $c.LoadRoles = function(userID){///хэш профиль.id => [массив ролей/id]
+    return $http.get(appRoutes.url_for(($c.param.URLs && $c.param.URLs.profileRoles) || 'доступ/роли пользователя', userID || 0))//, {timeout: $c.cancelerHttp.promise})
       .then(function(resp){
         if(resp.data && resp.data.error) {
           $c.error = resp.data.error;
           return;
         }
-        $c.$roles = resp.data;
+        if (userID) $c.$roles[userID]=resp.data;
+        else $c.$roles = resp.data;
         
       });
   }
@@ -235,7 +236,8 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes, Util
           if (b_close) $c.CloseEdit(user);
           
           $c.SelectTab(user.disable ? 1 : 0);
-          $timeout(function(){  $c.Scroll2User(user); });
+          $timeout(function(){  $c.Scroll2User(user); user._selected = false; delete user._edit; });
+          $c.LoadRoles();///обновить роли user.id - не пошло
         }
         
       });
