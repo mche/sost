@@ -684,6 +684,13 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes, Util
     });
   };
   
+  $c.TakeUser = function(user){
+    $c.userDop = user;
+    $c.userDop['группы'] = new Array(...user._edit['группы'] || []);
+    //~ $timeout(()=>{ console.log("TakeUser", user); }, 100);
+    
+  };
+  
   $c.Dop = function(){/// двойники
     $c.tab = $c.upload = $c.download = $c.bdUsers = $c.sql = undefined;
     $c.dop  =$c['доп. сотрудники'];
@@ -709,6 +716,13 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes, Util
     });
     
   };
+  
+  $c.DopGroups = function(user, remove){/// группы от доп 
+    if (remove) return user._edit['группы2'].splice(user._edit['группы2'].indexOf(remove), 1);
+    user._edit['группы2'] = new Array(...$c.userDop['группы'] || []);
+    
+  };
+  
   $c.SQL = function(sql){
     
     if (sql) {

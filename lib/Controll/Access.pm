@@ -47,14 +47,20 @@ sub user_save {
   delete @$data{qw(ts еще)};
   #~ $data->{tel} = [grep(/[\d\-]/, @{$data->{tel} || []})];
   
-  local $c->model->{dbh} = $c->model->dbh->begin; # временно переключить модели на транзакцию
+  my $tx_db = $c->model->dbh->begin;
+  local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
   
-  my $p = eval{ $c->model->сохранить_профиль($data) };
+  my $p = eval { $c->model->сохранить_профиль($data) };
   $p ||= $@
     #~ and ($c->model->{dbh}->rollback || 1)
     and $c->app->log->error($p)
     and return $c->render(json=>{error=>$p})
     unless ref $p;
+  
+  if ($data->{'группы2'}) {# только копия групп
+    eval {$c->model->связь($_->{id}, $p->{id})}
+      for @{$data->{'группы2'}};
+  }
   
 =pod
   my $l = eval{$c->model->сохранить_логин(%$data, id=>$data->{'login/id'}, )}
@@ -74,7 +80,7 @@ sub user_save {
     if $l && $l && $l->{id};
 =cut
 
-  $c->model->{dbh}->commit;
+  $tx_db->commit;
   
   $c->render(json=>{success=>$c->model->пользователи(where=>" where p.id=? ", bind=>[$p->{id}])->[0]});
 }
@@ -92,15 +98,16 @@ sub save_role {
     if $edit;
     
   #~ $c->app->log->error($c->dumper($data));
-  local $c->model->{dbh} = $c->model->dbh->begin; # временно переключить модели на транзакцию
+  my $tx_db = $c->model->dbh->begin;
+  local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
   
-  my $r = eval{$data->{remove} ? $c->model->удалить_роль($data) : $c->model->сохранить_роль($data)};
+  my $r = eval {$data->{remove} ? $c->model->удалить_роль($data) : $c->model->сохранить_роль($data)};
   $r = $@
     and $c->app->log->error($r)
     and return $c->render(json=>{error=>$r})
     if $@;
     
-  $c->model->{dbh}->commit;
+  $tx_db->commit;
   #~ my $rr = $c->model->роли();
   
   $c->render(json=>{roles=>[], (ref($r) || ()) && (($data->{remove} ? 'remove' : 'item')=>$r)});

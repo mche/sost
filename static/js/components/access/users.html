@@ -138,7 +138,7 @@
     
     <div class="card-title teal darken-2">
     
-      <a  class="btn-flat right-000 orange-text" href="javascript:" ng-click="$c.CloseEdit(user, $index)" style="position: absolute; top:0.7rem; right:0.7rem;">
+      <a  class="btn-flat red-text padd-0-02" href="javascript:" ng-click="$c.CloseEdit(user, $index)" style="position: absolute; top:0.7rem; right:0.7rem;">
         <i class="material-icons">cancel</i>
         <!--span>Отмена</span-->
       </a>
@@ -152,9 +152,9 @@
         <div class="col s6"><!-- блок ФИО -->
           <div ng-repeat="n in ['Фамилия', 'Имя', 'Отчество']" class="row">
             <h4>{{n}}</h4>
-            <div class="input-field col s12">
+            <h3 class="input-field col s12 fw500">
               <input type="text" ng-model="user._edit.names[$index]" placeholder="{{n}}" class="">
-            </div>
+            </h3>
           </div>
           
           <div class="row">
@@ -220,7 +220,7 @@
       </div>
         
       <div class="row">
-        <h4>Прием - увольнение</h4>
+        <h4>Приемы - увольнения</h4>
         <!---div>{{ user._edit['@приемы-увольнения'] | json }}</div--->
         <div class="col s12">
         <table class="top striped000 bordered000 ">
@@ -258,11 +258,11 @@
       <div ng-if="user._edit.id" class="row">
         <h4>
           <i class="material-icons ">group</i>
-          <span>Группы </span>
+          <span>Группы (крыжики доступа справа)</span>
           <sup ng-if="user._edit['группы']" class="chip">{{ user._edit['группы'].length }}</sup>
         </h4>
         <div class="col s12">
-          <ul ng-if="user._edit['группы']" class="collection z-depth-1" style="max-height:15rem; overflow:auto;">
+          <ul ng-if="user._edit['группы']" class="collection z-depth-1 striped orange lighten-4" style="max-height:15rem; overflow:auto;">
             <li ng-repeat="g in user._edit['группы'] | orderBy: $c.OrderByUserGroup " class="collection-item">
               <span ng-repeat="n in g['parents/name']  track by $index" ng-hide="!n" class="breadcrumb before-margin-0"><span class="chip padd-0-05 shadow-inset-10">{{ n }}</span></span>
               <span ng-class="{'breadcrumb before-margin-0': !!g['parents/name'][0],}"><span class="chip padd-0-05 shadow-inset-10">{{ g.name }}</span></span>
@@ -271,14 +271,27 @@
         </div>
       </div>
       <div ng-if="!user._edit.id" class="row">
-        <h4 class="red-text">Группировка после сохранения нового сотрудника</h4>
+        <h4 class="red-text">Группировка (крыжики справа) после сохранения нового сотрудника</h4>
+      </div>
+      
+      <div  ng-show="$c.userDop && $c.userDop !== user" class="row">
+        <a ng-click=" $c.DopGroups(user)" href="javascript:" class="btn-flat z-depth-1 hover-shadow3d orange lighten-4 fs8"><span>Копировать группы <sup class="chip">{{ $c.userDop['группы'].length }}</sup></span><span class="chip-000  padd-0-05 orange-text text-darken-3"><i class="material-icons rotate180">arrow_forward</i> {{ $c.userDop.names.join(' ') }}</span></a>
+        <div class="col s12">
+          <ul ng-if="user._edit['группы2']" class="collection z-depth-1 striped orange lighten-4" style="max-height:15rem; overflow:auto;">
+            <li ng-repeat="g in user._edit['группы2'] | orderBy: $c.OrderByUserGroup " class="collection-item">
+              <span ng-repeat="n in g['parents/name']  track by $index" ng-hide="!n" class="breadcrumb before-margin-0"><span class="chip padd-0-05 shadow-inset-10">{{ n }}</span></span>
+              <span ng-class="{'breadcrumb before-margin-0': !!g['parents/name'][0],}"><span class="chip padd-0-05 shadow-inset-10">{{ g.name }}</span></span>
+              <a ng-click="$c.DopGroups(user, g)" href="javascript:" class="hover-shadow3d red-text right"><i class="material-icons">cancel</i></a>
+            </li>
+          </ul>
+        </div>
       </div>
         
       <div ng-if="user.id && $c.param.URLs['доп. сотрудники']" class="row">
         <h4>
           <i class="material-icons">supervisor_account</i>
           <span>Доплата</span>
-          <a ng-if="!user['профиль1/id']" ng-show="$c.userDop !== user" ng-click=" $c.userDop = user " href="javascript:" class="right btn-flat z-depth-1 maroon-text maroon lighten-4 fs8 padd-0-05 fw500 hover-shadow3d">запомнить в доплату</a>
+          <a ng-if="!user['профиль1/id']" ng-show="$c.userDop !== user" ng-click=" $c.TakeUser(user) " href="javascript:" class="right btn-flat z-depth-1 maroon-text maroon lighten-4 fs8 padd-0-05 fw500 hover-shadow3d"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" class="maroon-fill" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#copy"></use></svg> <span>запомнить</span></a>
         </h4>
         <h6 ng-if="user['профиль1/id']" class="chip" title="доплата к сотруднику">
           <i class="material-icons">supervisor_account</i>
@@ -336,7 +349,7 @@
           <i class="material-icons">undo</i>
           <span>Вернуть в работу</span>
         </a--->
-        <a  class="right btn orange lighten-2" href="javascript:" ng-click="$c.CloseEdit(user, $index)">
+        <a  class="right btn red lighten-2" href="javascript:" ng-click="$c.CloseEdit(user, $index)">
           <i class="material-icons">cancel</i>
           <span>Отмена</span>
         </a>
