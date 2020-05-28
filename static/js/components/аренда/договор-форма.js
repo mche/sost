@@ -287,6 +287,22 @@ ParseNum(num){
   return parseFloat(Util.numeric(num));
 },
 
+RemoveBtn(confirm){
+  var vm = this;
+  var modal = $('#modal-remove', $(vm.$el));
+  //~ console.log("PrintPay", month);
+  if (!confirm) return modal.modal('open');
+  return $http.post(appRoutes.urlFor('аренда/удалить договор'), {"id": vm.form.id})
+    .then(function(resp){
+      if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 border fw500  animated zoomInUp');
+      if (resp.data.remove) {
+        resp.data.remove['удалить'] = true;
+        vm.$emit('on-save', resp.data.remove);
+        Materialize.toast('Договор удален', 3000, 'green-text text-darken-3 green lighten-3 border fw500  animated zoomInUp');
+      }
+  });
+},
+
 }; /// конец methods
 
 const computed = {

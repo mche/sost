@@ -86,6 +86,15 @@ sub удалить_объект {
   $c->render(json=>{remove=>$r});
 }
 
+sub удалить_договор {
+  my $c = shift;
+  my $data = $c->req->json;
+  my $r = $c->model->удалить_договор($data);
+  return $c->render(json=>{error=>$r})
+    unless ref $r;
+  $c->render(json=>{remove=>$r});
+}
+
 sub сохранить_договор {
   my $c = shift;
   my $data = $c->req->json;

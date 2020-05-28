@@ -96,12 +96,12 @@ OnSave(data){ ///  из события сохранения формы
   var vm = this;
   if (vm.newContract) vm.newContract = undefined;
   if (data) {
-    
+    var f = data.id && vm.data.find(util.IsEqualId, data);
     if (data['удалить']) {
       vm.data.removeOf(f);
       return vm.FilterData();
     }
-    var f = data.id && vm.data.find(util.IsEqualId, data);
+    
     if (f) { /// редакт
       if (f._edit) f._edit = undefined;
       Object.assign(f, data);
@@ -145,7 +145,7 @@ ChbChange(name){
 PrintPay(month){
   var vm = this;
   var modal = $('#modal-pay', $(vm.$el));
-  console.log("PrintPay", month);
+  //~ console.log("PrintPay", month);
   if (!month) return modal.modal('open');
   
   var ids = vm.data.filter((item)=>{ return !!item['крыжик']; }).map((item)=>{ return item.id; });
