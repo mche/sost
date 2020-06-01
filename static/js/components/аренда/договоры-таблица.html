@@ -99,7 +99,7 @@
         <span class="fs8 grey-text" style="position:absolute; left:-1rem;">№</span><span class="nowrap truncate bold" style="width:calc(5vw);" :title=" item['номер'] ">{{ item['номер'] }}</span>
         <!--span class="fs8"> от </span-->
         <span class="chip padd-0-05 nowrap" :title=" item['дата1'] "><span class="fs8 grey-text">c </span><span class="bold">{{ item.$дата1.day }}</span> <span class="fs8">{{ item.$дата1['мес'] }}</span><span v-show="(new Date).getYear()+1900 != item.$дата1.year"> {{ item.$дата1.year }}</span></span>
-        <span class="chip padd-0-05 nowrap breadcrumb" :title=" item['дата2'] "><span class="fs8 grey-text"> по </span><span class="bold">{{ item.$дата2.day }}</span> <span class="fs8">{{ item.$дата2['мес'] }}</span><span v-show="(new Date).getYear()+1900 != item.$дата2.year"> {{ item.$дата2.year }}</span></span>
+        <span class="chip padd-0-05 nowrap breadcrumb" :title=" item['дата2'] "><span class="fs8 grey-text"> по </span><span class="bold">{{ item.$дата2.day }}</span> <span class="fs8">{{ item.$дата2['мес'] }}</span><span v-show="(new Date).getYear()+1900 != item.$дата2.year"> {{ item.$дата2.year }}</span><span v-show="item['продление срока']" class="material-icons">alarm_add</span></span>
         <span v-if="item['дата расторжения']" class="chip padd-0-05 nowrap red-text" :title=" item['$дата расторжения'] "><span class="fs8"> закрыт </span><span class="bold">{{ item['$дата расторжения'].day }}</span> <span class="fs8">{{ item['$дата расторжения']['мес'] }}</span><span v-show="(new Date).getYear()+1900 != item['$дата расторжения'].year"> {{ item['$дата расторжения'].year }}</span></span>
         <!-- крыжик -->
         <!--div class="input-field"-->

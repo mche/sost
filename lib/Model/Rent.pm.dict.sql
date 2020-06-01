@@ -195,7 +195,7 @@ BEGIN
         where  s."месяц"=date_trunc('month', $1) --- только счета этого мес
       ) s on d.id=s.id1
     where 
-      date_trunc('month', $1) between date_trunc('month', d."дата1") and (date_trunc('month', coalesce(d."дата расторжения", d."дата2") + interval '1 month') - interval '1 day') ---только действующие договоры
+      date_trunc('month', $1) between date_trunc('month', d."дата1") and (date_trunc('month', coalesce(d."дата расторжения", case when d."продление срока" then (now()+interval '1 year')::date else d."дата2" end) + interval '1 month') - interval '1 day') ---только действующие договоры
       and ($2 is null or d.id=any($2))
       and  s.id1 is null
     order by d."дата1" desc, d.id desc
@@ -247,7 +247,7 @@ BEGIN
         where  s."месяц"=date_trunc('month', $1) --- только счета этого мес
       ) s on d.id=s.id1
     where 
-      date_trunc('month', $1) between date_trunc('month', d."дата1") and (date_trunc('month', coalesce(d."дата расторжения", d."дата2") + interval '1 month') - interval '1 day') ---только действующие договоры
+      date_trunc('month', $1) between date_trunc('month', d."дата1") and (date_trunc('month', coalesce(d."дата расторжения", case when d."продление срока" then (now()+interval '1 year')::date else d."дата2" end) + interval '1 month') - interval '1 day') ---только действующие договоры
       and ($2 is null or d.id=any($2))
       and  s.id1 is null
     order by d."дата1" desc, d.id desc
@@ -435,8 +435,10 @@ from
       timestamp_to_json(coalesce(d."дата договора", d."дата1")::timestamp) as "$дата договора",
       timestamp_to_json(d."дата1"::timestamp) as "$дата1",
       timestamp_to_json(d."дата2"::timestamp) as "$дата2"
+      ---case when d."дата расторжения" then false when "продление срока" then true else false end as "продлеваемый договор"
+      ---case when "продление срока" then (now()+interval '1 year')::date else d."дата2" end 
     from "аренда/договоры" d
-  ) d on param."month" between date_trunc('month', d."дата1") and (date_trunc('month', coalesce(d."дата расторжения", d."дата2") + interval '1 month') - interval '1 day') ---только действующие договоры
+  ) d on param."month" between date_trunc('month', d."дата1") and (date_trunc('month', coalesce(d."дата расторжения", case when d."продление срока" then (now()+interval '1 year')::date else d."дата2" end) + interval '1 month') - interval '1 day') ---только действующие договоры
   join refs r on d.id=r.id2
   join "контрагенты" k on k.id=r.id1
   
