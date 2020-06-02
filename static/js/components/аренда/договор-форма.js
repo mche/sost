@@ -20,8 +20,8 @@ module
 
 //~ var rentRoomsData;///синглетон для данных объектов аренды
 $Контрагенты.Load();
-var projectList = new $Список(appRoutes.url_for('список проектов'));
-projectList.Load();
+//~ var projectList = new $Список(appRoutes.url_for('список проектов'));
+//~ projectList.Load();
 
 const props = {
   "item": {
@@ -71,11 +71,37 @@ InitDatepicker(el, param, setCallback){
   
 },
 
-ProjectData(){
+ProjectData(){/// проекты - арендодатели
   var vm = this;
-  return projectList.Load().then(function(){
-    vm.projectData = projectList.Data();
-    
+  //~ return projectList.Load().then(function(){
+    //~ vm.projectData = projectList.Data();
+  //~ });
+  return new Promise(function(resolve, reject){
+    $EventBus.$emit('Дайте список проектов', function(loader){/// один раз выполнится
+      loader.then(function(data){
+        vm.projectData = data;
+        return resolve(true);
+      }, function(err){ return reject(err); });
+    });
+  });
+},
+
+ObjectData(){/// список объектов
+  var vm = this;
+  return new Promise(function(resolve, reject){
+    $EventBus.$emit('Дайте список объектов аренды', function(loader){/// один раз выполнится
+      loader.then(function(data){
+        //~ rentRoomsData = [];
+        vm.rentRooms = [];
+        data.map(function(item){
+          item['@кабинеты'].map(function(room){
+            /*rentRoomsData*/vm.rentRooms.push({"id": room.id, /*"объект-помещение": `${ item['$объект']['name']  }: №${ room['номер-название'] }, ${ room['этаж'] } эт., ${ room['площадь'] } м²`,*/ "_match": `${ item['$объект']['name']  } ${ room['номер-название'] } ${ room['этаж'] } ${ room['площадь'] }`.toLowerCase(), /*"адрес": item['адрес'],*/ "$помещение": room, "$объект": item['$объект'],/*"$item": angular.copy(item),*/});
+          });
+        });
+        //~ console.log("Дайте список объектов аренды", rentRoomsData);
+        return resolve(true);
+      }, function(err){ return reject(err); });
+    });
   });
 },
 
@@ -347,23 +373,8 @@ const mounted = function(){
     //~ window.uploader = this.$refs.uploader.uploader;
   //~ });
   var vm = this;
-  $q.all([vm.ContragentData(), vm.ProjectData()]).then(function(){
-    //~ if (!rentRoomsData) 
-    $EventBus.$emit('Дайте список объектов аренды', function(loader){/// один раз выполнится
-      loader.then(function(data){
-        //~ rentRoomsData = [];
-        vm.rentRooms = [];
-        data.map(function(item){
-          item['@кабинеты'].map(function(room){
-            /*rentRoomsData*/vm.rentRooms.push({"id": room.id, /*"объект-помещение": `${ item['$объект']['name']  }: №${ room['номер-название'] }, ${ room['этаж'] } эт., ${ room['площадь'] } м²`,*/ "_match": `${ item['$объект']['name']  } ${ room['номер-название'] } ${ room['этаж'] } ${ room['площадь'] }`.toLowerCase(), /*"адрес": item['адрес'],*/ "$помещение": room, "$объект": item['$объект'],/*"$item": angular.copy(item),*/});
-          });
-        });
-        //~ console.log("Дайте список объектов аренды", rentRoomsData);
-        vm.Ready();
-      });
-    });
-    //~ else  vm.Ready();
-    
+  $q.all([vm.ContragentData(), vm.ProjectData(), vm.ObjectData(),]).then(function(){
+    vm.Ready();
   });
 };/// конец mounted
 

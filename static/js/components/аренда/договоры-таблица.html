@@ -21,16 +21,9 @@
 
 <thead>
   <tr>
-    <td class="padd-05" style="width:1%;">
-        <!-- фильтр арендатора -->
-        <div class="input-field" style=" width:9rem; max-width:calc(10vw);"><!-- стили ширины соотв. стилям первой колонки position:absolute; top:-2.3rem; left:0;-->
-          <a v-show=" filters['арендаторы'] && filters['арендаторы'].length " @click=" ClearFilter('арендаторы') " href="javascript:" style="position: absolute; z-index: 1; right:0.5rem; top:0.3rem; "><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"  class="red-fill fill-darken-1" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#left-clear-fill"></use></svg></a>
-          <input type="text" name="арендаторы"  v-model="filters['арендаторы']" @input=" OnChangeFilter " :placeholder=" 'поиск арендатора' " class="">
-        </div>
-    </td>
-    <td class="relative vbottom padd-05" style="width:1%;">
+    <td class="padd-05 relative" style="width:1%;">
       <!-- фильтр истекшие договоры -->
-      <div class="input-field nowrap" style="position:absolute; top:-2rem;margin-left:0.3rem;">
+      <div class="input-field nowrap" style="position:absolute; top:-2rem; right:0;">
         <input type="checkbox" id="архивные крыжики" v-model="filters['архивные договоры']" @change="ChbChange('архивные договоры')">
         <label for="архивные крыжики" class="hover-shadow3d chb-maroon-lighten-5 maroon-text chip maroon lighten-5 hoverable" style="position:absolute; left:-2rem; bottom: 0; padding-left:16px;" ></label>
         <label for="архивные крыжики" class="hover-shadow3d " style=""><h5 class="maroon-text">
@@ -38,6 +31,13 @@
           <sup class="chip white z-depth-1">{{ archLen }}</sup>
         </h5></label>
       </div>
+        <!-- фильтр арендатора -->
+        <div class="input-field" style=" width:9rem; max-width:calc(10vw);"><!-- стили ширины соотв. стилям первой колонки position:absolute; top:-2.3rem; left:0;-->
+          <a v-show=" filters['арендаторы'] && filters['арендаторы'].length " @click=" ClearFilter('арендаторы') " href="javascript:" style="position: absolute; z-index: 1; right:0.5rem; top:0.3rem; "><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"  class="red-fill fill-darken-1" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#left-clear-fill"></use></svg></a>
+          <input type="text" name="арендаторы"  v-model="filters['арендаторы']" @input=" OnChangeFilter " :placeholder=" 'поиск арендатора' " class="">
+        </div>
+    </td>
+    <td class="relative vbottom padd-05" style="width:1%;">
 
       <!-- все крыжики-->
       <!--div v-show=" FilteredDataLen " class="input-field nowrap" style="margin-left:0.3rem;">
@@ -49,14 +49,32 @@
         </h6></label>
       </div-->
     </td>
-    <td class="padd-05" style="width:calc(30vw);">
+    <td class="padd-05 relative" style="width:calc(30vw);">
+      <!-- фильтр арендодателя-->
+      <div class="chip teal lighten-4" style="position:absolute; top:-2.5rem;margin-left:0; width:50%;">
+        <v-select :select=" {} " :param="{'без поля поиска': true, ulDropDownClass: 'striped teal lighten-4'}" :items=" projectData " @on-select=" SelectProject ">
+          <template v-slot:selected="{ selected }">
+            <h4 class="  hover-bottom-shadow-teal-darken-3" :class="{'grey-text':!selected, 'fw500 animated slideInUp': !!selected}">
+              <span class="material-icons">filter_list</span>
+              <span>{{ selected ? selected.name : 'Выбрать арендодателя' }}</span>
+              <!--span v-if="form['$проект']" class="grey-text fs7" style="position:absolute; right:0; bottom:-1rem;">#{{ form['$проект'].id }}</span-->
+            </h4>
+          </template>
+          <template v-slot:listItem="{ listItem, selected, highlighted }">
+            <h5 class="padd-0-05 b relative"  :class="{'bold fs14': listItem === selected, 'fw500': listItem === highlighted,}"  style="">
+                <span>★ {{ listItem.name }}</span>
+                <span class="grey-text fs7" style="position:absolute; right:0; bottom:0;">#{{ listItem.id }}</span>
+            </h5>
+          </template>
+        </v-select>
+      </div>
       <table>
         <thead>
           <tr class="line-height-10-000">
             <th class="vbottom">
               <!-- фильтр по объекту :data-list=" rentObjects "-->
               <div v0000-if=" rentObjects.length " style-000="width:calc(20vw);">
-                <v-object-select  :select=" filters['объект'] " :data-url=" 'аренда/объекты-ук' " @on-select-object=" SelectObjectFilter "></v-object-select>
+                <v-object-select  :select=" filters['объект'] " :param="{'без поля поиска': true,}" :data-url=" 'аренда/объекты-ук' " @on-select-object=" SelectObjectFilter "></v-object-select>
                 <!--v-select :select=" filters['объект'] " :items=" rentObjects " :param=" {'без поля поиска': true} " @on-select=" SelectObjectFilter ">
                   <template v-slot:selected="{ selected }">
                     <h5 class="fw500 blue-text text-darken-3 animated fadeIn slow hover-bottom-shadow-blue-darken-3" style="">{{ (selected && selected.$item && selected.$item.name) || 'По объекту' }}</h5>

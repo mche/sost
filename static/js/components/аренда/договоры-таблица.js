@@ -13,9 +13,12 @@
 */
 var moduleName = "Аренда::Договоры::Таблица";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, [ 'Аренда::Договор::Форма', 'Компонент::Выбор объекта', ]);
+var module = angular.module(moduleName, [ 'Аренда::Договор::Форма', 'Компонент::Выбор объекта', 'Компонент::Выбор в списке',]);
 
-module.factory('$КомпонентАрендаДоговорыТаблица', function($templateCache, $http, appRoutes, /*$timeout, $rootScope, /**$compile, , */ $EventBus, Util, $КомпонентАрендаДоговорФорма, $КомпонентВыборОбъекта ) {// 
+module.factory('$КомпонентАрендаДоговорыТаблица', function($templateCache, $http, appRoutes, /*$timeout, $rootScope, /**$compile, , */ $EventBus, Util, $Список, $КомпонентАрендаДоговорФорма, $КомпонентВыборОбъекта, $КомпонентВыборВСписке ) {// 
+
+var projectList = new $Список(appRoutes.url_for('список проектов'));
+projectList.Load();
 
 const props = {
   "param": {
@@ -35,6 +38,10 @@ const methods = {/*методы*/
 
 Ready(){/// метод
   var vm = this;
+  var loader = vm.ProjectData();
+  $EventBus.$on('Дайте список проектов', function(cb){
+    cb(loader);
+  });
   return vm.LoadData().then(function(){
     vm.FilterData();
     vm.ready = true;
@@ -42,11 +49,18 @@ Ready(){/// метод
     /*$EventBus.$emit('Дайте список объектов аренды', function(loader){/// один раз выполнится
       loader.then(function(data){
         //~ console.log("Объекты аренды", data);
-        
         //~ vm.rentObjects.push(...data.map((it)=>{ return it['$объект']; }));
         vm.rentObjects.push(...data.map((it)=>{ return {"id": it['$объект'].id, "_match": it['$объект'].name, "$item":it['$объект']}; }));
       });
     });*/
+  });
+},
+
+ProjectData(){/// проекты - арендодатели
+  var vm = this;
+  return projectList.Load().then(function(){
+    vm.projectData = projectList.Data();
+    return vm.projectData;/// для промис
   });
 },
 
@@ -63,6 +77,12 @@ LoadData(){
 SelectContract(obj){
   this.selectedContract  = obj;
   this.$emit('select-object', obj);
+},
+
+SelectProject(proj){
+  //~ console.log("SelectProject", arguments);
+  this.filters['арендодатель'] = proj;
+  this.FilterData();
 },
 
 New(){
@@ -208,14 +228,14 @@ Reestr(month){
   //~ });
 //~ },
 
-OnChangeFilter(event){
+OnChangeFilter(event, ms){
   var vm = this;
   //~ console.log("OnKeyDownFilter", event.target.name, event.target.value);
   if (vm.filters.timeout) clearTimeout(vm.filters.timeout);
   vm.filters.timeout = setTimeout(() => {
     //~ vm.filters[event.target.name] = event.target.value;
     vm.FilterData();
-  }, 700);
+  }, ms || 700);
   
 },
 
@@ -230,6 +250,7 @@ FilterData(){
       const cur = dateFns.isWithinRange(new Date(), new Date(/*item['дата1']*/ '2000-01-01'), new Date(item['дата расторжения'] || item['продление срока'] ? new Date('2100-01-01') : item['дата2']));
       if (!cur) vm.archLen += 1;
       const test = (vm.filters['архивные договоры'] ? !cur : cur)
+        && (vm.filters['арендодатель'] ? item['проект/id'] == vm.filters['арендодатель'].id : true)
         && (vm.filters['арендаторы'] ? item['$контрагент'].title.toLowerCase().indexOf(vm.filters['арендаторы'].toLowerCase()) >= 0 : true)
         && ( (vm.filters['объект'] && vm.filters['объект'].id && item['@помещения']) ? item['@помещения'][0].$объект.id == vm.filters['объект'].id : true);
       //~ console.log("filteredData", test);
@@ -284,7 +305,7 @@ const  data = function(){
     "payMonth":  new Date().toISOString().replace(/T.+/, ''),
     "payNums": true, ///крыжик счета с номерами
     "radioSchetAkt": 'счет',/// или акт
-    "filters": {"арендаторы": '', "объект": {}, "архивные договоры": false,},
+    "filters": {"арендодатель": undefined, "арендаторы": '', "объект": {}, "архивные договоры": false,},
     //~ "rentObjects":[],
     "archLen":0, /// кол-во архивных договоров
     "clipBoard": undefined,
@@ -328,6 +349,7 @@ const $Конструктор = function (/*data, $c, $scope*/){
   $Компонент.template = $templateCache.get('аренда/договоры/таблица');
   $Компонент.components['v-rent-contract-form'] =  new $КомпонентАрендаДоговорФорма();
   $Компонент.components['v-object-select'] = new $КомпонентВыборОбъекта();
+  $Компонент.components['v-select'] = new $КомпонентВыборВСписке();
 
   return $Компонент;
 };

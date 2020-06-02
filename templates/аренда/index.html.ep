@@ -25,7 +25,7 @@
   
   <!--- еще слева отчет --->
   <div ng-show=" 1 " class="col s12  relative" ng-class="{'hide': ctrl.col1 != 'отчет', 'l5 animated slideInLeft fast': ctrl.col1 == 'отчет' && ctrl.col2, 'l12 animated slideInLeft fast': ctrl.col1 == 'отчет' && !ctrl.col2}">
-    <h2 class="" style="margin-bottom:2rem;">
+    <h2 class="" style="margin-bottom:3rem;">
       <a ng-click="ctrl.ToggleColumn1('отчет')" href="javascript:" class="btn-flat padd-0-05 z-depth-1 teal darken-3 white-text"><i class="material-icons fs18">account_balance</i></a>
       <span>Отчет по арендаторам</span>
     </h2>
@@ -38,7 +38,7 @@
 <!--v-progress-indeterminate v-show=" !ready['$КомпонентАрендаДоговорыТаблица'] " :color=" 'teal' " :message=" 'Загружается...' " class="col s4 offset-s2"></v-progress-indeterminate--->
 <div ng-hide="ctrl.ready['$КомпонентАрендаДоговорыТаблица']" ng-include=" 'progress/load' " class="col s4 offset-s2"></div>
   <div ng-show=" ctrl.ready['$КомпонентАрендаДоговорыТаблица'] " class="col s12 relative" ng-class="{'hide': ctrl.col2 != 'договоры', 'l7 animated slideInRight fast': ctrl.col2 == 'договоры' && ctrl.col1, 'l12 animated slideInRight fast': ctrl.col2 == 'договоры' && !ctrl.col1}">
-    <h2 class="" style="margin-bottom:2rem;">
+    <h2 class="" style="margin-bottom:3rem;">
       <a ng-click="ctrl.ToggleColumn2('договоры')" href="javascript:" class="btn-flat padd-0-05 z-depth-1 teal darken-3 white-text">
         <!--i class="material-icons fs20">folder_special</i-->
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32" class="prefix white-fill" style="height: 2rem;"><use xlink:href="/fonts/icons.svg#handshake"></use></svg>
