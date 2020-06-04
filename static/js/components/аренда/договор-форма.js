@@ -201,7 +201,7 @@ SelectContragent(data){///из компонента
 
 ClearDate(name, val){
   var vm = this;
-  vm.form[name] = val;
+  vm.form[name] = val || null;
   vm.keys[name] = vm.idMaker.next().value;/// передернуть
   setTimeout(()=>{
     var el = $(`input[name="${ name }"]`, $(vm.$el));
@@ -213,7 +213,12 @@ ClearDate(name, val){
 
 Copy(){
   var vm = this;
-  var init = vm.InitForm(angular.copy(vm.form));///vm.form;
+  var copy = angular.copy(vm.form);
+  copy['дата договора'] = undefined;
+  copy['дата1'] = undefined;
+  copy['дата2'] = undefined;
+  copy['дата расторжения'] = undefined;
+  var init = vm.InitForm(copy);///vm.form;
   //~ debugger;
   init.id = undefined;
   init.uid = undefined;
