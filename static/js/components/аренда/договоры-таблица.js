@@ -247,7 +247,7 @@ FilterData(){
   vm.filteredData = ///vm.filters['арендаторы'].length || (vm.filters['объект'] && vm.filters['объект'].id) /// || (vm.filters['архивные договоры'] !== undefined)
     vm.data.filter((item)=>{
       
-      const cur = dateFns.isWithinRange(new Date(), new Date(/*item['дата1']*/ '2000-01-01'), new Date(item['дата расторжения'] || item['продление срока'] ? new Date('2100-01-01') : item['дата2']));
+      const cur = dateFns.isWithinRange(new Date(), new Date(/*item['дата1']*/ '2000-01-01'), new Date(item['дата расторжения'] || (item['продление срока'] ? new Date('2100-01-01') : item['дата2'])));
       if (!cur) vm.archLen += 1;
       const test = (vm.filters['архивные договоры'] ? !cur : cur)
         && (vm.filters['арендодатель'] ? item['проект/id'] == vm.filters['арендодатель'].id : true)

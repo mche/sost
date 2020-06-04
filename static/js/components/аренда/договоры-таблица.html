@@ -74,7 +74,7 @@
             <th class="vbottom">
               <!-- фильтр по объекту :data-list=" rentObjects "-->
               <div v0000-if=" rentObjects.length " style-000="width:calc(20vw);">
-                <v-object-select  :select=" filters['объект'] " :param="{'без поля поиска': true,}" :data-url=" 'аренда/объекты-ук' " @on-select-object=" SelectObjectFilter "></v-object-select>
+                <v-object-select  :select=" filters['объект'] " :param="{'без поля поиска': true, ulDropDownClass: 'striped blue lighten-4'}" :data-url=" 'аренда/объекты-ук' " @on-select-object=" SelectObjectFilter "></v-object-select>
                 <!--v-select :select=" filters['объект'] " :items=" rentObjects " :param=" {'без поля поиска': true} " @on-select=" SelectObjectFilter ">
                   <template v-slot:selected="{ selected }">
                     <h5 class="fw500 blue-text text-darken-3 animated fadeIn slow hover-bottom-shadow-blue-darken-3" style="">{{ (selected && selected.$item && selected.$item.name) || 'По объекту' }}</h5>

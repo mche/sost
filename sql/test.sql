@@ -1,99 +1,113 @@
-/*выделение новой базы*/
---~ DO
---~ $do$
---~ DECLARE
-   --~ d record;
---~ BEGIN
-/********************************************/
-select d.id  as "договор/id", d.ts as "договор/ts", d."номер", sum."дата",
-  /*-1::numeric**/sum."сумма"*(sum."дней оплаты"/sum."всего дней в месяце") as "сумма", sum."сумма безнал"*(sum."дней оплаты"/sum."всего дней в месяце") as "сумма безнал",
-  sum."доп.согл./id", sum."номер доп.согл.",
-  --~ -1::numeric as "sign", --- счет-расход
-  sum."@категории/id" as "категории",
-  sum."@категории/title" as "категория",
-  k.title as "контрагент", k.id as "контрагент/id",
-  sum."@объекты/id",
-  d."коммент"
-  --~ row_to_json(ob) as "$объект/json", ob.id as "объект/id", ob.name as "объект",
-  --~ null::int as "кошелек2", --- left join
-  --~ null::text as "профиль", null::int as "профиль/id",
-  --~ null::text[][] as "кошельки", --- пока не знаю
-  --~ null::int[][] as "кошельки/id",  --- пока не знаю
-  --~ 'счет по дог. ' || d."номер" || E'' || ' ★ ' || ob.name || E'\n' || coalesce(d."коммент", ''::text) as "примечание"
+WITH param as (
+  select *, to_char(d."дата", 'YYYY') as "год", date_trunc('month', d."дата") as "month"
+  from (VALUES (1, 'январь'), (2, 'февраль'), (3, 'март'), (4, 'апрель'), (5, 'май'), (6, 'июнь'), (7, 'июль'), (8, 'август'), (9, 'сентябрь'), (10, 'октябрь'), (11, 'ноябрь'), (12, 'декабрь'))
+    m(num, "месяц")
+  join (VALUES ('2020-5-2'::date)) d("дата") on m.num=date_part('month', d."дата")
+)
+/*** ЭТО НЕ ПОШЛО, функция не возвращала вставленные строки, вынес вызов функции отдельно перед этим статементом
+num as (---нумерация счетов 
+  select n.*, r.id1
+  from 
+    param,
+    "refs" r
+    join "номера счетов/аренда помещений"(param."дата", ?::int[]массив ид договоров для присвоения номеров/,?uid/) n on n.id=r.id2
+    --- если не нужно присвоение номеров - передать 2 параметр - пустой массив идов договоров []
+)*/
+---конец with
+
+select  *  from (
+select
+  pr."реквизиты"||to_jsonb(pr) as "$арендодатель", --- as "арендодатель/реквизиты",
+
+  coalesce(num1."номер", '000')/*(random()*1000)::int*/ as "номер счета",
+  coalesce(num1.ts, now())::date as "дата счета",
+  timestamp_to_json(coalesce(num1.ts, now())) as "$дата счета",
   
+  coalesce(num2."номер", '000')/*(random()*1000)::int*/ as "номер акта",
+  coalesce(/*num2.ts*/date_trunc('month', num2."месяц")+interval '1 month'-interval '1 day', /*now()*/null)::date as "дата акта",--- на последнее число мес
+  timestamp_to_json(coalesce(/*num2.ts*/(date_trunc('month', num2."месяц")+interval '1 month'-interval '1 day')::timestamp, now())) as "$дата акта",--- на последнее число мес
+  
+  ob.name as "объект",
+  row_to_json(d) as "$договор", 
+  row_to_json(k) as "$контрагент",
+  k.id as "контрагент/id",
+  d."номер!" as "договор/номер",
+  d."дата1" as "договор/дата начала",
+   coalesce(d."дата расторжения", d."дата2") as "договор/дата завершения",
+  k.title as "контрагент/title",
+  coalesce(k."реквизиты",'{}'::jsonb)->>'ИНН' as "ИНН",
+  dp."сумма", replace(dp."сумма"::numeric::text, '.', ',') as "сумма/num",
+  /*** хитрая функция sql/пропись.sql ***/
+  firstCap(to_text(dp."сумма"::numeric, 'рубль', scale_mode => 'int')) as "сумма прописью",
+  ---ARRAY(select (select to_json(a) from (select ('{"Арендная плата за нежилое помещение за '||param."месяц"||' '||param."год"||' г."}')::text[] as "номенклатура", -1::numeric*dp."сумма" as "сумма" ) a)) as "@позиции",
+  dp."@позиции",
+  dp."всего позиций"
 from
-  "аренда/договоры" d
+  param
+  join (
+    select d.*,
+      upper(replace(d."номер", '№', '')) as "номер!",
+      timestamp_to_json(coalesce(d."дата договора", d."дата1")::timestamp) as "$дата договора",
+      timestamp_to_json(d."дата1"::timestamp) as "$дата1",
+      timestamp_to_json(d."дата2"::timestamp) as "$дата2"
+      ---case when d."дата расторжения" then false when "продление срока" then true else false end as "продлеваемый договор"
+      ---case when "продление срока" then (now()+interval '1 year')::date else d."дата2" end 
+    from "аренда/договоры" d
+  ) d on param."month" between date_trunc('month', d."дата1") and (date_trunc('month', coalesce(d."дата расторжения", case when d."продление срока" then (now()+interval '1 year')::date else d."дата2" end) + interval '1 month') - interval '1 day') ---только действующие договоры
+  join refs r on d.id=r.id2
+  join "контрагенты" k on k.id=r.id1
   
-  join refs rk on d.id=rk.id2
-  join "контрагенты" k on k.id=rk.id1
+  left join (---арендодатель
+    select pr.*, r.id2
+    from "контрагенты/проекты"  pr
+      join refs r on pr."проект/id"=r.id1
+  ) pr on pr.id2=d.id
   
-  
-  join (-- суммы в мес по договору и доп согл
+  /*** Waltex/Report.pm.dict.sql ***/
+  ---join "движение ДС/аренда/счета" dp on d.id=dp.id and param."month"=date_trunc('month', dp."дата") and dp."примечание"!~'предоплата'
+  join lateral (
     select 
-      "договор/id", "дата", 
-      "@объекты/id",
-      "@категории/id", "@категории/title", 
-       "сумма безнал", "сумма",
-       "всего дней в месяце",
-      case
-        when "даты1" is null or not "это начало доп соглашения" then coalesce("дней оплаты", "всего дней в месяце")
-        else "всего дней в месяце"-coalesce("дней оплаты", 0)
-      end as "дней оплаты",
-      --~ "@доп.согл./id", 
-      "@доп.согл./id"[case when "даты1" is null then 2 else 1 end] as "доп.согл./id",
-      "@номера доп.согл."[case when "даты1" is null then 2 else 1 end] as "номер доп.согл."
+      sum(dp."сумма") as "сумма",
+      jsonb_agg(dp order by dp."order_by") as "@позиции",
+      array_agg(dp."объект/id" order by dp."order_by") as "@объекты/id",
+      count(dp) as "всего позиций"
     from (
-
-      select  "договор/id", "дата",---"месяц"
-        "@объекты/id",
-        "@категории/id", "@категории/title",
-        unnest("суммы безнал"[1:case when /*array_length("дней", 1) = 1 or*/ "дней оплаты доп"[1] < interval '0 days' then 2 else 1 end]) as "сумма безнал",
-        unnest("суммы"[1:case when /*array_length("дней", 1) = 1 or*/ "дней оплаты доп"[1] < interval '0 days' then 2 else 1 end]) as "сумма",
-        unnest("даты1"[1:1])  as "даты1",
-        "@доп.согл./id", "@номера доп.согл.",
-        ---generate_subscripts("@доп.согл./id"[1:1], 1) as "номер доп.согл.",
-        extract(day FROM date_trunc('month', "дата") + interval '1 month - 1 day') as "всего дней в месяце",
-        case when array_length("дней оплаты доп", 1) > 1 and "дней оплаты доп"[1] < interval '0 days' then extract(day FROM -1*"дней оплаты доп"[1]) else "дней оплаты осн" end as "дней оплаты",
-        "дней оплаты доп"[1] < interval '0 days' as "это начало доп соглашения"
-        ---"номер доп.согл."
-      from (
-        select d1."договор/id", d1."дата", d1."дней оплаты" as "дней оплаты осн", sum."@объекты/id", ---sum."@доп.согл./id",
-          d1."@категории/id", d1."@категории/title",
-          array_agg(sum."доп.согл./id" order by d1."дата"-sum."дата1") as "@доп.согл./id",
-          array_agg(sum."номер доп.согл." order by d1."дата"-sum."дата1") as "@номера доп.согл.",
-          array_agg(sum."сумма безнал" order by d1."дата"-sum."дата1") as "суммы безнал",
-          array_agg(sum."сумма" order by d1."дата"-sum."дата1") as "суммы",
-          array_agg(sum."дата1" order by d1."дата"-sum."дата1") as "даты1",
-          array_agg(d1."дата"-sum."дата1"order by d1."дата"-sum."дата1") as "дней оплаты доп" --- если тут первый интервал отрицательный - месяц разделяется доп соглашением (две суммы)
-
-        from
-          --~ (
-          --~ values ( '2020-01-04'::date, 1000::money), ( '2020-04-14'::date, 2000::money),  ( '2020-08-20'::date, 3000::money)
-          --~ ) sum("дата1", "сумма")
-          -- сумма в мес по договору и доп соглашениям
-          "аренда/суммы платежей" sum
-          --~ join (
-            --~ select date_trunc('month', '2020-01-04'::date + interval '0 month')+make_interval(months=>m) "месяц"
-            --~ from generate_series(0, 11) m
-          --~ ) d1 on date_trunc('month', sum."дата1")<=d1."месяц"
-          --~ group by d1."месяц"
-          join  "аренда/даты платежей" d1 on d1."договор/id"=sum."договор/id" and date_trunc('month', sum."дата1")<=d1."дата"
-      where sum."договор/id"=1010760 --- --946000
-        group by d1."договор/id", d1."дата", d1."дней оплаты", sum."@объекты/id", d1."@категории/id", d1."@категории/title"---, sum."@доп.согл./id"
-
-
-      ) a
-      ---unnest("даты1") with ordinality as d ("_даты1", "номер доп.согл.")
-      ---generate_subscripts("даты1", 1) as "номер доп.согл."
-    ) a
-  ) sum on sum."договор/id"=d.id
+      select
+        /*-1::numeric**/dp."сумма безнал" as "сумма",
+        dp."объект/id", dp."номер доп.согл.",
+        not 929979=any(dp."категории") as "order_by",
+        case when 929979=any(dp."категории")---ид категории
+          then ('{"Обеспечительный платеж"}')::text[]
+          else ('{"Арендная плата за нежилое помещение за '||param."месяц"||' '||param."год"||' г.' || (case when dp."номер доп.согл." is not null then ' (доп. согл. ' || dp."номер доп.согл."::text || ')' else '' end) || '"}')::text[]
+        end  as "номенклатура"
+      from "движение ДС/аренда/счета" dp
+       --- join "аренда/договоры" dd on dp.id=dd.id
+      where  d.id=dp."договор/id"
+        and param."month"=date_trunc('month', dp."дата")
+        and not 929979::int = any(dp."категории")
+        ---and not coalesce(dd."оплата наличкой", false)
+    ) dp
+  ) dp on true
   
-  --~ join  "roles" ob on ob.id=sum."@объекты/id"[1]
-;
-
---~ select * 
---~ from "аренда/договоры" d,
-
-
---~ END
---~ $do$;
+  join  "roles" ob on ob.id=dp."@объекты/id"[1]
+  
+  ---нумерация счетов (может быть отключена)
+  left join (
+    select n.*, r.id1
+    from 
+      "refs" r
+      join "счета/аренда/помещения" n on n.id=r.id2
+  ) num1 on d.id=num1.id1 and num1."месяц"=param."month"
+  
+  ---нумерация актов (может быть отключена)
+  left join (
+    select n.*, r.id1
+    from 
+      "refs" r
+      join "акты/аренда/помещения" n on n.id=r.id2
+  ) num2 on d.id=num2.id1 and num2."месяц"=param."month"
+  
+  ---left join num on d.id=num.id1
+ WHERE (  not coalesce((coalesce(k."реквизиты",'{}'::jsonb)->'физ. лицо'), 'false')::boolean   )
+order by d."дата1" desc, d.id desc  
+) s
