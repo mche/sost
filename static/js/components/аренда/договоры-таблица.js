@@ -309,6 +309,7 @@ const  data = function(){
     //~ "rentObjects":[],
     "archLen":0, /// кол-во архивных договоров
     "clipBoard": undefined,
+    "projectData":undefined,
     };
   //);
 };///конец data

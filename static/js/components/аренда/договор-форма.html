@@ -38,7 +38,7 @@
     </div>
     <div class="col s8  row">
       <!--div class="border fs8">{{ form['$проект'] }}</div-->
-      <v-select v-if=" ready " :select=" form['$проект'] " :param="{ulDropDownClass: 'striped teal lighten-4'}" :items=" projectData " @on-select=" SelectProject ">
+      <v-select v-if=" projectData " :select=" form['$проект'] " :param="{ulDropDownClass: 'striped teal lighten-4'}" :items=" projectData " @on-select=" SelectProject ">
         <template v-slot:selected="{ selected }">
           <h4 class="fw500 animated slideInUp hover-bottom-shadow-teal-darken-3">
             <span>{{ selected ? selected.name : 'Выбрать арендодателя' }}</span>
