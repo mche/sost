@@ -133,10 +133,10 @@
     <h4 class="fw500 navy-text" style="border-bottom: 1px solid;">
       <i class="material-icons"></i>
       <span>Вставить строки из Excel</span>
-      <span class="chip-0000 padd-0-05 fs8"> обязательно три колонки: <span class="chip padd-0-05 z-depth-1">дата</span>  <span class="chip padd-0-05 z-depth-1">ИНН контрагента (или ИД с нулем в начале)</span>  <span class="chip padd-0-05 z-depth-1">сумма</span> | прочие колонки</span>
+      <span class="chip-0000 padd-0-05 fs8"> обязательно три колонки: <span class="chip padd-0-05 z-depth-1">Дата</span> | <span class="chip padd-0-05 z-depth-1">ИНН контрагента (или ИД с нулем в начале)</span> | <span class="chip padd-0-05 z-depth-1">Сумма</span> | <span class="chip padd-0-05 z-depth-1">Примечание</span> | <span>прочие колонки</span></span>
     </h4>
     <div class="input-field">
-      <textarea name="comment" ng-model="$c.data['пакет']" class="materialize-textarea comment navy-text fs8" style="min-height: 20rem; " placeholder=" дата | ИНН контрагента | сумма | прочие колонки"></textarea>
+      <textarea name="comment" ng-model="$c.data['пакет']" class="materialize-textarea comment navy-text fs8" style="min-height: 20rem; " placeholder=" дата | ИНН контрагента | сумма | примечание | прочие колонки"></textarea>
       <!--label class="descr" for="comment" ng-class="{active: $c.data.comment != null}">Пояснительный текст</label-->
     </div>
     
@@ -255,7 +255,8 @@
           <td>{{ idx+1 }}</td>
           <td class="right-align"><span class=" grey-text ">{{ row['$дата']['день нед'] }}</span>  <span class="bold fs14">{{ row['$дата']['day'] }}</span>   <span class="">{{ row['$дата']['мес'] }}</span> <span class="fs14">{{ row['$дата'].year }}</span></td>
           <td><h4 ng-class="{'grey-text strike-through-red-thin-10': !row['$контрагент'], 'bold orange-text text-darken-4': !!row['$похожая запись']}">{{ row['$контрагент'] ? row['$контрагент'].title : row['ИНН'] }}</h4></td>
-          <td class="right-align"><span class="fs14">{{ row['сумма'] }}</span></td>
+          <td class="right-align"><span class="fs14 nowrap">{{ row['сумма'] }}</span></td>
+          <!--td class=""><span class="">{{ row['примечание'] || row['коммент'] }}</span></td-->
           <td>
             <!-- КРЫЖИК -->
             <div ng-if="!!row['$контрагент']" class="chip-000" style-000="position: absolute;top: 0; padding-left: 2.5rem;">

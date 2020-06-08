@@ -84,12 +84,12 @@ sub save {
     my @data = ();
     #~ my $sth_k = $c->model_contragent->sth('контрагент/ИНН');
     for my $line (split /\r?\n/, $data->{'пакет'}) {
-      my @val = map s/(^\s+|\s+$)//gr, split /\t/, $line, -1;#дата | ИНН контрагента | сумма | прочие
+      my @val = map s/(^\s+|\s+$)//gr, split /\t/, $line, -1;#дата | ИНН контрагента | сумма | коммент | прочие
       #~ $c->log->error(scalar @val, $line =~ s/\t/|/gr, $line);#
       map s/[^\d.,]//g, @val[0..2]; # только три осн колонки
       #~ my $r = $c->model_contragent->dbh->selectrow_hashref($sth_k, undef, $val[1]);
       # обратный порядок перед прочими колонками
-      splice(@val, 3, 0, $data->{"примечание"});
+      #~ splice(@val, 3, 0, $data->{"примечание"});
       splice(@val, 3, 0, $data->{'$объект'} && $data->{'$объект'}{id});
       splice(@val, 3, 0, $data->{"категория"}{id});
       splice(@val, 3, 0, $data->{"кошелек"}{id} || $data->{"кошелек"}{new}{id});

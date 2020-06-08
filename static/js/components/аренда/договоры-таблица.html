@@ -52,7 +52,7 @@
     <td class="padd-05 relative" style="width:calc(30vw);">
       <!-- фильтр арендодателя-->
       <div class="chip teal lighten-4" style="position:absolute; top:-2.5rem;margin-left:0; width:50%;">
-        <v-select :select=" {} " :param="{'без поля поиска': true, ulDropDownClass: 'striped teal lighten-4'}" :items=" projectData " @on-select=" SelectProject ">
+        <v-select v-if="projectData" :select=" {} " :param="{'без поля поиска': true, ulDropDownClass: 'striped teal lighten-4'}" :items=" projectData " @on-select=" SelectProject ">
           <template v-slot:selected="{ selected }">
             <h4 class="  hover-bottom-shadow-teal-darken-3" :class="{'grey-text':!selected, 'fw500 animated slideInUp': !!selected}">
               <span class="material-icons">filter_list</span>

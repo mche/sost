@@ -291,7 +291,7 @@ const Component = function($scope, $rootScope, $element, $timeout, $http, $q, ap
   };
   
   $c.SaveBulk = function(){///сохранить проверенный пакет
-    var names = ['дата', 'сумма', 'контрагент/id', 'категория/id', 'кошелек/id', 'объект/id', 'примечание'];
+    var names = ['дата', 'сумма', 'контрагент/id', 'категория/id', 'кошелек/id', 'объект/id', 'примечание', 'коммент'];
     var data = $c.data['@пакет'].filter((row)=>{ return !!row['крыжик']; }).map((row)=>{ return Pick(row, names); })
     
     //~ return console.log("SaveBulk", data);

@@ -368,6 +368,7 @@ const data = function() {
     "keys": {"дата расторжения": vm.idMaker.next().value, "дата договора":vm.idMaker.next().value, "дата1":vm.idMaker.next().value, "дата2":vm.idMaker.next().value,}, ///передерг рендер
     "roomsTableIdx": 0, /// отображение таблицы арендуемых помещений (0 - основной договор, 1,2,... - доп соглашениия)
     "tableSum": 0, /// общая сумма по таблице и наличке
+    "projectData": undefined,
     //~ "uploads": [],
   };
   //);
