@@ -132,7 +132,7 @@ DROP VIEW IF EXISTS "движение ДС/аренда/счета" CASCADE;--- 
 CREATE OR REPLACE VIEW "движение ДС/аренда/счета" as
 -- 
 select d.id  as "договор/id", d.ts as "договор/ts", sum."дата",
-  /*-1::numeric**/sum."сумма"*(sum."дней оплаты"/sum."всего дней в месяце") as "сумма", sum."сумма безнал"*(sum."дней оплаты"/sum."всего дней в месяце") as "сумма безнал",
+  /*-1::numeric**/sum."сумма"*(sum."дней оплаты"/sum."всего дней в месяце")*(1-sum."% скидки"/100) as "сумма", sum."сумма безнал"*(sum."дней оплаты"/sum."всего дней в месяце")*(1-sum."% скидки"/100) as "сумма безнал",
   sum."доп.согл./id", sum."номер доп.согл.",
   --~ -1::numeric as "sign", --- счет-расход
   sum."@категории/id" as "категории",
@@ -158,7 +158,7 @@ from
       "договор/id", "дата", 
       "@объекты/id",
       "@категории/id", "@категории/title", 
-       "сумма безнал", "сумма",
+       "сумма безнал", "сумма", "% скидки",
        "всего дней в месяце",
       case
         when "даты1" is null or not "это начало доп соглашения" then coalesce("дней оплаты", "всего дней в месяце")
@@ -169,7 +169,8 @@ from
       "@номера доп.согл."[case when "даты1" is null then 2 else 1 end] as "номер доп.согл."
     from (
 
-      select  "договор/id", "дата"::date,---"месяц"
+      select  a."договор/id", "дата"::date,---"месяц"
+        coalesce(dc."%", 0::numeric) as "% скидки",
         "@объекты/id",
         "@категории/id", "@категории/title",
         unnest("суммы безнал"[1\:case when /*array_length("дней", 1) = 1 or*/ "дней оплаты доп"[1] < interval '0 days' then 2 else 1 end]) as "сумма безнал",
@@ -208,12 +209,21 @@ from
 
 
       ) a
+      left join (--- скидки по месяцам
+        select
+          dc.*,
+          d.id as "договор/id"
+        from "аренда/договоры" d
+          join "refs" r on d.id=r.id1
+          join "аренда/договоры/скидки" dc on dc.id=r.id2
+      ) dc on dc."договор/id"=a."договор/id" and date_trunc('month', a."дата"::date)=date_trunc('month', dc."месяц")
       ---unnest("даты1") with ordinality as d ("_даты1", "номер доп.согл.")
       ---generate_subscripts("даты1", 1) as "номер доп.согл."
     ) a
   ) sum on sum."договор/id"=d.id
   
   join  "roles" ob on ob.id=sum."@объекты/id"[1]
+  
 ;
 
 /*****************************/

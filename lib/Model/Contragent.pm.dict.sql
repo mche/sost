@@ -11,6 +11,24 @@ create table IF NOT EXISTS "{%= $schema %}"."{%= $tables->{main} %}" (
   /* alter table "контрагенты" add column "АТИ" text unique; */
 );
 
+/*
+CREATE OR REPLACE FUNCTION "контрагенты/проверка ИНН"(id integer, attrs jsonb реквизиты)
+RETURNS BOOLEAN AS
+$func$
+BEGIN
+RETURN NOT EXISTS (
+  --~ select p.tel
+  --~ from ( select right(regexp_replace(unnest(tel), '\D+', '', 'g'), 10) as tel from "профили" where id<>pid) p
+    --~ join (select right(regexp_replace(unnest(tels), '\D+', '', 'g'), 10) as tel) c on p.tel=c.tel
+  
+  
+);
+END;
+$func$ LANGUAGE PLpgSQL;
+
+ALTER TABLE "контрагенты" ADD CONSTRAINT "контрагенты/проверка ИНН" CHECK ("контрагенты/проверка ИНН"("id", "реквизиты"));
+*/
+
 ---create table IF NOT EXISTS "{%= $schema %}"."{%= $tables->{main} %}/изменения" () INHERITS ("{%= $schema %}"."{%= $tables->{main} %}");
 ---alter table "{%= $schema %}"."{%= $tables->{main} %}/изменения" add column  IF NOT EXISTS ts2 timestamp not null DEFAULT now();--- когда изменил
 --- НЕТ alter table "{%= $schema %}"."{%= $tables->{main} %}/изменения" add column  IF NOT EXISTS uid_del int not null;--- кто удалил запись

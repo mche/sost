@@ -47,14 +47,15 @@ Ready(){/// метод
   $timeout(function(){
     //~ $('input[type="text"]', $(vm.$el)).first().focus();
     
-    vm.InitDatepicker($('.datepicker', $(vm.$el)));
+    vm.InitDatePicker($('.datepicker', $(vm.$el)));
+    vm.InitMonthPickerDiscount($('.month-picker-discount', $(vm.$el)));
     
     $('.modal', $(vm.$el)).modal();
   });
 
 },
 
-InitDatepicker(el, param, setCallback){
+InitDatePicker(el, param, setCallback){
   var vm = this;
   el.pickadate(Object.assign({// все настройки в файле русификации ru_RU.js
     //~ "clear": 'Очистить',
@@ -66,6 +67,24 @@ InitDatepicker(el, param, setCallback){
       if (!s) return;
       if (setCallback) return setCallback([s.year, s.month+1, s.date].join('-'));
       vm.$set(vm.form, this._hidden.name , [s.year, s.month+1, s.date].join('-'));
+    },//$(this._hidden).val().replace(/^\s*-/, this.component.item.select.year+'-'); },
+  }, param || {}));//{closeOnSelect: true,}
+  
+},
+
+InitMonthPickerDiscount(el, param, setCallback){/// для скидок
+  var vm = this;
+  el.pickadate(Object.assign({// все настройки в файле русификации ru_RU.js
+    monthsFull: [ 'январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь' ],
+    format: 'mmmm yyyy',
+    monthOnly: 'OK',// кнопка
+    selectYears: true,
+    "onSet": function (context) {
+      var s = this.component.item.select;
+      if (!s) return;
+      //~ console.log("onSet", this.$node[0]);
+      //~ if (setCallback) return setCallback([s.year, s.month+1, s.date].join('-'));
+      vm.$set(vm.form['@скидки'][this.$node[0].getAttribute('data-idx')], 'дата1' , [s.year, s.month+1, s.date].join('-'));
     },//$(this._hidden).val().replace(/^\s*-/, this.component.item.select.year+'-'); },
   }, param || {}));//{closeOnSelect: true,}
   
@@ -140,6 +159,9 @@ InitForm(item){/// обязательные реактивные поля
     item['@доп.соглашения'].push({});/// новое доп
     item['@доп.соглашения'].forEach((dop)=>{ dop._id = vm.idMaker.next().value; });///
   }
+  if (/*item.id && */!item['@скидки']) item['@скидки'] = [];
+  //~ item[''].forEach((dop)=>{ dop._id = vm.idMaker.next().value; });///
+  //~ item['@скидки'].push({"дата1": (new Date).toISOString().replace(/T.+/, '')});
   return item;
 },
 
@@ -206,7 +228,7 @@ ClearDate(name, val){
   setTimeout(()=>{
     var el = $(`input[name="${ name }"]`, $(vm.$el));
     //~ if(val) vm.form[name] = val;
-    vm.InitDatepicker(el);
+    vm.InitDatePicker(el);
     //~ console.log("ClearDate", el);
   });
 },
@@ -280,7 +302,7 @@ ClearDateDop(name, val){
     setTimeout(()=>{
       var el = $(`input[name="${ name } доп соглашения ${ idx }"]`, $(vm.$el));
       //~ console.log("ClearDateDop", el);
-      vm.InitDatepicker(el, undefined, function(date){
+      vm.InitDatePicker(el, undefined, function(date){
         //~ vm.$set(vm.form['@доп.соглашения'][idx-1], name, undefined);
         //~ setTimeout(()=>{
         if (!vm.form['@доп.соглашения'][idx-1][name]) Materialize.toast('Новое доп соглашение', 3000, 'green-text text-darken-3 green lighten-4 fw500 border animated zoomInUp slow');
@@ -332,6 +354,18 @@ RemoveBtn(confirm){
         Materialize.toast('Договор удален', 3000, 'green-text text-darken-3 green lighten-3 border fw500  animated zoomInUp');
       }
   });
+},
+
+AddDiscount(){///добавить скидку
+  var vm = this;
+  vm.form['@скидки'].push({"месяц": (new Date).toISOString().replace(/T.+/, '')});
+  let idx = vm.form['@скидки'].length - 1;
+  setTimeout(()=>{
+    //~ console.log("AddDiscount", $('.month-picker-discount', $(vm.$el)).eq(idx));
+    vm.InitMonthPickerDiscount($('.month-picker-discount', $(vm.$el)).eq(idx));
+    
+  });
+  //~ vm.InitMonthPickerDiscount($('.month-picker-discount', $(vm.$el)));
 },
 
 }; /// конец methods

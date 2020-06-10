@@ -90,7 +90,7 @@
         <span class-000="chip padd-0-05">дог. {{ row.$договор['номер'] }}</span>
         <h5 class="right iblock blue-text text-darken-3">
           <i class="material-icons fs8">place</i>
-          <span>{{ row.$объект.name }}</span>
+          <span v-if="row.$объект">{{ row.$объект.name }}</span>
         </h5>
       </div>
       <div class="flex-col-sm-8 padd-05" style="">

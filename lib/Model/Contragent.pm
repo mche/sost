@@ -60,7 +60,7 @@ sub сохранить_контрагент {
   
   $data->{new} = eval {$self->сохранить($data)};# || $@;
   $self->app->log->error($@)
-    and return "Ошибка сохранения: ".($@ =~ /duplicate key value violates unique constraint "контрагенты_АТИ_key"/ ? "двойной перевозчик  по АТИ-коду!" : $@)
+    and return "Ошибка сохранения: ".($@ =~ /duplicate key value violates unique constraint "контрагенты_АТИ_key"/ ? "повтор перевозчика  по АТИ-коду!" : $@)
     unless ref $data->{new};
   
   $data->{id}=$data->{new}{id};

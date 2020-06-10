@@ -66,6 +66,15 @@ id1("аренда/договоры/доп.согл.")->id2("аренда/дог�
 */
 );
 
+create table IF NOT EXISTS "аренда/договоры/скидки" (
+  id integer  NOT NULL DEFAULT nextval('{%= $sequence %}'::regclass) primary key,
+  ts  timestamp without time zone NOT NULL DEFAULT now(),
+  uid int, --- автор записи
+  "месяц" date not null, -- 
+    "%" numeric not null, -- процент
+  "коммент" text
+  
+);
 
 create table IF NOT EXISTS "аренда/договоры-помещения" (
   id integer  NOT NULL DEFAULT nextval('{%= $sequence %}'::regclass) primary key,
@@ -325,7 +334,8 @@ select d.*,
   pr.id as "проект/id", ---to_json(pr) as "$проект/json",
   dp.*,
   dp."@кабинеты/id" as "@помещения/id",
-  dop."@доп.соглашения/json", dop."@доп.соглашения/id"
+  dop."@доп.соглашения/json", dop."@доп.соглашения/id",
+  dc."@скидки/json", dc."@скидки/id"
 from 
   "аренда/договоры" d
   join refs r on d.id=r.id2
@@ -354,6 +364,17 @@ from
   ) dp on d.id=dp."договор/id"
   
   left join "аренда/доп.соглашения"/*view*/ dop on d.id=dop."договор/id"
+  
+  left join (--- скидки
+    select
+      jsonb_agg(dc order by dc."месяц") as "@скидки/json",
+      array_agg(d.id order by dc."месяц") as "@скидки/id",
+      d.id as "договор/id"
+    from "аренда/договоры" d
+      join "refs" r on d.id=r.id1
+      join "аренда/договоры/скидки" dc on dc.id=r.id2
+    group by d.id
+  ) dc on dc."договор/id"=d.id
   
 {%= $where || '' %}
 {%= $order_by || 'order by d."дата1" desc, d.id desc  ' %}

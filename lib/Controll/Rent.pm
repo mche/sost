@@ -152,6 +152,13 @@ sub сохранить_договор {
   $c->log->error($dop)
     and return $c->render(json=>{error=>$dop})
     unless $dop && ref $dop;
+    
+  my $discnt = $c->сохранить_скидки($data, $prev);#~ $data->{'@доп.соглашения'} = [
+  #~ $dop ||= $@
+    #~ and 
+  $c->log->error($discnt)
+    and return $c->render(json=>{error=>$discnt})
+    unless $discnt && ref $discnt;
   
   $tx_db->commit;
   $c->model_contragent->почистить_таблицу();# только после связей!{uid=>$c->auth_user->{id}}
@@ -242,6 +249,48 @@ sub сохранить_доп_соглашение {# к договору
   #~ $c->log->error("Доп. соглашение", $c->dumper($r));
   
   return $r;
+}
+
+sub сохранить_скидки {
+  my ($c, $data, $prev) = @_;
+  #~ my %refs = ();
+  $data->{'@скидки'} = [map {
+    my $r = $c->сохранить_скидку($_, $prev);
+    
+    #~ $r ||= $@
+      #~ and $c->log->error($r)
+      #~ and 
+    return $r # $c->render(json=>{error=>$r})
+      unless $r && ref $r;
+    
+    # не тут - в модели
+    #~ my $rr  = $self->связь($data->{id}, $r->{id});
+    #~ $refs{"$rr->{id1}:$rr->{id2}"}++;
+
+    $r;
+  } grep {$_->{'%'}} @{ $data->{'@скидки'} || [] }];
+  
+  $c->model->сохранить_скидки($data, $prev); # там связи с договором и удаление
+  
+}
+
+sub сохранить_скидку {
+  my ($c, $data, $prev) = @_;
+  $data->{uid} = $c->auth_user->{id}
+    unless $data->{id};
+  
+  $data->{'%'} = &Util::numeric($data->{'%'}); #/100;
+  my $r = eval {$c->model->сохранить_скидку($data, $prev)};
+  
+  $r ||= $@
+    #~ and $c->log->error($r)
+    and return $r # $c->render(json=>{error=>$r})
+    unless $r && ref $r;
+  
+  #~ $c->log->error("сохранить_скидку", $c->dumper($r));
+  
+  return $r;
+  
 }
 
 sub расходы_список {
