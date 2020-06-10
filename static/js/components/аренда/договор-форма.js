@@ -84,7 +84,7 @@ InitMonthPickerDiscount(el, param, setCallback){/// для скидок
       if (!s) return;
       //~ console.log("onSet", this.$node[0]);
       //~ if (setCallback) return setCallback([s.year, s.month+1, s.date].join('-'));
-      vm.$set(vm.form['@скидки'][this.$node[0].getAttribute('data-idx')], 'дата1' , [s.year, s.month+1, s.date].join('-'));
+      vm.$set(vm.form['@скидки'][this.$node[0].getAttribute('data-idx')], 'месяц' , [s.year, s.month+1, s.date].join('-'));
     },//$(this._hidden).val().replace(/^\s*-/, this.component.item.select.year+'-'); },
   }, param || {}));//{closeOnSelect: true,}
   
