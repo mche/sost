@@ -170,7 +170,7 @@ from
     from (
 
       select  a."договор/id", "дата"::date,---"месяц"
-        coalesce(dc."%", 0::numeric) as "% скидки",
+        case when "@категории/id"[array_length("@категории/id",1)]=929979 then 0::numeric else coalesce(dc."%", 0::numeric) end as "% скидки",
         "@объекты/id",
         "@категории/id", "@категории/title",
         unnest("суммы безнал"[1\:case when /*array_length("дней", 1) = 1 or*/ "дней оплаты доп"[1] < interval '0 days' then 2 else 1 end]) as "сумма безнал",

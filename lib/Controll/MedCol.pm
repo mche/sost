@@ -237,7 +237,7 @@ sub вопрос {# вопрос выдать и принять
     #~ unless $q;
   
   if ($q && (my $ans = $c->param('ans')) ) {
-    #~ $c->app->log->error("ans: $ans", @{$q->{"sha1"}},  );#Util::indexOf($ans, $q->{"ответы"})
+    $c->log->error("Ответ: сессия $sess->{id}", $c->dumper($q) );#Util::indexOf($ans, $q->{"ответы"})
     my $i;
     $_ eq $ans
       ? ($i = shift(@{$q->{'индексы ответов'} }))

@@ -47,9 +47,11 @@ sub сохранить_контрагент {
     $data->{'реквизиты'} = $json->encode($data->{'реквизиты'})
       if ref $data->{'реквизиты'} eq 'HASH';
     
-    if (my $dup = $self->dbh->selectrow_hashref($self->sth('контрагент/ИНН'), undef, $json->decode($data->{'реквизиты'})->{'ИНН'})) {
-      return  "повтор ИНН >>> ".$dup->{'title'};
-    }
+    #~ if ($data->{'реквизиты'}) {
+      #~ if (my $dup = $self->dbh->selectrow_hashref($self->sth('контрагент/ИНН'), undef, $json->decode($data->{'реквизиты'})->{'ИНН'})) {
+        #~ return  "повтор ИНН >>> ".$dup->{'title'};
+      #~ }
+    #~ }
     
     $k = eval {$self->_update($self->{template_vars}{schema}, $main_table, ["id"], $data)}; #|| 
     $self->app->log->error($@)
@@ -66,8 +68,10 @@ sub сохранить_контрагент {
   $data->{'реквизиты'} = $json->encode($data->{'реквизиты'})
     if ref $data->{'реквизиты'} eq 'HASH';
   
-  if (my $dup = $self->dbh->selectrow_hashref($self->sth('контрагент/ИНН'), undef, $json->decode($data->{'реквизиты'})->{'ИНН'})) {
-    return  "повтор ИНН >>> ".$dup->{'title'};
+  if ($data->{'реквизиты'}) {
+    if (my $dup = $self->dbh->selectrow_hashref($self->sth('контрагент/ИНН'), undef, $json->decode($data->{'реквизиты'})->{'ИНН'})) {
+      return  "повтор ИНН >>> ".$dup->{'title'};
+    }
   }
   
   $data->{new} = eval {$self->сохранить($data)};# || $@;

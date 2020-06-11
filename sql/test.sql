@@ -1,113 +1,65 @@
-WITH param as (
-  select *, to_char(d."дата", 'YYYY') as "год", date_trunc('month', d."дата") as "month"
-  from (VALUES (1, 'январь'), (2, 'февраль'), (3, 'март'), (4, 'апрель'), (5, 'май'), (6, 'июнь'), (7, 'июль'), (8, 'август'), (9, 'сентябрь'), (10, 'октябрь'), (11, 'ноябрь'), (12, 'декабрь'))
-    m(num, "месяц")
-  join (VALUES ('2020-5-2'::date)) d("дата") on m.num=date_part('month', d."дата")
-)
-/*** ЭТО НЕ ПОШЛО, функция не возвращала вставленные строки, вынес вызов функции отдельно перед этим статементом
-num as (---нумерация счетов 
-  select n.*, r.id1
-  from 
-    param,
-    "refs" r
-    join "номера счетов/аренда помещений"(param."дата", ?::int[]массив ид договоров для присвоения номеров/,?uid/) n on n.id=r.id2
-    --- если не нужно присвоение номеров - передать 2 параметр - пустой массив идов договоров []
-)*/
----конец with
-
-select  *  from (
-select
-  pr."реквизиты"||to_jsonb(pr) as "$арендодатель", --- as "арендодатель/реквизиты",
-
-  coalesce(num1."номер", '000')/*(random()*1000)::int*/ as "номер счета",
-  coalesce(num1.ts, now())::date as "дата счета",
-  timestamp_to_json(coalesce(num1.ts, now())) as "$дата счета",
-  
-  coalesce(num2."номер", '000')/*(random()*1000)::int*/ as "номер акта",
-  coalesce(/*num2.ts*/date_trunc('month', num2."месяц")+interval '1 month'-interval '1 day', /*now()*/null)::date as "дата акта",--- на последнее число мес
-  timestamp_to_json(coalesce(/*num2.ts*/(date_trunc('month', num2."месяц")+interval '1 month'-interval '1 day')::timestamp, now())) as "$дата акта",--- на последнее число мес
-  
-  ob.name as "объект",
-  row_to_json(d) as "$договор", 
-  row_to_json(k) as "$контрагент",
-  k.id as "контрагент/id",
-  d."номер!" as "договор/номер",
-  d."дата1" as "договор/дата начала",
-   coalesce(d."дата расторжения", d."дата2") as "договор/дата завершения",
-  k.title as "контрагент/title",
-  coalesce(k."реквизиты",'{}'::jsonb)->>'ИНН' as "ИНН",
-  dp."сумма", replace(dp."сумма"::numeric::text, '.', ',') as "сумма/num",
-  /*** хитрая функция sql/пропись.sql ***/
-  firstCap(to_text(dp."сумма"::numeric, 'рубль', scale_mode => 'int')) as "сумма прописью",
-  ---ARRAY(select (select to_json(a) from (select ('{"Арендная плата за нежилое помещение за '||param."месяц"||' '||param."год"||' г."}')::text[] as "номенклатура", -1::numeric*dp."сумма" as "сумма" ) a)) as "@позиции",
-  dp."@позиции",
-  dp."всего позиций"
-from
-  param
-  join (
-    select d.*,
-      upper(replace(d."номер", '№', '')) as "номер!",
-      timestamp_to_json(coalesce(d."дата договора", d."дата1")::timestamp) as "$дата договора",
-      timestamp_to_json(d."дата1"::timestamp) as "$дата1",
-      timestamp_to_json(d."дата2"::timestamp) as "$дата2"
-      ---case when d."дата расторжения" then false when "продление срока" then true else false end as "продлеваемый договор"
-      ---case when "продление срока" then (now()+interval '1 year')::date else d."дата2" end 
-    from "аренда/договоры" d
-  ) d on param."month" between date_trunc('month', d."дата1") and (date_trunc('month', coalesce(d."дата расторжения", case when d."продление срока" then (now()+interval '1 year')::date else d."дата2" end) + interval '1 month') - interval '1 day') ---только действующие договоры
-  join refs r on d.id=r.id2
-  join "контрагенты" k on k.id=r.id1
-  
-  left join (---арендодатель
-    select pr.*, r.id2
-    from "контрагенты/проекты"  pr
-      join refs r on pr."проект/id"=r.id1
-  ) pr on pr.id2=d.id
-  
-  /*** Waltex/Report.pm.dict.sql ***/
-  ---join "движение ДС/аренда/счета" dp on d.id=dp.id and param."month"=date_trunc('month', dp."дата") and dp."примечание"!~'предоплата'
-  join lateral (
-    select 
-      sum(dp."сумма") as "сумма",
-      jsonb_agg(dp order by dp."order_by") as "@позиции",
-      array_agg(dp."объект/id" order by dp."order_by") as "@объекты/id",
-      count(dp) as "всего позиций"
-    from (
-      select
-        /*-1::numeric**/dp."сумма безнал" as "сумма",
-        dp."объект/id", dp."номер доп.согл.",
-        not 929979=any(dp."категории") as "order_by",
-        case when 929979=any(dp."категории")---ид категории
-          then ('{"Обеспечительный платеж"}')::text[]
-          else ('{"Арендная плата за нежилое помещение за '||param."месяц"||' '||param."год"||' г.' || (case when dp."номер доп.согл." is not null then ' (доп. согл. ' || dp."номер доп.согл."::text || ')' else '' end) || '"}')::text[]
-        end  as "номенклатура"
-      from "движение ДС/аренда/счета" dp
-       --- join "аренда/договоры" dd on dp.id=dd.id
-      where  d.id=dp."договор/id"
-        and param."month"=date_trunc('month', dp."дата")
-        and not 929979::int = any(dp."категории")
-        ---and not coalesce(dd."оплата наличкой", false)
-    ) dp
-  ) dp on true
-  
-  join  "roles" ob on ob.id=dp."@объекты/id"[1]
-  
-  ---нумерация счетов (может быть отключена)
-  left join (
-    select n.*, r.id1
+--- от топ концевых сессий по родителям
+WITH RECURSIVE rc AS (
+   SELECT s.id, /*s.ts,*/ s.id as parent_id, 0::int AS "step"---, s."задать вопросов"
+   FROM "медкол"."сессии" s 
+   left join (---нет дочерней сессии
+    select p.id, r.id1
     from 
-      "refs" r
-      join "счета/аренда/помещения" n on n.id=r.id2
-  ) num1 on d.id=num1.id1 and num1."месяц"=param."month"
-  
-  ---нумерация актов (может быть отключена)
-  left join (
-    select n.*, r.id1
+      "медкол"."связи" r ---on s.id=r.id1
+      join "медкол"."сессии" p on p.id=r.id2
+   ) p on s.id=p.id1
+  where s.id =1056101 ---5828
+    
+   UNION
+   
+   --- к родительской начальной сессии
+   SELECT rc.id, /*c.ts,*/   p.id, rc.step + 1---, c."задать вопросов"
+   FROM rc 
+      join "медкол"."связи" r on rc.parent_id=r.id2
+      join "медкол"."сессии" p on p.id=r.id1
+    ---where c."задать вопросов" is not null--- признак завершенной сессии для вычисления процента
+) ---конец рекурсии
+
+/*select *
+from (
+    select q.id, count(q.id) as "cnt",
+      sum(p."ответ")::numeric/count(q.id)::numeric as "правильность ответов"
+      ---max(q.ts) as "вопрос/ts/last"---, r.id1 --- ид сессии
     from 
-      "refs" r
-      join "акты/аренда/помещения" n on n.id=r.id2
-  ) num2 on d.id=num2.id1 and num2."месяц"=param."month"
-  
-  ---left join num on d.id=num.id1
- WHERE (  not coalesce((coalesce(k."реквизиты",'{}'::jsonb)->'физ. лицо'), 'false')::boolean   )
-order by d."дата1" desc, d.id desc  
-) s
+      rc --- все сессии цепочки
+      join "медкол"."связи" r on rc.parent_id=r.id1
+      join "медкол"."процесс сдачи" p on p.id=r.id2
+      join "медкол"."связи" r2 on p.id=r2.id1
+      join "медкол"."тестовые вопросы" q on q.id=r2.id2
+    where p."ответ" is not null
+    group by q.id
+) pq
+order by pq."правильность ответов"desc, pq."cnt";
+*/
+--- связать "сессия" -> "процесс сдачи" -> "тестовые вопросы"
+select  q.id, pq.*
+from "медкол"."названия тестов" t
+  join "медкол"."связи" r1 on t.id=r1.id1
+  join "медкол"."сессии" s on s.id=r1.id2
+  join "медкол"."связи" r2 on t.id=r2.id1
+  join "медкол"."тестовые вопросы" q on q.id=r2.id2
+  left join (-- которые были
+    select q.id, count(q.id) as "cnt",
+      sum(p."ответ")::numeric/count(q.id)::numeric as "правильность ответов",
+      array_agg(rc.parent_id) as "@сессии/id"
+      ---max(q.ts) as "вопрос/ts/last"---, r.id1 --- ид сессии
+    from 
+      rc --- все сессии цепочки
+      join "медкол"."связи" r on rc.parent_id=r.id1
+      join "медкол"."процесс сдачи" p on p.id=r.id2
+      join "медкол"."связи" r2 on p.id=r2.id1
+      join "медкол"."тестовые вопросы" q on q.id=r2.id2
+    where rc.parent_id<>1056101 and p."ответ" is not null
+    group by q.id
+  ) pq on q.id=pq.id---s.id=pq.id1
+where s.id=1056101
+  ---and  q.id<>coalesce(pq.id, 0)  ----pq.id is null 
+order by ---pq.id is not null /*не задавались в начало*/, 
+pq."правильность ответов"desc, pq."cnt",/*pq."вопрос/ts/last",*/ random()
+limit 1
+;
