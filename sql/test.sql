@@ -8,7 +8,7 @@ WITH RECURSIVE rc AS (
       "медкол"."связи" r ---on s.id=r.id1
       join "медкол"."сессии" p on p.id=r.id2
    ) p on s.id=p.id1
-  where s.id =1056101 ---5828
+  where s.id =1056164 ---5828
     
    UNION
    
@@ -43,6 +43,16 @@ from "медкол"."названия тестов" t
   join "медкол"."сессии" s on s.id=r1.id2
   join "медкол"."связи" r2 on t.id=r2.id1
   join "медкол"."тестовые вопросы" q on q.id=r2.id2
+  
+  left join (---  исключить вопросы текущей сессии
+    select q.id, s.id as "сессия/id"
+    from "медкол"."сессии" s
+      join "медкол"."связи" r on s.id=r.id1
+      join "медкол"."процесс сдачи" p on p.id=r.id2
+      join "медкол"."связи" r2 on p.id=r2.id1
+      join "медкол"."тестовые вопросы" q on q.id=r2.id2
+  ) qs on qs."сессия/id"=s.id and q.id=qs.id
+  
   left join (-- которые были
     select q.id, count(q.id) as "cnt",
       sum(p."ответ")::numeric/count(q.id)::numeric as "правильность ответов",
@@ -54,10 +64,11 @@ from "медкол"."названия тестов" t
       join "медкол"."процесс сдачи" p on p.id=r.id2
       join "медкол"."связи" r2 on p.id=r2.id1
       join "медкол"."тестовые вопросы" q on q.id=r2.id2
-    where rc.parent_id<>1056101 and p."ответ" is not null
+    where p."ответ" is not null
     group by q.id
   ) pq on q.id=pq.id---s.id=pq.id1
-where s.id=1056101
+where s.id=1056164
+  and qs.id is null
   ---and  q.id<>coalesce(pq.id, 0)  ----pq.id is null 
 order by ---pq.id is not null /*не задавались в начало*/, 
 pq."правильность ответов"desc, pq."cnt",/*pq."вопрос/ts/last",*/ random()

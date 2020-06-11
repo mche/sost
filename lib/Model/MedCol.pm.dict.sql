@@ -410,7 +410,7 @@ from "медкол"."названия тестов" t
       join "медкол"."процесс сдачи" p on p.id=r.id2
       join "медкол"."связи" r2 on p.id=r2.id1
       join "медкол"."тестовые вопросы" q on q.id=r2.id2
-  ) qs on qs."сессия/id"=s.id
+  ) qs on qs."сессия/id"=s.id  and q.id=qs.id
   
   left join (-- которые были
     select q.id, count(q.id) as "cnt",
@@ -427,9 +427,9 @@ from "медкол"."названия тестов" t
     group by q.id
   ) pq on q.id=pq.id---s.id=pq.id1
 where s.id=?
-  ---and qs.id is null
+  and qs.id is null
   ---and  q.id<>coalesce(pq.id, 0)  ----pq.id is null 
-order by pq.id is not null /*не задавались в начало*/,  pq."правильность ответов"desc, pq."cnt",/*pq."вопрос/ts/last",*/ random()
+order by pq.id is not null /*не задавались в начало*/, qs.id is not null /*не задавались в начало*/, pq."правильность ответов"desc, pq."cnt",/*pq."вопрос/ts/last",*/ random()
 limit 1
 ;
 
