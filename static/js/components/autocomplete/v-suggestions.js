@@ -152,7 +152,7 @@ onBlur(){
 
 onFocus(){
   var vm = this;
-  if (vm.inputQuery.length) vm.QueryItems(true);
+  ////косяк? if (vm.inputQuery.length) vm.QueryItems(true);
   //~ vm.showItems = true;
   //~ vm.$emit('focus',vm);
 },

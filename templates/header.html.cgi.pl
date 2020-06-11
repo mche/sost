@@ -23,12 +23,12 @@ div({-class=>"header clearfix animated slideInDown",},
 
 nav({-class=>"top", -style=>"box-shadow: none;"},
 div({-class=>"nav-wrapper valign-wrapper",},
-  div({-class=>"logo left",},
+  div({-class=>"logo left  animated slideInLeft slow",},
     #~ a({-href000=>"/", -class=>"brand-logo1 btn-floating btn-large white left-side-nav", 'data-activates'=>"left-side-top-nav", -href=>"javascript:",},
       #~ img({-src=>"/apple-touch-icon.png", -alt=>"", -style=>"width:100%; vertical-align: middle;"}),
     #~ ),
-    a({-class=>"left-side-nav", 'data-activates'=>"left-side-top-nav", -href=>"javascript:",},
-      '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 152 152" style="height:3rem;" class="white circle"><use xlink:href="/i/img.svg#logoU"></use></svg>',
+    a({-class=>"left-side-nav", 'data-activates'=>"left-side-top-nav", -href=>"javascript:",},#
+      '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 152 152" style="height:3rem;" class="white circle animated rotatIng delay-1s slow"><use xlink:href="/i/img.svg#logoU"></use></svg>',
     ),
   ),
   

@@ -3,29 +3,29 @@ create table IF NOT EXISTS "{%= $schema %}"."{%= $tables->{main} %}" (
   id integer  NOT NULL DEFAULT nextval('{%= $sequence %}'::regclass) primary key,
   ts  timestamp without time zone NOT NULL DEFAULT now(),
   title text not null unique
----  "наименование" text, --- полное
 ---  "реквизиты" jsonb,
----  "в лице" text,
----  "расшифровка подписи"
----  "на основании" text --- действует
   /* alter table "контрагенты" add column "АТИ" text unique; */
 );
 
-/*
-CREATE OR REPLACE FUNCTION "контрагенты/проверка ИНН"(id integer, attrs jsonb реквизиты)
+
+CREATE OR REPLACE FUNCTION "контрагенты/проверка ИНН"(id integer, attrs jsonb)---реквизиты
 RETURNS BOOLEAN AS
 $func$
 BEGIN
+
+IF $2 is null or $2->>'ИНН' is null or $2->>'ИНН'='' THEN
+  RETURN true;
+END IF;
+
 RETURN NOT EXISTS (
-  --~ select p.tel
-  --~ from ( select right(regexp_replace(unnest(tel), '\D+', '', 'g'), 10) as tel from "профили" where id<>pid) p
-    --~ join (select right(regexp_replace(unnest(tels), '\D+', '', 'g'), 10) as tel) c on p.tel=c.tel
-  
-  
+  select k.id
+  from "контрагенты" k
+  where ($1 is null or k.id!=$1) and coalesce(coalesce(k."реквизиты",'{}'::jsonb)->>'ИНН', '#'||(k.id::text))=coalesce($2,'{}'::jsonb)->>'ИНН'
 );
 END;
 $func$ LANGUAGE PLpgSQL;
 
+/*
 ALTER TABLE "контрагенты" ADD CONSTRAINT "контрагенты/проверка ИНН" CHECK ("контрагенты/проверка ИНН"("id", "реквизиты"));
 */
 
@@ -217,7 +217,8 @@ select json_agg(u)
 from "изменить связи"(?, ?, ?) u;
 
 @@ контрагент/ИНН
+--- поиск по инн
 select *
 from "контрагенты"
-where coalesce(coalesce("реквизиты",'{}'::jsonb)->>'ИНН', '0'||(id::text))=?
+where coalesce(coalesce("реквизиты",'{}'::jsonb)->>'ИНН', '#'||(id::text))=?
 ;
