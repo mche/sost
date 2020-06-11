@@ -47,15 +47,16 @@ sub сохранить_контрагент {
     $data->{'реквизиты'} = $json->encode($data->{'реквизиты'})
       if ref $data->{'реквизиты'} eq 'HASH';
     
-    #~ if ($data->{'реквизиты'}) {
-      #~ if (my $dup = $self->dbh->selectrow_hashref($self->sth('контрагент/ИНН'), undef, $json->decode($data->{'реквизиты'})->{'ИНН'})) {
-        #~ return  "повтор ИНН >>> ".$dup->{'title'};
-      #~ }
-    #~ }
+    if ($data->{'реквизиты'}) {
+      if (my $dup = $self->dbh->selectrow_hashref($self->sth('контрагент/ИНН'), undef, $json->decode($data->{'реквизиты'})->{'ИНН'})) {
+        return  "повтор ИНН >>> ".$dup->{'title'}
+          if $dup->{id} ne $data->{id};
+      }
+    }
     
     $k = eval {$self->_update($self->{template_vars}{schema}, $main_table, ["id"], $data)}; #|| 
     $self->app->log->error($@)
-      and return "Ошибка сохранения: ". $@
+      and return $@ =~ /violates unique constraint "контрагенты_АТИ_key"/ ? "повтор перевозчика  по АТИ-коду!"  :  "Ошибка сохранения: ".$@
       #~ unless ref $k;
       if $@;
     return $k
@@ -76,7 +77,7 @@ sub сохранить_контрагент {
   
   $data->{new} = eval {$self->сохранить($data)};# || $@;
   $self->app->log->error($@)
-    and return "Ошибка сохранения: ".($@ =~ /violates unique constraint "контрагенты_АТИ_key"/ ? "повтор перевозчика  по АТИ-коду!" :  $@)
+    and return $@ =~ /violates unique constraint "контрагенты_АТИ_key"/ ? "повтор перевозчика  по АТИ-коду!" : "Ошибка сохранения: ".$@
     unless ref $data->{new};
   
   $data->{id}=$data->{new}{id};
