@@ -766,6 +766,7 @@ sub map_grep_mode {
         v-uploader.js
         js/c/object/v-select-object.js
         js/c/autocomplete/v-select.js
+        js/c/project/list.js
         js/c/waltex/report/аренда/форма.js
         date-between.js
         js/c/waltex/report/table.js
@@ -784,6 +785,7 @@ sub map_grep_mode {
         js/c/object/v-select-object.html
         js/c/autocomplete/v-select.html
         js/c/waltex/report/аренда/форма.html
+        js/c/project/list.html
         js/c/date/between.html
         js/c/waltex/report/table.html
         )],

@@ -29,6 +29,8 @@
       <a ng-click="ctrl.ToggleColumn1('отчет')" href="javascript:" class="btn-flat padd-0-05 z-depth-1 teal darken-3 white-text"><i class="material-icons fs18">account_balance</i></a>
       <span>Отчет по арендаторам</span>
     </h2>
+    <h3>Арендодатель</h3>
+    <project-list ng-if="ctrl.ready" data-param="ctrl.param" data-on-select-project="ctrl.SelectProject(p)" class="block row"></project-list>
     <report-form ng-if="ctrl.ready['АрендаОтчет']" data-param=" ctrl.param" data-on-refresh="ctrl.RefreshReport()"></report-form>
     <report-table ng-if="ctrl.param.ready" data-param=" ctrl.param"></report-table>
   </div>

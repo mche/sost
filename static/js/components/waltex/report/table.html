@@ -99,7 +99,7 @@
           <span class="fs7 grey-text" ng-class-000="{'transparent-text-000': m[1] == '00'}"> {{ m[1] }}</span>
         </div>
         <!-- финальная позиция -->
-        <div ng-if=" tr['колонки'][td.key || td.title].id" ng-init=" m = $c.MoneySplit(tr['колонки'][td.key || td.title].sum) " class="card white right-000"  style="padding: 0rem 0.3rem; margin:0; /*width:100%;*/">
+        <div ng-if=" tr['колонки'][td.key || td.title].id" ng-init=" m = $c.MoneySplit(tr['колонки'][td.key || td.title].sum) " class="card white right-000 animated zoomIn"  style="padding: 0rem 0.3rem; margin:0; /*width:100%;*/">
           <div class="right bold nowrap" style="padding-left:1rem;" ng-class="{'orange-text text-darken-4': parseInt(tr.sign) < 0, 'green-text text-darken-4': parseInt(tr.sign) > 0}">
             <i ng-show="parseInt(tr.sign) > 0" class="material-icons ">add_circle_outline</i>
             <i ng-show="parseInt(tr.sign) < 0" class="material-icons ">remove_circle_outline</i>

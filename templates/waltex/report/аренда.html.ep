@@ -4,6 +4,8 @@
 
 <div ng-app="Отчет::Аренда"   ng-controller="Controll as ctrl">
 <div ng-if="ctrl.ready">
+  <h3>Арендодатель</h3>
+  <project-list data-param="ctrl.param" data-on-select-project="ctrl.SelectProject(p)" class="block row"></project-list>
   <report-form data-param=" ctrl.param" data-on-refresh="ctrl.Refresh()"></report-form>
   <report-table ng-if="ctrl.param.ready" data-param=" ctrl.param"></report-table>
 </div>

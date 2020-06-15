@@ -5,7 +5,7 @@
 
 var moduleName = "Аренда";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['TemplateCache', /*'Util', 'appRoutes',*/ 'Аренда::Объекты::Таблица', 'Аренда::Договоры::Таблица',  'EventBus', 'Отчет::Аренда/Форма','ReportTable']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['TemplateCache', /*'Util', 'appRoutes',*/ 'Аренда::Объекты::Таблица', 'Аренда::Договоры::Таблица',  'EventBus', 'Отчет::Аренда/Форма','ReportTable', 'ProjectList']);//'ngSanitize',, 'dndLists'
 
 module.controller('Controll', function  (/*$scope, $q,*/ $timeout, $element, /*$http ,*/ appRoutes, TemplateCache,  $КомпонентАрендаОбъектыТаблица, $КомпонентАрендаДоговорыТаблица, $EventBus) {
   var ctrl = this;
@@ -26,6 +26,13 @@ module.controller('Controll', function  (/*$scope, $q,*/ $timeout, $element, /*$
 
   var tCache = TemplateCache.split(appRoutes.urlFor('assets', 'аренда.html'), 1);
   
+  tCache.then(function(proms){
+    //~ $timeout(function(){ ctrl.Vue(); });
+    ctrl.Vue(); 
+    ctrl.ready  = {};
+    ctrl.ready['АрендаОтчет'] = true;
+  });
+  
   ctrl.$onInit = function(){
     ctrl.col1 = 'объекты';/// отображение колонок
     ctrl.col2 = 'договоры';/// отображение колонок
@@ -41,14 +48,6 @@ module.controller('Controll', function  (/*$scope, $q,*/ $timeout, $element, /*$
       },
       "проект":{"id":0},"кошелек":{"без сохранения":true,"проект":{"id":0,"ready":true},"title":""},"кошелек2":{"без сохранения":true,"title":""},"контрагент":{"без сохранения":true},"профиль":{},"объект":{"проект":{"id":0,"ready":true}},"все проекты":true,"место интервалов":"столбцы","все контрагенты":true,"все кошельки":false,"все кошельки2":false,"все профили":false,"все объекты":false,"все пустое движение":false,
     };
-    
-    
-    tCache.then(function(proms){
-      //~ $timeout(function(){ ctrl.Vue(); });
-      ctrl.Vue(); 
-      ctrl.ready  = {};
-      ctrl.ready['АрендаОтчет'] = true;
-    });
     
   };
   
@@ -77,6 +76,26 @@ ToggleColumn2(name){/// правая колонка
   }
   else if (ctrl.col2  == name) ctrl.col1 = ctrl._col1;
   ctrl.col2 = name;
+},
+
+SelectProject(p){
+  
+  //~ ctrl.param["проект"] = undefined;
+  //~ ['кошелек', /*'объект'*/].map(function(name){
+    //~ $scope.param[name]["проект"].ready = false;
+    //~ $scope.param[name].id = undefined;
+    //~ $scope.param[name].title = '';
+    
+    $timeout(function(){
+      //~ ctrl.param["проект"] = p || 0; // 0 - все проекты
+      if (p) ctrl.param['проект'].id = p.id;
+      else ctrl.param['проект'].id = 0;
+      ctrl.param['проект'].ready = true;
+    });
+  //~ });
+  
+  //~ if(!p) return;
+  
 },
 
 RefreshReport(){
