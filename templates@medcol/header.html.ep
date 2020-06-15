@@ -1,5 +1,5 @@
 <header>
-  <div class="header clearfix">
+  <div class="header clearfix animated slideInDown">
     <nav class="top green darken-3" style="box-shadow: none;">
       <div class="nav-wrapper valign-wrapper">
         <div class="logo left animated slideInLeft slow0000">

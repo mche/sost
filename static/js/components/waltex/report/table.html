@@ -8,21 +8,32 @@
   <thead>
     <tr class="teal lighten-4">
       <th class="">
-
-        <span ng-if="!$c.IsVertTable() ">Движение / категории</span>
-        <span ng-if=" $c.IsVertTable() && !$c.param['все кошельки'] && !$c.param['все контрагенты'] && !$c.param['все профили']">Интервалы / категории</span>
-        <span ng-if=" $c.IsVertTable() && $c.param['все кошельки']">Кошельки / категории</span>
-        <span ng-if=" $c.IsVertTable() && $c.param['все контрагенты']">Контрагенты / категории</span>
-        <span ng-if=" $c.IsVertTable() && $c.param['все профили']">Сотрудники / категории</span>
+        <div ng-show="$c.IsVertTable()" class="input-field chip padd-0-05 shadow-inset-10 hoverable right">
+          <input id="chb-non-empty-rows" type="checkbox" class="" ng-model=" $c.chbNonEmptyRows " >
+          <label for="chb-non-empty-rows" class="before-yellow before-lighten-4 brown-text text-darken-3 chip yellow lighten-4 hoverable" style="padding-left:16px;"></label>
+          <label for="chb-non-empty-rows" class=""><h6 class="inline" style=""><span>Непустой приход/расход</span></h6></label>
+        </div>
+        
+        <h4>
+          <span ng-if="!$c.IsVertTable() ">Движение / категории</span>
+          <span ng-if=" $c.IsVertTable() && !$c.param['все кошельки'] && !$c.param['все контрагенты'] && !$c.param['все профили']">Интервалы / категории</span>
+          <span ng-if=" $c.IsVertTable() && $c.param['все кошельки']">Кошельки / категории</span>
+          <span ng-if=" $c.IsVertTable() && $c.param['все контрагенты']">Контрагенты / категории</span>
+          <span ng-if=" $c.IsVertTable() && $c.param['все профили']">Сотрудники / категории</span>
+        </h4>
       </th>
       <th  ng-if="$c.IsVertTable()" class="right-align">
-        <span class="">Остаток на начало {{ $c.param['все контрагенты'] || $c.param['все кошельки'] ? 'периода' : 'интервала'}}</span>
+        <h4>
+          <span class="">Остаток на начало {{ $c.param['все контрагенты'] || $c.param['все кошельки'] ? 'периода' : 'интервала'}}</span>
+        </h4>
         <!---span class="chip">{{ $c.param['дата']['формат'][0]}}</span--->
       </th>
-      <th ng-repeat="th in $c.data['колонки']" class="right-align" ng-class="{'green lighten-3 green-text text-darken-3': th.title == 'Приход' || th.title == 'Начислено', 'orange lighten-4 orange-text text-darken-4': th.title == 'Расход' || th.title == 'Выплачено',}">
-        <i ng-show=" th.title == 'Приход' || th.title == 'Начислено' " class="material-icons ">add_circle_outline</i>
-        <i ng-show=" th.title == 'Расход' || th.title == 'Выплачено' " class="material-icons ">remove_circle_outline</i>
-        <span>{{th.title}}</span>
+      <th ng-repeat="th in $c.data['колонки']" class="right-align" ng-class="{'green lighten-3': th.title == 'Приход' || th.title == 'Начислено', 'orange lighten-4': th.title == 'Расход' || th.title == 'Выплачено',}">
+        <h4 ng-class="{'green lighten-3 green-text text-darken-3': th.title == 'Приход' || th.title == 'Начислено', 'orange lighten-4 orange-text text-darken-4': th.title == 'Расход' || th.title == 'Выплачено',}">
+          <i ng-show=" th.title == 'Приход' || th.title == 'Начислено' " class="material-icons ">add_circle_outline</i>
+          <i ng-show=" th.title == 'Расход' || th.title == 'Выплачено' " class="material-icons ">remove_circle_outline</i>
+          <span>{{th.title}}</span>
+        </h4>
       </th>
         
       <th class="right-align">
@@ -34,10 +45,15 @@
           <span>Всего</span>
           <span class="right">Сальдо {{$c.param['все кошельки'] ? 'на '+$c.param['дата']['формат'][1] : ''}}</span>
         </div-->
-        <span  class="">Всего за {{ $c.param['все контрагенты'] || $c.param['все кошельки'] || !$c.IsVertTable() ? 'период' : 'интервал'}}</span>
+        <h4>
+          <span  class="">Всего за {{ $c.param['все контрагенты'] || $c.param['все кошельки'] || !$c.IsVertTable() ? 'период' : 'интервал'}}</span>
+        </h4>
+        
       </th>
       <th class="">
-        <span ng-if="$c.IsVertTable()" class="right">Отстаток на конец {{ $c.param['все контрагенты'] || $c.param['все кошельки'] ? 'периода' : 'интервала'}}</span>
+        <h4>
+          <span ng-if="$c.IsVertTable()" class="right">Отстаток на конец {{ $c.param['все контрагенты'] || $c.param['все кошельки'] ? 'периода' : 'интервала'}}</span>
+        </h4>
         <!--span class="chip">{{$c.param['дата']['формат'][1]}}</span-->
       </th>
     
@@ -55,16 +71,19 @@
       <td></td>
       <td class="right-align" ></td>
     </tr--->
-    <tr ng-repeat="tr in $c.data['строки']" ng-class="{'orange lighten-3': !$c.IsVertTable() && tr.sign < 0, 'green lighten-3': !$c.IsVertTable() && tr.sign > 0}" ng-style="$c.TrStyle(tr)">
+    <!------>
+    <tr ng-repeat="tr in $c.data['строки'] | filter: $c.RowsFilter " ng-class="{'orange lighten-3': !$c.IsVertTable() && tr.sign < 0, 'green lighten-3': !$c.IsVertTable() && tr.sign > 0}" ng-style="$c.TrStyle(tr)">
       <td ng-style="$c.TitleStyle(tr)">
-        <h5 ng-if="tr.title"><a ng-click="$c.ToggleRow(tr, $index)" href="javascript:" class="hover-shadow3d" ng-class="{'orange-text text-darken-4': tr['колонки'] && !tr['колонки'].hasOwnProperty('-1') && tr.sign < 0}">
+        <h5 ng-if="!!tr.title" ng-class="{'animated slideInDown': !tr.expand && !tr.child_rows,}">
+          <a ng-click="$c.ToggleRow(tr)" href="javascript:" class="hover-shadow3d" ng-class="{'orange-text text-darken-4': tr['колонки'] && !tr['колонки'].hasOwnProperty('-1') && tr.sign < 0}" title-000="">
             <i class="material-icons">{{tr.expand ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}</i>
             <!--i class="material-icons" ng-if="tr.expand === true ">keyboard_arrow_up</i-->
             <span>{{$c.TitleFormat(tr)}}</span>
             <i ng-if=" tr.title == 'приход' " class="material-icons">add_circle_outline</i>
             <i ng-if=" tr.title == 'расход' " class="material-icons">remove_circle_outline</i>
-        </a></h5>
-        <div ng-if="tr['категория']" class="right">
+          </a>
+        </h5>
+        <div ng-if="tr['категория']" class="right animated slideInLeft">
           <span ng-repeat="c in tr['категория'] track by $index" class="breadcrumb brown-text text-darken-2"><span class="chip shadow-inset-10">{{c}}</span></span>
         </div>
       </td>
@@ -74,7 +93,7 @@
           <span class="fs7 grey-text" ng-class-000="{'transparent-text-000': m[1] == '00'}"> {{ m[1] }}</span>
         </div>
       </td>
-      <td ng-repeat="td in $c.data['колонки']" ng-class="{'right-align': !tr['колонки'][td.key || td.title].id}" style="display: table-cell;" title="{{ tr['примечание'] }}">
+      <td ng-repeat=" td in $c.data['колонки'] " ng-class="{'right-align': !tr['колонки'][td.key || td.title].id}" style="display: table-cell;" title="{{ tr['примечание'] }}">
         <div ng-if="!tr['колонки'][td.key || td.title].id" ng-init=" m = $c.MoneySplit(tr['колонки'][td.key || td.title]) " ng-class="{'orange-text text-darken-4': !$c.IsVertTable() && tr.sign < 0, 'green-text text-darken-4': !$c.IsVertTable() && tr.sign > 0}" class="nowrap"><!--{{ Util.money() }}-->
           <span>{{ m[0] }}</span>
           <span class="fs7 grey-text" ng-class-000="{'transparent-text-000': m[1] == '00'}"> {{ m[1] }}</span>
@@ -166,7 +185,7 @@
         </div>
       </td>
       <td ng-init=" m = $c.MoneySplit(tr['всего'])">
-        <div ng-if="!$c.IsVertTable() && tr.level" ng-hide-000=" Util.numeric(tr['всего']) === 0 " class="right bold nowrap">
+        <div ng-if="!$c.IsVertTable() && tr.level" ng-hide-000=" Util.numeric(tr['всего']) === 0 " class="right bold nowrap" ng-class="$c.PlusMinusClass(tr.sign)">
           <!--{{ Util.money() }}-->
           <span>{{ m[0] }}</span>
           <span class="fs7 grey-text" ng-class-000="{'transparent-text-000': m[1] == '00'}"> {{ m[1] }}</span>
@@ -198,7 +217,7 @@
           <!--span class="right000 bold chip z-depth-1" ng-class="$c.PlusMinusClass($c.data['сальдо']['начало'], true)" title="{{ 'Общий остаток на '+ $c.param['дата']['формат'][0]}}">{{ Util.money($c.data['сальдо']['начало']) || '0,00'}}</span-->
           <!--span class="fs10">Общий остаток на {{$c.param['дата']['формат'][0]}}</span--->
           <span>{{ m[0] }}</span>
-          <span class="fs8 grey-text" ng-class-000="{'transparent-text-000': m[1] == '00'}"> {{ m[1] }}</span>
+          <span class="fs8 grey-text"> {{ m[1] }}</span>
         </div>
       </td>
       <td ng-if=" $c.IsVertTable()" class="right-align" >
@@ -209,8 +228,8 @@
           <span class="fs8 grey-text" ng-class-000="{'transparent-text-000': m[1] == '00'}"> {{ m[1] }}</span>
         </div>
       </td>
-      <td ng-repeat="td in $c.data['колонки']" class="right-align">
-        <div ng-init=" m = $c.MoneySplit($c.data['сальдо']['начало']) " class="nowrap" ng-class="$c.PlusMinusClass($c.data['сальдо']['колонки'][td.key || td.title])"><!--{{ Util.money($c.data['сальдо']['колонки'][td.key || td.title]) }}-->
+      <td ng-repeat="td in $c.data['колонки']" class="right-align" title="{{ td | json }}">
+        <div ng-if="td.sum !== undefined " ng-init=" m = $c.MoneySplit(td.sum) " class="nowrap" ng-class="$c.PlusMinusClass(td.sum)"><!--{{ Util.money($c.data['сальдо']['колонки'][td.key || td.title]) }}-->
           <span>{{ m[0] }}</span>
           <span class="fs8 grey-text" ng-class-000="{'transparent-text-000': m[1] == '00'}"> {{ m[1] }}</span>
         </div>

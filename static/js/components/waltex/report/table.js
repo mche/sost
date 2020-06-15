@@ -41,10 +41,16 @@ var Component = function  ($scope, $timeout, $http, $q, $element, appRoutes, Uti
     
   };
   
+  $c.RowsFilter = function(tr){
+    //~ console.log("RowsFilter"/*!tr['колонки'].hasOwnProperty('-1')*/);
+    if (!$c.chbNonEmptyRows) return true;
+    return $c.IsVertTable() &&  tr['колонки'] && !!(tr['колонки'][1] ||  tr['колонки'][-1]);
+  };
+  
   $c.FilterSign = function(it){return it.hasOwnProperty('sign'); };
   $c.IsVertTable = function(){
     if($c.data.hasOwnProperty('это вертикальная таблица')) return $c.data['это вертикальная таблица'];
-    $c.data['это вертикальная таблица'] = $c.data['колонки'] && $c.data['колонки'].filter($c.FilterSign).length;//  [0] && $c.data['колонки'][0].title == 'Приход';
+    $c.data['это вертикальная таблица'] = !!($c.data['колонки'] && $c.data['колонки'].filter($c.FilterSign).length);//  [0] && $c.data['колонки'][0].title == 'Приход';
     return $c.data['это вертикальная таблица'];
   };
   
@@ -117,6 +123,10 @@ var Component = function  ($scope, $timeout, $http, $q, $element, appRoutes, Uti
         $c.data['строки'].splice(idx+1, 0, ...resp.data);///spliceArray
         tr.child_rows = resp.data;
         tr.expand = true;
+        
+      }, function(err){
+        console.log('Ошибка загрузки строки', err);
+        Materialize.toast('Ошибка загрузки данных: '.err.status, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
         
       });
     

@@ -28,7 +28,7 @@ div({-class=>"nav-wrapper valign-wrapper",},
       #~ img({-src=>"/apple-touch-icon.png", -alt=>"", -style=>"width:100%; vertical-align: middle;"}),
     #~ ),
     a({-class=>"left-side-nav", 'data-activates'=>"left-side-top-nav", -href=>"javascript:",},#
-      '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 152 152" style="height:3rem;" class="white circle animated rotatIng delay-1s slow"><use xlink:href="/i/img.svg#logoU"></use></svg>',
+      '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 152 152" style="height:3rem;" class="white circle animated rotatIng delay-1s-000 slower"><use xlink:href="/i/img.svg#logoU"></use></svg>',
     ),
   ),
   
