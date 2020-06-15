@@ -21,7 +21,7 @@ module.controller('Controll',  function(/*$scope, $attrs, $element,*/ $timeout, 
     //~ ctrl.param['контрагент'] = {"без сохранения": true};
     //~ ctrl.param['профиль'] = {};
     //~ ctrl.param['объект'] = {"проект": {"id":0, "ready":true}};
-    ctrl.param['все проекты'] = true;
+    //~ ctrl.param['все проекты'] = true;
     
     
     TemplateCache.split(appRoutes.url_for('assets', 'деньги/отчет/аренда.html'), 1)

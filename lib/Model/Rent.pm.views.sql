@@ -142,6 +142,8 @@ select d.id  as "договор/id", d.ts as "договор/ts", sum."дата"
   --~ row_to_json(ob) as "$объект/json", ob.id as "объект/id", ob.name as "объект",
   --~ null::int as "кошелек2", --- left join
   --~ null::text as "профиль", null::int as "профиль/id",
+  array[[pr."name", null], [null, null]]::text[][] as "кошельки", ---  проект+кошелек, ...
+  array[[pr."id", null], [null, null]]::int[][] as "кошельки/id", ---  проект+кошелек, ...
   --~ null::text[][] as "кошельки", --- пока не знаю
   --~ null::int[][] as "кошельки/id",  --- пока не знаю
   'счет по дог. ' || d."номер" || case when sum."номер доп.согл." is not null then '(доп. согл. ' || sum."номер доп.согл."::text ||')' else E'' end || ' ★ ' || ob.name || E'\n' || coalesce(d."коммент", ''::text) as "примечание"
@@ -151,6 +153,11 @@ from
   
   join refs rk on d.id=rk.id2
   join "контрагенты" k on k.id=rk.id1
+  
+  join refs rpr on d.id=rpr.id2 -- проекты-арендодатели
+  join "проекты" pr on pr.id=rpr.id1
+  --~ join refs rp on p.id=rp.id1
+  --~ join "кошельки" w on w.id=rp.id2
   
   
   join (-- суммы в мес по договору и доп согл
