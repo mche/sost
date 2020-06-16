@@ -154,8 +154,11 @@ from
   join refs rk on d.id=rk.id2
   join "контрагенты" k on k.id=rk.id1
   
-  join refs rpr on d.id=rpr.id2 -- проекты-арендодатели
-  join "проекты" pr on pr.id=rpr.id1
+  left join (-- проекты-арендодатели
+    select p.*, r.id2
+    from refs r
+      join "проекты" p on p.id=r.id1
+  ) pr on d.id=pr.id2 
   --~ join refs rp on p.id=rp.id1
   --~ join "кошельки" w on w.id=rp.id2
   
