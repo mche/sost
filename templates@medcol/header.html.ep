@@ -2,7 +2,7 @@
   <div class="header clearfix animated slideInDown">
     <nav class="top green darken-3" style="box-shadow: none;">
       <div class="nav-wrapper valign-wrapper">
-        <div class="logo left animated slideInLeft slow0000">
+        <div class="logo left animated slideInUp slow0000">
           <a class="z-depth-3-000 btn-floating btn-large grey lighten-3 left-side-nav" data-activates="left-side-top-nav" href="/" ><img alt="" src="/i/medcol.png" style="width:70%; vertical-align: middle;"></a>
         </div>
         
@@ -10,9 +10,9 @@
             <span class="white-text"><%= stash('header-title') || title %></span>
             <span class="green-text-darken-1"> • <%= (stash('Проект') // config('Проект')) %></span><!-- 〉-->
           </h1>
-          
-          <div class="" style="position:absolute; right:0.5rem;"><%= stash('профиль') && include('header-profile-right') %></div>
-        
+% if (stash('профиль')) {
+          <div class="hide-on-small-only helmet white" style="position:absolute; right:0.5rem; bottom:0;"><%=  include('header-profile-right') %></div>
+% }
       </div>
     
     </nav>
@@ -20,3 +20,6 @@
   </div>
   
 </header>
+% if (stash('профиль')) {
+<div class="hide-on-med-and-up right chip" style=""><%= include('header-profile-right') %></div>
+% }

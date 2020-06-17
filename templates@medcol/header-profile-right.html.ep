@@ -1,5 +1,5 @@
 % my $профиль=stash('профиль');
-<div class="chip ">
+<div class="chip-000 ">
 <div class="input-field">
 %# if ($профиль->{'логин'}) {
   <span class="fw100"><%= $профиль->{'логин'} ? 'Мой профиль' : 'Вход' %> </span>

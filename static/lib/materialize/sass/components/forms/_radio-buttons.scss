@@ -27,8 +27,8 @@
 [type="radio"]:not(:checked) + label,
 [type="radio"]:checked + label {
   padding-left: 1.7rem;
-  height: 1.5rem;
-  line-height: 1.5rem;
+  ///height: 1.5rem;
+  ///line-height: 1.5rem;
   ///font-size: 1rem;
   transition: .28s ease;
 

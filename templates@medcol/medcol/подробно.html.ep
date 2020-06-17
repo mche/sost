@@ -71,13 +71,13 @@
 
 
 <div class="row clearfix">
-
+  <a href="#wrong" class="hide-on-med-and-up right hover-shadow3d red-text">Неправильные ответы <span class="chip shadow-inset-10 bold"><%= scalar @wrong %></span></a>
   <div class="col s12 m6"><!-- колонка правильных отв -->
     <h4 class="chip--- green-text">Правильные ответы <span class="chip shadow-inset-10 bold"><%= scalar @right %></span></h4>
     <%= $ans_list->(\@right) %>
   </div>
   
-  <div class="col s12 m6"><!-- колонка неправильных отв -->
+  <div id="wrong" class="col s12 m6"><!-- колонка неправильных отв -->
     <h4 class="chip000 red-text">Неправильные ответы <span class="chip shadow-inset-10 bold"><%= scalar @wrong %></span></h4>
     <%= $ans_list->(\@wrong) %>
   </div>
