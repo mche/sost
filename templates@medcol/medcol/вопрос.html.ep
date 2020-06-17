@@ -7,9 +7,9 @@
   
 </h2>
 
-<form class="collection-item000 card grey lighten-4" method="post" action="<%= $c->url_for('вопрос') %>">
+<form class="collection-item000 card grey lighten-4 animated slideInUp" method="post" action="<%= $c->url_for('вопрос') %>">
   <div class="right" style="padding:0.5rem;"><span class="chip"><%= $q->{'код'} %></span> </div>
-  <h4 class="z-depth-3 green darken-3" style="padding:0.5rem;"><span class="white-text"><%= $q->{'вопрос'} %></span></h4>
+  <h4 class="z-depth-3 green darken-3 fw500" style="padding:0.5rem;"><span class="white-text"><%= $q->{'вопрос'} %></span></h4>
   <ul class="collection" style="padding:1rem; border:none;">
 % my $i = 1;
 % for my $ans (@{$q->{'ответы'}}) {
@@ -21,7 +21,7 @@
 % }
   </ul>
   <div class="center grey lighten-2" style="padding:0.5rem;">
-    <a href="javascript:" class="submit btn hover-shadow3d" disabled="disabled"> <i class="material-icons">send</i> <span>Ответить</span> </a>
+    <a href="javascript:" class="submit btn-large hover-shadow3d" disabled="disabled"> <i class="material-icons">send</i> <span>Ответить</span> </a>
     <!--input type="submit" name="btn" value ="Ответить" class="btn" disabled-->
     
     <div class="progress chip" style="height: inherit; width:30%; display:none !important;"><div class="center green-text text-darken-2">Далее...</div><div class="indeterminate green darken-3"></div></div>
@@ -57,8 +57,10 @@ document.addEventListener('DOMContentLoaded', function () {
   var submit= $('a.submit', form);
   submit.on('click', function(){
     form.submit();
-    $(this).hide();
-    $('.progress').show();
+    let s = $(this).addClass('animated zoomOut fast');
+    setTimeout(()=>{s.hide(); $('.progress').show();}, 500);
+//~     $(this).hide();
+//~     $('.progress').show();
   });
   ///var field = $('form input[name="ans"] ');
   $('label.ans').on('click', function(ev){

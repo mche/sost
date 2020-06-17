@@ -10,11 +10,12 @@
 
 <% my $ans_list = begin %><!-- блок-функция для списков ответов -->
   % my @data = @{ shift() };
+  % my $bg = shift || 'green';
   <ul class="collection000" style="margin:0;">
   % for my $data (@data) {
     <li class="collection-item000 card grey lighten-4">
       <div class="right" style="padding:0.5rem;"><span class="chip shadow-inset-10"><%= $data->{'код'} %></span></div>
-      <h4 class="green darken-3 z-depth-3" style="padding:0.5rem;"><span class="white-text"><%= $data->{'вопрос'} %></span></h4>
+      <h4 class="<%= $bg %> darken-3 z-depth-3 fw500" style="padding:0.5rem;"><span class="white-text"><%= $data->{'вопрос'} %></span></h4>
       <ul class="collection width-100" style="padding:0;">
   % my $i = 0;
   % for my $ans (@{$data->{'ответы'}}) {
@@ -73,13 +74,13 @@
 <div class="row clearfix">
   <a href="#wrong" class="hide-on-med-and-up right hover-shadow3d red-text">Неправильные ответы <span class="chip shadow-inset-10 bold"><%= scalar @wrong %></span></a>
   <div class="col s12 m6"><!-- колонка правильных отв -->
-    <h4 class="chip--- green-text">Правильные ответы <span class="chip shadow-inset-10 bold"><%= scalar @right %></span></h4>
+    <h4 class="chip--- green-text text-darken-3">Правильные ответы <span class="chip shadow-inset-10 bold"><%= scalar @right %></span></h4>
     <%= $ans_list->(\@right) %>
   </div>
   
   <div id="wrong" class="col s12 m6"><!-- колонка неправильных отв -->
-    <h4 class="chip000 red-text">Неправильные ответы <span class="chip shadow-inset-10 bold"><%= scalar @wrong %></span></h4>
-    <%= $ans_list->(\@wrong) %>
+    <h4 class="chip000 red-text text-darken-3">Неправильные ответы <span class="chip shadow-inset-10 bold"><%= scalar @wrong %></span></h4>
+    <%= $ans_list->(\@wrong, 'red') %>
   </div>
 </div>
 %#}

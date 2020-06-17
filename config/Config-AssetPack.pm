@@ -221,6 +221,7 @@ sub map_grep_mode {
         
         lib/animate.css/source/sliding_exits/slideOutUp.css
         lib/animate.css/source/sliding_exits/slideOutDown.css
+        lib/animate.css/source/sliding_exits/slideOutRight.css
         
         lib/animate.css/source/rotating_entrances/rotateIn.css
         
