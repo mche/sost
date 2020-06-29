@@ -44,7 +44,7 @@
   
   <div class="row">
     <div class="col s12 m4 chip padd-05 transparent hoverable">
-      <label class="padd-05"><h5 class="inline fw500">Успехов в цепочке (⩾):</h5></label>
+      <label class="padd-05"><h5 class="inline fw500" title="больше или равно">Успехов в цепочке ⩾:</h5></label>
       <input type="text" name="успехов" value="<%= $param->{'успехов'} // '' %>" style="width:12rem;" placeholder="количество"/>
     </div>
     <div class="col s12 m4 chip padd-05 transparent hoverable">
