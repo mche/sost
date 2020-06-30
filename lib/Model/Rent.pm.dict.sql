@@ -689,10 +689,11 @@ left join lateral (
   join "аренда/расходы" r on r.id=_rr.id2
   
   join refs _rp on r.id=_rp.id2
-  join (
-    select distinct id, name, descr, disable
-    from "проекты"
-  ) pr on pr.id=_rp.id1
+  join "roles" pr on pr.id=_rp.id1
+  --~ join (
+    --~ select distinct id, name, descr, disable
+    --~ from "проекты"
+  --~ ) pr on pr.id=_rp.id1
   
   left join (
     select pos."расход/id",

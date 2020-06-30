@@ -157,7 +157,7 @@ from
   left join (-- проекты-арендодатели
     select p.*, r.id2
     from refs r
-      join "roles" p on p.id=r.id1
+      join "roles" p on p.id=r.id1--- нет "проекты"
   ) pr on d.id=pr.id2 
   --~ join refs rp on p.id=rp.id1
   --~ join "кошельки" w on w.id=rp.id2
@@ -281,10 +281,7 @@ from
   join "аренда/расходы" r on r.id=_rr.id2
   
   join refs _rpr on r.id=_rpr.id2
-  join (
-    select distinct id, name---, descr, disable
-    from "проекты"
-  ) pr on pr.id=_rpr.id1
+  join "roles" pr on pr.id=_rpr.id1
   
   join (--- позиции
     select 

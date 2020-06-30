@@ -30,16 +30,20 @@ CREATE EXTENSION IF NOT EXISTS intarray;
   join ({%= $dict->render('профиль') %}) pp on pp._ref = m.id
 
 @@ проект/кошелек
-select distinct w.*, p.id as "проект/id", p.name as "проект", rm.id2 as _ref
-from "проекты" p
+select w.*, p.id as "проект/id", p.name as "проект", rm.id2 as _ref
+from
+ ----"проекты" p
+ "roles" p
   join refs rp on p.id=rp.id1
   join "кошельки" w on w.id=rp.id2
   join refs rm on w.id=rm.id1 -- к деньгам
 
 @@ кошелек2
   -- обратная связь с внутренним перемещением
-  select distinct w.*, rm.id1 as _ref, p.name as "проект", p.id as "проект/id"
-  from "проекты" p
+  select /*distinct*/ w.*, rm.id1 as _ref, p.name as "проект", p.id as "проект/id"
+  from 
+  ---"проекты" p
+    "roles" p
     join refs r on p.id=r.id1
     join "кошельки" w on w.id=r.id2
     join refs rm on w.id=rm.id2 -- к деньгам
@@ -246,8 +250,10 @@ select m."sign",
   sum(m."сумма" * m."sign") as sum
 from "tmp"."{%= $temp_view_name %}" m
   join (
-  select distinct w.*, p.id as "проект/id", p.name as "проект"
-  from "проекты" p
+  select /*distinct*/ w.*, p.id as "проект/id", p.name as "проект"
+  from 
+  ---"проекты" p
+  "roles" p
     join refs r on p.id=r.id1
     join "кошельки" w on w.id=r.id2
   ) w2 on m."кошелек2"=w2.id
@@ -422,8 +428,10 @@ select
 from 
   ({%= $dict->render('движение и остатки', union=>$union) %}) o
   join (---перемещения
-  select distinct w.*, p.id as "проект/id", p.name as "проект"
-  from "проекты" p
+  select /*distinct*/ w.*, p.id as "проект/id", p.name as "проект"
+  from 
+    ----"проекты" p
+    "roles" p
     join refs r on p.id=r.id1
     join "кошельки" w on w.id=r.id2
   ) w2 on o."кошелек2"=w2.id
@@ -1114,8 +1122,10 @@ from "движение денег" m
   join "профили" p on p.id=rp.id2
   
   left join (
-    select distinct  p.id, /*p."контрагент/id",*/ r.id2
-    from "проекты" p
+    select /*distinct*/  p.id, /*p."контрагент/id",*/ r.id2
+    from 
+    ---"проекты" p
+    "roles" p
       join refs r on p.id=r.id1
   ) pr on p.id=pr.id2
   
