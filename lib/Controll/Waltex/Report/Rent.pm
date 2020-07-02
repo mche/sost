@@ -24,6 +24,7 @@ sub data {
   my $param = $c->req->json;
   delete $param->{'все контрагенты'};
   $param->{'контрагенты'} = $c->model_report_rent->контрагенты();
+  $param->{'аренда'}  = 1;
   #~ $param->{'все проекты'} = 1;
   #~ $param->{'проект'} = {"id"=>0};
   #~ $c->log->error($c->dumper($param));
