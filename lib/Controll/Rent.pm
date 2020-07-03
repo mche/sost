@@ -504,8 +504,8 @@ sub реестр_актов_xlsx {
   my $c = shift;
   require Excel::Writer::XLSX;
   
-  my $month = $c->param('month');
-  my $data = $c->model->реестр_актов("месяц"=> $month, "счет или акт"=>'акт');
+  my ($month, $month2) = split /:/, $c->param('month');
+  my $data = $c->model->реестр_актов("месяц"=> $month, "месяц2"=> $month2, "счет или акт"=>'акт');
   my @names = ('номер акта', 'дата акта', 'договор/номер','договор/дата начала', 'договор/дата завершения', 'контрагент/title', 'ИНН', 'объект', 'сумма/num');
   #~ my $filename=sprintf("static/tmp/%s-реестр-актов.xlsx", $c->auth_user->{id}, $month);
   

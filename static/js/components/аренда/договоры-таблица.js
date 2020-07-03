@@ -56,6 +56,19 @@ Ready(){/// метод
   });
 },
 
+InitDatePicker(el){
+  var vm = this;
+  el.pickadate({// все настройки в файле русификации ru_RU.js
+    monthsFull: [ 'январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь' ],
+    format: 'mmmm yyyy',
+    monthOnly: 'OK',// кнопка
+    selectYears: true,
+    hiddenName: false,///!
+    onClose: function (context) {/*console.log("onSet", this.$node[0].name);*/ var s = this.component.item.select; s && vm.$set(vm, this.$node[0].name/*"payMonth"*/ , [s.year, s.month+1, s.date].join('-')); },//$(this._hidden).val().replace(/^\s*-/, this.component.item.select.year+'-'); },
+  });//{closeOnSelect: true,}
+  
+},
+
 ProjectData(){/// проекты - арендодатели
   var vm = this;
   return projectList.Load().then(function(){
@@ -162,7 +175,19 @@ ChbChange(name){
   
 },
 
-PrintPay(month){
+ClearDate(name, val){
+  var vm = this;
+  //~ vm.form[name] = val || null;
+  vm[name]= val || null;
+  vm.keys[name] = Math.random();//vm.idMaker.next().value;/// передернуть
+  setTimeout(()=>{
+    var el = $(`input[name="${ name }"]`, $(vm.$el));
+    vm.InitDatePicker(el);
+    //~ console.log("ClearDate", el);
+  });
+},
+
+PrintPay(month, month2){
   var vm = this;
   var modal = $('#modal-pay', $(vm.$el));
   //~ console.log("PrintPay", month);
@@ -175,7 +200,7 @@ PrintPay(month){
   modal.modal('close');
   //~ console.log("PrintPay", month, ids);
   /// вернет урл для скачивания
-  return $http.post(appRoutes.urlFor('аренда/счет#docx', '-'/*обязательно что-нибудь*/), {"месяц": month, "договоры": ids, "присвоить номера": vm.payNums, "счет или акт": vm.radioSchetAkt, /*"объекты":obs*/}).then(function(resp){
+  return $http.post(appRoutes.urlFor('аренда/счет#docx', '-'/*обязательно что-нибудь*/), {"месяц": month, "месяц2":month2, "договоры": ids, "присвоить номера": vm.payNums, "счет или акт": vm.radioSchetAkt, /*"объекты":obs*/}).then(function(resp){
     if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 border fw500  animated zoomInUp');
     if (resp.data.docx) window.location.href = appRoutes.urlFor('аренда/счет#docx', resp.data.docx);
     if (resp.data.data) console.log("счет", resp.data.data);///отладка
@@ -183,7 +208,7 @@ PrintPay(month){
   });
 },
 
-Reestr(month){
+Reestr(month, month2){
   var vm = this;
   var modal = $('#modal-pay', $(vm.$el));
 
@@ -205,7 +230,7 @@ Reestr(month){
       //~ vm.CopyClipBoard();
     //~ });
   //~ });
-  window.location.href = appRoutes.url_for('аренда/реестр актов.xlsx', month);
+  window.location.href = appRoutes.url_for('аренда/реестр актов.xlsx', month+(month2 ? ':'+month2 : ''));
   modal.modal('close');
 },
 
@@ -303,6 +328,7 @@ const  data = function(){
     "selectedContract": undefined,
     "allChbs": false, /// крыжик выбора всех договоров
     "payMonth":  new Date().toISOString().replace(/T.+/, ''),
+    "payMonth2": undefined,
     "payNums": true, ///крыжик счета с номерами
     "radioSchetAkt": 'счет',/// или акт
     "filters": {"арендодатель": undefined, "арендаторы": '', "объект": {}, "архивные договоры": false,},
@@ -310,6 +336,7 @@ const  data = function(){
     "archLen":0, /// кол-во архивных договоров
     "clipBoard": undefined,
     "projectData":undefined,///арендодатели для компонетов
+    "keys":{'payMonth2':Math.random()},
     };
   //);
 };///конец data
@@ -321,14 +348,7 @@ const mounted = function(){
   vm.Ready().then(function(){
     setTimeout(function(){
       $('.modal', $el).modal( );// Callback for Modal close} {"complete": vm.ModalComplete}
-      
-      $('.datepicker.pay-month', $el).pickadate({// все настройки в файле русификации ru_RU.js
-        monthsFull: [ 'январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь' ],
-        format: 'mmmm yyyy',
-        monthOnly: 'OK',// кнопка
-        selectYears: true,
-        onSet: function (context) {var s = this.component.item.select; vm.$set(vm, "payMonth" , [s.year, s.month+1, s.date].join('-')); },//$(this._hidden).val().replace(/^\s*-/, this.component.item.select.year+'-'); },
-      });//{closeOnSelect: true,}
+      vm.InitDatePicker($('.datepicker.pay-month', $el));
     });
     
   });

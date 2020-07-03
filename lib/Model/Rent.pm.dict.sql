@@ -404,12 +404,12 @@ from
 
 @@ счета и акты
 --- за аренду помещений и предоплату для docx
-WITH param as (
+/*WITH param as (
   select *, to_char(d."дата", 'YYYY') as "год", date_trunc('month', d."дата") as "month"
   from (VALUES (1, 'январь'), (2, 'февраль'), (3, 'март'), (4, 'апрель'), (5, 'май'), (6, 'июнь'), (7, 'июль'), (8, 'август'), (9, 'сентябрь'), (10, 'октябрь'), (11, 'ноябрь'), (12, 'декабрь'))
     m(num, "месяц")
   join (VALUES (?::date)) d("дата") on m.num=date_part('month', d."дата")
-)
+)*/
 /*** ЭТО НЕ ПОШЛО, функция не возвращала вставленные строки, вынес вызов функции отдельно перед этим статементом
 num as (---нумерация счетов 
   select n.*, r.id1
@@ -449,8 +449,8 @@ select
   dp."@позиции",
   dp."всего позиций"
 from
-  param
-  join (
+  ---param  join
+ (
     select d.*,
       upper(replace(d."номер", '№', '')) as "номер!",
       timestamp_to_json(coalesce(d."дата договора", d."дата1")::timestamp) as "$дата договора",
@@ -459,7 +459,7 @@ from
       ---case when d."дата расторжения" then false when "продление срока" then true else false end as "продлеваемый договор"
       ---case when "продление срока" then (now()+interval '1 year')::date else d."дата2" end 
     from "аренда/договоры" d
-  ) d on param."month" between date_trunc('month', d."дата1") and (date_trunc('month', coalesce(d."дата расторжения", case when d."продление срока" then (now()+interval '1 year')::date else d."дата2" end) + interval '1 month') - interval '1 day') ---только действующие договоры
+  ) d ---on param."month" between date_trunc('month', d."дата1") and (date_trunc('month', coalesce(d."дата расторжения", case when d."продление срока" then (now()+interval '1 year')::date else d."дата2" end) + interval '1 month') - interval '1 day') ---только действующие договоры
   join refs r on d.id=r.id2
   join "контрагенты" k on k.id=r.id1
   
@@ -471,29 +471,35 @@ from
   
   /*** Waltex/Report.pm.dict.sql ***/
   ---join "движение ДС/аренда/счета" dp on d.id=dp.id and param."month"=date_trunc('month', dp."дата") and dp."примечание"!~'предоплата'
-  join lateral (
+  join /*lateral*/ (
     select 
+      dp."договор/id", dp."дата",
       sum(dp."сумма") as "сумма",
       jsonb_agg(dp order by dp."order_by") as "@позиции",
       array_agg(dp."объект/id" order by dp."order_by") as "@объекты/id",
       count(dp) as "всего позиций"
     from (
       select
+        dp."договор/id", dp."дата",
         /*-1::numeric**/dp."сумма безнал" as "сумма",
         dp."объект/id", dp."номер доп.согл.",
         not 929979=any(dp."категории") as "order_by",
         case when 929979=any(dp."категории")---ид категории
           then ('{"Обеспечительный платеж"}')::text[]
-          else ('{"Арендная плата за нежилое помещение за '||param."месяц"||' '||param."год"||' г.' || (case when dp."номер доп.согл." is not null then ' (доп. согл. ' || dp."номер доп.согл."::text || ')' else '' end) || '"}')::text[]
+          ---'||param."месяц"||' '||param."год"||'
+          else ('{"Арендная плата за нежилое помещение за ' || m."месяц"|| ' ' || to_char(dp."дата", 'YYYY') ||' г.' || (case when dp."номер доп.согл." is not null then ' (доп. согл. ' || dp."номер доп.согл."::text || ')' else '' end) || '"}')::text[]
         end  as "номенклатура"
       from "движение ДС/аренда/счета" dp
+        join  (VALUES (1, 'январь'), (2, 'февраль'), (3, 'март'), (4, 'апрель'), (5, 'май'), (6, 'июнь'), (7, 'июль'), (8, 'август'), (9, 'сентябрь'), (10, 'октябрь'), (11, 'ноябрь'), (12, 'декабрь'))
+    m(num, "месяц") on m.num=date_part('month', dp."дата")
        --- join "аренда/договоры" dd on dp.id=dd.id
-      where  d.id=dp."договор/id"
-        and param."month"=date_trunc('month', dp."дата")
+      where --d.id=dp."договор/id" and param."month"
+        date_trunc('month', dp."дата") between date_trunc('month', ?::date) and date_trunc('month', ?::date)+interval '1 month -1 day'
         and not ?::int = any(dp."категории")
         ---and not coalesce(dd."оплата наличкой", false)
     ) dp
-  ) dp on true
+    group by dp."договор/id", dp."дата"
+  ) dp on d.id=dp."договор/id"
   
   join  "roles" ob on ob.id=dp."@объекты/id"[1]
   
@@ -503,7 +509,7 @@ from
     from 
       "refs" r
       join "счета/аренда/помещения" n on n.id=r.id2
-  ) num1 on d.id=num1.id1 and num1."месяц"=param."month"
+  ) num1 on d.id=num1.id1 and num1."месяц"=date_trunc('month', dp."дата")---param."month"
   
   ---нумерация актов (может быть отключена)
   left join (
@@ -511,11 +517,11 @@ from
     from 
       "refs" r
       join "акты/аренда/помещения" n on n.id=r.id2
-  ) num2 on d.id=num2.id1 and num2."месяц"=param."month"
+  ) num2 on d.id=num2.id1 and num2."месяц"=date_trunc('month', dp."дата")---param."month"
   
   ---left join num on d.id=num.id1
 {%= $where || '' %}
-{%= $order_by || 'order by d."дата1" desc, d.id desc  ' %}
+{%= $order_by || 'order by dp."дата", d."дата1" desc, d.id desc  ' %}
 ) s
 
 @@ счета и акты/доп расходы

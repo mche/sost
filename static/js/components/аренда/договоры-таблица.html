@@ -261,21 +261,30 @@
 <div id="modal-pay" class="modal" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp-000  slideOutUp fast"  style="max-height:90%; width:100%; top:0;">
   <div class="modal-content row">
     <div class="col s4 offset-s4 card teal lighten-5 padd-10">
-      <div class="input-field">
-        <h3 class="">За какой месяц</h3>
-        <input name="месяц" type="text" class="datepicker pay-month fs18 fw500" style="margin-bottom:1rem;" :data-value=" payMonth ">
+      <div class="">
+        <div class=" row">
+          <h3 class="">За какой месяц или с/по месяцы</h3>
+          <h4 class="col s1 right-align" v-show="payMonth2">С</h4>
+          <div class="col s4 input-field">
+            <input name="payMonth" type="text" class="datepicker pay-month fs18 fw500" style="margin-bottom:1rem;" :data-value=" payMonth ">
+          </div>
+          <h4 class="col s1 right-align" v-show="payMonth2">По</h4>
+          <div class="col s5 input-field" :key=" keys['payMonth2'] ">
+            <a v-show="payMonth2" @click=" ClearDate('payMonth2') " href="javascript:" class="" style="position:absolute; top:0; right:0; z-index:1;"><i class="material-icons red-text">cancel</i></a>
+            <input name="payMonth2" type="text" class="datepicker pay-month fs18 fw500" style="margin-bottom:1rem;" data-value000=" payMonth2 " placeholder="по месяц включительно">
+          </div>
+        </div>
         <!-- переключатель -->
         <div class="chip">
           <div class="iblock">
             <input type="radio" id="radioSchet" v-model="radioSchetAkt" :value=" 'счет' ">
-            <label for="radioSchet"  class="before-yellow-lighten-4 brown-text-darken-3 checked-after-brown-darken-3" ></label>
-            <label for="radioSchet"><h5 class="brown-text text-darken-3 hover-shadow3d">Счета</h5></label>
+            <label for="radioSchet"  class="before-yellow-lighten-4 brown-text-darken-3 checked-after-brown-darken-3" >Счета</label>
+            <!--label for="radioSchet"></label-->
           </div>
           <span class="grey-text padd-0-05"> или </span>
           <div class="iblock">
             <input type="radio" id="radioAkt" v-model="radioSchetAkt" :value=" 'акт' ">
-            <label for="radioAkt" class=" before-yellow-lighten-4 brown-text-darken-3 checked-after-brown-darken-3" style=""></label>
-            <label for="radioAkt"><h5 class="brown-text text-darken-3 hover-shadow3d">Акты</h5></label>
+            <label for="radioAkt" class=" before-yellow-lighten-4 brown-text-darken-3 checked-after-brown-darken-3" style="">Акты</label>
           </div>
         </div>
         <!-- крыжик -->
@@ -299,8 +308,8 @@
     <!--div class="clipboard chip">{{ clipBoard }}</div-->
   </div><!-- modal-content -->
   <div class="modal-footer center">
-    <a @click=" PrintPay(payMonth) " href="javascript:" class="modal-action waves-effect waves-green btn-flat z-depth-1 green lighten-4 green-text text-darken-4" style="float:none;"><svg ng-hide="$c.cancelerHttp" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="blue-fill " style="height: 1.7rem;"><use xlink:href="/fonts/icons.svg#ms-word" class=""></use></svg><span>Получить распечатку</span></a>
-    <a @click=" Reestr(payMonth) " href="javascript:" class="modal-action waves-effect waves-green btn-flat z-depth-1 blue lighten-4 blue-text text-darken-4" style="float:none;"><!--svg ng-hide="$c.cancelerHttp" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="blue-fill " style="height: 1.7rem;"><use xlink:href="/fonts/icons.svg#ms-word" class=""></use></svg--><span>Реестр актов</span></a>
+    <a @click=" PrintPay(payMonth, payMonth2) " href="javascript:" class="modal-action waves-effect waves-green btn-flat z-depth-1 green lighten-4 green-text text-darken-4" style="float:none;"><svg ng-hide="$c.cancelerHttp" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="blue-fill " style="height: 1.7rem;"><use xlink:href="/fonts/icons.svg#ms-word" class=""></use></svg><span>Получить распечатку</span></a>
+    <a @click=" Reestr(payMonth, payMonth2) " href="javascript:" class="modal-action waves-effect waves-green btn-flat z-depth-1 blue lighten-4 blue-text text-darken-4" style="float:none;"><!--svg ng-hide="$c.cancelerHttp" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="blue-fill " style="height: 1.7rem;"><use xlink:href="/fonts/icons.svg#ms-word" class=""></use></svg--><span>Реестр актов</span></a>
     <a  href="javascript:" class="modal-action modal-close waves-effect waves-red btn-flat z-depth-1 red lighten-3 red-text text-darken-3"><i class="material-icons">cancel</i><span>Отмена</span></a>
   </div>
 

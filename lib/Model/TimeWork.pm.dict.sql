@@ -18,9 +18,12 @@ CREATE INDEX IF NOT EXISTS "табель/значение/индекс" on "та
 ---CREATE INDEX IF NOT EXISTS "табель/коммент/индекс" ON "табель"("коммент"); не использовался
 CREATE INDEX IF NOT EXISTS "табель/коммент/индекс/not null" ON "табель"(("коммент" IS NOT NULL));
 ------------
-CREATE OR REPLACE FUNCTION "формат месяц"(date) RETURNS text AS $$ 
-  select to_char($1, 'YYYY-MM');
-$$ LANGUAGE SQL IMMUTABLE STRICT;
+DROP FUNCTION IF EXISTS "формат месяц";  ---select to_char($1, 'YYYY-MM');
+/*CREATE OR REPLACE FUNCTION "дата месяц"(date) RETURNS text AS $$ 
+  select m.*
+  from (VALUES (1, 'январь'), (2, 'февраль'), (3, 'март'), (4, 'апрель'), (5, 'май'), (6, 'июнь'), (7, 'июль'), (8, 'август'), (9, 'сентябрь'), (10, 'октябрь'), (11, 'ноябрь'), (12, 'декабрь'))
+    m(num, "месяц")
+$$ LANGUAGE sql;*/
 ------------
 CREATE OR REPLACE FUNCTION "формат месяц2"(date) RETURNS date AS $$ 
   select date_trunc('month', $1)::date;
