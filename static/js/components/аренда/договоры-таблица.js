@@ -197,10 +197,12 @@ PrintPay(month, month2){
   //~ var obs = vm.rentObjects.filter((ob)=>{ return !!ob['крыжик печати']; }).map((ob)=>{ return ob['$объект'].id; });
   //~ if (!ids.length) return Materialize.toast("не указаны договоры", 3000, 'red-text text-darken-3 red lighten-3 border fw500  animated zoomInUp');
   //~ if (!obs.length) return Materialize.toast("не указан объект", 3000, 'red-text text-darken-3 red lighten-3 border fw500  animated zoomInUp');
-  modal.modal('close');
+  vm.httpProcess = true;
   //~ console.log("PrintPay", month, ids);
   /// вернет урл для скачивания
   return $http.post(appRoutes.urlFor('аренда/счет#docx', '-'/*обязательно что-нибудь*/), {"месяц": month, "месяц2":month2, "договоры": ids, "присвоить номера": vm.payNums, "счет или акт": vm.radioSchetAkt, /*"объекты":obs*/}).then(function(resp){
+    vm.httpProcess  = false;
+    modal.modal('close');
     if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 border fw500  animated zoomInUp');
     if (resp.data.docx) window.location.href = appRoutes.urlFor('аренда/счет#docx', resp.data.docx);
     if (resp.data.data) console.log("счет", resp.data.data);///отладка
@@ -230,8 +232,13 @@ Reestr(month, month2){
       //~ vm.CopyClipBoard();
     //~ });
   //~ });
+  vm.httpProcess  = true;
   window.location.href = appRoutes.url_for('аренда/реестр актов.xlsx', month+(month2 ? ':'+month2 : ''));
-  modal.modal('close');
+  setTimeout(()=>{
+    vm.httpProcess  = false;
+    modal.modal('close');
+  }, 2000);
+  
 },
 
 //~ CopyClipBoard() {
@@ -337,6 +344,7 @@ const  data = function(){
     "clipBoard": undefined,
     "projectData":undefined,///арендодатели для компонетов
     "keys":{'payMonth2':Math.random()},
+    "httpProcess": undefined,
     };
   //);
 };///конец data

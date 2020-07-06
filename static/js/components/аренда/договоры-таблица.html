@@ -270,7 +270,7 @@
           </div>
           <h4 class="col s1 right-align" v-show="payMonth2">По</h4>
           <div class="col s5 input-field" :key=" keys['payMonth2'] ">
-            <a v-show="payMonth2" @click=" ClearDate('payMonth2') " href="javascript:" class="" style="position:absolute; top:0; right:0; z-index:1;"><i class="material-icons red-text">cancel</i></a>
+            <a v-show="payMonth2" @click=" ClearDate('payMonth2') " href="javascript:" class="hover-shadow3d" style="position:absolute; top:0; right:0; z-index:1;"><i class="material-icons red-text">cancel</i></a>
             <input name="payMonth2" type="text" class="datepicker pay-month fs18 fw500" style="margin-bottom:1rem;" data-value000=" payMonth2 " placeholder="по месяц включительно">
           </div>
         </div>
@@ -308,6 +308,7 @@
     <!--div class="clipboard chip">{{ clipBoard }}</div-->
   </div><!-- modal-content -->
   <div class="modal-footer center">
+    <v-progress-indeterminate v-show=" httpProcess " :color=" 'teal' " :message=" 'Загружается...' "></v-progress-indeterminate>
     <a @click=" PrintPay(payMonth, payMonth2) " href="javascript:" class="modal-action waves-effect waves-green btn-flat z-depth-1 green lighten-4 green-text text-darken-4" style="float:none;"><svg ng-hide="$c.cancelerHttp" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="blue-fill " style="height: 1.7rem;"><use xlink:href="/fonts/icons.svg#ms-word" class=""></use></svg><span>Получить распечатку</span></a>
     <a @click=" Reestr(payMonth, payMonth2) " href="javascript:" class="modal-action waves-effect waves-green btn-flat z-depth-1 blue lighten-4 blue-text text-darken-4" style="float:none;"><!--svg ng-hide="$c.cancelerHttp" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="blue-fill " style="height: 1.7rem;"><use xlink:href="/fonts/icons.svg#ms-word" class=""></use></svg--><span>Реестр актов</span></a>
     <a  href="javascript:" class="modal-action modal-close waves-effect waves-red btn-flat z-depth-1 red lighten-3 red-text text-darken-3"><i class="material-icons">cancel</i><span>Отмена</span></a>
