@@ -143,7 +143,11 @@ SetItem(item, onSelect){
 OnSuggestInputChange(query, vmSuggest){///из v-suggest
   var vm = this;
   //~ console.log("onSuggestInputChange", query);
-  if (query === null) return; ///vm.MapSuggest(vm.autocomplete);
+  if (query === null) {
+    vm.SetItem({"title": ''}, true);
+     vm.$emit('on-select'); 
+    return ; ///vm.MapSuggest(vm.autocomplete);
+  }
   //~ var id = vm.form.id;
   var form = angular.copy( vm.form);
   if (vm.form.id && vm.form.title != query)  vm.form = {"title": query};
@@ -185,7 +189,7 @@ ChbEdit(){
 },
 
 InputExtra(event){///доп реквизиты
-  console.log("InputExtra", event.target.name);
+  //~ console.log("InputExtra", event.target.name);
   
 },
 

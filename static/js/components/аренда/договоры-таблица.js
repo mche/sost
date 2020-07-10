@@ -1,3 +1,4 @@
+//~ import тест from '../тест2.js';
 (function () {'use strict';
 /*
   Компонент Vue
@@ -11,9 +12,9 @@
   })
   
 */
-var moduleName = "Аренда::Договоры::Таблица";
+let moduleName = "Аренда::Договоры::Таблица";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, [ 'Аренда::Договор::Форма', 'Компонент::Выбор объекта', 'Компонент::Выбор в списке',]);
+let module = angular.module(moduleName, [ 'Аренда::Договор::Форма', 'Компонент::Выбор объекта', 'Компонент::Выбор в списке',]);
 
 module.factory('$КомпонентАрендаДоговорыТаблица', function($templateCache, $http, appRoutes, /*$timeout, $rootScope, /**$compile, , */ $EventBus, Util, $Список, $КомпонентАрендаДоговорФорма, $КомпонентВыборОбъекта, $КомпонентВыборВСписке ) {// 
 
@@ -53,6 +54,7 @@ Ready(){/// метод
         vm.rentObjects.push(...data.map((it)=>{ return {"id": it['$объект'].id, "_match": it['$объект'].name, "$item":it['$объект']}; }));
       });
     });*/
+    //~ console.log("ТЕСТ", тест);
   });
 },
 
@@ -187,7 +189,7 @@ ClearDate(name, val){
   });
 },
 
-PrintPay(month, month2){
+PrintPay(month, month2){/// счета и акты
   var vm = this;
   var modal = $('#modal-pay', $(vm.$el));
   //~ console.log("PrintPay", month);
@@ -204,7 +206,7 @@ PrintPay(month, month2){
     vm.httpProcess  = false;
     modal.modal('close');
     if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 border fw500  animated zoomInUp');
-    if (resp.data.docx) window.location.href = appRoutes.urlFor('аренда/счет#docx', resp.data.docx);
+    if (resp.data.docx) window.location.href = appRoutes.urlFor('аренда/счет#docx', resp.data.docx);/// а это get-запрос
     if (resp.data.data) console.log("счет", resp.data.data);///отладка
     //~ window.location.href = appRoutes.urlFor('тмц/накладная.docx', $c.data.id);
   });
@@ -379,6 +381,7 @@ const $Конструктор = function (/*data, $c, $scope*/){
   $Компонент.components['v-rent-contract-form'] =  new $КомпонентАрендаДоговорФорма();
   $Компонент.components['v-object-select'] = new $КомпонентВыборОбъекта();
   $Компонент.components['v-select'] = new $КомпонентВыборВСписке();
+  //~ $Компонент.components['v-test'] = new Vue(тест);
 
   return $Компонент;
 };

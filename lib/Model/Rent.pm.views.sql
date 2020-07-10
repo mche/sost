@@ -146,7 +146,7 @@ select d.id  as "договор/id", d.ts as "договор/ts", sum."дата"
   array[[pr."id", null], [null, null]]::int[][] as "кошельки/id", ---  проект+кошелек, ...
   --~ null::text[][] as "кошельки", --- пока не знаю
   --~ null::int[][] as "кошельки/id",  --- пока не знаю
-  'счет по дог. ' || d."номер" || case when sum."номер доп.согл." is not null then '(доп. согл. ' || sum."номер доп.согл."::text ||')' else E'' end || ' ★ ' || ob.name || E'\n' || coalesce(d."коммент", ''::text) as "примечание"
+  'счет ' || coalesce('№'||num1."номер", '') || ' по дог. ' || d."номер" || case when sum."номер доп.согл." is not null then '(доп. согл. ' || sum."номер доп.согл."::text ||')' else E'' end || ' ★ ' || ob.name /*|| E'\n' || coalesce(d."коммент", ''::text)*/ as "примечание"
   
 from
   "аренда/договоры" d
@@ -231,6 +231,14 @@ from
       ---generate_subscripts("даты1", 1) as "номер доп.согл."
     ) a
   ) sum on sum."договор/id"=d.id
+  
+    ---нумерация счетов (может быть отключена)
+  left join (
+    select n.*, r.id1
+    from 
+      "refs" r
+      join "счета/аренда/помещения" n on n.id=r.id2
+  ) num1 on d.id=num1.id1 and num1."месяц"=date_trunc('month', sum."дата")---param."month"
   
   join  "roles" ob on ob.id=sum."@объекты/id"[1]
   

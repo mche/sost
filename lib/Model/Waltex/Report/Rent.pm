@@ -10,4 +10,14 @@ sub контрагенты {
   
 }
 
+sub движение_арендатора {
+  my ($self, $param) = (shift, shift);
+  my ($where, @bind) = $self->SqlAb->where({
+    ' "кошельки/id"[1][1] '=>$param->{'арендодатель'},
+    ' "контрагент/id" '=>$param->{'арендатор'},
+    ' "дата" ' => { '<' => \"now()" },
+  });
+  $self->dbh->selectall_arrayref($self->sth('движение арендатора', where=>$where, order_by=>' order by "дата", "sign" '), {Slice=>{}}, @bind);
+}
+
 1;

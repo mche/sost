@@ -1,3 +1,5 @@
+//~ import тест from '../тест.js';
+//~ import uploader from 'vue-simple-uploader';
 (function () {'use strict';
 /*
   Компонент Vue
@@ -51,6 +53,7 @@ Ready(){/// метод
     vm.InitMonthPickerDiscount($('.month-picker-discount', $(vm.$el)));
     
     $('.modal', $(vm.$el)).modal();
+    //~ console.log("ТЕСТ", тест);
   });
 
 },
@@ -368,6 +371,23 @@ AddDiscount(){///добавить скидку
   //~ vm.InitMonthPickerDiscount($('.month-picker-discount', $(vm.$el)));
 },
 
+MoneyXLS(){/// выписка по арендатору
+  var vm = this;
+  //~ var modal = $('#modal-pay', $(vm.$el));
+  //~ if (!month) return modal.modal('open');
+  
+  vm.httpProcess = true;
+  /// вернет урл для GET-запроса
+  return $http.post(appRoutes.urlFor('аренда/движение по арендатору#xlsx', '-'/*обязательно что-нибудь для POST*/), {"арендодатель": vm.form['$проект'].id, "арендатор": vm.form['контрагент'].id,}).then(function(resp){
+    vm.httpProcess  = false;
+    //~ modal.modal('close');
+    if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 border fw500  animated zoomInUp');
+    if (resp.data.xlsx) window.location.href = appRoutes.urlFor('аренда/движение по арендатору#xlsx', resp.data.xlsx);/// а это get-запрос
+    if (resp.data.data) console.log("счет", resp.data.data);///отладка
+    //~ window.location.href = appRoutes.urlFor('тмц/накладная.docx', $c.data.id);
+  });
+},
+
 }; /// конец methods
 
 const computed = {
@@ -403,6 +423,7 @@ const data = function() {
     "roomsTableIdx": 0, /// отображение таблицы арендуемых помещений (0 - основной договор, 1,2,... - доп соглашениия)
     "tableSum": 0, /// общая сумма по таблице и наличке
     "projectData": undefined,
+    "httpProcess": undefined,
     //~ "uploads": [],
   };
   //);
@@ -437,6 +458,7 @@ const $Конструктор = function (/*data, $c, $scope*/){
   $Компонент.components['v-select'] = new $КомпонентВыборВСписке();
   $Компонент.components['contract-rooms'] = new $КомпонентАрендаДоговорПомещенияФорма();
   $Компонент.components['v-uploads'] = new $КомпонентФайлы();
+  //~ $Компонент.components['v-uploader'] = uploader;
   //~ $Компонент.components['v-uploader'] = new $Uploader();
   //~ console.log($Компонент);
   return $Компонент;

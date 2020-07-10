@@ -48,7 +48,7 @@ sub сохранить_контрагент {
       if ref $data->{'реквизиты'} eq 'HASH';
     
     if ($data->{'реквизиты'}) {
-      if (my $dup = $self->dbh->selectrow_hashref($self->sth('контрагент/ИНН'), undef, $json->decode($data->{'реквизиты'})->{'ИНН'})) {
+      if (my $dup = $self->dbh->selectrow_hashref($self->sth('контрагент/ИНН'), undef, $json->decode($data->{'реквизиты'})->{'ИНН'} || undef)) {
         return  "повтор ИНН >>> ".$dup->{'title'}
           if $dup->{id} ne $data->{id};
       }

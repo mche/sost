@@ -9,9 +9,9 @@
     <a v-show=" !newContract " @click=" New " href="javascript:" class="btn-flat z-depth-1 green lighten-4 green-text text-darken-4"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="green-fill fill-darken-4" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#form-add" /></svg> Добавить договор</a>
     <a v000-show="IsChbs" @click="PrintPay()" disabled-000="!IsChbs" href="javascript:" class="btn-flat  z-depth-1 orange lighten-4 orange-text text-darken-4"><i class="material-icons">print</i> Счета и акты</a>
   </div>
-  <div v-if=" newContract " style="margin-bottom:3rem;">
+  <transition leave-active-class="animated zoomOutUp"><div v-if=" newContract " style="margin-bottom:3rem;">
     <v-rent-contract-form :item=" newContract " @on-save=" OnSave "></v-rent-contract-form>
-  </div>
+  </div></transition>
 </div>
 
 <!-- фильтры -->
@@ -110,7 +110,7 @@
         <a @click=" Edit(item) " href="javascript: void('редактировать договор аренды') " class="hover-shadow3d" title="редактировать договор аренды">{{ item['$контрагент'].title }}</a>
       </h5>
       
-      <div v-if=" item._edit " style="position: absolute; width:110%; z-index:1; left:-5%;"><v-rent-contract-form :item=" item._edit " @on-save=" OnSave "></v-rent-contract-form></div>
+      <transition leave-active-class="animated zoomOutUp"><div v-if=" item._edit " style="position: absolute; width:110%; z-index:1; left:-5%;"><v-rent-contract-form :item=" item._edit " @on-save=" OnSave "></v-rent-contract-form></div></transition>
     </td>
     <td class="vtop padd-05 relative">
       <div class="relative line-height-10" style="">
@@ -265,14 +265,14 @@
         <div class=" row">
           <h3 class="">За какой месяц или с/по месяцы</h3>
           <h4 class="col s1 right-align" v-show="payMonth2">С</h4>
-          <div class="col s4 input-field">
+          <h4 class="col s4 input-field">
             <input name="payMonth" type="text" class="datepicker pay-month fs18 fw500" style="margin-bottom:1rem;" :data-value=" payMonth ">
-          </div>
+          </h4>
           <h4 class="col s1 right-align" v-show="payMonth2">По</h4>
-          <div class="col s5 input-field" :key=" keys['payMonth2'] ">
+          <h4 class="col s5 input-field" :key=" keys['payMonth2'] ">
             <a v-show="payMonth2" @click=" ClearDate('payMonth2') " href="javascript:" class="hover-shadow3d" style="position:absolute; top:0; right:0; z-index:1;"><i class="material-icons red-text">cancel</i></a>
             <input name="payMonth2" type="text" class="datepicker pay-month fs18 fw500" style="margin-bottom:1rem;" data-value000=" payMonth2 " placeholder="по месяц включительно">
-          </div>
+          </h4>
         </div>
         <!-- переключатель -->
         <div class="chip">
