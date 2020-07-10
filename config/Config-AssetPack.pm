@@ -67,6 +67,8 @@ sub map_grep_mode {
         
         lib/vue/dist/vue.js::development
         lib/vue/dist/vue.min.js::production
+        lib/vuex/dist/vuex.js::development
+        lib/vuex/dist/vuex.min.js::production
 
         materialize.js
         js/c/template-cache/script.js

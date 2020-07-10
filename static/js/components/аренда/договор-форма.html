@@ -62,7 +62,7 @@
         <span>Арендатор</span>
         <sup v-show=" !(form['контрагент'] && (form['контрагент'].id || form['контрагент'].title)) " class="chip red white-text" style="position: absolute; z-index: 1; top:0;padding:0.3rem;"></sup>
       </h4>
-      <!--a v-show="form['$проект'] && form['$проект'].id && form['контрагент'] && form['контрагент'].id" @click="MoneyXLS()" href="javascript:">Деньги</a-->
+      <a v-show="form['$проект'] && form['$проект'].id && form['контрагент'] && form['контрагент'].id" @click="MoneyXLS()" href="javascript:">Сверка расчетов</a>
     </div>
     <div class="col s8  row">
       <!--div class="border fs8">{{ form['контрагент'] }}</div-->
