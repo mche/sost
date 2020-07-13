@@ -3,6 +3,7 @@
     обновление шаблонов через смену ВЕРСИИ (используется в сервисе LoadTemplateCache для добавления к урлам) static/js/controllers/template-cache/script.js
 ***/
 undef = undefined;
+//~ Vue.use(Vuex);///необязательно
 (function () {
   'use strict';
   //~ Vue.config.productionTip = true;
@@ -306,7 +307,7 @@ undef = undefined;
         
       };
       
-    });
+    })
     ;
 /***
     Usage $Console.log(...);

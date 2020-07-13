@@ -17,7 +17,7 @@ sub движение_арендатора {
     ' "контрагент/id" '=>$param->{'арендатор'},
     ' "дата" ' => { '<' => \"now()" },
   });
-  $self->dbh->selectall_arrayref($self->sth('движение арендатора', where=>$where, order_by=>' order by "дата", "sign" '), {Slice=>{}}, @bind);
+  $self->dbh->selectall_arrayref($self->sth('движение арендатора', select=>' *, "приход"::numeric as "приход/num", "расход"::numeric as "расход/num" ', where=>$where, order_by=>' order by "дата", "sign" '), {Slice=>{}}, @bind);
 }
 
 1;

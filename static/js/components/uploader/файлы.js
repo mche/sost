@@ -119,7 +119,7 @@ https://github.com/simple-uploader/Uploader#events
     delete resp.success['$last_modified/json'];
     vm.expandUploads = true;
     setTimeout(function(){
-      $('.uploader-drop', $(vm.$el)).get(0).scrollIntoView();
+      $('.uploader-drop', $(vm.$el)).get(0).scrollIntoView({ "block": 'start', "behavior": 'smooth', });
       vm.uploads.push(resp.success);///props
       //~ vm.parent._uploads.push(resp.success);
       console.log("Save file", resp.success);

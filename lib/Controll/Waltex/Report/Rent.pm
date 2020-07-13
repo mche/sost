@@ -74,10 +74,39 @@ sub движение_ДС_xlsx {
   open my $fh, '>', "static/tmp/$xlsx" or die "Failed to open filehandle: $!";
   my $workbook  = Excel::Writer::XLSX->new( $fh );
   my $worksheet = $workbook->add_worksheet();
-  my $n = 3;
-  $worksheet->write_row($n++, 0, \@names);
-  $worksheet->write_row($n++, 0, [map {ref eq 'ARRAY' ? join(', ', @$_) : $_} $c->_format_date($_->{'$дата'}), @$_{@names[1..4]}])
-    for @$data;
+  
+  if (@$data) {# шапка
+    $worksheet->write_row(0, 0, ['Расчеты с арендатором',]);
+    $worksheet->write_row(0, 1, [$data->[0]{"контрагент"}], $workbook->add_format( bold => 1, color => 'red', size=>14 ));
+    #~ $worksheet->write_row(2, 0, [$data->[0]{"контрагент"}], $bold);
+    $worksheet->write_row(1, 0, ['Арендодатель',]);
+    $worksheet->write_row(1, 1, [$data->[0]{"кошельки"}[0]], $workbook->add_format( bold => 1, color => 'green', size=>14 ));
+  }
+
+  my $n = 5;
+  $worksheet->write_row($n++, 0, \@names, $workbook->add_format( bold => 1, bottom=>1, align=>'center'));
+  my @sum  = (0, 0);
+  $worksheet->set_column( 0, 0, 20 );
+  $worksheet->set_column( 1, 1, 50 );
+  $worksheet->set_column( 2, 4, 15 );
+  for (@$data) {
+    $worksheet->write_row($n++, 0, [map {ref eq 'ARRAY' ? join(', ', @$_) : $_} $c->_format_date($_->{'$дата'}), @$_{@names[1..1]}]);
+    $worksheet->write_row($n-1, 2, [ @$_{qw(приход/num расход/num)}], $workbook->add_format( num_format=> '# ##0.00 ₽'));
+    $worksheet->write_row($n-1, 4, [ @$_{qw(примечание)}], $workbook->add_format( size => 8));
+    #~ $worksheet->conditional_formatting( 'A1:A4',
+    #~ {
+        #~ type     => 'no_blanks',
+        #~ format   => $format,
+    #~ }
+#~ );
+    $sum[0] += $_->{'приход/num'};
+    $sum[1] += $_->{'расход/num'};
+  }
+  # подвал
+  $worksheet->write_row($n++, 0, [undef, 'Итого', @sum, undef], $workbook->add_format( bold => 1, size=>12, num_format=> '# ##0.00 ₽', align=>'right', top=>1));
+  my $s = $sum[0]-$sum[1];
+  $worksheet->write_row($n++, 0, [undef, 'Сальдо',  $s > 0 ? ($s) : (undef, -1*$s)], $workbook->add_format( bold => 1, size=>12, num_format=> '# ##0.00 ₽', align=>'right'));
+    
   $workbook->close();
   #~ return $fdata;
   $c->render(json=>{'xlsx'=>$xlsx});

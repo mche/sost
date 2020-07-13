@@ -151,7 +151,7 @@ DropDownShow(){
       if (vm.selectNone)  li.scrollTop = li.scrollHeight;
       //~ debugger;
       //~ if (vm.select && vm.select.id) 
-      else setTimeout(()=>li.scrollIntoView());/// особенности прокрутки
+      else setTimeout(()=>li.scrollIntoView({ "block": 'start', "behavior": 'smooth', }));/// особенности прокрутки
     } else {
       vm.selectNone = true;/// т.е. открыл без изначальной установки позиции
     }

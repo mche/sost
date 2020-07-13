@@ -17,6 +17,37 @@ var moduleName = "Аренда::Договор::Форма";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['Компонент::Контрагент', 'Контрагенты', 'EventBus',/* 'Компонент::Поиск в списке',*/ 'Компонент::Выбор в списке', 'Аренда::Договор::Помещения::Форма', 'Uploader::Файлы', /*'Uploader'*/]);
 
+//~ const store = new Vuex.Store({
+  //~ state: {
+    //~ count: 0,
+  //~ },
+  //~ mutations: {
+    //~ increment() {
+      //~ this.state.count++;
+    //~ }
+  //~ },
+//~ });
+
+//~ const store = new Vue({
+  //~ "props":{
+      //~ "prop1":{
+          //~ "type":Number,
+          //~ "default": ()=>5,
+        //~ },
+    //~ },
+  //~ "methods":{
+    //~ Meth1(){
+      //~ console.log("Meth1", this.prop1);
+    //~ },
+    //~ Inc1(){
+      //~ this.prop1++;
+      
+    //~ },
+    
+  //~ },
+  
+//~ });
+
 module
 .factory('$КомпонентАрендаДоговорФорма', function($templateCache, $http, $q, $timeout, appRoutes, $КомпонентКонтрагент, $Контрагенты, $EventBus, /*$КомпонентПоискВСписке,*/ $КомпонентВыборВСписке, Util, $Список, $КомпонентАрендаДоговорПомещенияФорма, $КомпонентФайлы /*$Uploader*/) {// factory
 
@@ -26,9 +57,13 @@ $Контрагенты.Load();
 //~ projectList.Load();
 
 const props = {
+  //~ "store":{
+      //~ "type": Object,
+      //~ "default": ()=>store,
+    //~ },
   "item": {
     type: Object,
-    default: function () {
+    default:  () => {
       return {};
     },
   },
@@ -53,6 +88,7 @@ Ready(){/// метод
     vm.InitMonthPickerDiscount($('.month-picker-discount', $(vm.$el)));
     
     $('.modal', $(vm.$el)).modal();
+    setTimeout(()=>vm.$el.scrollIntoView({ "block": 'start', "behavior": 'smooth', }), 700);////behavior: 'instant', block: 'center'
     //~ console.log("ТЕСТ", тест);
   });
 
@@ -398,7 +434,12 @@ TotalSum(){
   if (vm.roomsTableIdx == 0 && vm.form['сумма нал'])  return vm.ParseNum(vm.form['сумма нал'] || 0) + vm.tableSum;
   if (vm.roomsTableIdx > 0 && vm.form['@доп.соглашения'][vm.roomsTableIdx-1]['сумма нал'] ) return vm.ParseNum(vm.form['@доп.соглашения'][vm.roomsTableIdx-1]['сумма нал'] || 0) + vm.tableSum;
   return vm.tableSum;
-}
+},
+
+//~ Count(){
+  //~ return store.prop1;
+  
+//~ },
 //~ ValidPos(){
   //~ var vm = this;
   //~ return ;
@@ -437,12 +478,18 @@ const mounted = function(){
   $q.all([vm.ContragentData(), vm.ProjectData(), vm.ObjectData(),]).then(function(){
     vm.Ready();
   });
+  //~ this.$store.commit('increment');
+  //~ store.Inc1();
+
 };/// конец mounted
+
+
 
 var $Компонент = {
   //~ "template": $templateCache.get('тмц/сертификаты/папки'), //ниже/!!
   props,
   data,
+  //~ store,
   methods,
   computed,
   //~ "created"() {  },

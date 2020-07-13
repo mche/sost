@@ -105,7 +105,7 @@ AddRoom(room){// индекс вставки, если undefined или -1 - в�
   if ( vm.showFloor ) {
     vm.ShowFloor();/// сброс вкладки
     setTimeout(()=>{
-      $(`#room-row-${ n._id }`, $(vm.$el)).get(0).scrollIntoView();
+      $(`#room-row-${ n._id }`, $(vm.$el)).get(0).scrollIntoView({ "block": 'start', "behavior": 'smooth', });
     });
   }
   

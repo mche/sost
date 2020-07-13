@@ -2,6 +2,8 @@
 
 <div v-if="ready" class="card z-depth-5 teal lighten-4 animated zoomIn fast">
 
+<!--a @click="store.Inc1()" href="javascript:">{{ store.prop1 }}</a-->
+
 <div class="card-content">
   <div class="row relative">
     <a @click=" CancelBtn()" href="javascript:" class="right btn-flat z-depth-1 white red-text lighten-2" style="">
@@ -35,6 +37,7 @@
         <span>Арендодатель</span>
         <sup v-show=" !(form['$проект'] && form['$проект'].id) " class="chip red white-text" style="position: absolute; z-index: 1; top:0;padding:0.3rem;"></sup>
       </h4>
+      <a v-show="form['$проект'] && form['$проект'].id && form['контрагент'] && form['контрагент'].id" @click="MoneyXLS()" href="javascript:" class="btn-flat z-depth-1 purple lighten-5 purple-text text-darken-4"><i class="icon-balance"></i> Сверка расчетов</a>
     </div>
     <div class="col s8  row">
       <!--div class="border fs8">{{ form['$проект'] }}</div-->
@@ -62,7 +65,7 @@
         <span>Арендатор</span>
         <sup v-show=" !(form['контрагент'] && (form['контрагент'].id || form['контрагент'].title)) " class="chip red white-text" style="position: absolute; z-index: 1; top:0;padding:0.3rem;"></sup>
       </h4>
-      <a v-show="form['$проект'] && form['$проект'].id && form['контрагент'] && form['контрагент'].id" @click="MoneyXLS()" href="javascript:">Сверка расчетов</a>
+
     </div>
     <div class="col s8  row">
       <!--div class="border fs8">{{ form['контрагент'] }}</div-->

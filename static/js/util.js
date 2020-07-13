@@ -97,7 +97,7 @@ const FactoryUtil = function($timeout){
     parent = parent || $('html, body');
     duration = duration || 'slow';
     easing = easing || 'swing';
-    $(parent)[0].scrollIntoView(true);
+    $(parent)[0].scrollIntoView({ "block": 'start', "behavior": 'smooth', });
     $(parent).animate({
       scrollTop: $(parent).scrollTop() + $(element).offset().top - $(parent).offset().top
     }, {

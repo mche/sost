@@ -59,7 +59,7 @@ sub map_grep_mode {
       )],
       
       #guest@calculate ~ $ npm install angular
-      ['lib.js'=> &map_grep_mode(qw(
+      ['lib.js'=> &map_grep_mode(grep !/^--/, qw(
         lib/angular/angular.js::development
         lib/angular/angular.min.js::production
         
@@ -67,8 +67,8 @@ sub map_grep_mode {
         
         lib/vue/dist/vue.js::development
         lib/vue/dist/vue.min.js::production
-        lib/vuex/dist/vuex.js::development
-        lib/vuex/dist/vuex.min.js::production
+        ---lib/vuex/dist/vuex.js::development
+        ---lib/vuex/dist/vuex.min.js::production
 
         materialize.js
         js/c/template-cache/script.js
