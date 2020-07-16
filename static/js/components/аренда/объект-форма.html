@@ -94,12 +94,12 @@
         </tr></thead>
       <tbody >
         <tr v-for="(room, index) in tableRooms " :key=" room._id " :id=" `room-row-${ room._id }` ">
-          <td class="right-align relative" style=" vertical-align:middle;">
+          <td class="right-align relative padd-05" style=" vertical-align:middle;">
             <span>{{ index+1 }}</span>
             <span v-show=" !!room.id " class="fs7 grey-text" style="position: absolute; z-index: 1; bottom:0; left:0;">#{{ room.id }}</span>
             <span v-show=" !room.id " class="fs7 grey-text" style="position: absolute; z-index: 1; top:0; left:0;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="orange-fill-darken-3" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#asterisk"></use></svg></span>
           </td>
-          <td class="center middle" style="">
+          <td class="center middle padd-05" style="">
             <div class="hover-childs-show relative">
               <span class="chip padd-0 hover-parent-hide-child"><i class="material-icons">more_horiz</i></span>
               <span class="chip padd-0-05 nowrap hover-parent-show-inline absolute animated fadeIn" style="left:0rem; top:-1rem; z-index:1;">
@@ -115,12 +115,12 @@
               </span>
             </div>
           </td>
-          <td class="padd-05-000">
+          <td class="padd-05">
             <div class="input-field">
               <input  type="text" v-model="room['номер-название']" placeholder="номер | название" class="right-align" style="">
             </div>
           </td>
-          <td class="padd-05-000" style-000="padding-top:0.34rem;">
+          <td class="padd-05" style-000="padding-top:0.34rem;">
             <div class="input-field">
               <!--input  type="text" v-model="room['этаж']" placeholder="этаж" class="right-align" style=""-->
               <v-select-floor :select=" {'id': room['этаж'], 'room':room,} " :items=" ListFloors " :param=" {'без поля поиска': true, ulDropDownClass: ['striped']} " @on-select=" OnFloorSelect ">
@@ -139,12 +139,12 @@
               </v-select-floor>
             </div>
           </td>
-          <td class="padd-05-000">
+          <td class="padd-05">
             <div class="input-field">
               <input  type="text" v-model="room['площадь']" placeholder="площадь, м²" class="right-align" style="">
             </div>
           </td>
-          <td class="padd-05-000">
+          <td class="padd-05">
             <div class="">
               <div class="input-field">
                 <textarea v-model=" room['коммент'] " placeholder="примечание" class="materialize-textarea fs8" style="font-size:0.8rem; padding:0; min-height: 2rem; /*max-width:5rem;*/"></textarea>
@@ -158,16 +158,19 @@
       </table></div>
     <!-- ИТОГИ -->
     <h4 class="nowrap right-align">
-      Площадь объекта
+      Итого площадь объекта
         <span class="bold chip z-depth-1 nowrap">
           <span>{{ TotalSqure.toLocaleString().replace(/([\.,]\d{2})\d+$/, '$1') }} </span>
           <span class="grey-text fw100"> м²</span>
         </span>
       
     </h4>
-    <h4 class="helmet tab-shadow active blue lighten-5 z-depth-1">Площадь по этажам</h4>
-    <ul class="z-depth-1 marg-0 blue lighten-4 striped" style="width:70%;">
-      <li v-for="(item, floor) in FloorSquares"><h5 class="iblock right-align" style="width:7rem;">{{ floor }}</h5> <h4 class="iblock bold right-align" style="width:10rem;">{{ item['площадь'].toLocaleString().replace(/([\.,]\d{2})\d+$/, '$1') }}</h4><span class="grey-text"> м²</span></li>
+    <h4 class="helmet tab-shadow active orange lighten-5 z-depth-1">Площади по этажам</h4>
+    <ul class="z-depth-1 marg-0 orange lighten-4 striped bordered">
+      <li v-for="(item, floor) in FloorSquares">
+        <h5 class="iblock right-align" style="width:15rem;">{{ floor }}</h5>
+        <h4 class="iblock bold right-align" style="width:10rem;">{{ item['площадь'].toLocaleString().replace(/([\.,]\d{2})\d+$/, '$1') }} <span class="grey-text"> м²</span></h4>
+      </li>
     </ul>
     
     </div></div><!-- col+row -->

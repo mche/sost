@@ -1,0 +1,8 @@
+/*без таблиц, они в материализ*/
+
+*:not(table, thead, tbody, tr).bordered > * {
+  border-bottom: 1px solid $table-border-color;
+}
+*:not(table, thead, tbody, tr).bordered > *:last-child {
+  border-bottom: none;
+}
