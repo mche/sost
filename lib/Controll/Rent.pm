@@ -10,7 +10,8 @@ sub index {
   return $c->render('аренда/index',
     handler=>'ep',
     'header-title' => 'Аренда помещений',
-    assets=>["аренда.js", "uploader.css"],
+    stylesheets=>["uploader.css", 'js/dist/аренда/договор-форма.css',],#
+    assets=>["аренда.js", 'js/dist/аренда/договор-форма.js'],#'lib/v-calendar/dist/v-calendar.umd.js'],#'lib/v-calendar/dist2/lib.js',
     );
 }
 
@@ -19,7 +20,8 @@ sub расходы {
   return $c->render('аренда/расходы',
     handler=>'ep',
     'header-title' => 'Счета на возмещение расходов по арендаторам',
-    assets=>["аренда-расходы.js", "flexboxgrid.css"],# "uploader.css"],
+    stylesheets=>["flexboxgrid.css",],#  '/js/svelte-app/public/build/bundle.css'"uploader.css"],
+    assets=>["аренда-расходы.js",],#  '/js/svelte-app/public/build/bundle.js'
     );
 }
 

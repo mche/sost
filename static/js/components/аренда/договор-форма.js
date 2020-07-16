@@ -1,6 +1,21 @@
 //~ import тест from '../тест.js';
 //~ import uploader from 'vue-simple-uploader';
-(function () {'use strict';
+
+//~ import Vue from 'vue';
+//~ import VCalendar from 'v-calendar';
+//~ import  VCalendar from '../../../lib/v-calendar/src/components/Calendar.vue'
+
+//~ console.log(VCalendar);
+
+//~ // Use v-calendar & v-date-picker components
+//~ Vue.use(VCalendar, {
+  //~ componentPrefix: 'vc',  // Use <vc-calendar /> instead of <v-calendar />
+  //~ ...,                // ...other defaults
+//~ });
+
+
+
+!(function () {'use strict';
 /*
   Компонент Vue
   USAGE:
@@ -505,6 +520,7 @@ const $Конструктор = function (/*data, $c, $scope*/){
   $Компонент.components['v-select'] = new $КомпонентВыборВСписке();
   $Компонент.components['contract-rooms'] = new $КомпонентАрендаДоговорПомещенияФорма();
   $Компонент.components['v-uploads'] = new $КомпонентФайлы();
+  //~ $Компонент.components['v-calendar'] = VCalendar;
   //~ $Компонент.components['v-uploader'] = uploader;
   //~ $Компонент.components['v-uploader'] = new $Uploader();
   //~ console.log($Компонент);
