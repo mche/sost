@@ -94,10 +94,11 @@ SelectContract(obj){
   this.$emit('select-object', obj);
 },
 
-SelectProject(proj){
+SelectProjectFilter(proj){
   //~ console.log("SelectProject", arguments);
   this.filters['арендодатель'] = proj;
   this.FilterData();
+  this.AllChbsChange(!!proj);
 },
 
 New(){
@@ -167,14 +168,16 @@ AllChbsChange(val){
     item['крыжик'] = undefined;
     
   });
-  vm.filteredData.map((item)=>{
+  vm.filteredData.forEach((item)=>{
     item['крыжик'] =  !!vm.allChbs;
+    //~ vm.$set(item, 'крыжик', !!vm.allChbs);
   });
+  //~ console.log('AllChbsChange', val, vm.filteredData);
 },
 
 ChbChange(name){
   this.FilterData();
-  
+  this.AllChbsChange(!!this.filters[name]);
 },
 
 ClearDate(name, val){
@@ -280,7 +283,7 @@ FilterData(){
   //~ vm.filteredData.length = 0;
   vm.filteredData = ///vm.filters['арендаторы'].length || (vm.filters['объект'] && vm.filters['объект'].id) /// || (vm.filters['архивные договоры'] !== undefined)
     vm.data.filter((item)=>{
-      
+      if (!item.hasOwnProperty('крыжик')) item['крыжик']  = undefined;/// доп реакт свойство
       const cur = dateFns.isWithinRange(new Date(), new Date(/*item['дата1']*/ '2000-01-01'), new Date(item['дата расторжения'] || (item['продление срока'] ? new Date('2100-01-01') : item['дата2'])));
       if (!cur) vm.archLen += 1;
       const test = (vm.filters['архивные договоры'] ? !cur : cur)
@@ -292,7 +295,7 @@ FilterData(){
     });
    // : vm.data;
   
-  vm.AllChbsChange();
+  //~ vm.AllChbsChange(true);
   return vm;
 },
 
@@ -303,9 +306,10 @@ ClearFilter(name){
 },
 
 SelectObjectFilter(data){
-  console.log("SelectObjectFilter", data);
+  //~ console.log("SelectObjectFilter", data);
   this.filters['объект'] = data;/// ? data.$item : {};
   this.FilterData();
+  this.AllChbsChange(!!data);
 },
 
 

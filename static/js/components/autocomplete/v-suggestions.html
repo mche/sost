@@ -1,6 +1,9 @@
 @@@ компонент/поиск в списке
 
 <div :class="extParam.topClass">
+    <a v-show="inputQuery.length"  @click=" ClearInput " href="javascript:" class="remove-siblings hoverable circle padd-05"  style="right: 0; position: absolute; z-index: 1; top:-0.2rem;" title="очистить">
+    <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill fill-lighten-1" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#left-clear-fill" /></svg>
+  </a>
   <input type="text"
     :class="extParam.inputClass"
      v-bind="$attrs"
@@ -16,9 +19,7 @@
     <sup v-show="AllLen" class="chip000 fs7 right">{{ AllLen }}</sup>
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="right teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#chevron-down-round-fill" /></svg>
   </a>
-  <a v-show="inputQuery.length"  @click=" ClearInput " href="javascript:" class="remove-siblings"  style="right: 0.2rem; position: absolute; z-index: 1; top:0.2rem;">
-    <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill fill-lighten-1" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#left-clear-fill" /></svg>
-  </a>
+
   <div v-show=" QueryItemsLen > 0 " class="autocomplete-content z-depth-3 dropdown-content truncate animated zoomInDown0000 fadeIn  fast" :style=" SuggestionsStyle ">
     <ul class="marg-0" :class="extParam.ulDropDownClass">
       <li class="autocomplete-suggestion padd-0-05"
