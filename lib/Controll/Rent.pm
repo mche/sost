@@ -10,8 +10,8 @@ sub index {
   return $c->render('аренда/index',
     handler=>'ep',
     'header-title' => 'Аренда помещений',
-    stylesheets=>["uploader.css", 'js/dist/аренда/договор-форма.css',],#
-    assets=>["аренда.js", 'js/dist/аренда/договор-форма.js'],#'lib/v-calendar/dist/v-calendar.umd.js'],#'lib/v-calendar/dist2/lib.js',
+    stylesheets=>["uploader.css",],# 'js/dist/аренда/договор-форма.css',
+    assets=>["аренда.js",],# 'js/dist/аренда/договор-форма.js' 'lib/v-calendar/dist/v-calendar.umd.js'],#'lib/v-calendar/dist2/lib.js',
     );
 }
 
