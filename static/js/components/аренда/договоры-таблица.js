@@ -284,9 +284,9 @@ FilterData(){
   vm.filteredData = ///vm.filters['арендаторы'].length || (vm.filters['объект'] && vm.filters['объект'].id) /// || (vm.filters['архивные договоры'] !== undefined)
     vm.data.filter((item)=>{
       if (!item.hasOwnProperty('крыжик')) item['крыжик']  = undefined;/// доп реакт свойство
-      const cur = dateFns.isWithinRange(new Date(), new Date(/*item['дата1']*/ '2000-01-01'), new Date(item['дата расторжения'] || (item['продление срока'] ? new Date('2100-01-01') : item['дата2'])));
-      if (!cur) vm.archLen += 1;
-      const test = (vm.filters['архивные договоры'] ? !cur : cur)
+      item['архив'] = item.hasOwnProperty('архив') ? item['архив'] : !dateFns.isWithinRange(new Date(), new Date(/*item['дата1']*/ '2000-01-01'), new Date(item['дата расторжения'] || (item['продление срока'] ? new Date('2100-01-01') : item['дата2'])));
+      if (item['архив']) vm.archLen += 1;
+      const test = (vm.filters['архивные договоры'] ? item['архив'] : !item['архив'])
         && (vm.filters['арендодатель'] ? item['проект/id'] == vm.filters['арендодатель'].id : true)
         && (vm.filters['арендаторы'] ? item['$контрагент'].title.toLowerCase().indexOf(vm.filters['арендаторы'].toLowerCase()) >= 0 : true)
         && ( (vm.filters['объект'] && vm.filters['объект'].id && item['@помещения']) ? item['@помещения'][0].$объект.id == vm.filters['объект'].id : true);

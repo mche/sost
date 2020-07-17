@@ -65,7 +65,7 @@
         <input type="checkbox" id="архивные крыжики" v-model="filters['архивные договоры']" @change="ChbChange('архивные договоры')">
         <label for="архивные крыжики" class="hover-shadow3d chb-maroon-lighten-5 maroon-text chip maroon lighten-5 hoverable" style="position:absolute; left:-2rem; bottom: 0; padding-left:16px;" ></label>
         <label for="архивные крыжики" class="hover-shadow3d " style=""><h5 class="maroon-text">
-          <span>архив</span>
+          <span>Архив</span>
           <sup class="chip white z-depth-1">{{ archLen }}</sup>
         </h5></label>
       </div>
@@ -108,8 +108,8 @@
     <td class="vtop padd-05">
 
       <h5 class="truncate line-height-12" :class="{'bold': item._edit}" style="width:10rem; max-width:calc(10vw);" :title="item['$контрагент'].title">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#contragent"></use></svg>
-        <a @click=" Edit(item) " href="javascript: void('редактировать договор аренды') " class="hover-shadow3d" title="редактировать договор аренды">{{ item['$контрагент'].title }}</a>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class=" " :class=" !!item['архив'] ? 'maroon-fill' : 'teal-fill fill-darken-3' " style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#contragent"></use></svg>
+        <a @click=" Edit(item) " href="javascript: void('редактировать договор аренды') " class="hover-shadow3d" :class="{'maroon-text': !!item['архив']}" title="редактировать договор аренды">{{ item['$контрагент'].title }}</a>
       </h5>
       
       <transition leave-active-class="animated zoomOutUp"><div v-if=" item._edit " style="position: absolute; width:110%; z-index:1; left:-5%;"><v-rent-contract-form :item=" item._edit " @on-save=" OnSave "></v-rent-contract-form></div></transition>
