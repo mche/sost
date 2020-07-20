@@ -489,6 +489,7 @@ const mounted = function(){
   //~ this.$nextTick(() => {
     //~ window.uploader = this.$refs.uploader.uploader;
   //~ });
+  //~ console.log('MOUNTED');
   var vm = this;
   $q.all([vm.ContragentData(), vm.ProjectData(), vm.ObjectData(),]).then(function(){
     vm.Ready();

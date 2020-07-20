@@ -17,13 +17,13 @@
 <!-- фильтры -->
 <div class=""></div>
 
-<table class="striped bordered teal lighten-4 z-depth-1 animated slideInUp">
+<table class="striped bordered  lighten-4 z-depth-1 animated slideInUp" :class="{'teal': !filters['архивные договоры'], 'maroon':!!filters['архивные договоры'],}">
 
 <thead>
   <tr>
     <td class="padd-05 relative" style="width:1%;">
       <!-- фильтр арендодателя-->
-      <div class="chip teal lighten-4 nowrap" style="position:absolute; top:-2.5rem; left:0; width:20rem;">
+      <div class="chip-teal-lighten-4-000 nowrap" style="position:absolute; top:-2.5rem; left:0; width:20rem;">
         <v-select v-if="projectData" :select=" {} " :param="{'без поля поиска': true, ulDropDownClass: 'striped teal lighten-4'}" :items=" projectData " @on-select=" SelectProjectFilter ">
           <template v-slot:selected="{ selected }">
             <h4 class="  hover-bottom-shadow-teal-darken-3" :class="{'grey-text':!selected, 'fw500 animated slideInUp': !!selected}">
@@ -71,7 +71,7 @@
       </div>
 
       <table>
-        <thead>
+        <thead >
           <tr class="line-height-10-000">
             <th class="vbottom">
               <!-- фильтр по объекту :data-list=" rentObjects "-->

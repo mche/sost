@@ -508,15 +508,15 @@ sub реестр_актов_xlsx {
   
   my ($month, $month2) = split /:/, $c->param('month');
   my $data = $c->model->реестр_актов("месяц"=> $month, "месяц2"=> $month2, "счет или акт"=>'акт');
-  my @names = ('номер акта', 'дата акта', 'договор/номер','договор/дата начала', 'договор/дата завершения', 'контрагент/title', 'ИНН', 'объект', 'сумма/num');
+  my @names = ('номер акта', 'дата акта', 'сумма/num', 'договор/номер','договор/дата начала', 'договор/дата завершения', 'контрагент/title', 'ИНН', 'объект',);
   #~ my $filename=sprintf("static/tmp/%s-реестр-актов.xlsx", $c->auth_user->{id}, $month);
   
   open my $xfh, '>', \my $fdata or die "Failed to open filehandle: $!";
   my $workbook  = Excel::Writer::XLSX->new( $xfh );
   my $worksheet = $workbook->add_worksheet();
   my $n = 0;
-  $worksheet->write_row($n++,0, \@names);
-  $worksheet->write_row($n++,0, [@$_{@names}])
+  $worksheet->write_row($n++,0, [@names, 'арендодатель']);
+  $worksheet->write_row($n++,0, [@$_{@names}, $_->{'проект'},])#$c->app->json->decode($_->{'$арендодатель'})->{name}
     for @$data;
   $workbook->close();
   #~ return $fdata;
