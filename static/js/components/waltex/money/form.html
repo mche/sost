@@ -4,12 +4,12 @@
 
 <!--div ng-if=" $c.param.edit && $c.param.edit._init " ng-init="$c.Edit()" ng-show="0"></div--><!---  Наблюдать для обновления контекста -->
 
-<div ng-if="$c.ready && !$c.data" class="animated fadeIn">
+<div ng-if="$c.ready && !$c.data" class="animated slideInRight">
   <!--a  class="right btn white-text green" href="javascript:" >
     <i class="material-icons">add</i>
     <span>Добавить запись</span>
   </a-->
-  <a ng-click="$c.InitData()" href="javascript:" class="btn-flat z-depth-1 right000 teal-text text-darken-4 teal lighten-3" style="position: absolute; z-index: 1; top:0; right:0;"><!--- выставлять выше relative  ->
+  <a ng-click="$c.InitData()" href="javascript:" class="btn-flat z-depth-1 right000 teal-text text-darken-4 teal lighten-3" style="position:absolute; z-index:1; top:1rem; right:0;"><!--- выставлять выше relative  ->
         <!--i class="material-icons">add_box</i-->
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class=" middle teal-fill fill-darken-4" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#plus-square-fill" /></svg>
         <span>Добавить запись ДС</span>
@@ -219,7 +219,7 @@
 </div>
 
 <!--- кто когда создал --->
-<div ng-if=" $c.data.id " class=" fs8 grey-text" style="margin-top:-3rem;">
+<div ng-if=" $c.data.id " class="right-align fs8 grey-text" style="margin-top:-3rem;">
   <span class="chip padd-0-05">{{ $c.data['$создатель'].names.join(' ')  }}</span>
   <span class="chip padd-0-05"><span class="fs8 grey-text ">{{ $c.data['$создатель']['день недели'] }}</span>  <span class="bold">{{ $c.data['$создатель']['day'] }}</span>   <span class="fs8">{{ $c.data['$создатель']['месяца'] }}</span> <span ng-hide=" $c.currYear ==  $c.data['$создатель'].year " class="fs8 grey-text">{{ $c.data['$создатель'].year }}</span></span>
 
