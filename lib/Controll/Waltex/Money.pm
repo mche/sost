@@ -140,8 +140,8 @@ sub save {
       unless ref $rc;
   }
   
-
-  $data->{uid} = $c->auth_user->{id};
+  $data->{uid} = $c->auth_user->{id}
+      unless $data->{id};
 
   $rc = eval {$c->model->сохранить((map {($_=>$data->{$_})} grep {defined $data->{$_}} qw(id uid сумма дата примечание)),
     "кошелек"=>$data->{"кошелек"}{id} || $data->{"кошелек"}{new}{id},

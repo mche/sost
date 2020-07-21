@@ -60,7 +60,10 @@ sub доступ_все_объекты {
 
 sub объекты_без_проектов {
   my $self = shift;
-  $self->dbh->selectall_arrayref($self->sth('объекты без проектов'), {Slice=>{}}, );
+  my ($where, @bind) = $self->SqlAb->where({
+    -not_bool => ' coalesce(o."disable", false) ',
+  });
+  $self->dbh->selectall_arrayref($self->sth('объекты без проектов', where=>$where), {Slice=>{}}, @bind);
 }
 
 

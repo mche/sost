@@ -297,9 +297,9 @@ var factory = {
 
 moduleName.map(function(name){
     var mod = angular.module(name, []);
-    mod.run(function ($window) {
-      $window['angular.'+name] = factory;
-    });
+    //~ mod.run(function ($window) {
+      //~ $window['angular.'+name] = factory;
+    //~ });
     moduleNameS.map(function(n){ mod.factory(n, function () {
       return factory;
     }); });// все комбинации

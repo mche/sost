@@ -98,7 +98,7 @@ const Component = function($scope, $rootScope, $element, $timeout, $http, $q, ap
       $c.ready = true;
       
     });
-    
+    $c.currYear = (new Date()).getYear()+1900;
   };
   
   

@@ -9,14 +9,14 @@
     <i class="material-icons">add</i>
     <span>Добавить запись</span>
   </a-->
-  <a ng-click="$c.InitData()" href="javascript:" class="btn 000-flat 000z-depth-1 right000 lime-text text-darken-4 lime lighten-3" style="position: absolute; z-index: 1; top:0; right:0;"><!--- выставлять выше relative  ->
+  <a ng-click="$c.InitData()" href="javascript:" class="btn-flat z-depth-1 right000 teal-text text-darken-4 teal lighten-3" style="position: absolute; z-index: 1; top:0; right:0;"><!--- выставлять выше relative  ->
         <!--i class="material-icons">add_box</i-->
-        <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class=" middle lime-fill fill-darken-4" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#plus-square-fill" /></svg>
+        <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class=" middle teal-fill fill-darken-4" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#plus-square-fill" /></svg>
         <span>Добавить запись ДС</span>
       </a>
 </div>
 
-<div ng-if="$c.ready && $c.data && $c.ready != 'нет доступа' " class="card lime lighten-5 animated zoomIn"><div class="card-content">
+<div ng-if="$c.ready && $c.data && $c.ready != 'нет доступа' " class="card teal lighten-4 animated zoomIn"><div class="card-content">
 <div class="row relative" style-000="margin:0;">
 
     <!-- пакет -->
@@ -30,7 +30,7 @@
       </div>
     </div>
 
-  <a ng-if="!$c.param['без сохранения']" class="right btn-flat z-depth-1 red-text lighten-2" href="javascript:" ng-click="$c.CancelBtn()">
+  <a ng-if="!$c.param['без сохранения']" class="right btn-flat z-depth-1 red-text lighten-2 white" href="javascript:" ng-click="$c.CancelBtn()">
     <i class="material-icons">cancel</i>
     <span>Отмена</span>
   </a>
@@ -218,8 +218,10 @@
 
 </div>
 
-<div class="row" style="padding:0rem 1rem;">
-
+<!--- кто когда создал --->
+<div ng-if=" $c.data.id " class=" fs8 grey-text" style="margin-top:-3rem;">
+  <span class="chip padd-0-05">{{ $c.data['$создатель'].names.join(' ')  }}</span>
+  <span class="chip padd-0-05"><span class="fs8 grey-text ">{{ $c.data['$создатель']['день недели'] }}</span>  <span class="bold">{{ $c.data['$создатель']['day'] }}</span>   <span class="fs8">{{ $c.data['$создатель']['месяца'] }}</span> <span ng-hide=" $c.currYear ==  $c.data['$создатель'].year " class="fs8 grey-text">{{ $c.data['$создатель'].year }}</span></span>
 
   
 </div><!-- row -->

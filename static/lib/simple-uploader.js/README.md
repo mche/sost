@@ -4,7 +4,7 @@
 
 [中文](./README_zh-CN.md)
 
-![QQ](https://github.com/simple-uploader/Uploader/blob/develop/assets/simple-uploader-QQ.jpg?raw=true)
+![QQ](https://github.com/simple-uploader/Uploader/blob/develop/assets/simple-uploader-QQ-2.png?raw=true)
 
 A JavaScript library providing multiple simultaneous, stable, fault-tolerant and resumable/restartable file uploads via the HTML5 File API.
 
@@ -159,8 +159,8 @@ parameter must be adjusted together with `progressCallbacksInterval` parameter. 
 202]`)
 * `permanentErrors` Response fails if response status is in this list (Default: `[404, 415, 500, 501]`)
 * `initialPaused` Initial paused state, default `false`.
-* `processResponse` Process xhr response, default `function (response, cb) { cb(null, response) }`.
-* `processParams` Process xhr params, default `function (params) {return params}`.
+* `processResponse` Process xhr response, default `function (response, cb) { cb(null, response) }`. After 0.5.2, `processResponse` will be called with arguments: (response, cb, Uploader.File, Uploader.Chunk).
+* `processParams` Process xhr params, default `function (params) {return params}`. After 0.5.2, `processParams` will be called with arguments: (params, Uploader.File, Uploader.Chunk, isTest).
 
 #### Properties
 

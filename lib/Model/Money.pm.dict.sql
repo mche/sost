@@ -123,7 +123,9 @@ select m.*,
   pp.id as "профиль/id", array_to_string(pp.names, ' ') as "профиль",
   w.id as "кошелек/id", w.title as "кошелек",
   ---w."проект", w."проект/id" -- надо
-  p.id as "проект/id", p."name" as "проект"
+  p.id as "проект/id", p."name" as "проект",
+  row_to_json(u)::jsonb || timestamp_to_json(m.ts)::jsonb as "$создатель/json"
+  ---timestamp_to_json(m.ts) as "$ts/json"
 
 from  "{%= $schema %}"."{%= $tables->{main} %}" m
 
@@ -150,6 +152,7 @@ from  "{%= $schema %}"."{%= $tables->{main} %}" m
   left join ({%= $dict->render('объект') %}) ob on m.id=ob."движение денег/id"
   left join ({%= $dict->render('кошелек2') %}) w2 on m.id=w2."движение денег/id"
   left join ({%= $dict->render('профиль') %}) pp on m.id=pp."движение денег/id"
+  left join "профили" u on m.uid=u.id
 
 {%= $where || '' %}
 {%= $order_by || '' %}

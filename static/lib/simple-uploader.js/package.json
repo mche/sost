@@ -1,28 +1,28 @@
 {
-  "_from": "simple-uploader.js",
-  "_id": "simple-uploader.js@0.5.1",
+  "_from": "simple-uploader.js@^0.5.1",
+  "_id": "simple-uploader.js@0.5.4",
   "_inBundle": false,
-  "_integrity": "sha512-WOfvPLYXdJV5opHTQ/KnYXmDEBzoF6QGlC31elwQrnsf1Ot5nKxnrCLbf/nrggY2MzOMf4+bpF45iniuVKLf6A==",
+  "_integrity": "sha512-Dmysgp0wyKqGdnZ9qnxS7QTg/Hfr25GxKM2XlrEnmzSPFmKroFqzW4Qaq/AbJDBvXv4YPGqS3S5YfVI3UxAU0A==",
   "_location": "/simple-uploader.js",
   "_phantomChildren": {},
   "_requested": {
-    "type": "tag",
+    "type": "range",
     "registry": true,
-    "raw": "simple-uploader.js",
+    "raw": "simple-uploader.js@^0.5.1",
     "name": "simple-uploader.js",
     "escapedName": "simple-uploader.js",
-    "rawSpec": "",
+    "rawSpec": "^0.5.1",
     "saveSpec": null,
-    "fetchSpec": "latest"
+    "fetchSpec": "^0.5.1"
   },
   "_requiredBy": [
     "#USER",
     "/",
     "/vue-simple-uploader"
   ],
-  "_resolved": "https://registry.npmjs.org/simple-uploader.js/-/simple-uploader.js-0.5.1.tgz",
-  "_shasum": "2ef48f9af4bc2fef2d2a7a46b81fe98c3954ee97",
-  "_spec": "simple-uploader.js",
+  "_resolved": "https://registry.npmjs.org/simple-uploader.js/-/simple-uploader.js-0.5.4.tgz",
+  "_shasum": "f858ed1fefeddc58d46a724d5a6c77040b0b29bb",
+  "_spec": "simple-uploader.js@^0.5.1",
   "_where": "/home/guest",
   "author": {
     "name": "dolymood",
@@ -36,8 +36,7 @@
   "description": "Uploader library implements html5 file upload and provides multiple simultaneous, stable, fault tolerant and resumable uploads",
   "devDependencies": {
     "browserify-versionify": "^1.0.6",
-    ////"codecov": "^2.2.0",
-    "codecov": "^3.6.5",
+    "codecov": "^2.2.0",
     "eslint": "^4.2.0",
     "eslint-config-standard": "^6.1.0",
     "eslint-plugin-promise": "^3.5.0",
@@ -96,5 +95,5 @@
     "test:cover": "gulp cover",
     "test:unit": "gulp test"
   },
-  "version": "0.5.1"
+  "version": "0.5.4"
 }
