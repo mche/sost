@@ -33,7 +33,7 @@
     
     <div class="input-field right">
       <input type="radio" :id=" `radio-${profile.id}` "  v-model=" selectedRadio "  :value=" profile " @change=" ChangeRadio() "  @click=" ClickRadio(profile) ">
-      <label :for=" 'radio-'+profile.id " class="before-blue-lighten-5 hover-shadow3d blue-text-darken-3 checked-after-blue-darken-3"></label>
+      <label :for=" 'radio-'+profile.id " class="before-blue-lighten-5 hover-shadow3d blue-text-darken-3 checked-after-blue-darken-3">&nbsp;</label>
     </div>
     
     <!--a ng-click="$c.SaveCheck(profile)" href="javascript:" class="right hover-shadow3d" ng-class="{'grey-text': $c.param.route}" >
