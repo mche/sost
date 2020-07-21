@@ -227,8 +227,7 @@ const Component = function($scope, $rootScope, $element, $timeout, $http, $q, ap
           (!!$c.data['расход'] || !!$c.data['приход'])
           && !!(($scope.Contragent && $scope.Contragent.title) || ($scope.Wallet2 && $scope.Wallet2.title) || ($scope.Profile && $scope.Profile.id))
         )
-      )
-    ;
+      );
     
     
   };
