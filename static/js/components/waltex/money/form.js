@@ -15,10 +15,10 @@ const Controll = function($scope, $attrs, $element, $timeout, TemplateCache, app
   ctrl.$onInit = function() {
     $scope.param = {"создавать проект":true, };
     $scope.moves = [
-      {"id":0, "title": 'Все платежи', "icon": 'view_column', "class":'grey'},
-      {"id":1, "title": 'Внешние платежи', "icon": 'all_out'},
-      {"id":2, "title": 'Внутренние перемещения', "icon": 'swap_horiz'},
-      {"id":3, "title": 'Расчеты по сотрудникам', "icon": 'group'}
+      {"id":0, "title": 'Все платежи', "icon": 'view_column', "liClass":'teal lighten-4',},
+      {"id":1, "title": 'Внешние платежи', "icon": 'all_out', "liClass":'light-green lighten-2', "aClass":'light-green-text text-darken-4', },
+      {"id":2, "title": 'Внутренние перемещения', "icon": 'swap_horiz', "liClass":'red lighten-3', "aClass":'red-text text-darken-4', },
+      {"id":3, "title": 'Расчеты по сотрудникам', "icon": 'group', "liClass":'blue lighten-4', "aClass":'blue-text text-darken-4',}
     ];
     //~ ctrl.param = $scope.param;
     if($attrs.projectId) $scope.param["проект"] ={"id": parseInt($attrs.projectId)};
@@ -61,8 +61,8 @@ const Controll = function($scope, $attrs, $element, $timeout, TemplateCache, app
     
   };
   
-  ctrl.TabClass = function(m){
-    return m.class+' '+(m === $scope.param.move ? '' : 'z-depth-1');
+  ctrl.TabClass = function(m, name){
+    return m[name]+' '+ (name == 'liClass' ? (m === $scope.param.move ? '' : 'z-depth-1') : '');
     
   };
 };

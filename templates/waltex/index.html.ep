@@ -17,8 +17,8 @@
   <project-list ng-if="ctrl.ready" data-param="param" data-on-select-project="ctrl.SelectProject(p)"></project-list>
   
   <ul ng-if="ctrl.ready" ng-init="ctrl.InitTabs()" class="tabs z-depth-1000 tabs-transparent white" style="display: block; height: auto;">
-    <li ng-repeat="m in moves" class="tab teal lighten-3" ng-class="ctrl.TabClass(m)">
-      <h4><a ng-click="ctrl.SelectMove(m)" href="javascript:" ng-class="{'active white': m === param.move}" class="hvr-overline-from-center teal-text-darken-3 before-white" style="">
+    <li ng-repeat="m in moves" class="tab" ng-class="ctrl.TabClass(m, 'liClass')">
+      <h4><a ng-click="ctrl.SelectMove(m)" href="javascript:" ng-class="{'active white': m === param.move, [ctrl.TabClass(m, 'aClass')]:true, }" class="hvr-overline-from-center before-white" style="">
         <i class="material-icons">{{m.icon}}</i>
         <span>{{m.title}}</span>
       </a></h4>
