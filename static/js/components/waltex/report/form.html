@@ -48,6 +48,10 @@
           <input type="checkbox" id="all-wallets" ng-model="$ctrl.param['все кошельки']"  ng-change="$ctrl.ChangeAllCheckbox('все кошельки')" >
           <label for="all-wallets" class="before-yellow-lighten-4 teal-text text-darken-4 hover-shadow3d" ><h4>Все кошельки</h4></label>
         </div>
+        <div class="input-field">
+          <input type="checkbox" id="kassa-wallets" ng-model="$ctrl.param['все кошельки']"  ng-change="$ctrl.ChangeAllCheckbox('все кошельки')" >
+          <label for="kassa-wallets" class="before-yellow-lighten-4 teal-text text-darken-4 hover-shadow3d" ><h4>Все кошельки</h4></label>
+        </div>
       </div>
       
       <div class="card padd-05 maroon lighten-5" ng-hide="$ctrl.param['все кошельки0000'] || $ctrl.param['все кошельки2'] || $ctrl.param['все профили'] || $ctrl.param['все контрагенты000'] || $ctrl.param['все пустое движение']" style="/*margin-top: 2rem;*/">

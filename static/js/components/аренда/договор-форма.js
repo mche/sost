@@ -5,6 +5,8 @@
 //~ import VCalendar from 'v-calendar';
 //~ import  VCalendar from '../../../lib/v-calendar/src/components/Calendar.vue'
 
+//~ require('../../util/array-removeOf.js');
+
 //~ console.log(VCalendar);
 
 //~ // Use v-calendar & v-date-picker components
