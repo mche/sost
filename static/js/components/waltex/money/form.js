@@ -228,8 +228,6 @@ const Component = function($scope, $rootScope, $element, $timeout, $http, $q, ap
           && !!(($scope.Contragent && $scope.Contragent.title) || ($scope.Wallet2 && $scope.Wallet2.title) || ($scope.Profile && $scope.Profile.id))
         )
       );
-    
-    
   };
   
   $c.SaveBtn = function(){///

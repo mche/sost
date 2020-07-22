@@ -26,8 +26,19 @@ LOOP
   PERFORM  "удалить объект"('public', 'движение денег', 'refs', d.id, 1732);
   ---RAISE NOTICE ' id: %', d.id;
 END LOOP;
-
-----VACUUM  FULL  VERBOSE  ANALYZE;
+--------------------------------------
+FOR d IN
+  select m.id---,p.name, w2."проект2/name"
+  from  "движение денег" m
+ 
+  ---все кошелек перемещения
+  join refs rw on m.id=rw.id1
+  join "кошельки" w on w.id=rw.id2
+    
+LOOP
+  PERFORM  "удалить объект"('public', 'движение денег', 'refs', d.id, 1732);
+  ---RAISE NOTICE ' id: %', d.id;
+END LOOP;
 
 END
 $do$;
