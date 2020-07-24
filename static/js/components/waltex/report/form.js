@@ -86,53 +86,53 @@ var Controll = function($scope, $attrs, /*$element,*/ $timeout, /*$q,*/  Templat
 };
 
 var Component = function  ($scope, $timeout, $element) {
-  var $ctrl = this;
+  var $c = this;
   
-  $ctrl.$onInit = function(){
-    $ctrl.ready = true;
+  $c.$onInit = function(){
+    $c.ready = true;
     $timeout(function(){
       
-      $ctrl.select_interval = $('select', $($element[0]));
+      $c.select_interval = $('select', $($element[0]));
       
-      $ctrl.select_interval.material_select();
-      $ctrl.select_interval.change($ctrl.ChangeInterval);
-      $('input.select-dropdown', $ctrl.select_interval.parent()).val('Месяц');
-      $ctrl.param['интервал'] = 'YYYYmm/TMMon YY';
-      //~ $ctrl.select_interval.val('MM').change();
-      //~ $('option[value="MM"]', $ctrl.select_interval).prop('selected', true);
+      $c.select_interval.material_select();
+      $c.select_interval.change($c.ChangeInterval);
+      $('input.select-dropdown', $c.select_interval.parent()).val('Месяц');
+      $c.param['интервал'] = 'YYYYmm/TMMon YY';
+      //~ $c.select_interval.val('MM').change();
+      //~ $('option[value="MM"]', $c.select_interval).prop('selected', true);
       
       
       });
   };
 
-  $ctrl.FilterObj  = function(item){/// по проекту
-    //~ if (!$ctrl.param["проект"].id) return true;
-    //~ return item['проект/id'] == $ctrl.param["проект"].id;
+  $c.FilterObj  = function(item){/// по проекту
+    //~ if (!$c.param["проект"].id) return true;
+    //~ return item['проект/id'] == $c.param["проект"].id;
     return true;
     
   };
   
-  $ctrl.Refresh = function(){
-    if($ctrl.onRefresh) $ctrl.onRefresh();
+  $c.Refresh = function(){
+    if($c.onRefresh) $c.onRefresh();
     
   };
   
-  $ctrl.ChangeInterval = function(event) {
+  $c.ChangeInterval = function(event) {
     if(!event) return;
     //~ console.log();
-    $ctrl.param['интервал'] = $(event.target).val();
+    $c.param['интервал'] = $(event.target).val();
     
   };
   
-  $ctrl.ChangeAllCheckbox = function(name){
+  $c.ChangeAllChb = function(name){
     $timeout(function(){
-      ['кошельки', 'кошельки2', 'контрагенты', 'профили', 'объекты', 'пустое движение'].map(function(n){if(name != 'все '+n) $ctrl.param['все '+n] = false;});
+      ['кошельки', 'кассы', 'кошельки2', 'контрагенты', 'профили', 'объекты', 'пустое движение'].map(function(n){if(name != 'все '+n) $c.param['все '+n] = false;});
     });
     
   };
   
-  $ctrl.SelectItems = function(name){/// контрагент гасит сотрудника и наоборот
-    [/*'кошелек',*/ 'контрагент', 'профиль', /*'объект'*/].map(function(n){if(name != n) {$ctrl.param[n].title=''; $ctrl.param[n].id=undefined;}});
+  $c.SelectItems = function(name){/// контрагент гасит сотрудника и наоборот
+    [/*'кошелек',*/ 'контрагент', 'профиль', /*'объект'*/].map(function(n){if(name != n) {$c.param[n].title=''; $c.param[n].id=undefined;}});
   };
 };
 
@@ -143,6 +143,7 @@ module
 .controller('Controll', Controll)
 
 .component('reportForm', {
+  "controllerAs": '$c',
   templateUrl: "report/form",
   bindings: {
     param: '<',

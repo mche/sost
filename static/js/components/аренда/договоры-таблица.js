@@ -312,6 +312,15 @@ SelectObjectFilter(data){
   this.AllChbsChange(!!data);
 },
 
+ResizeObserver(){
+  let vm = this;
+  vm.resizeObserver = new ResizeObserver(entries => {
+    for (const entry of entries) {
+      vm.elWidth = entry.target.clientWidth;
+    }
+  });
+  vm.resizeObserver.observe(vm.$el);
+},
 
 }; ///конец methods
 
@@ -325,6 +334,10 @@ FilteredDataLen(){
   
 },
 
+EditItemStyle(){
+  if (this.elWidth < 1200) return {"width":'110%', "left":'-5%',};
+  return {"width":'90%', "left":'5%',};
+},
 
   
   /* computed */};
@@ -353,6 +366,7 @@ const  data = function(){
     "projectData":undefined,///арендодатели для компонетов
     "keys":{'payMonth2':Math.random()},
     "httpProcess": undefined,
+    "elWidth": undefined,/// будет при resizeObserver
     };
   //);
 };///конец data
@@ -365,9 +379,15 @@ const mounted = function(){
     setTimeout(function(){
       $('.modal', $el).modal( );// Callback for Modal close} {"complete": vm.ModalComplete}
       vm.InitDatePicker($('.datepicker.pay-month', $el));
+      vm.ResizeObserver();
     });
     
   });
+};
+
+const beforeDestroy = function(){
+  this.resizeObserver.unobserve(this.$el);
+  //~ console.log("beforeDestroy");
 };
 
 var $Компонент = {
@@ -377,6 +397,7 @@ var $Компонент = {
   computed,
   //~ "created"() {  },
   mounted,
+  beforeDestroy,
   components:{},
 };
 

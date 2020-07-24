@@ -23,19 +23,25 @@
     <a @click="ChbEdit" href="javascript:" class="circle  hoverable" :class="{'green darken-3 white-text':!!chbEdit}" style="position:absolute; left:-2rem; bottom: 0; padding:0.2rem;" title="редактировать наименование"><span class="material-icons">edit</span></a>
   </div>
   
-  <div v-if="param['реквизиты']" class="row">
+  <div v-if="param['реквизиты']" class="">
     <div class="col s4 ">
       <div v-show="param['реквизиты'].hasOwnProperty('ИНН')" class="input-field">
         <input v-if=" form['реквизиты']" type="text" name="ИНН" v-model=" form['реквизиты']['ИНН'] " @input="InputExtra" placeholder="ИНН" title="ИНН">
       </div>
-      <div v-show="param['реквизиты'].hasOwnProperty('физ. лицо')" class="input-field chip shadow-inset-10 hoverable">
-        <input :id=" 'chb-fl-' + form._id " name="" type="checkbox" class="" v-model="  form['реквизиты']['физ. лицо'] " >
-        <label :for="'chb-fl-' + form._id " class="before-yellow before-lighten-4 brown-text text-darken-3 chip yellow lighten-4 hoverable" style="padding-left:16px;"></label>
-        <label :for="'chb-fl-' + form._id " class=""><h5 class="inline" style="">Физ. лицо</h5></label>
+      <div v-show="param['реквизиты'].hasOwnProperty('email')" class="input-field">
+        <input v-if=" form['реквизиты']" type="text" name="email" v-model=" form['реквизиты']['email'] " @input="InputExtra" placeholder="@email" title="эл.почта'">
       </div>
     </div>
-    <div v-show="param['реквизиты'].hasOwnProperty('юр. адрес')" class="col s8 input-field">
-      <textarea name="юр. адрес" v-if=" form['реквизиты']" v-model.trim="form['реквизиты']['юр. адрес']" @input="InputExtra" placeholder="юр. адрес" class="materialize-textarea padd-0 fs8" style="min-height: 3rem;" title="юр. адрес"></textarea>
+    <div class="col s8 ">
+      <div v-show="param['реквизиты'].hasOwnProperty('юр. адрес')" class="input-field">
+        <textarea name="юр. адрес" v-if=" form['реквизиты']" v-model.trim="form['реквизиты']['юр. адрес']" @input="InputExtra" placeholder="юр. адрес" class="materialize-textarea padd-0 fs8" style="min-height: 3rem;" title="юр. адрес"></textarea>
+      </div>
+      
+      <div v-show="param['реквизиты'].hasOwnProperty('физ. лицо')" class="input-field chip transparent">
+        <input :id=" 'chb-fl-' + form._id " name="" type="checkbox" class="" v-model="  form['реквизиты']['физ. лицо'] " >
+        <label :for="'chb-fl-' + form._id " class="before-yellow before-lighten-4 brown-text text-darken-3 chip yellow lighten-4 hoverable" style="padding-left:16px;"></label>
+        <label :for="'chb-fl-' + form._id " class=""><h6 class="inline" style="">Физ. лицо</h6></label>
+      </div>
     </div>
     
   </div>
@@ -44,9 +50,9 @@
 </div>
 
 
-<div v-show=" ready && param['АТИ'] ">
+<!--div v-show=" ready && param['АТИ'] ">
   <h4>{{ param['АТИ'] }}</h4>
   <input name="АТИ" type="text" v-model=" form['АТИ'] " placeholder=" АТИ " class="" autocomplete="off">
-</div>
+</div-->
 
 </div>

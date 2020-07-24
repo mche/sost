@@ -1,20 +1,20 @@
 @@@ report/form
 
-<!--div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div-->
+<!--div ng-hide="$c.ready" ng-include=" 'progress/load' "></div-->
 
 <!--p class="red-text-darken-1 card chip">Отчет по одному кошельку исправлен (остатки на начало и конец интервала дат). Не нужно указывать весь период. </p-->
 
-<div ng-if="$ctrl.ready" class="card000 lime000 lighten-5">
+<div ng-if="$c.ready" class="card000 lime000 lighten-5">
 <div class="card-content">
   <div class="row">
     <div class="col s12 m6 l4">
       <div class="card padd-05 teal lighten-5">
-        <date-between data-param="$ctrl.param['дата']"></date-between>
+        <date-between data-param="$c.param['дата']"></date-between>
       </div>
       
-      <div class="card padd-05 lime lighten-5" ng-hide="$ctrl.param['все кошельки'] || $ctrl.param['все кошельки2'] ||  $ctrl.param['все контрагенты'] || $ctrl.param['все профили'] || $ctrl.param['все объекты']">
+      <div class="card padd-05 lime lighten-5" ng-hide="$c.param['все кошельки'] || $c.param['все кошельки2'] || $c.param['все кассы'] ||  $c.param['все контрагенты'] || $c.param['все профили'] || $c.param['все объекты']">
         <h4 class="lime-text text-darken-4 fw500">Интервал дат</h4>
-        <select ng-model0000="$ctrl.param['интервал']" ng-change000="$ctrl.ChangeInterval($event)">
+        <select ng-model0000="$c.param['интервал']" ng-change000="$c.ChangeInterval($event)">
           <option value="" disabled>выбрать интервал</option>
           <option value="DDDYYYY/DD.MM.YY">День</option>
           <option value="WWYYYY/TMmonth Wнед">Неделя</option>
@@ -23,12 +23,12 @@
         </select>
         <!--label>Интервал</label-->
         
-        <div ng-hide-000="$ctrl.param['все пустое движение']">
-          <h4 ng-init=" $ctrl.param['место интервалов']='столбцы' " class="lime-text text-darken-4 fw500" style="/*margin-top: 3.3rem;*/">Интервалы</h4>
+        <div ng-hide-000="$c.param['все пустое движение']">
+          <h4 ng-init=" $c.param['место интервалов']='столбцы' " class="lime-text text-darken-4 fw500" style="/*margin-top: 3.3rem;*/">Интервалы</h4>
           <p class="lime-text text-darken-4" style="border-bottom: 1px solid #aaa; padding: 0.5rem; margin:0;">
-            <input type="radio" id="group1" ng-model="$ctrl.param['место интервалов']" ng-value=" 'столбцы' ">
+            <input type="radio" id="group1" ng-model="$c.param['место интервалов']" ng-value=" 'столбцы' ">
             <label for="group1" class="before-yellow-lighten-4 hover-shadow3d">По столбцам</label>
-            <input type="radio" id="group2" ng-model="$ctrl.param['место интервалов']" ng-value=" 'строки' ">
+            <input type="radio" id="group2" ng-model="$c.param['место интервалов']" ng-value=" 'строки' ">
             <label for="group2" class="before-yellow-lighten-4 hover-shadow3d" style="margin-left: 3rem;">По строкам</label>
           </p>
         </div>
@@ -38,42 +38,42 @@
     </div>
     
     <div class="col s12 m6 l4" >
-      <div class="card padd-05 teal lighten-4" ng-hide-000="$ctrl.param['все профили'] || $ctrl.param['все контрагенты'] || $ctrl.param['все объекты']">
+      <div class="card padd-05 teal lighten-4" ng-hide-000="$c.param['все профили'] || $c.param['все контрагенты'] || $c.param['все объекты']">
         <h4 class="fw500">
           <i class="material-icons">account_balance</i>
           <span>Кошелек</span>
         </h4>
-        <wallet-item ng-if="$ctrl.param['кошелек'] && $ctrl.param['кошелек']['проект'] && $ctrl.param['кошелек']['проект'].ready && !$ctrl.param['все кошельки']" data-data="$ctrl.param['кошелек']" data-on-select="$ctrl.SelectItems('кошелек')"></wallet-item>
-        <div class="input-field">
-          <input type="checkbox" id="all-wallets" ng-model="$ctrl.param['все кошельки']"  ng-change="$ctrl.ChangeAllCheckbox('все кошельки')" >
+        <wallet-item ng-if="$c.param['кошелек'] && $c.param['кошелек']['проект'] && $c.param['кошелек']['проект'].ready && !$c.param['все кошельки'] && !$c.param['все кассы']" data-data="$c.param['кошелек']" data-on-select="$c.SelectItems('кошелек')"></wallet-item>
+        <div class="input-field chip ">
+          <input type="checkbox" id="all-wallets" ng-model="$c.param['все кошельки']"  ng-change="$c.ChangeAllChb('все кошельки')" >
           <label for="all-wallets" class="before-yellow-lighten-4 teal-text text-darken-4 hover-shadow3d" ><h4>Все кошельки</h4></label>
         </div>
-        <div class="input-field">
-          <input type="checkbox" id="kassa-wallets" ng-model="$ctrl.param['все кошельки']"  ng-change="$ctrl.ChangeAllCheckbox('все кошельки')" >
-          <label for="kassa-wallets" class="before-yellow-lighten-4 teal-text text-darken-4 hover-shadow3d" ><h4>Все кошельки</h4></label>
+        <div class="input-field chip ">
+          <input type="checkbox" id="kassa-wallets" ng-model="$c.param['все кассы']"  ng-change="$c.ChangeAllChb('все кассы')" >
+          <label for="kassa-wallets" class="before-yellow-lighten-4 teal-text text-darken-4 hover-shadow3d" ><h4>Все кассы</h4></label>
         </div>
       </div>
       
-      <div class="card padd-05 maroon lighten-5" ng-hide="$ctrl.param['все кошельки0000'] || $ctrl.param['все кошельки2'] || $ctrl.param['все профили'] || $ctrl.param['все контрагенты000'] || $ctrl.param['все пустое движение']" style="/*margin-top: 2rem;*/">
+      <div class="card padd-05 maroon lighten-5" ng-hide="$c.param['все кошельки0000'] || $c.param['все кошельки2'] || $c.param['все профили'] || $c.param['все контрагенты000'] || $c.param['все пустое движение']" style="/*margin-top: 2rem;*/">
         <h4 class="maroon-text fw500">
           <i class="icon-location"></i>
           <span>Объект</span>
         </h4>
-        <object-address ng-if=" $ctrl.param['объект'] && $ctrl.param['объект']['проект'] && $ctrl.param['объект']['проект'].ready && !$ctrl.param['все объекты'] " ng-init=" param = {'фильтр объектов0000': $ctrl.FilterObj,'только объекты': true, 'без проекта': true, placeholder:'объект', 'inputClass4Object': 'maroon-text', autocompleteClass4Object: 'maroon-text', 'не изменять': false } " data-data=" $ctrl.param['объект'] " data-param=" param " data-on-select="$ctrl.SelectItems('объект')" data-on-focus="" ></object-address>
+        <object-address ng-if=" $c.param['объект'] && $c.param['объект']['проект'] && $c.param['объект']['проект'].ready && !$c.param['все объекты'] " ng-init=" param = {'фильтр объектов0000': $c.FilterObj,'только объекты': true, 'без проекта': true, placeholder:'объект', 'inputClass4Object': 'maroon-text', autocompleteClass4Object: 'maroon-text', 'не изменять': false } " data-data=" $c.param['объект'] " data-param=" param " data-on-select="$c.SelectItems('объект')" data-on-focus="" ></object-address>
         <div class="input-field">
-          <input type="checkbox" id="all-obj" ng-model="$ctrl.param['все объекты']" ng-change="$ctrl.ChangeAllCheckbox('все объекты')">
+          <input type="checkbox" id="all-obj" ng-model="$c.param['все объекты']" ng-change="$c.ChangeAllCheckbox('все объекты')">
           <label for="all-obj" class="before-yellow-lighten-4 maroon-text hover-shadow3d"><h4 class="maroon-text">Все объекты</h4></label>
         </div>
       </div>
       
-      <div class="card padd-05 blue lighten-4" ng-hide="$ctrl.param['все кошельки000'] || $ctrl.param['все кошельки2'] || $ctrl.param['все контрагенты'] || $ctrl.param['все объекты'] || $ctrl.param['все пустое движение'] ">
+      <div class="card padd-05 blue lighten-4" ng-hide="$c.param['все кошельки000'] || $c.param['все кошельки2'] || $c.param['все контрагенты'] || $c.param['все объекты'] || $c.param['все пустое движение'] ">
         <h4 class="blue-text text-darken-2 fw500">
           <i class="material-icons">person</i>
           <span>Сотрудник</span>
         </h4>
-        <profile-item ng-if="!$ctrl.param['все профили']" ng-init=" param = {autocompleteClass:'blue-text text-darken-2', inputClass:'blue-text text-darken-2'} " data-param=" param " data-item="$ctrl.param['профиль']" data-on-select="$ctrl.SelectItems('профиль')"></profile-item>
+        <profile-item ng-if="!$c.param['все профили']" ng-init=" param = {autocompleteClass:'blue-text text-darken-2', inputClass:'blue-text text-darken-2'} " data-param=" param " data-item="$c.param['профиль']" data-on-select="$c.SelectItems('профиль')"></profile-item>
         <div class="input-field">
-          <input type="checkbox" id="all-profiles" ng-model="$ctrl.param['все профили']" ng-change="$ctrl.ChangeAllCheckbox('все профили')" >
+          <input type="checkbox" id="all-profiles" ng-model="$c.param['все профили']" ng-change="$c.ChangeAllCheckbox('все профили')" >
           <label for="all-profiles" class="before-yellow-lighten-4 blue-text text-darken-2 hover-shadow3d"><h4 class="blue-text text-darken-2">Все сотрудники</h4></label>
         </div>
       </div>
@@ -82,33 +82,33 @@
     
     <div class="col s12 m6 l4">
       
-      <div class="card padd-05 red lighten-3" ng-hide="$ctrl.param['все профили'] || $ctrl.param['все контрагенты'] || $ctrl.param['все объекты']  || $ctrl.param['все пустое движение']">
+      <div class="card padd-05 red lighten-3" ng-hide="$c.param['все профили'] || $c.param['все контрагенты'] || $c.param['все объекты']  || $c.param['все пустое движение']">
         <h4 class="red-text text-darken-4 fw500">
           <i class="material-icons">swap_horiz</i>
           <span>Кошелек перемещения</span>
         </h4>
-        <wallet-item ng-if="$ctrl.param['кошелек2'] && !$ctrl.param['все кошельки2']" data-data="$ctrl.param['кошелек2']" data-on-select="$ctrl.SelectItems('кошелек2')"></wallet-item>
+        <wallet-item ng-if="$c.param['кошелек2'] && !$c.param['все кошельки2']" data-data="$c.param['кошелек2']" data-on-select="$c.SelectItems('кошелек2')"></wallet-item>
         <div class="input-field">
-          <input type="checkbox" id="all-wallets2" ng-model="$ctrl.param['все кошельки2']"  ng-change="$ctrl.ChangeAllCheckbox('все кошельки2')" >
+          <input type="checkbox" id="all-wallets2" ng-model="$c.param['все кошельки2']"  ng-change="$c.ChangeAllCheckbox('все кошельки2')" >
           <label for="all-wallets2" class="before-yellow-lighten-4 red-text text-darken-4 hover-shadow3d" ><h4 class="red-text text-darken-4">Все кошельки</h4></label>
         </div>
       </div>
     
-      <div class="card padd-05 green lighten-5" ng-hide="$ctrl.param['все кошельки000'] || $ctrl.param['все кошельки2'] || $ctrl.param['все профили'] || $ctrl.param['все объекты0000'] || $ctrl.param['все пустое движение']" style="/*margin-top: 2rem;*/">
+      <div class="card padd-05 green lighten-5" ng-hide="$c.param['все кошельки000'] || $c.param['все кошельки2'] || $c.param['все профили'] || $c.param['все объекты0000'] || $c.param['все пустое движение']" style="/*margin-top: 2rem;*/">
         <h4 class="fw500">
           <i class="material-icons">business</i>
           <span>Контрагент</span>
         </h4>
-        <contragent-item ng-if="!$ctrl.param['все контрагенты']" data-item="$ctrl.param['контрагент']" data-on-select="$ctrl.SelectItems('контрагент')"></contragent-item>
+        <contragent-item ng-if="!$c.param['все контрагенты']" data-item="$c.param['контрагент']" data-on-select="$c.SelectItems('контрагент')"></contragent-item>
         <div class="input-field">
-          <input type="checkbox" id="all-contragents" ng-model="$ctrl.param['все контрагенты']" ng-change="$ctrl.ChangeAllCheckbox('все контрагенты')">
+          <input type="checkbox" id="all-contragents" ng-model="$c.param['все контрагенты']" ng-change="$c.ChangeAllCheckbox('все контрагенты')">
           <label for="all-contragents" class="before-yellow-lighten-4 green-text text-darken-4 hover-shadow3d"><h4 class="green-text text-darken-4">Все контрагенты</h4></label>
         </div>
       </div>
       
-      <div ng-hide="$ctrl.param['все кошельки000'] || $ctrl.param['все кошельки2'] || $ctrl.param['все контрагенты'] || $ctrl.param['все объекты'] || $ctrl.param['все профили'] " class=" card padd-05 grey lighten-4">
+      <div ng-hide="$c.param['все кошельки000'] || $c.param['все кошельки2'] || $c.param['все контрагенты'] || $c.param['все объекты'] || $c.param['все профили'] " class=" card padd-05 grey lighten-4">
         <div class="input-field">
-          <input type="checkbox" id="all-emp" ng-model="$ctrl.param['все пустое движение']" ng-change="$ctrl.ChangeAllCheckbox('все пустое движение')">
+          <input type="checkbox" id="all-emp" ng-model="$c.param['все пустое движение']" ng-change="$c.ChangeAllCheckbox('все пустое движение')">
           <label for="all-emp" class="before-yellow-lighten-4 black-text hover-shadow3d"><h4 class="black-text">Пустое движение</h4></label>
         </div>
           
@@ -119,8 +119,8 @@
   </div><!-- row -->
   <!--div class="divider"></div-->
   <div class="row center">
-    <a ng-click="$ctrl.Refresh()" href="javascript:" class="btn btn-large teal-text000">Получить отчет</a>
+    <a ng-click="$c.Refresh()" href="javascript:" class="btn btn-large teal-text000">Получить отчет</a>
   </div>
-  <!--div>{{$ctrl.param | json}}</div-->
+  <!--div>{{$c.param | json}}</div-->
 
 </div>

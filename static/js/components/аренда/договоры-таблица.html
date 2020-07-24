@@ -112,7 +112,7 @@
         <a @click=" Edit(item) " href="javascript: void('редактировать договор аренды') " class="hover-shadow3d" :class="{'maroon-text': !!item['архив']}" title="редактировать договор аренды">{{ item['$контрагент'].title }}</a>
       </h5>
       
-      <transition leave-active-class="animated zoomOutUp"><div v-if=" item._edit " style="position: absolute; width:110%; z-index:1; left:-5%;"><v-rent-contract-form :item=" item._edit " @on-save=" OnSave "></v-rent-contract-form></div></transition>
+      <transition leave-active-class="animated zoomOutUp"><div v-if=" item._edit " style="position: absolute; z-index:1; " :style="EditItemStyle"><v-rent-contract-form :item=" item._edit " @on-save=" OnSave "></v-rent-contract-form></div></transition>
     </td>
     <td class="vtop padd-05 relative">
       <div class="relative line-height-10" style="">
