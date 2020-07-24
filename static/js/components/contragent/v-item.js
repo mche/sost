@@ -18,8 +18,6 @@ var module = angular.module(moduleName, [ 'Util', 'Компонент::Поис�
 module
 .factory('$КомпонентКонтрагент', function($templateCache, $timeout, Util, $КомпонентПоискВСписке, /*$КомпонентВыборВСписке,*/ /*$http, $rootScope, /**$compile, appRoutes, Util $EventBus*/) {// factory
 
-console.log('$КомпонентКонтрагент', $templateCache.get('компонент/контрагент'));
-  
 const  props  = {
 "item": Object,
   //~ type: Object,

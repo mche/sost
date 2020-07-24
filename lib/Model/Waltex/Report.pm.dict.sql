@@ -911,37 +911,42 @@ from
   ---left join lateral (select array_agg("id" order by level desc) as "@id", (array_agg("title" order by level desc))[2:] as "@title" from "категории/родители узла"(c.id, true)) cc on true
   left join "категории/родители"() cat on cat.id=c.id
   
-  left join /*lateral*/ ( --- по какому объекту приход аренды
-    select
-      k.id as"контрагент/id",
-      d.id as "договор/id",
-      ---array_agg(array[d."дата1", d."дата2"]::date[]) as "даты договора",
-      d."дата1", coalesce(d."дата расторжения", d."дата2") as "дата2",
-      array_agg(ob.id) "@объекты/id",
-      array_agg(ob.name) "@объекты/name",
-      array_agg(ob) as "@объекты/json"
-    from 
-      "контрагенты" k
-        join refs rd on k.id=rd.id1
-        join "аренда/договоры" d on d.id=rd.id2
+  left join lateral ( --- по какому объекту приход аренды
+    select *
+    from (
+      select
+        k.id as"контрагент/id",
+        d.id as "договор/id",
+        ---array_agg(array[d."дата1", d."дата2"]::date[]) as "даты договора",
+        d."дата1", coalesce(d."дата расторжения", d."дата2") as "дата2",
+        array_agg(ob.id) "@объекты/id",
+        array_agg(ob.name) "@объекты/name",
+        array_agg(ob) as "@объекты/json"
+      from 
+        "контрагенты" k
+          join refs rd on k.id=rd.id1
+          join "аренда/договоры" d on d.id=rd.id2
+          
+          join refs r on d.id=r.id1
+          join "аренда/договоры-помещения" dp on dp.id=r.id2
         
-        join refs r on d.id=r.id1
-        join "аренда/договоры-помещения" dp on dp.id=r.id2
+          join refs r1 on dp.id=r1.id2
+          join "аренда/помещения" p on p.id=r1.id1
+          
+          join refs r2 on p.id=r2.id2
+          join "аренда/объекты" o on o.id=r2.id1
+          
+          join refs ro on o.id=ro.id2
+          join "roles" ob on ob.id=ro.id1
       
-        join refs r1 on dp.id=r1.id2
-        join "аренда/помещения" p on p.id=r1.id1
-        
-        join refs r2 on p.id=r2.id2
-        join "аренда/объекты" o on o.id=r2.id1
-        
-        join refs ro on o.id=ro.id2
-        join "roles" ob on ob.id=ro.id1
-    
-    ---where m."дата" between d."дата1" and d."дата2"
-    
-    group by k.id, d.id, d."дата1", coalesce(d."дата расторжения", d."дата2")
-  
-  ) rent on k.id=rent."контрагент/id" and m."дата" between rent."дата1" and rent."дата2"
+      ---where m."дата" between d."дата1" and d."дата2"
+      
+      group by k.id, d.id, d."дата1", coalesce(d."дата расторжения", d."дата2")
+      ) rd
+      where k.id=rd."контрагент/id" and m."дата" between rd."дата1" and rd."дата2"
+      order by "договор/id" desc
+      limit 1
+  ) rent on true
   
 ;
 
