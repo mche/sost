@@ -180,9 +180,9 @@ sub сохранить_помещение_договора {# и доп согл
     if ($room->{'ставка|сумма'}) eq 'сумма';
   
   return "Не заполнена ставка или сумма аренды помещения" #$c->render(json=>{error=>"Не заполнена ставка или сумма аренды помещения"})
-    unless (scalar grep($room->{$_}, qw(ставка сумма))) eq 1;
+    unless (scalar grep defined $room->{$_}, qw(ставка сумма)) eq 1;
   
-  $room->{$_} = &Util::money($room->{$_}) || undef
+  $room->{$_} = &Util::money($room->{$_}) || ($room->{$_} eq 0 ? 0 : undef)
     for grep defined $room->{$_}, qw(ставка сумма), 'сумма нал';
   $room->{$_} = &Util::numeric($room->{$_}) || ($room->{$_} eq 0 ? 0 : undef)
     for grep defined $room->{$_}, qw(площадь);

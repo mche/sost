@@ -911,7 +911,7 @@ from
   ---left join lateral (select array_agg("id" order by level desc) as "@id", (array_agg("title" order by level desc))[2:] as "@title" from "категории/родители узла"(c.id, true)) cc on true
   left join "категории/родители"() cat on cat.id=c.id
   
-  left join lateral ( --- по какому объекту приход аренды
+  left join lateral /*ради лимита 1 строки для двух договоров*/ ( --- по какому объекту приход аренды
     select *
     from (
       select
@@ -939,7 +939,9 @@ from
           join refs ro on o.id=ro.id2
           join "roles" ob on ob.id=ro.id1
       
-      ---where m."дата" between d."дата1" and d."дата2"
+      --- можно сюда даты и без d.id
+      --- where  m."дата" between d."дата1" and coalesce(d."дата расторжения", d."дата2")
+      --- group by k.id--, d.id---, d."дата1", coalesce(d."дата расторжения", d."дата2")
       
       group by k.id, d.id, d."дата1", coalesce(d."дата расторжения", d."дата2")
       ) rd

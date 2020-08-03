@@ -115,7 +115,7 @@ RoomMetr(room){
 },
 
 RoomSum(room){
-  return (this.ParseNum(room['сумма']) || this.ParseNum(room['ставка'])*this.ParseNum(room['площадь'] || (room['площадь'] === 0 ? room['площадь'] : room.$помещение['площадь'])))+this.ParseNum(room['сумма нал'] || 0);
+  return ((this.ParseNum(room['сумма'] || 0) || this.ParseNum(room['ставка'] || 0))*this.ParseNum(room['площадь'] || (room['площадь'] === 0 ? room['площадь'] : room.$помещение['площадь'])))+this.ParseNum(room['сумма нал'] || 0);
 },
 
 RoomsSum(item){///итого за все помещения
