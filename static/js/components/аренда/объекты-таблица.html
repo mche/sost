@@ -25,10 +25,27 @@
       </div>
       <div style="overflow:auto;" :style="item._expandRooms ? {} : {'max-height':'10rem'}">
       <table class="bordered striped lime lighten-4"><tbody>
-        <tr v-for="room in (item.rooms || item['@кабинеты'])" :key="room.id">
+        <tr v-for="(room, idx) in (item.rooms || item['@кабинеты'])" :key="room.id">
           <td style="">
-            <div class="nowrap truncate lime-text-darken-4 line-height-10" style="width:10rem;">
+            <div class="nowrap truncate000 lime-text-darken-4 line-height-10" style="width:10rem;">
               <span class="fs8 grey-text">№ </span><span class="bold">{{ room['номер-название'] }}</span>
+              <!--span v-show="!!item['@помещение в договоре аренды'][idx]" class="chip red padd-05">&nbsp;</span-->
+              <span v-if="!!item['@помещение в договоре аренды?'][idx]" class="tooltip right">
+                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32" class="teal-fill fill-darken-3 " style="height: 1rem;"><use xlink:href="/fonts/icons.svg#handshake" /></svg>
+                <!---sup class="chip">{{ item['@аренда/договоры'][idx].length }}</sup--->
+                <div class="tooltip-text card padd-05 teal-lighten-4">
+                  <h6 class="card-title padd-05"><i class="icon-left fs8" style="position:absolute; top:1rem; left:-0.5rem;"></i>Договоры по помещению {{ room['номер-название'] }}</h6>
+                  <ul class="card-content padd-0 pre-wrap fs8">
+                    <li v-for="d in item['@аренда/договоры'][idx]" class="nowrap teal-text text-darken-3">
+                      <a @click="GoToContract(d.id)" href="javascript:" :href000=" `#contract-${ d.id }`" class="hover-shadow3d">
+                        <span class="chip padd-0-05 nowrap" :title=" d['дата1'] "><span class="fs8 grey-text">c </span><span class="bold">{{ d.$дата1.day }}</span> <span class="fs8">{{ d.$дата1['мес'] }}</span><span v-show="(new Date).getYear()+1900 != d.$дата1.year"> {{ d.$дата1.year }}</span></span>
+                        <span class="chip ">№ {{ d['номер'] }}</span>
+                        <span class="chip"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="  teal-fill fill-darken-3" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#contragent"></use></svg> {{ d['контрагент/title'] }}</span>
+                      </a>
+                    </li>
+                  </ul>
+                </div><!--- конец списка договоров -->
+              </span>
             </div>
           </td>
           <td class="right-align" style="width:3%;">

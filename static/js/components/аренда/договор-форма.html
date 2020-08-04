@@ -1,6 +1,6 @@
 @@@ аренда/договор/форма
 
-<div v-if="ready" class="card z-depth-5 teal lighten-4 animated zoomIn fast">
+<div v-if="ready" class="card z-depth-5 animated zoomIn fast" :class="{'maroon lighten-5':IsOld, 'teal lighten-4': !IsOld}">
 
 <!--a @click="store.Inc1()" href="javascript:">{{ store.prop1 }}</a-->
 

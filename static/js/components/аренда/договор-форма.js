@@ -221,6 +221,7 @@ InitForm(item){/// обязательные реактивные поля
   return item;
 },
 
+
 Valid(){
   var vm = this;
   /*if (name == 'контрагент') return !!(vm.form['контрагент'].id || vm.form['контрагент'].title);
@@ -453,6 +454,10 @@ TotalSum(){
   return vm.tableSum;
 },
 
+IsOld(){
+  var vm = this;
+  return !dateFns.isWithinRange(new Date(), new Date(/*item['дата1']*/ '2000-01-01'), new Date(vm.form['дата расторжения'] || (vm.form['продление срока'] ? '2100-01-01' : vm.form['дата2'])));
+},
 //~ Count(){
   //~ return store.prop1;
   

@@ -21,6 +21,8 @@ module.factory('$КомпонентАрендаДоговорыТаблица', 
 var projectList = new $Список(appRoutes.url_for('список проектов'));
 projectList.Load();
 
+
+  
 const props = {
   "param": {
     type: Object,
@@ -32,7 +34,7 @@ const props = {
 };
   
 const util = {/*разное*/
-IsEqualId(id){ return (id.id || id) == this.id; },
+  IsEqualId(id){ return (id.id || id) == this.id; },
 };/// конец util
 
 const methods = {/*методы*/
@@ -42,6 +44,16 @@ Ready(){/// метод
   var loader = vm.ProjectData();
   $EventBus.$on('Дайте список проектов', function(cb){
     cb(loader);
+  });
+  $EventBus.$on('Прокрути к договору', function(id/*договора*/){
+    //~ console.log('Прокрути к договору', id, vm.data.find(util.IsEqualId, {id}));
+    let d = vm.data.find(util.IsEqualId, {id});
+    vm.filters['архивные договоры'] = !!d['архив'];
+    vm.ChbChange('архивные договоры', !!d['архив']);
+    setTimeout(()=>{
+      //~ $(`#contract-${ id }`, $(vm.$el)).get(0).scrollIntoView({ "block": 'start', "behavior": 'smooth', });
+      document.getElementById(`contract-${ id }`).scrollIntoView({ "block": 'start', "behavior": 'smooth', });
+    });
   });
   return vm.LoadData().then(function(){
     vm.FilterData();
@@ -150,10 +162,9 @@ OnSave(data){ ///  из события сохранения формы
       vm.data.unshift(data);
       //~ console.log("новый договор", data, f);
     }
-    vm.FilterData();
-    setTimeout(()=>{
-      $(`#item-${ data.id }`, $(vm.$el)).get(0).scrollIntoView({ "block": 'start', "behavior": 'smooth', });
-    });
+    //~ vm.FilterData();/// в шине !!!
+    $EventBus.$emit('Прокрути к договору', data.id);
+
   }
 },
 
@@ -175,9 +186,11 @@ AllChbsChange(val){
   //~ console.log('AllChbsChange', val, vm.filteredData);
 },
 
-ChbChange(name){
+ChbChange(name, val){
+  if (val !== undefined) this.filters[name] = val; 
   this.FilterData();
-  this.AllChbsChange(!!this.filters[name]);
+  if (val === undefined) this.AllChbsChange(!!this.filters[name]);
+  //~ else this.AllChbsChange(val);
 },
 
 ClearDate(name, val){
@@ -284,7 +297,7 @@ FilterData(){
   vm.filteredData = ///vm.filters['арендаторы'].length || (vm.filters['объект'] && vm.filters['объект'].id) /// || (vm.filters['архивные договоры'] !== undefined)
     vm.data.filter((item)=>{
       if (!item.hasOwnProperty('крыжик')) item['крыжик']  = undefined;/// доп реакт свойство
-      item['архив'] = item.hasOwnProperty('архив') ? item['архив'] : !dateFns.isWithinRange(new Date(), new Date(/*item['дата1']*/ '2000-01-01'), new Date(item['дата расторжения'] || (item['продление срока'] ? new Date('2100-01-01') : item['дата2'])));
+      item['архив'] = item.hasOwnProperty('архив') ? item['архив'] : !dateFns.isWithinRange(new Date(), new Date(/*item['дата1']*/ '2000-01-01'), new Date(item['дата расторжения'] || (item['продление срока'] ? '2100-01-01' : item['дата2'])));
       if (item['архив']) vm.archLen += 1;
       const test = (vm.filters['архивные договоры'] ? item['архив'] : !item['архив'])
         && (vm.filters['арендодатель'] ? item['проект/id'] == vm.filters['арендодатель'].id : true)
@@ -293,6 +306,7 @@ FilterData(){
       //~ console.log("filteredData", test);
       return test;
     });
+    vm.filters.timeout = undefined;
    // : vm.data;
   
   //~ vm.AllChbsChange(true);

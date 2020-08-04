@@ -298,27 +298,42 @@ from "roles/родители"(null)
 select o.*,
   ob.id as "объект/id",
   row_to_json(ob) as "$объект/json",
-  p."@кабинеты/json", p."@кабинеты/id", p."@помещение в договоре аренды"
+  p."@кабинеты/json", p."@кабинеты/id", p."@помещение в договоре аренды?", "@аренда/договоры/id/json", "@аренда/договоры/json"
 from "аренда/объекты" o
   join refs ro on o.id=ro.id2
-  join roles ob on ob.id=ro.id1
-  left join (
+  join "roles" ob on ob.id=ro.id1
+  join (---помещения объекта
     select o.id, 
-      jsonb_agg(p {%= $order_by_room || ' order by p.id' %}) as "@кабинеты/json",
-      array_agg(p.id {%= $order_by_room || ' order by p.id' %}) as "@кабинеты/id",
-      array_agg(p."помещение в договоре аренды" {%= $order_by_room || ' order by p.id' %}) as "@помещение в договоре аренды"
+      jsonb_agg(p  {%= $order_by_room || ' order by p.id' %}) as "@кабинеты/json",
+      array_agg(p.id  {%= $order_by_room || ' order by p.id' %}) as "@кабинеты/id",
+      array_agg(coalesce(dp.id, 0)::boolean  {%= $order_by_room || ' order by p.id' %}) as "@помещение в договоре аренды?",
+      --- разная размерность! поэтому в одномерную строку
+      array_agg('['||array_to_string(coalesce(dp."@аренда/договоры/id", array[]::int[]), ',')||']'  {%= $order_by_room || ' order by p.id' %}) as "@аренда/договоры/id/json",
+      array_agg(dp."@аренда/договоры/json"::text  {%= $order_by_room || ' order by p.id' %}) as "@аренда/договоры/json"
     from "аренда/объекты" o
       join "refs" r on o.id=r.id1
-      join (
-        select distinct p.*, coalesce(dp.id, 0)::boolean as "помещение в договоре аренды"--- проверка
+      join "аренда/помещения" p on p.id=r.id2
+      left join (--- все договоры с этим помещением
+        select p.id, 
+          jsonb_agg(dp order by dp."дата1" desc) as "@аренда/договоры/json",
+          array_agg(dp."договор/id" order by dp."дата1" desc) as "@аренда/договоры/id"
         from
-          "аренда/помещения" p 
-          left join (--- для проверки удаления строк помещений из объекта
-            select p.*, r.id1
-            from "аренда/договоры-помещения" p
-              join "refs" r on p.id=r.id2
+          "аренда/помещения" p
+          join (--- для проверки удаления строк помещений из объекта
+            select d.*, r2.id1,
+            timestamp_to_json(d."дата1"::timestamp) as "$дата1",
+            k.id as "контрагент/id", k."title" as "контрагент/title",
+            d.id as "договор/id"---, row_to_json(d) as "договор/json"
+            from 
+              "контрагенты" k 
+              join refs rk on k.id=rk.id1
+              join "аренда/договоры" d on d.id=rk.id2
+              join refs r on d.id=r.id1
+              join "аренда/договоры-помещения" p on p.id=r.id2
+              join "refs" r2 on p.id=r2.id2
           ) dp on p.id=dp.id1
-    ) p on p.id=r.id2
+          group by p.id
+    ) dp on p.id=dp.id
     group by o.id
   ) p on o.id=p.id
 {%= $where || '' %}

@@ -111,6 +111,11 @@ SortItemRooms(item){
   
 },
 
+GoToContract(id){
+  $EventBus.$emit('Прокрути к договору', id);
+  
+},
+
 }; /// конец methods
 
 const  data = function(){
