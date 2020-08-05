@@ -322,6 +322,7 @@ from "аренда/объекты" o
           join (--- для проверки удаления строк помещений из объекта
             select d.*, r2.id1,
             timestamp_to_json(d."дата1"::timestamp) as "$дата1",
+            timestamp_to_json(coalesce(d."дата расторжения", d."дата2")::timestamp) as "$дата2",
             k.id as "контрагент/id", k."title" as "контрагент/title",
             d.id as "договор/id"---, row_to_json(d) as "договор/json"
             from 

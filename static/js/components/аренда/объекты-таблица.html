@@ -9,36 +9,43 @@
   <div v-if=" newObject " style-000="position: absolute;  left:-5%;  width:110%; z-index:1;"><v-rent-object-form :item=" newObject " @on-save=" OnSave "></v-rent-object-form></div>
 </div>
 
-<table class="striped bordered blue lighten-4 z-depth-1 animated slideInUp">
+<!---table class="striped bordered blue lighten-4 z-depth-1 animated slideInUp">
 
 <tbody>
   <tr v-for=" (item, idx) in data " :key=" item.id " class="relative" :class="{'selected': item === selectedObject}">
-    <td class="vtop padd-05" style="/*width:30%;*/">
-      <h4 :class="{'bold': item._edit}" class="fw500 line-height-10 row" style=""><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" style="height: 1.2rem;" class="blue-fill-darken-3"><use xlink:href="/fonts/icons.svg#realty-1"></use></svg>  <a @click=" Edit(item) " href="javascript:void('редактировать объект аренды') " class="hover-shadow3d blue-text text-darken-3" title="редактировать объект аренды">{{ (item['$объект'] && item['$объект'].name) || item['адрес'] }}</a></h4>
-      <div v-show="item['коммент'] && !!item['коммент'].length " class="chip width100 truncate pre-wrap fs8 grey-text-000 line-height-10" style="height:2rem;" :title=" item['коммент'] ">{{ item['коммент'] }}</div>
-      <div class="right chip  right-align hoverable fs8 line-height-10" stle=""><a @click="ToggleRooms(item)" href="javascript:void('развернуть строки помещений/кабинетов')" title="развернуть строки помещений/кабинетов" class="black-text hover-shadow3d">общая площадь <span class="bold fs12">{{ SumSquare(item).toLocaleString() }}</span> м²<br> в <span class="bold fs12">{{ item['@кабинеты'].length }}</span> помещениях <i class="material-icons">arrow_forward</i></a></div>
+    <td class="vtop padd-05" style="width:calc(20vw)"--->
+<div v-for=" (item, idx) in data " :key=" item.id " class="relative card padd-05 blue lighten-4 animated slideInUp" :class="{'selected': item === selectedObject}">
+      <h4 :class="{'bold': item._edit}" class="fw500 line-height-10 card-title padd-05" style=""><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" style="height: 1.2rem;" class="blue-fill-darken-3"><use xlink:href="/fonts/icons.svg#realty-1"></use></svg>  <a @click=" Edit(item) " href="javascript:void('редактировать объект аренды') " class="hover-shadow3d blue-text text-darken-3" title="редактировать объект аренды">{{ (item['$объект'] && item['$объект'].name) || item['адрес'] }}</a></h4>
+      <!--div v-show="item['коммент'] && !!item['коммент'].length " class="chip width100 truncate pre-wrap fs8 grey-text-000 line-height-10" style="height:2rem;" :title=" item['коммент'] ">{{ item['коммент'] }}</div-->
+      
       <div v-if=" item._edit " style="position: absolute; left:-5%; width:110%; z-index:1;"><v-rent-object-form :item=" item._edit " @on-save=" OnSave "></v-rent-object-form></div>
-    </td>
-    <td class="vtop padd-05 relative" style="width:60%;" :style=" item['@кабинеты'].length > 1 ? {'padding-top':'2rem !important'} : {}">
-      <div v-show="item['@кабинеты'].length > 1" style="position:absolute; top:0rem;">
-        <a @click=" SortItemRooms(item) " href="javascript:" class="btn-flat padd-0 lime-text text-darken-4" title="сортировать по номеру"><i class="material-icons">sort</i></a>
+    <!--/td>
+    <td class="vtop padd-05 relative" style="width:60%;" :style=" item['@кабинеты'].length > 1 ? {'padding-top':'2rem !important'} : {}"-->
+    <div class="card-content relative" style="padding: 2rem 0 0;">
+      <div v-show="item['@кабинеты'].length > 1" style="position:absolute; top:0.3rem;">
+        <a @click=" SortItemRooms(item) " href="javascript:" class="chip hoverable padd-0-02 z-depth-1 lime-text text-darken-4" title="сортировать по номеру"><i class="material-icons">sort</i></a>
+      </div>
+      <div style="position: absolute; top: 0.3rem; right: 0; z-index: 1;">
+        <a @click="ToggleRooms(item)" href="javascript:" class="chip lime-text-darken-4 hoverable padd-0 z-depth-1"><i class="material-icons">arrow_drop_down</i></a>
       </div>
       <div style="overflow:auto;" :style="item._expandRooms ? {} : {'max-height':'10rem'}">
-      <table class="bordered striped lime lighten-4"><tbody>
+      <table class="bordered striped lime lighten-4 highlight"><tbody>
         <tr v-for="(room, idx) in (item.rooms || item['@кабинеты'])" :key="room.id">
           <td style="">
-            <div class="nowrap truncate000 lime-text-darken-4 line-height-10" style="width:10rem;">
+            <div class="nowrap truncate000 lime-text-darken-4 line-height-10" style="/*width:10rem;*/">
               <span class="fs8 grey-text">№ </span><span class="bold">{{ room['номер-название'] }}</span>
               <!--span v-show="!!item['@помещение в договоре аренды'][idx]" class="chip red padd-05">&nbsp;</span-->
-              <span v-if="!!item['@помещение в договоре аренды?'][idx]" class="tooltip right">
+              <span v-if="!!item['@помещение в договоре аренды?'][idx]" class="hover-childs-show relative">
                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32" class="teal-fill fill-darken-3 " style="height: 1rem;"><use xlink:href="/fonts/icons.svg#handshake" /></svg>
                 <!---sup class="chip">{{ item['@аренда/договоры'][idx].length }}</sup--->
-                <div class="tooltip-text card padd-05 teal-lighten-4">
-                  <h6 class="card-title padd-05"><i class="icon-left fs8" style="position:absolute; top:1rem; left:-0.5rem;"></i>Договоры по помещению {{ room['номер-название'] }}</h6>
-                  <ul class="card-content padd-0 pre-wrap fs8">
+                <div class="hover-parent-show-block card padd-05 teal-lighten-4 animated fadeIn fast" style="position:absolute; top:-0.3rem; left:1rem; z-index:1;">
+                  <h5 class="card-title-000"><!--i class="icon-left fs8 " style="position:absolute; top:1rem; left:-0.5rem;"></i-->Договоры по помещению <span class="bold">{{ room['номер-название'] }}</span></h5>
+                  <ul class="card-content padd-0 fs8">
                     <li v-for="d in item['@аренда/договоры'][idx]" class="nowrap teal-text text-darken-3">
                       <a @click="GoToContract(d.id)" href="javascript:" :href000=" `#contract-${ d.id }`" class="hover-shadow3d">
                         <span class="chip nowrap" :title=" d['дата1'] "><span class="fs8 grey-text">c </span><span class="bold">{{ d.$дата1.day }}</span> <span class="fs8">{{ d.$дата1['мес'] }}</span><span v-show="(new Date).getYear()+1900 != d.$дата1.year"> {{ d.$дата1.year }}</span></span>
+                        <span v-if="!d['продление срока'] || !!d['дата расторжения']" class="chip nowrap" :title=" d['дата?'] "><span class="fs8 grey-text">по </span><span class="bold">{{ d.$дата2.day }}</span> <span class="fs8">{{ d.$дата2['мес'] }}</span><span v-show="(new Date).getYear()+1900 != d.$дата2.year"> {{ d.$дата2.year }}</span></span>
+                        <span v-else>с продлением</span>
                         <span class="chip ">№ {{ d['номер'] }}</span>
                         <span class="chip"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="  teal-fill fill-darken-3" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#contragent"></use></svg> {{ d['контрагент/title'] }}</span>
                       </a>
@@ -60,15 +67,20 @@
               <span class="fs8 grey-text"> м<sup>2</sup></span>
             </div>
           </td>
-          <td style="width:10%;"><span v-show="!!room['коммент']" class="padd-0-05 truncate pre-wrap fs8 grey-text middle line-height-8" style="max-height:2rem;" :title=" room['коммент'] ">{{ room['коммент'] }}</span></td>
+          <td style="width:calc(20vw);"><span v-show="!!room['коммент']" class="padd-0-05 truncate pre-wrap fs8 grey-text middle line-height-8" style="max-height:2rem;" :title=" room['коммент'] ">{{ room['коммент'] }}</span></td>
         </tr>
       </tbody></table>
       </div>
-    </td>
+      <div class="chip  right-align hoverable  line-height-10" style="">
+        <!--span @click="ToggleRooms(item)" href="javascript:void('развернуть строки помещений/кабинетов')" title="развернуть строки помещений/кабинетов" class="black-text hover-shadow3d"-->общая площадь <span class="bold fs12">{{ SumSquare(item).toLocaleString() }}</span> м² в <span class="bold fs12">{{ item['@кабинеты'].length }}</span> помещениях <!--i class="material-icons">arrow_forward</i></span-->
+      </div>
+    </div><!--card-content -->
+</div><!--card -->
+    <!--/td>
     
   </tr>
 </tbody>
-</table>
+</table--->
 
 </div>
 </div>
