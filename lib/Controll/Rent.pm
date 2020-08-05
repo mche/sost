@@ -82,18 +82,32 @@ sub сохранить_объект {
 sub удалить_объект {
   my $c = shift;
   my $data = $c->req->json;
+  
+  my $tx_db = $c->model->dbh->begin;
+  local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
+  
   my $r = $c->model->удалить_объект($data);
   return $c->render(json=>{error=>$r})
     unless ref $r;
+  
+  $tx_db->commit;
+  
   $c->render(json=>{remove=>$r});
 }
 
 sub удалить_договор {
   my $c = shift;
   my $data = $c->req->json;
+  
+  my $tx_db = $c->model->dbh->begin;
+  local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
+  
   my $r = $c->model->удалить_договор($data);
   return $c->render(json=>{error=>$r})
     unless ref $r;
+  
+  $tx_db->commit;
+  
   $c->render(json=>{remove=>$r});
 }
 
@@ -370,6 +384,21 @@ sub сохранить_расход {
   $c->render(json=>{success=>$r});
   
 }# end сохранить_расход
+
+sub удалить_расход {
+  my $c = shift;
+  my $data = $c->req->json;
+  
+  my $tx_db = $c->model->dbh->begin;
+  local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
+  
+  my $r = $c->model->удалить_расход($data);
+  return $c->render(json=>{error=>$r})
+    unless ref $r;
+  
+  $tx_db->commit;
+  $c->render(json=>{remove=>$r});
+}
 
 #~ ^\/аренда\/счет([^/]+)/?(?:\.([^/]+))?$
 

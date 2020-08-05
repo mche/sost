@@ -215,12 +215,31 @@
           <i class="material-icons">save</i>
           <span>Сохранить</span>
         </a>
+        <a v-show="form.id" @click=" RemoveBtn() " href="javascript:" class="left btn-flat z-depth-1 red white-text">
+          <span class="material-icons">delete_forever</span>
+          <span>Удалить</span>
+        </a>
         <a @click=" CancelBtn() " href="javascript:" class="right btn-flat z-depth-1 red-text white">
           <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
           <span>Отмена</span>
         </a>
     </div>
 </div>
+
+</div>
+
+<!-- Modal Structure -->
+<div id="modal-remove" class="modal" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp-000  slideOutUp fast"  style="max-height:90%; width:100%; top:0;">
+  <div class="modal-content row">
+    <h2 class="center">Подтвердить удаление расхода</h2>
+  </div><!-- modal-content -->
+  <div class="modal-footer center">
+    <a @click=" RemoveBtn(true) " href="javascript:" class="modal-action modal-close waves-effect waves-red btn-flat z-depth-1 red lighten-3 red-text text-darken-3 btn-flat z-depth-1 red white-text" style="float:none;">
+          <span class="material-icons">delete_forever</span>
+          <span>Да</span>
+        </a>
+    <a  href="javascript:" class="modal-action modal-close btn-flat z-depth-1 orange-text "><i class="material-icons">cancel</i><span>Нет</span></a>
+  </div>
 
 </div>
 
