@@ -6,7 +6,7 @@
 <div v-if=" ready ">
 <div>
   <a v-show=" !newObject " @click=" New " href="javascript:" class="btn-flat z-depth-1 blue lighten-4 blue-text text-darken-4" style="position: absolute; top:0.3rem; right:1rem;"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="blue-fill fill-darken-4" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#form-add" /></svg> Добавить объект</a>
-  <div v-if=" newObject " style-000="position: absolute;  left:-5%;  width:110%; z-index:1;"><v-rent-object-form :item=" newObject " @on-save=" OnSave "></v-rent-object-form></div>
+  <div v-if=" newObject " style-000="position: absolute;  left:-5%;  width:110%; z-index:2;"><v-rent-object-form :item=" newObject " @on-save=" OnSave "></v-rent-object-form></div>
 </div>
 
 <!---table class="striped bordered blue lighten-4 z-depth-1 animated slideInUp">
@@ -18,7 +18,7 @@
       <h4 :class="{'bold': item._edit}" class="fw500 line-height-10 card-title padd-05" style=""><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" style="height: 1.2rem;" class="blue-fill-darken-3"><use xlink:href="/fonts/icons.svg#realty-1"></use></svg>  <a @click=" Edit(item) " href="javascript:void('редактировать объект аренды') " class="hover-shadow3d blue-text text-darken-3" title="редактировать объект аренды">{{ (item['$объект'] && item['$объект'].name) || item['адрес'] }}</a></h4>
       <!--div v-show="item['коммент'] && !!item['коммент'].length " class="chip width100 truncate pre-wrap fs8 grey-text-000 line-height-10" style="height:2rem;" :title=" item['коммент'] ">{{ item['коммент'] }}</div-->
       
-      <div v-if=" item._edit " style="position: absolute; left:-5%; width:110%; z-index:1;"><v-rent-object-form :item=" item._edit " @on-save=" OnSave "></v-rent-object-form></div>
+      <div v-if=" item._edit " style="position: absolute; left:-5%; width:110%; z-index:2;"><v-rent-object-form :item=" item._edit " @on-save=" OnSave "></v-rent-object-form></div>
     <!--/td>
     <td class="vtop padd-05 relative" style="width:60%;" :style=" item['@кабинеты'].length > 1 ? {'padding-top':'2rem !important'} : {}"-->
     <div class="card-content relative" style="padding: 2rem 0 0;">
@@ -68,7 +68,7 @@
           </td>
           <td class="right-align" style="width:3%;">
             <div class="nowrap lime-text-darken-4 line-height-10" style="">
-              <span class="bold">{{ item['@кабинеты'][idx]['этаж'] }}</span>
+              <span class="bold">{{ item['@кабинеты'][idx]['этаж'].toString().replace(/-1/, 'подв.').replace(/0/, 'цок.') }}</span>
               <span class="fs8 grey-text"> эт.</span>
             </div>
           </td>

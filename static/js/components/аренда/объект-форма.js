@@ -173,9 +173,33 @@ ParseNum(num){
 
 ShowFloor(item, floor){
   this.showFloor = item;
-  if (item) this.tableRooms = item['помещения'];
-  else this.tableRooms = this.form['@кабинеты'];
+  this.tableRooms = this.SortRooms(item ? item['помещения'] : this.form['@кабинеты']);
+},
+
+SortRooms(rooms){
+  return rooms.sort((a,b)=>this._CompareRoom(a,b));
+},
+
+_CompareRoom(a,b){/// из объекты-таблица.js
+  //~ console.log("_CompareRoom", this);
+  let d1 =  /^\d/.test(a['номер-название']);
+  let d2 = /^\d/.test(b['номер-название']);
+  let v1 = d1 ? a['номер-название'].replace(/^(\d+).*/, '$1') : a['номер-название'];
+  let v2 = d2 ? b['номер-название'].replace(/^(\d+).*/, '$1') : b['номер-название'];
+  let l1 = v1.length;
+  let l2 = v2.length;
   
+  if (d1 && d2) {/// только цифры
+    if (l1 > l2) return (!this._sortItemRooms ? 1 : -1);
+    if (l1 < l2) return (!this._sortItemRooms ? -1 : 1);
+    if (v1 > v2) return (!this._sortItemRooms ? 1 : -1);
+    if (v1 < v2) return (!this._sortItemRooms ? -1 : 1);
+    return 0;
+   //~ return v1.localeCompare(v2) * (l1 >= l2 ? 1 : -1) * (item._sortItemRooms ? 1 : -1);
+  }
+  else {///чистый текст (без цифры в начале)
+    return v1.localeCompare(v2)*(!this._sortItemRooms ? 1 : -1);
+  }
 },
 
 OnFloorSelect(item, propSel){
@@ -186,6 +210,12 @@ OnFloorSelect(item, propSel){
   //~ setTimeout(()=>{
     //~ propSel.room['площадь'] = s;
   //~ });
+},
+
+_CompareFloor(a,b){
+  if (parseFloat(a) > parseFloat(b))  return 1; 
+  if (parseFloat(a) < parseFloat(b)) return -1; 
+  return 0;
 },
 
 }; ///конец методы
@@ -225,14 +255,9 @@ FloorSquares(){// площади по этажам
 
 ListFloors(){///выбор в списке этажей
   //~ console.log("ListFloors");
-  return Object.keys(floors).sort((a,b)=>{
-    if (parseFloat(a) > parseFloat(b))  return 1; 
-    if (parseFloat(a) < parseFloat(b)) return -1; 
-    return 0;
-  }).map((id)=>{
-    return {"id": id, "floor": floors[id]};
-    
-  });
+  return Object.keys(floors)
+    .sort((a,b)=>this._CompareFloor(a,b))
+    .map((id)=>({"id": id, "floor": floors[id]}));
   
 },
   
@@ -253,7 +278,7 @@ const data = function() {
     "form": form,
     "expandRooms":  form["@кабинеты"].length < 10,
     "showFloor": undefined,///вкладки этажей
-    "tableRooms": form["@кабинеты"],
+    "tableRooms": vm.SortRooms(form["@кабинеты"]),
     };
   //);
 };///  конец data
