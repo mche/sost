@@ -296,7 +296,7 @@
       <!--div>{{ form['@скидки'] }}</div-->
       <ul>
         <li v-for="(dc, idx) in form['@скидки']" :key="idx" class="nowrap">
-          <h4 class="input-field chip padd-0-05" :class="{'fw500':!!dc['месяц'] }"><input :name=" `месяц скидки ${ idx+1 }` " :data-idx="idx" type="text" class="month-picker-discount"  :data-value=" dc['месяц'] || '' " placeholder="месяц скидки"></h4>
+          <h4 class="input-field chip padd-0-05" :class="{'fw500':!!dc['месяц'] }" style="width:10rem;"><input :name=" `месяц скидки ${ idx+1 }` " :data-idx="idx" type="text" class="month-picker-discount"  :data-value=" dc['месяц'] || '' " placeholder="месяц скидки"></h4>
           <div class="input-field chip padd-0-05" style="width:10rem;"><input type="text" v-model="dc['%']" placeholder="%"></div> <span v-show="dc['%']">%</span>
         </li>
       </ul>
