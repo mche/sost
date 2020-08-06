@@ -101,16 +101,31 @@ SortItemRoomsIndexes(item){///вместо самого массива поме�
   var vm = this;
   item._sortItemRooms = !item._sortItemRooms;
   //~ if ( === undefined) return item.rooms = item['@кабинеты'];///без сортировки
-  item.roomsIndexes = Array(item['@кабинеты'].length).fill().map((item, index) => 0 + index);
+  item.roomsIndexes = Array(item['@кабинеты'].length).fill().map((item, idx) => idx);
   //~ item.rooms = item['@кабинеты'].sort((a, b) => {
-  item.roomsIndexes.sort((a,b) => {
-    let v1 = item['@кабинеты'][a]['номер-название'].toLowerCase();
-    let v2 = item['@кабинеты'][b]['номер-название'].toLowerCase();
-    if (v1 > v2) return item._sortItemRooms ? 1 : -1;
-    if (v1 < v2) return item._sortItemRooms ? -1 : 1; 
-    return 0;
-  });
+  item.roomsIndexes.sort((a,b) => vm._CompareItemRoom(a, b, item));
   return item.roomsIndexes;
+},
+
+_CompareItemRoom(a, b, item){/// для SortItemRoomsIndexes
+  let d1 =  /^\d/.test(item['@кабинеты'][a]['номер-название']);
+  let d2 = /^\d/.test(item['@кабинеты'][b]['номер-название']);
+  let v1 = d1 ? item['@кабинеты'][a]['номер-название'].replace(/^(\d+).*/, '$1') : item['@кабинеты'][a]['номер-название'];
+  let v2 = d2 ? item['@кабинеты'][b]['номер-название'].replace(/^(\d+).*/, '$1') : item['@кабинеты'][b]['номер-название'];
+  let l1 = v1.length;
+  let l2 = v2.length;
+  
+  if (d1 && d2) {/// только цифры
+    if (l1 > l2) return (item._sortItemRooms ? 1 : -1);
+    if (l1 < l2) return (item._sortItemRooms ? -1 : 1);
+    if (v1 > v2) return (item._sortItemRooms ? 1 : -1);
+    if (v1 < v2) return (item._sortItemRooms ? -1 : 1);
+    return 0;
+   //~ return v1.localeCompare(v2) * (l1 >= l2 ? 1 : -1) * (item._sortItemRooms ? 1 : -1);
+  }
+  else {///чистый текст (без цифры в начале)
+    return v1.localeCompare(v2)*(item._sortItemRooms ? 1 : -1);
+  }
 },
 
 GoToContract(id){
