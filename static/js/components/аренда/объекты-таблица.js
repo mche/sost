@@ -52,7 +52,7 @@ LoadData(){
   var vm = this;
   return $http.get(appRoutes.urlFor('аренда/объекты/список'))
     .then(function(resp){
-      vm.data.push(...resp.data);
+      vm.data.push(...resp.data.map((item)=>{ vm.SortItemRoomsIndexes(item); return item; }));
       return vm.data;
     });
 },
@@ -97,18 +97,20 @@ ParseNum(num){
   return parseFloat(Util.numeric(num));
 },
 
-SortItemRooms(item){
+SortItemRoomsIndexes(item){///вместо самого массива помещений используется массив сортировки индексов
   var vm = this;
   item._sortItemRooms = !item._sortItemRooms;
   //~ if ( === undefined) return item.rooms = item['@кабинеты'];///без сортировки
-  vm.$set(item, 'rooms', item['@кабинеты'].sort((a, b) => {
-    let v1 = a['номер-название'].toLowerCase();
-    let v2 = b['номер-название'].toLowerCase();
+  item.roomsIndexes = Array(item['@кабинеты'].length).fill().map((item, index) => 0 + index);
+  //~ item.rooms = item['@кабинеты'].sort((a, b) => {
+  item.roomsIndexes.sort((a,b) => {
+    let v1 = item['@кабинеты'][a]['номер-название'].toLowerCase();
+    let v2 = item['@кабинеты'][b]['номер-название'].toLowerCase();
     if (v1 > v2) return item._sortItemRooms ? 1 : -1;
     if (v1 < v2) return item._sortItemRooms ? -1 : 1; 
     return 0;
-  }));
-  
+  });
+  return item.roomsIndexes;
 },
 
 GoToContract(id){

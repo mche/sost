@@ -23,23 +23,24 @@
     <td class="vtop padd-05 relative" style="width:60%;" :style=" item['@кабинеты'].length > 1 ? {'padding-top':'2rem !important'} : {}"-->
     <div class="card-content relative" style="padding: 2rem 0 0;">
       <div v-show="item['@кабинеты'].length > 1" style="position:absolute; top:0.3rem;">
-        <a @click=" SortItemRooms(item) " href="javascript:" class="chip hoverable padd-0-02 z-depth-1 lime-text text-darken-4" title="сортировать по номеру"><i class="material-icons">sort</i></a>
+        <a @click=" SortItemRoomsIndexes(item) " href="javascript:" class="chip hoverable padd-0-02 z-depth-1 lime-text text-darken-4" title="сортировать по номеру"><i class="material-icons">sort</i></a>
       </div>
       <div style="position: absolute; top: 0.3rem; right: 0; z-index: 1;">
         <a @click="ToggleRooms(item)" href="javascript:" class="chip lime-text-darken-4 hoverable padd-0 z-depth-1"><i class="material-icons">arrow_drop_down</i></a>
       </div>
       <div style="overflow:auto;" :style="item._expandRooms ? {} : {'max-height':'10rem'}">
       <table class="bordered striped lime lighten-4 highlight"><tbody>
-        <tr v-for="(room, idx) in (item.rooms || item['@кабинеты'])" :key="room.id">
+      <!---in (item.rooms || item['@кабинеты'])  вместо самого массива помещений используется массив сортировки индексов  --->
+        <tr v-for="idx in item.roomsIndexes" :key="item['@кабинеты'][idx].id">
           <td style="">
             <div class="nowrap truncate000 lime-text-darken-4 line-height-10" style="/*width:10rem;*/">
-              <span class="fs8 grey-text">№ </span><span class="bold">{{ room['номер-название'] }}</span>
+              <span class="fs8 grey-text">№ </span><span class="bold">{{ item['@кабинеты'][idx]['номер-название'] }}</span>
               <!--span v-show="!!item['@помещение в договоре аренды'][idx]" class="chip red padd-05">&nbsp;</span-->
               <span v-if="!!item['@помещение в договоре аренды?'][idx]" class="hover-childs-show relative">
                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32" class="teal-fill fill-darken-3 " style="height: 1rem;"><use xlink:href="/fonts/icons.svg#handshake" /></svg>
                 <!---sup class="chip">{{ item['@аренда/договоры'][idx].length }}</sup--->
                 <div class="hover-parent-show-block card padd-05 teal-lighten-4 animated fadeIn fast" style="position:absolute; top:-0.3rem; left:1rem; z-index:1;">
-                  <h5 class="card-title-000"><!--i class="icon-left fs8 " style="position:absolute; top:1rem; left:-0.5rem;"></i-->Договоры по помещению <span class="bold">{{ room['номер-название'] }}</span></h5>
+                  <h5 class="card-title-000"><!--i class="icon-left fs8 " style="position:absolute; top:1rem; left:-0.5rem;"></i-->Договоры по помещению <span class="bold">{{ item['@кабинеты'][idx]['номер-название'] }}</span></h5>
                   <ul class="card-content padd-0 fs8">
                     <li v-for="d in item['@аренда/договоры'][idx]" class="nowrap teal-text text-darken-3">
                       <a @click="GoToContract(d.id)" href="javascript:" :href000=" `#contract-${ d.id }`" class="hover-shadow3d">
@@ -57,17 +58,17 @@
           </td>
           <td class="right-align" style="width:3%;">
             <div class="nowrap lime-text-darken-4 line-height-10" style="">
-              <span class="bold">{{ room['этаж'] }}</span>
+              <span class="bold">{{ item['@кабинеты'][idx]['этаж'] }}</span>
               <span class="fs8 grey-text"> эт.</span>
             </div>
           </td>
           <td class="right-align" style="width:3%;">
             <div class="nowrap lime-text-darken-4 line-height-10" style="">
-              <span class="bold">{{ ParseNum(room['площадь']).toLocaleString() }} </span>
+              <span class="bold">{{ ParseNum(item['@кабинеты'][idx]['площадь']).toLocaleString() }} </span>
               <span class="fs8 grey-text"> м<sup>2</sup></span>
             </div>
           </td>
-          <td style="width:calc(20vw);"><span v-show="!!room['коммент']" class="padd-0-05 truncate pre-wrap fs8 grey-text middle line-height-8" style="max-height:2rem;" :title=" room['коммент'] ">{{ room['коммент'] }}</span></td>
+          <td style="width:calc(20vw);"><span v-show="!!item['@кабинеты'][idx]['коммент']" class="padd-0-05 truncate pre-wrap fs8 grey-text middle line-height-8" style="max-height:2rem;" :title=" item['@кабинеты'][idx]['коммент'] ">{{ item['@кабинеты'][idx]['коммент'] }}</span></td>
         </tr>
       </tbody></table>
       </div>
