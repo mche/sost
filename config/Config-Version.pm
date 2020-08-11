@@ -1,3 +1,4 @@
+
 use Mojo::Base -strict;
 
 sub now {
@@ -8,4 +9,4 @@ sub now {
 
 app->mode eq 'development'
   ? now()
-  : qw(2020-08-06T13:47); # продуктивная версия штамп
+  : qw(2020-08-11T12:47); # продуктивная версия штамп

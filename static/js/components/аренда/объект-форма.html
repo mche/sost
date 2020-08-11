@@ -56,19 +56,21 @@
         </h6>
       </div>
       
-      <div class="" style="position:absolute; top:0.5rem; right:0.5rem; z-index:1;"><a @click="expandRooms = !expandRooms" href="javascript:" class="chip hoverable padd-0 z-depth-1"><i class="material-icons" :class="{'rotate180': expandRooms}">arrow_drop_down</i></a></div>
+
       
-      <div class="z-depth-1" style="" :style="expandRooms ? {} : {'max-height': 'calc(30vh)', overflow:'auto',}"><table class="tmc top striped bordered lime lighten-4 ">
+      <div class="z-depth-1 relative" style="" :style="expandRooms ? {} : {'max-height': 'calc(30vh)', overflow:'auto',}">
+      <div class="" style="position:absolute; top:0; right:0.5rem; z-index:1;"><a @click="expandRooms = !expandRooms" href="javascript:" class="chip lime darken-4 white-text hoverable padd-0 z-depth-1"><i class="material-icons" :class="{'rotate180': expandRooms}">arrow_drop_down</i></a></div>
+      <table class="tmc top striped bordered lime lighten-4 ">
         <thead class=""><tr>
           <th style="width:1%;"></th>
           <th class="center vbottom" style="width:1%;">
-            <a v000-show="!form.id" @click=" AddRoom() " href="javascript:" class="btn-flat" style="padding: 0;" title="добавить">
+            <a v000-show="!form.id" @click=" AddRoom() " href="javascript:" class="btn-flat-000 chip hoverable z-depth-1" style="padding: 0;" title="добавить">
               <i class="material-icons lime-text-darken-3 fs18">add_box</i>
             </a>
           </th>
           <th class="center vbottom" style="width:5%;">
-            <br><!-- отступ-->
-            <h5 class="fw500 relative">
+          <!-- отступ-->
+            <h5 class="fw500 relative" >
               <span>№ или<br>название</span>
               <sup v-show=" !ValidRooms('номер-название') " class="chip red white-text" style="position: absolute; z-index: 1; top:0;padding:0.3rem;"></sup>
             </h5>
@@ -101,8 +103,8 @@
           </td>
           <td class="center middle padd-05" style="">
             <div class="hover-childs-show relative">
-              <span class="chip padd-0 hover-parent-hide-child"><i class="material-icons">more_horiz</i></span>
-              <span class="chip padd-0-05 nowrap hover-parent-show-inline absolute animated fadeIn" style="left:0rem; top:-1rem; z-index:1;">
+              <span class="chip z-depth-1 padd-0 hover-parent-hide-child"><i class="material-icons">more_horiz</i></span>
+              <span class="chip z-depth-1 padd-0-05 nowrap hover-parent-show-inline absolute animated fadeIn" style="left:0rem; top:-1rem; z-index:1;">
                 <a v-show=" ValidRoom(room) "  @click=" CopyRoom(room)" href="javascript:" class="btn-flat padd-0 " style="" title="копировать">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" class="green-fill fill-darken-3 ng-scope" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#copy"></use></svg>
                 </a>
@@ -160,7 +162,7 @@
     <h4 class="nowrap right-align">
       Итого площадь объекта
         <span class="bold chip z-depth-1 nowrap">
-          <span>{{ TotalSqure.toLocaleString().replace(/([\.,]\d{2})\d+$/, '$1') }} </span>
+          <span>{{ totalSquare.toLocaleString().replace(/([\.,]\d{2})\d+$/, '$1') }} </span>
           <span class="grey-text fw100"> м²</span>
         </span>
       

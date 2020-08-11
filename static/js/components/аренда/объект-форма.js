@@ -218,6 +218,16 @@ _CompareFloor(a,b){
   return 0;
 },
 
+
+_ReduceFloorSquares(a,room){
+  if (!room || !room['площадь']) return a;
+  if (!a[floors[room['этаж']]]) a[floors[room['этаж']]] = {"площадь":0, "помещения":[], "name": floors[room['этаж']]};
+  a[floors[room['этаж']]]['площадь'] += this.ParseNum(room['площадь']);
+  this.totalSquare += this.ParseNum(room['площадь']);
+  a[floors[room['этаж']]]['помещения'].push(room);
+  return a;
+},
+
 }; ///конец методы
 
 const floors = {
@@ -231,26 +241,18 @@ const floors = {
 
 const computed = {
 
-TotalSqure(){
-  var vm = this;
-  var s = vm.form['@кабинеты'].reduce(function(a, room){
-    if (!room || !room['площадь']) return a;
-    return a + vm.ParseNum(room['площадь']);
-  }, 0.0);
-  return s;
-},
+/*TotalSqure(){
+  //~ var vm = this;
+  console.log("TotalSqure");
+  //~ var s = this.form['@кабинеты'].reduce((a, room)=>this._ReduceTotalSquare(a, room), 0.0);
+  return Object.keys(this.FloorSquares).reduce((a, floor)=>this._ReduceTotalSquare(a, floor), 0.0);
+},*/
 
-FloorSquares(){// площади по этажам
-  //~ console.log("FloorSquares");
-  var vm = this;
-  var s = vm.form['@кабинеты'].reduce(function(a, room){
-    if (!room || !room['площадь']) return a;
-    if (!a[floors[room['этаж']]]) a[floors[room['этаж']]] = {"площадь":0, "помещения":[], "name": floors[room['этаж']]};
-    a[floors[room['этаж']]]['площадь'] += vm.ParseNum(room['площадь']);
-    a[floors[room['этаж']]]['помещения'].push(room);
-    return a;
-  }, {});
-  return s;
+FloorSquares(){// площади по этажам  и вообще разбор помещений
+  //~ console.log("FloorSquares", this.FloorSquares);
+  //~ var vm = this;
+  this.totalSquare = 0.0;
+  return this.form['@кабинеты'].reduce((a, room)=>this._ReduceFloorSquares(a, room), {});
 },
 
 ListFloors(){///выбор в списке этажей
@@ -279,6 +281,8 @@ const data = function() {
     "expandRooms":  form["@кабинеты"].length < 10,
     "showFloor": undefined,///вкладки этажей
     "tableRooms": vm.SortRooms(form["@кабинеты"]),
+    "totalSquare": 0.0,
+    "floorsSquare": undefined,
     };
   //);
 };///  конец data

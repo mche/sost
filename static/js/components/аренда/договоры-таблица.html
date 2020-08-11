@@ -17,7 +17,7 @@
 <!-- фильтры -->
 <div class=""></div>
 
-<table class="striped bordered  lighten-4 z-depth-1 animated slideInUp" :class="{'teal': !filters['архивные договоры'], 'maroon':!!filters['архивные договоры'],}">
+<table class="striped bordered highlight  lighten-4 z-depth-1 animated slideInUp" :class="{'teal': !filters['архивные договоры'], 'maroon':!!filters['архивные договоры'],}">
 
 <thead>
   <tr>
@@ -165,12 +165,12 @@
             <div class="nowrap line-height-10 lime-text-darken-4" style="width: calc(5vw);">
               <!--span class="bold">{{ ParseNum(room.$помещение['площадь']).toLocaleString() }}</span>
               <span class="fs8 grey-text">м<sup>2</sup></span-->
-              <span class="nowrap " class-000="{'right': item['@помещения'].length == 1, 'chip padd-0-05': item['@помещения'].length > 1}"><span class="" :class="{'fw500': item['@помещения'].length == 1}">{{ ParseNum(room['площадь'] || (room['площадь'] === 0 ? room['площадь'] : room.$помещение['площадь'])).toLocaleString() }}</span><span class="fs8 grey-text"> м²</span></span>
+              <span class="nowrap " class-000="{'right': item['@помещения'].length == 1, 'chip padd-0-05': item['@помещения'].length > 1}"><span class="" :class="{'fw500': item['@помещения'].length == 1}">{{ RoomSquare(room).toLocaleString() }}</span><span class="fs8 grey-text"> м²</span></span>
             </div>
           </td>
           <td class="right-align" style="width:5rem;">
             <div class="nowrap line-height-10" style="width: calc(5vw);">
-              <span class="" title="руб. за м²/мес. ">{{ RoomMetr(room).toLocaleString().replace(/[.,]\d+/, '') }}</span>
+              <span class="" title="руб. за м²/мес. ">{{ RoomPrice(room).toLocaleString().replace(/[.,]\d+/, '') }}</span>
               <span class="fs8 grey-text">₽</span>
             </div>
             
@@ -265,19 +265,20 @@
     <div class="col s4 offset-s4 card teal lighten-5 padd-10">
       <div class="">
         <div class=" row">
-          <h3 class="">За какой месяц или с/по месяцы</h3>
+          <h2 class="">За какой месяц или с/по месяцы</h2>
           <h4 class="col s1 right-align" v-show="payMonth2">С</h4>
-          <h4 class="col s4 input-field">
-            <input name="payMonth" type="text" class="datepicker pay-month fs18 fw500" style="margin-bottom:1rem;" :data-value=" payMonth ">
+          <h4 class="col s4 input-field chip padd-05 hoverable">
+            <!--span v-if="payMonth2" class="prefix"></span-->
+            <input name="payMonth" type="text" class="datepicker pay-month fs18 fw500" style="" :data-value=" payMonth ">
           </h4>
           <h4 class="col s1 right-align" v-show="payMonth2">По</h4>
-          <h4 class="col s5 input-field" :key=" keys['payMonth2'] ">
-            <a v-show="payMonth2" @click=" ClearDate('payMonth2') " href="javascript:" class="hover-shadow3d" style="position:absolute; top:0; right:0; z-index:1;"><i class="material-icons red-text">cancel</i></a>
-            <input name="payMonth2" type="text" class="datepicker pay-month fs18 fw500" style="margin-bottom:1rem;" data-value000=" payMonth2 " placeholder="по месяц включительно">
+          <h4 class="col s5 input-field chip padd-05 hoverable" :key=" keys['payMonth2'] ">
+            <a v-show="payMonth2" @click=" ClearDate('payMonth2') " href="javascript:" class="hover-shadow3d" style="position:absolute; top:0.3rem; right:0.3rem; z-index:1;"><i class="material-icons red-text">cancel</i></a>
+            <input name="payMonth2" type="text" class="datepicker pay-month fs18 fw500" style="" data-value000=" payMonth2 " placeholder="по месяц включительно">
           </h4>
         </div>
         <!-- переключатель -->
-        <div class="chip">
+        <div class="chip hoverable">
           <div class="iblock">
             <input type="radio" id="radioSchet" v-model="radioSchetAkt" :value=" 'счет' ">
             <label for="radioSchet"  class="before-yellow-lighten-4 brown-text-darken-3 checked-after-brown-darken-3" >Счета</label>
@@ -290,7 +291,7 @@
           </div>
         </div>
         <!-- крыжик -->
-        <div class="input-field chip">
+        <div class="input-field chip hoverable">
           <input type="checkbox" id="крыжик-нумеровать-счета" v-model="payNums">
           <label for="крыжик-нумеровать-счета" class="hover-shadow3d chb-yellow-lighten-4 orange-text chip yellow lighten-4 hoverable" style="padding-left:16px;" ></label><!-- это лабел квадратика крыжика -->
           <label for="крыжик-нумеровать-счета" class=""><h5 class="hover-shadow3d chb-yellow-lighten-4 orange-text text-darken-4 inline">Присвоить номера счетам/актам</h5></label>

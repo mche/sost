@@ -312,7 +312,10 @@ from "аренда/объекты" o
       array_agg(dp."@аренда/договоры/json"::text  {%= $order_by_room || ' order by p.id' %}) as "@аренда/договоры/json"
     from "аренда/объекты" o
       join "refs" r on o.id=r.id1
-      join "аренда/помещения" p on p.id=r.id2
+      join (
+        select p.*, to_jsonb(lit) as "литер/json"
+        from "аренда/помещения" p, (VALUES ('A', 1)) as lit("title",  "id")
+      ) p on p.id=r.id2
       left join (--- все договоры с этим помещением
         select p.id, 
           jsonb_agg(dp order by dp."дата1" desc) as "@аренда/договоры/json",

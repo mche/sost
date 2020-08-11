@@ -18,6 +18,7 @@
 
 <!-- Enable responsive viewport -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!--meta http-equiv="Content-Security-Policy" content="default-src 'style-src-elem'; img-src https://*; child-src 'none';"-->
 
 %#= stylesheet '/static/css/materialize.min.css'  !!! компилируется sass в main.css
 %#= stylesheet 'https://fonts.googleapis.com/icon?family=Material+Icons' унес в ассетпак

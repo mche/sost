@@ -7,30 +7,42 @@ table {
     border-bottom: none;
   }
 
-  &.striped.purple.lighten-4 > tbody {
+  &.striped.purple.lighten-4 > tbody, &.striped > tbody.purple.lighten-4 {
     > tr:nth-child(odd) {
       background-color: color("purple", "lighten-5");
     }
   }
   
-  &.striped.maroon.lighten-4 > tbody {
+  &.striped.maroon.lighten-4 > tbody, &.striped > tbody.maroon.lighten-4 {
     > tr:nth-child(odd) {
       background-color: color("maroon", "lighten-5");
     }
   }
   
-  &.striped.orange.lighten-3 > tbody {
+  &.striped.orange.lighten-3 > tbody, &.striped > tbody.orange.lighten-3 {
     > tr:nth-child(odd) {
       background-color: color("orange", "lighten-4");
     }
   }
-  &.striped.orange.lighten-4 > tbody {
+  &.striped.orange.lighten-4 > tbody, &.striped > tbody.orange.lighten-4 {
     > tr:nth-child(odd) {
       background-color: color("orange", "lighten-5");
     }
   }
   
-  &:not(.mbody).striped.teal.lighten-4 > tbody {
+  &.striped.green.lighten-4 > tbody, &.striped > tbody.green.lighten-4 {
+    > tr:nth-child(odd) {
+      background-color: color("green", "lighten-5");
+    }
+  }
+  
+  &.striped.blue.lighten-4 > tbody, &.striped > tbody.blue.lighten-4 {
+    > tr:nth-child(odd) {
+      background-color: color("blue", "lighten-5");
+    }
+  }
+  
+  &:not(.mbody).striped.teal.lighten-4 > tbody, &:not(.mbody) > tbody.striped.teal.lighten-4 {
     > tr:nth-child(odd) {
       background-color: color("teal", "lighten-5");
     }
@@ -43,63 +55,82 @@ table {
     background-color: inherit;
   }
   
-  &.striped.lime.lighten-3 > tbody {
+  &.striped.lime.lighten-3 > tbody, &.striped > tbody.lime.lighten-3 {
     > tr:nth-child(odd) {
       background-color: color("lime", "lighten-4");
     }
   }
-  &.striped.lime.lighten-4  > tbody  {
+  &.striped.lime.lighten-4  > tbody, &.striped  > tbody.lime.lighten-4  {
     > tr:nth-child(odd) {
       background-color: color("lime", "lighten-5");
     }
   }
   
-  &.striped.green.lighten-4 > tbody {
-    > tr:nth-child(odd) {
-      background-color: color("green", "lighten-5");
-    }
-  }
+
+
+
   
-  &.striped.blue.lighten-4 > tbody {
-    > tr:nth-child(odd) {
-      background-color: color("blue", "lighten-5");
-    }
-  }
-  
-  &.highlight.teal.lighten-4 > tbody > tr, &.highlight.purple.lighten-4 > tbody > tr, &.highlight.lime.lighten-3 > tbody > tr, &.highlight.lime.lighten-4 > tbody > tr {
+  /*&.highlight.teal.lighten-4 > tbody > tr, &.highlight.purple.lighten-4 > tbody > tr, &.highlight.lime.lighten-3 > tbody > tr, &.highlight.lime.lighten-4 > tbody > tr {
     transition: background-color .25s ease;
     &:hover {
       background-color: color("grey", "lighten-2");
     }
-  }
+  }*/
 
 
-  &.highlight > tbody > tr:hover {
+  /*&.highlight > tbody > tr:hover {
     background-color: color("teal", "lighten-5");
-  }
+  }*/
 
   &.highlight > tbody > tr.selected {
     background-color: color("yellow", "lighten-4");
   }
 
-  &.highlight-teal-lighten-4 > tbody > tr {
+  &.highlight-teal-lighten-4 > tbody > tr, &.highlight.teal.lighten-4 > tbody > tr, &.highlight > tbody.teal.lighten-4 > tr {
     transition: background-color .25s ease;
     &:hover {
-      background-color: color("teal", "lighten-4");
+      background-color: color("teal", "lighten-3") !important;
+    }
+  }
+  &.highlight-teal-lighten-5 > tbody > tr, &.highlight.teal.lighten-5 > tbody > tr, &.highlight > tbody.teal.lighten-5 > tr {
+    transition: background-color .25s ease;
+    &:hover {
+      background-color: color("teal", "lighten-4") !important;
     }
   }
   
-  &.highlight-orange-lighten-4 > tbody > tr {
+  &.highlight-green-lighten-4 > tbody > tr, &.highlight.green.lighten-4 > tbody > tr, &.highlight > tbody.green.lighten-4 > tr {
     transition: background-color .25s ease;
     &:hover {
-      background-color: color("orange", "lighten-4");
+      background-color: color("green", "lighten-3") !important;
     }
   }
   
-  &.highlight-maroon-lighten-4 > tbody > tr {
+  &.highlight-blue-lighten-4 > tbody > tr, &.highlight.blue.lighten-4 > tbody > tr, &.highlight > tbody.blue.lighten-4 > tr {
     transition: background-color .25s ease;
     &:hover {
-      background-color: color("maroon", "lighten-4");
+      background-color: color("blue", "lighten-3") !important;
+    }
+  }
+  
+  &.highlight-lime-lighten-4 > tbody > tr, &.highlight.lime.lighten-4 > tbody > tr, &.highlight > tbody.lime.lighten-4 > tr {
+    transition: background-color .25s ease;
+    &:hover {
+      background-color: color("lime", "lighten-3") !important;
+    }
+  }
+  
+  &.highlight-orange-lighten-4 > tbody > tr, &.highlight.orange.lighten-4 > tbody > tr, &.highlight > tbody.orange.lighten-4 > tr {
+    transition: background-color .25s ease;
+    &:hover {
+      background-color: color("orange", "lighten-3")  !important;
+    }
+  }
+  
+  &.highlight-maroon-lighten-4 > tbody > tr, &.highlight.maroon.lighten-4 > tbody > tr, &.highlight > tbody.maroon.lighten-4 > tr {
+    transition: background-color .25s ease;
+    &:hover {
+      background-color: color("maroon", "lighten-3") !important;
     }
   }
   

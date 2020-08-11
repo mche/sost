@@ -122,21 +122,28 @@ ParseNum(num){
   return parseFloat(Util.numeric(num));
 },
 
-RoomMetr(room){
+RoomPrice(room){
   return this.ParseNum(room['ставка']) || this.ParseNum(room['сумма'])/this.ParseNum(room['площадь'] || (room['площадь'] === 0 ? room['площадь'] : room.$помещение['площадь']));
 },
 
+RoomSquare(room){
+  return this.ParseNum(room['площадь'] || (room['площадь'] === 0 ? room['площадь'] : room.$помещение['площадь']));
+},
+
 RoomSum(room){
-  return ((this.ParseNum(room['сумма'] || 0) || this.ParseNum(room['ставка'] || 0))*this.ParseNum(room['площадь'] || (room['площадь'] === 0 ? room['площадь'] : room.$помещение['площадь'])))+this.ParseNum(room['сумма нал'] || 0);
+  //~ console.log("RoomSum", room);
+  return this.ParseNum(room['сумма'] || 0) || (this.ParseNum(room['ставка'] || 0)*this.RoomSquare(room))+this.ParseNum(room['сумма нал'] || 0);
 },
 
 RoomsSum(item){///итого за все помещения
   var vm = this;
-  return ((item['@доп.соглашения'] ? item['@доп.соглашения'][item['@доп.соглашения'].length-1]['@помещения'] : item['@помещения']) || []).reduce(function(a, room){ return a + vm.RoomSum(room); }, 0);
+  //~ console.log("RoomsSum", item.id, vm.filteredData.length,  item['@доп.соглашения'] && item['@доп.соглашения'][item['@доп.соглашения'].length-1]['@помещения'], item['@помещения']);
+  return ((item['@доп.соглашения'] ? item['@доп.соглашения'][item['@доп.соглашения'].length-1]['@помещения'] : item['@помещения']) || []).reduce((a, room)=> a + vm.RoomSum(room), 0);
 },
+
 RoomsSquare(item){///итого площадь все помещения
   var vm = this;
-  return ((item['@доп.соглашения'] ? item['@доп.соглашения'][item['@доп.соглашения'].length-1]['@помещения'] : item['@помещения']) || []).reduce(function(a, room){ return a + vm.ParseNum(room['площадь'] || (room['площадь'] === 0 ? room['площадь'] : room.$помещение['площадь'])); }, 0.0);
+  return ((item['@доп.соглашения'] ? item['@доп.соглашения'][item['@доп.соглашения'].length-1]['@помещения'] : item['@помещения']) || []).reduce((a, room) => a + vm.RoomSquare(room), 0.0);
 },
 
 
@@ -289,23 +296,26 @@ OnChangeFilter(event, ms){
   
 },
 
+_FilterData(item){
+  var vm = this;
+  if (!item.hasOwnProperty('крыжик')) item['крыжик']  = undefined;/// доп реакт свойство
+  item['архив'] = item.hasOwnProperty('архив') ? item['архив'] : !dateFns.isWithinRange(new Date(), new Date(/*item['дата1']*/ '2000-01-01'), new Date(item['дата расторжения'] || (item['продление срока'] ? '2100-01-01' : item['дата2'])));
+  if (item['архив']) vm.archLen += 1;
+  const test = (vm.filters['архивные договоры'] ? item['архив'] : !item['архив'])
+    && (vm.filters['арендодатель'] ? item['проект/id'] == vm.filters['арендодатель'].id : true)
+    && (vm.filters['арендаторы'] ? item['$контрагент'].title.toLowerCase().indexOf(vm.filters['арендаторы'].toLowerCase()) >= 0 : true)
+    && ( (vm.filters['объект'] && vm.filters['объект'].id) ? item['@помещения'] && item['@помещения'][0].$объект.id == vm.filters['объект'].id : true);
+  //~ console.log("filteredData", test);
+  return test;
+},
+
 FilterData(){
   var vm = this;
   //~ if (!vm.filters['арендаторы'].length) return vm.data;
   vm.archLen = 0;
   //~ vm.filteredData.length = 0;
   vm.filteredData = ///vm.filters['арендаторы'].length || (vm.filters['объект'] && vm.filters['объект'].id) /// || (vm.filters['архивные договоры'] !== undefined)
-    vm.data.filter((item)=>{
-      if (!item.hasOwnProperty('крыжик')) item['крыжик']  = undefined;/// доп реакт свойство
-      item['архив'] = item.hasOwnProperty('архив') ? item['архив'] : !dateFns.isWithinRange(new Date(), new Date(/*item['дата1']*/ '2000-01-01'), new Date(item['дата расторжения'] || (item['продление срока'] ? '2100-01-01' : item['дата2'])));
-      if (item['архив']) vm.archLen += 1;
-      const test = (vm.filters['архивные договоры'] ? item['архив'] : !item['архив'])
-        && (vm.filters['арендодатель'] ? item['проект/id'] == vm.filters['арендодатель'].id : true)
-        && (vm.filters['арендаторы'] ? item['$контрагент'].title.toLowerCase().indexOf(vm.filters['арендаторы'].toLowerCase()) >= 0 : true)
-        && ( (vm.filters['объект'] && vm.filters['объект'].id) ? item['@помещения'] && item['@помещения'][0].$объект.id == vm.filters['объект'].id : true);
-      //~ console.log("filteredData", test);
-      return test;
-    });
+    vm.data.filter(vm._FilterData);
     vm.filters.timeout = undefined;
    // : vm.data;
   
