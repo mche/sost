@@ -15,7 +15,7 @@ var moduleName = "Компонент::Выбор объекта";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['Util', 'Компонент::Выбор в списке']);
 
-module.factory('$КомпонентВыборОбъекта', function($timeout, $templateCache, $Список, appRoutes, $КомпонентВыборВСписке) {// factory
+module.factory('$КомпонентВыборОбъекта', function($timeout, $templateCache, $Список, appRoutes, $ЗапросОбъектыУК, $КомпонентВыборВСписке) {// factory
 
 const props = {
   "param": {
@@ -28,28 +28,35 @@ const props = {
   "dataList":Array,
   "dataUrl": {
     type: String,
-    default: 'доступные объекты без проектов',
+    //~ "default": 'доступные объекты без проектов',
   },
 };/// конец props
 
 const util = {/*разное*/
+  
+  MapData(it){
+    return {"id": it.id, "_match": it.name, "$item":it};
+  },
+  
 }; ///конец util
 
 const methods = {/*методы*/
 
 LoadData(param){
   var vm = this;
-  if (!vm.dataList) {
-    vm.loader = new $Список(appRoutes.urlFor(vm.dataUrl));
-    return vm.loader.Load(param)
+  if (vm.dataUrl || !vm.dataList) {
+    //~ console.log("LoadData", vm.dataUrl);
+    var loader = vm.dataUrl ? new $Список(appRoutes.urlFor(vm.dataUrl)) : $ЗапросОбъектыУК;
+    return loader.Load(param)
       .then(function(resp){
-        vm.list = vm.loader.Data().map(function(it){ return {"id": it.id, "_match": it.name, "$item":it}; });
+        vm.list = loader.Data().map(util.MapData);
         //~ vm['$объекты'] = loader.$Data();
         //~ if (vm.select !== undefined) vm.Select(vm['объекты'].find(util.FilterByID, vm.select));
         //~ else if (!vm.param['все объекты'] && vm['объекты'].length == 1) vm.Select(vm['объекты'][0]);
       });
-  } else /*if (vm.dataList)*/ {
-    vm.list = vm.dataList.map(function(it){ return {"id": it.id, "_match": it.name, "$item":it}; });
+  }///  if (vm.dataList)
+  else {
+    vm.list = vm.dataList.map(util.MapData);
     return $timeout(()=>{});
   }
   
@@ -109,6 +116,10 @@ const $Конструктор = function (/*data, $c, $scope*/){
 
 return $Конструктор;
 
-});// конец factory
+})// конец factory
 
+.factory('$ЗапросОбъектыУК', function( $Список, appRoutes) {// factory
+  //~ console.log('$ЗапросОбъектыУК factory');
+  return  new $Список(appRoutes.urlFor('аренда/объекты-ук'));
+});// конец factory
 }());

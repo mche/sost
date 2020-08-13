@@ -57,7 +57,7 @@ InitUploader(){
       "target": appRoutes.urlFor('выгрузить файл'),
       testChunks: false,
       "simultaneousUploads": 1, //// default 3
-      "chunkSize": 10*1024*1024, ///The size in bytes of each uploaded chunk of data. The last uploaded chunk will be at least this size and up to two the size, see Issue #51 for details and reasons. (Default: 1*1024*1024
+      "chunkSize": 5*1024*1024, ///The size in bytes of each uploaded chunk of data. The last uploaded chunk will be at least this size and up to two the size, see Issue #51 for details and reasons. (Default: 1*1024*1024
       "generateUniqueIdentifier": function(){ return Math.random().toString().match(/(\d{2,})/)[0]; },
       "processParams": function (params, file) {/// патчил simple-uploader.js вызов с двумя параметрами
         //~ params.identifier

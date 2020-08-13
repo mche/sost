@@ -29,11 +29,11 @@ const props = {
 
 const util = {/*разное*/
   IsValidRoom(room){
-    return this.prop ? !!(room[this.name] && room[this.name][this.prop]) : !!room[this.name];
+    return this.prop ? !!(room[this.name] && room[this.name][this.prop]) : room[this.name] == '0' || !!room[this.name];
   },
   reqFields: ['номер-название', 'этаж', 'площадь'],
   IsValidField(name){
-    return !!this[name];
+    return this[name] == '0' || !!this[name];
   },
 }; ///конец util
 
@@ -46,6 +46,7 @@ InitForm(form){
     room._id = idMaker.next().value;
     
   });
+  form.litersEdit = {};///редактирование литер
   return form;
   
 },
@@ -65,22 +66,27 @@ SelectObject(obj){
   
 },
 
-Valid(){
-  var form = this.form;
-  //~ console.log("Valid", this.ValidRooms('этаж', 'length'));
-  return /*form['адрес']  && form['адрес'].length*/ this.form.$объект
-    && this.ValidRooms('номер-название') && this.ValidRooms('этаж', 'length') && this.ValidRooms('площадь');
-  ;
+Valid(liters){
+  if (!this.form.$объект) return false;
+  
+  for (const [id, liter] of Object.entries(liters)) {
+    if (!this.form.litersEdit[id]) return false;
+    for (const room of liter['помещения'])
+      if (!this.ValidRoom(room)) return false;//console.log("not valid", room);
+    //~ && this.ValidRooms('номер-название') && this.ValidRooms('этаж', 'length') && this.ValidRooms('площадь');
+  }
+  return true;
 },
 
 CancelBtn(){
   this.$emit('on-save', this.item.id ? {"id": this.item.id} : undefined);
 },
 
-ValidRooms(name, prop){///проверка строк кабинетов
-  var form = this.form;
-  if (!form["@кабинеты"] || !form["@кабинеты"].length) return true;
-  return form["@кабинеты"].every(util.IsValidRoom, {"name": name, "prop":prop,});
+ValidRooms(liter, name, prop){///проверка строк кабинетов
+  //~ var form = this.form;
+  const rooms = liter['помещения'];
+  //~ if (!form["@кабинеты"] || !form["@кабинеты"].length) return true;
+  return rooms.every(util.IsValidRoom, {"name": name, "prop":prop,});
   
 },
 
@@ -88,10 +94,11 @@ ValidRoom(room){
   return util.reqFields.every(util.IsValidField, room);
 },
 
-AddRoom(room){// индекс вставки, если undefined или -1 - вставка в конец; 0 - в начало
+AddRoom(liter, room){// индекс вставки, если undefined или -1 - вставка в конец; 0 - в начало
   var vm = this;
-  var form = vm.form;
-  var n = {"_id": vm.idMaker.next().value, /*"этаж": vm.showFloor && vm.showFloor.id*/};
+  var form = this.form;
+  //~ console.log("AddRoom", room);
+  var n = {"номер-название": '', "этаж":(room && room['этаж']) || this.showFloors[liter.id],  "литер":{"id":liter.id, "title":liter.title,},};
   
   var idx = room ? form["@кабинеты"].indexOf(room) : 0;
   
@@ -102,17 +109,19 @@ AddRoom(room){// индекс вставки, если undefined или -1 - в�
     //~ }
   form['@кабинеты'].splice(idx, 0, n);
   
-  if ( vm.showFloor ) {
-    vm.ShowFloor();/// сброс вкладки
-    setTimeout(()=>{
-      $(`#room-row-${ n._id }`, $(vm.$el)).get(0).scrollIntoView({ "block": 'start', "behavior": 'smooth', });
-    });
-  }
+  //~ if ( vm.showFloor ) {
+    //~ vm.ShowFloor();/// сброс вкладки
+  
+    //~ setTimeout(()=>{
+      //~ document.getElementById(`room-row-${ n._id }`).scrollIntoView({ "block": 'start', "behavior": 'smooth', });
+    //~ });
+  //~ }
   
 },
 
 DeleteRoom(room){
-  this.form['@кабинеты'].removeOf(room);
+  document.getElementById(`room-row-${ room._id }`).classList.add('slideOutRight');
+  setTimeout(()=>this.form['@кабинеты'].removeOf(room), 300);
 },
 
 CopyRoom(room){
@@ -123,18 +132,24 @@ CopyRoom(room){
   copy.id = undefined;
   copy._id = vm.idMaker.next().value;
   vm.form['@кабинеты'].splice(idx, 0, copy);
-  if ( vm.showFloor ) {
-    //~ var showFloor = vm.showFloor;
-    vm.ShowFloor();/// сброс вкладки
-    setTimeout(()=>{
-      $(`#room-row-${ copy._id }`, $(vm.$el)).get(0).scrollIntoView();
-      //~ vm.ShowFloor(vm.showFloor);
-    });
-  }
+  //~ if ( vm.showFloor ) {
+    //~ vm.ShowFloor();/// сброс вкладки
+    //~ setTimeout(()=>{
+      //~ $(`#room-row-${ copy._id }`, $(vm.$el)).get(0).scrollIntoView();
+    //~ });
+  //~ }
+},
+
+AddLiter(){
+  let liter = {"id":0, "title": '',};
+  this.AddRoom(liter);
+  this.Expands('развернуть помещения:'+liter.id);
+  setTimeout(a=>document.getElementById('liter-'+liter.id).scrollIntoView({ "block": 'start', "behavior": 'smooth', }), 300);
 },
 
 Save(){
   var vm = this;
+  if (!this.valid) return;
   
   vm.cancelerHttp =  $http.post(appRoutes.urlFor('аренда/сохранить объект'), vm.form)
     .then(function(resp){
@@ -171,17 +186,25 @@ ParseNum(num){
   return parseFloat(Util.numeric(num));
 },
 
-ShowFloor(item, floor){
-  this.showFloor = item;
-  this.tableRooms = this.SortRooms(item ? item['помещения'] : this.form['@кабинеты']);
+ShowFloor(liter, floor){
+  this.$set(this.showFloors, liter.id, floor);
+  //~ this.$set(liter, 'showFloor', floor);
+  //~ console.log("ShowFloor", liter.showFloor);
+  //~ this.tableRooms = this.SortRooms(item ? item['помещения'] : this.form['@кабинеты']);
+},
+
+Expands(key){
+  this.$set(this.expands, key, !this.expands[key]);
+  
 },
 
 SortRooms(rooms){
+  //~ this.counter++;
   return rooms.sort((a,b)=>this._CompareRoom(a,b));
 },
 
 _CompareRoom(a,b){/// из объекты-таблица.js
-  //~ console.log("_CompareRoom", this);
+  //~ console.log("_CompareRoom");
   let d1 =  /^\d/.test(a['номер-название']);
   let d2 = /^\d/.test(b['номер-название']);
   let v1 = d1 ? a['номер-название'].replace(/^(\d+).*/, '$1') : a['номер-название'];
@@ -219,25 +242,30 @@ _CompareFloor(a,b){
 },
 
 
-_ReduceFloorSquares(a,room){
-  if (!room || !room['площадь']) return a;
-  if (!a[floors[room['этаж']]]) a[floors[room['этаж']]] = {"площадь":0, "помещения":[], "name": floors[room['этаж']]};
-  a[floors[room['этаж']]]['площадь'] += this.ParseNum(room['площадь']);
-  this.totalSquare += this.ParseNum(room['площадь']);
-  a[floors[room['этаж']]]['помещения'].push(room);
+_ReduceRooms(a,room){/// разбор списка кабинетов объекта на литеры, этажи и выч площадей
+  this.counter++;
+  if (!room._id) room._id = this.idMaker.next().value;
+  if (!a[room['литер'].id]) a[room['литер'].id] = Object.assign({"_id": this.idMaker.next().value, "площадь":0, "помещения":[], "по этажам":{},}, room['литер']);
+  let liter = a[room['литер'].id] ;
+  liter['помещения'].push(room);
+  if (!liter['по этажам'][room['этаж']]) liter['по этажам'][room['этаж']] = {"литер/id": liter.id, "площадь":0, "помещения":[], "name": floors[room['этаж']]};
+  let s = this.ParseNum(room['площадь'] || 0)
+  liter['площадь'] += s;
+  liter['по этажам'][room['этаж']]['площадь'] += s ;
+  this.totalSquare += s;
+  liter['по этажам'][room['этаж']]['помещения'].push(room);
   return a;
 },
 
+Edit(liter, event){
+  //~ let inp = event.target.parentElement.getElementsByTagName('input')[0];
+  //~ console.log("edit", event.target.parentElement, inp);
+  this.$set(this.form.litersEdit, liter.id, liter.title);
+  //~ setTimeout(()=>inp.focus(), 300);
+}
+
 }; ///конец методы
 
-const floors = {
-  "-1": '              подвал',
-  "0": '               цокольный этаж',
-  "1": '1 этаж',
-  "2": '2 этаж',
-  "3": '3 этаж',
-  "4": '4 этаж',
-};
 
 const computed = {
 
@@ -248,41 +276,67 @@ const computed = {
   return Object.keys(this.FloorSquares).reduce((a, floor)=>this._ReduceTotalSquare(a, floor), 0.0);
 },*/
 
-FloorSquares(){// площади по этажам  и вообще разбор помещений
+Liters(){// площади по этажам  и вообще разбор помещений
   //~ console.log("FloorSquares", this.FloorSquares);
   //~ var vm = this;
   this.totalSquare = 0.0;
-  return this.form['@кабинеты'].reduce((a, room)=>this._ReduceFloorSquares(a, room), {});
+  //~ this.showFloors = {};
+  const liters = /*this.SortRooms(*/this.form["@кабинеты"].reduce((a, room)=>this._ReduceRooms(a, room), {});
+  for (const [literId, floor] of Object.entries(this.showFloors))
+    if (!(liters[literId] && liters[literId]['по этажам'][floor]))
+      this.showFloors[literId] = undefined;
+  
+  for (const id in Object.keys(this.form.litersEdit))
+    if (! liters[id]) {
+      this.$delete(this.form.litersEdit, id);
+      this.$delete(this.expands, 'развернуть помещения:'+id);
+    }
+      
+  
+  this._liters = liters;/// для валидации
+  this.valid = this.Valid(liters);
+  return liters;
 },
 
-ListFloors(){///выбор в списке этажей
-  //~ console.log("ListFloors");
-  return Object.keys(floors)
-    .sort((a,b)=>this._CompareFloor(a,b))
-    .map((id)=>({"id": id, "floor": floors[id]}));
+
   
-},
-  
-};
+};/// конец computed
 
 const idMaker = IdMaker();/// глобал util/IdMaker.js
+
+const floors = {
+  "-1": 'подвал',
+  "0": 'цок. этаж',
+  "1": '1 этаж',
+  "2": '2 этаж',
+  "3": '3 этаж',
+  "4": '4 этаж',
+};
 
 const data = function() {
   let vm = this;
   vm.idMaker = idMaker;
   var form = vm.InitForm(angular.copy(vm.item));
+  vm._floors = floors;
+  vm.floors = Object.keys(floors)///выбор в списке этажей
+        .sort((a,b)=>vm._CompareFloor(a,b))
+        .map((id)=>({"id": id, "floor": floors[id]}))
+  ;
+  this.SortRooms(form["@кабинеты"]);
 
   return {//angular.extend(// return dst
     //data,// dst
     //{/// src
     "ready": false,
+    "valid": undefined,
     "cancelerHttp": undefined,
+    "counter": 0,
     "form": form,
-    "expandRooms":  form["@кабинеты"].length < 10,
-    "showFloor": undefined,///вкладки этажей
-    "tableRooms": vm.SortRooms(form["@кабинеты"]),
+    //~ "showFloor": undefined,///вкладки этажей
+    //~ "tableRooms": vm.SortRooms(form["@кабинеты"]),
     "totalSquare": 0.0,
-    "floorsSquare": undefined,
+    "showFloors": {},/// это по каждой литере какой этаж показать
+    "expands": {}, /// для разных нужд реактивные флажки
     };
   //);
 };///  конец data

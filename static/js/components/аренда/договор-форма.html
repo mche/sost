@@ -213,7 +213,7 @@
         <span>Сданы в аренду помещения/офисы объекта</span>
       </h4>
     
-      <h5 class="helmet tab-shadow z-depth-1 lime lighten-4  " :class="{'fw500 active ': roomsTableIdx == 0}">
+      <h5 class="helmet tab-shadow lime lighten-4  " :class="{'fw500 active z-depth-1 ': roomsTableIdx == 0}">
         <a @click="roomsTableIdx = 0" href="javascript:" class="hover-shadow3d">
           <!--i class="material-icons">format_list_numbered</i-->
           <span>Осн. договор</span>
@@ -221,7 +221,7 @@
         </a>
       </h5>
       
-      <div v-if="!!form.id" v-for="(dop, idx) in form['@доп.соглашения']" class="helmet z-depth-1 tab-shadow teal lighten-5 relative" :class="{' marg-0-05 active z-depth-1': roomsTableIdx == idx+1}">
+      <div v-if="!!form.id" v-for="(dop, idx) in form['@доп.соглашения']" class="helmet  tab-shadow teal lighten-5 relative" :class="{' marg-0-05 active z-depth-1': roomsTableIdx == idx+1}">
         <h5 :class="{'fw500': roomsTableIdx == idx + 1}">
           <a @click="DopTable(dop)" href="javascript:" class="hover-shadow3d" :class="{'orange-text': !dop.id && !!dop['дата1']}">
             <sup v-show="!dop.id && !!dop['дата1']" class="" style="">✱</sup>
