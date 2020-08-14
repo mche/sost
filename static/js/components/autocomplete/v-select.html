@@ -5,7 +5,7 @@
 
 <div v-if=" ready " class="relative"  style="border-bottom:1px solid grey;">
   <!--i class="material-icons" style="position: absolute; z-index: 1; right:0rem; top:0rem;">arrow_drop_down</i-->
-  <a @click=" DropDownShow " href="javascript:" class=""  style="position: absolute; z-index: 1; right:0; top:0.3rem;">
+  <a v-show="!param['без стрелки раскрытия списка']" @click=" DropDownShow " href="javascript:" class=""  style="position: absolute; z-index: 1; right:0; top:0.3rem;">
     <sup class="chip000 fs7 right">{{ itemsLen }}</sup>
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="right teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#chevron-down-round-fill" /></svg>
   </a>
@@ -24,7 +24,7 @@
       <input type="text" v-model=" inputQuery "  @keydown=" OnKeyDown " :placeholder=" param.placeholder || 'поиск объекта' " class="" >
     </div>
     
-    <a v-show=" selected" @click=" Select() " href="javascript:" class="circle hoverable" style="position: absolute; z-index: 1001; right:-0.5rem; top:-0.5rem;" title="очистить выбор"><!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"  class="middle red-fill fill-darken-1" style="height: 1.5rem; "><use xlink:href="/fonts/icons.svg#left-clear-fill" /></svg--><i class="material-icons red-text">cancel</i></a>
+    <a v-show=" !param['без удаления'] && selected" @click=" Select() " href="javascript:" class="circle hoverable" style="position: absolute; z-index: 1001; right:-0.5rem; top:-0.5rem;" title="очистить выбор"><!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"  class="middle red-fill fill-darken-1" style="height: 1.5rem; "><use xlink:href="/fonts/icons.svg#left-clear-fill" /></svg--><i class="material-icons red-text">cancel</i></a>
     
   
     <ul class=" dropdown-content select-dropdown z-depth-3 animated fadeIn  fast " :class="extParam.ulDropDownClass" style="opacity: 1; display:block; width:100%;">

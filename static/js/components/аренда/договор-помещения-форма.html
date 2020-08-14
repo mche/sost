@@ -13,7 +13,7 @@
           
           <v-select :select=" {'id': room.$помещение && room.$помещение.id, room: room} " :items=" allRooms " :param=" {placeholder: 'поиск помещения', ulDropDownClass: ['striped']} " @on-select=" OnRoomSelect ">
             <template v-slot:selected="{ selected }">
-              <h5 v-if="selected" class="relative padd-0-05 lime-text text-darken-4 animated slideInRight hover-bottom-shadow-teal-darken-3 ">
+              <h5 v-if="selected" class="relative padd-0-05 lime-text text-darken-4 animated slideInRight input-hover ">
                 <span><i class="material-icons fs8 padd-0">place</i></span>
                 <span>{{ selected.$объект['name'] }}</span>
                 <span class="nowrap chip padd-0-05"><span class="fs8 grey-text">№</span> <span class="bold">{{ selected.$помещение['номер-название'] }}</span></span>

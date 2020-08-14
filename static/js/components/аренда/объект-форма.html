@@ -43,11 +43,10 @@
           <span> Помещения и кабинеты </span>
           <span class="chip lime darken-3 white-text">
             <span v-show="liter.id === 0">новый </span>
-            
             литер: 
-            <span v-if="form.litersEdit.hasOwnProperty(liter.id) || !liter.title" class="input-field iblock white padd-0-05 fs8 animated zoomIn" style="border-radius:5px; width:5rem;">
-              <sup v-show="!form.litersEdit[liter.id]" class="chip red" style="position: absolute; z-index: 1; top:0; left:0; padding:0.3rem;"></sup>
-              <input type="text" v-model.lazy="form.litersEdit[liter.id]" class="bold lime-text text-darken-4" placeholder="Указать литеру" />
+            <span v-if="form.litersEdit.hasOwnProperty(liter.id) || !liter.title" class="input-field iblock white padd-0-05 fs8 animated zoomIn fast" style="border-radius:5px; width:5rem;">
+              <sup v-show="!form.litersEdit[liter.id].title" class="chip red" style="position: absolute; z-index: 1; top:0; left:0; padding:0.3rem;"></sup>
+              <input type="text" v-model.lazy="form.litersEdit[liter.id].title" class="bold lime-text text-darken-4" placeholder="Указать литеру" />
             </span>
             <a v-else class="chip padd-0-05 bold lime-text text-darken-3 hoverable hover-shadow3d" @click="Edit(liter, $event)" href="javascript:">{{ liter.title }}</a>
           </span>
@@ -120,7 +119,7 @@
           </tr></thead>
         <tbody >
            <!---transition leave-active-class="animated zoomOutUp"--->
-          <tr v-for="(room, index) in ((showFloors[liter.id] && liter['по этажам'][showFloors[liter.id]] && liter['по этажам'][showFloors[liter.id]]['помещения']) || liter['помещения']) " :key=" room._id " :id=" `room-row-${ room._id }` " class="animated slideInRight">
+          <tr v-for="(room, index) in ((showFloors[liter.id] && liter['по этажам'][showFloors[liter.id]] && liter['по этажам'][showFloors[liter.id]]['помещения']) || liter['помещения']) " :key=" room._id " :id=" `room-row-${ room._id }` " class="animated slideInRight---000">
             <td class="right-align relative padd-05" style=" vertical-align:middle;">
               <span>{{ index+1 }}</span>
               <span v-show=" !!room.id " class="fs7 grey-text" style="position: absolute; z-index: 1; bottom:0; left:0;">#{{ room.id }}</span>
@@ -129,7 +128,7 @@
             <td class="center middle padd-05" style="">
               <div class="hover-childs-show relative">
                 <span class="chip z-depth-1 padd-0 hover-parent-hide-child"><i class="material-icons">more_horiz</i></span>
-                <span class="chip z-depth-1 padd-0-05 nowrap hover-parent-show-inline absolute animated fadeIn" style="left:0rem; top:-1rem; z-index:1;">
+                <div class="chip z-depth-1 padd-0-05 nowrap hover-parent-show-block animated fadeIn" style="position:absolute; left:0rem; top:-1rem; z-index:5;">
                   <a v-show=" ValidRoom(room) "  @click=" CopyRoom(room)" href="javascript:" class="btn-flat padd-0 " style="" title="копировать">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" class="green-fill fill-darken-3 ng-scope" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#copy"></use></svg>
                   </a>
@@ -139,7 +138,23 @@
                   <a v000-show=" index == form['@кабинеты'].length - 1 || !form.id" @click=" AddRoom(liter, room) " href="javascript:" class="btn-flat padd-0" style="" title="добавить">
                     <i class="material-icons lime-text-darken-3 ">add_box</i>
                   </a>
-                </span>
+                  <h5>Изменить литер</h5>
+                  <v-select-liter :key="keys['список литер']" :select=" {'id': room['литер'].id, 'room':room,} " :items=" liters " :param=" {'без удаления':true, 'без поля поиска': true, 'без стрелки раскрытия списка':true, ulDropDownClass: ['striped']} " @on-select=" OnSelectLiter ">
+                  <template v-slot:selected="{ selected }">
+                    <h4 v-if="selected" class="chip  lime darken-3 white-text input-hover-нет hoverable fw500 nowrap">
+                      <span>литер </span>
+                      <span class="chip lime-text-darken-3 white padd-0-05">{{ selected.title || 'НОВЫЙ' }}</span>
+                    </h4>
+                    <!--h4 v-else class="grey-text text-darken-1">Выбрать этаж</h4-->
+                  </template>
+                  <template v-slot:listItem="{ listItem, selected, highlighted }">
+                    <h4 class="padd-0-05 lime-text text-darken-4 hover-shadow3d nowrap"  :class="{'bold': listItem === selected, 'fw500': listItem === highlighted}"  style="">
+                      <span >литер </span>
+                      <span class="chip padd-0-05">{{ listItem.title || 'НОВЫЙ' }}</span>
+                    </h4>
+                  </template>
+                </v-select-liter>
+                </div>
               </div>
             </td>
             <td class="padd-05">
@@ -151,7 +166,7 @@
               <div class="input-field">
                 <v-select-floor :select=" {'id': room['этаж'], 'room':room,} " :items=" floors " :param=" {'без поля поиска': true, ulDropDownClass: ['striped']} " @on-select=" OnFloorSelect ">
                   <template v-slot:selected="{ selected }">
-                    <h4 v-if="selected" class="padd-0-05 lime-text text-darken-4  hover-bottom-shadow-teal-darken-3 fw500 nowrap">
+                    <h4 v-if="selected" class="padd-0-05 lime-text text-darken-4  input-hover fw500 nowrap">
                       <span>{{ selected.floor }}</span>
                     </h4>
                     <h4 v-else class="grey-text text-darken-1">Выбрать этаж</h4>

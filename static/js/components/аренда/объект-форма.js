@@ -46,7 +46,7 @@ InitForm(form){
     room._id = idMaker.next().value;
     
   });
-  form.litersEdit = {};///редактирование литер
+  form.litersEdit = {};///редактирование литер(в компутед не может реактивность добавлять)
   return form;
   
 },
@@ -69,8 +69,10 @@ SelectObject(obj){
 Valid(liters){
   if (!this.form.$объект) return false;
   
+  for (const [id, edit] of Object.entries(this.form.litersEdit))
+    if (!edit.title) return false;
+  
   for (const [id, liter] of Object.entries(liters)) {
-    if (!this.form.litersEdit[id]) return false;
     for (const room of liter['помещения'])
       if (!this.ValidRoom(room)) return false;//console.log("not valid", room);
     //~ && this.ValidRooms('номер-название') && this.ValidRooms('этаж', 'length') && this.ValidRooms('площадь');
@@ -98,7 +100,13 @@ AddRoom(liter, room){// индекс вставки, если undefined или -
   var vm = this;
   var form = this.form;
   //~ console.log("AddRoom", room);
-  var n = {"номер-название": '', "этаж":(room && room['этаж']) || this.showFloors[liter.id],  "литер":{"id":liter.id, "title":liter.title,},};
+  let _id = vm.idMaker.next().value;
+  var n = {
+    _id,
+    "номер-название": '',
+    "этаж":(room && room['этаж']) || this.showFloors[liter.id],
+    "литер":{"id":liter.id, "title":liter.title,},
+  };
   
   var idx = room ? form["@кабинеты"].indexOf(room) : 0;
   
@@ -108,6 +116,7 @@ AddRoom(liter, room){// индекс вставки, если undefined или -
       //~ if (prevRow['$объект'] && prevRow['$объект'].id) n['$объект'] = angular.copy(prevRow['$объект']);
     //~ }
   form['@кабинеты'].splice(idx, 0, n);
+  setTimeout(_=>document.getElementById(`room-row-${ _id }`).classList.add('slideInRight'));
   
   //~ if ( vm.showFloor ) {
     //~ vm.ShowFloor();/// сброс вкладки
@@ -142,6 +151,7 @@ CopyRoom(room){
 
 AddLiter(){
   let liter = {"id":0, "title": '',};
+  this.Edit(liter);
   this.AddRoom(liter);
   this.Expands('развернуть помещения:'+liter.id);
   setTimeout(a=>document.getElementById('liter-'+liter.id).scrollIntoView({ "block": 'start', "behavior": 'smooth', }), 300);
@@ -228,11 +238,11 @@ _CompareRoom(a,b){/// из объекты-таблица.js
 OnFloorSelect(item, propSel){
   //~ console.log("OnFloorSelect", item, propSel.room);
   propSel.room['этаж'] = item && item.id;
-  //~ var s = propSel.room['площадь'];
-  //~ propSel.room['площадь'] = undefined;
-  //~ setTimeout(()=>{
-    //~ propSel.room['площадь'] = s;
-  //~ });
+},
+
+OnSelectLiter(liter, propSel){
+  if (propSel.room['литер'].id != liter.id) propSel.room['литер'] = liter;
+  
 },
 
 _CompareFloor(a,b){
@@ -260,9 +270,19 @@ _ReduceRooms(a,room){/// разбор списка кабинетов объек
 Edit(liter, event){
   //~ let inp = event.target.parentElement.getElementsByTagName('input')[0];
   //~ console.log("edit", event.target.parentElement, inp);
-  this.$set(this.form.litersEdit, liter.id, liter.title);
+  this.$set(this.form.litersEdit, liter.id, {"id": liter.id, "title": liter.title});
   //~ setTimeout(()=>inp.focus(), 300);
-}
+},
+
+CompareObjects(o1, o2){
+  return Object.keys(o1).every(p=>o1[p] === o2[p]) 
+    && Object.keys(o2).every(p=>o1[p] === o2[p]);
+},
+
+CompareObjects(o1, o2){
+  return Object.keys(o1).every(p=>o1[p] === o2[p]) 
+    && Object.keys(o2).every(p=>o1[p] === o2[p]);
+},
 
 }; ///конец методы
 
@@ -291,13 +311,16 @@ Liters(){// площади по этажам  и вообще разбор по�
       this.$delete(this.form.litersEdit, id);
       this.$delete(this.expands, 'развернуть помещения:'+id);
     }
-      
   
-  this._liters = liters;/// для валидации
+  const litersArray = Object.entries(liters).map(a=>({"id":a[0], "title": this.form.litersEdit[a[0]] ? this.form.litersEdit[a[0]].title : a[1].title}));
+  if (this.liters && !litersArray.every((l,i)=>this.CompareObjects(l, this.liters[i]))) this.keys['список литер']++;
+  this.liters = litersArray;
+  
+  
+  this._liters = liters;/// для 
   this.valid = this.Valid(liters);
   return liters;
 },
-
 
   
 };/// конец computed
@@ -337,6 +360,8 @@ const data = function() {
     "totalSquare": 0.0,
     "showFloors": {},/// это по каждой литере какой этаж показать
     "expands": {}, /// для разных нужд реактивные флажки
+    "liters":undefined, /// при компутед Liters делает массив {id title}
+    "keys":{'список литер':0,}, ///обновление редактирования списка литеров в каждом помещении
     };
   //);
 };///  конец data
@@ -363,6 +388,7 @@ const $Конструктор = function (/*data, $c, $scope*/){
   $Компонент.template = $templateCache.get('аренда/объект/форма');
   $Компонент.components['v-object-select'] = new $КомпонентВыборОбъекта();
   $Компонент.components['v-select-floor'] = new $КомпонентВыборВСписке();
+  $Компонент.components['v-select-liter'] = new $КомпонентВыборВСписке();
   //~ console.log($Компонент);
   return $Компонент;
 };

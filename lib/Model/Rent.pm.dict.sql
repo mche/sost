@@ -11,6 +11,17 @@ id1("roles")->id2("аренда/объекты")
 */
 );
 
+create table IF NOT EXISTS "аренда/объекты/литеры" (
+  id integer  NOT NULL DEFAULT nextval('{%= $sequence %}'::regclass) primary key,
+  ts  timestamp without time zone NOT NULL DEFAULT now(),
+  uid int, --- автор записи
+  "title" text, --not null unique переделал на объект (связь)
+  "коммент" text
+/*
+id1("аренда/объекты")->id2("аренда/объекты/литеры")
+*/
+);
+
 create table IF NOT EXISTS "аренда/помещения" (
   id integer  NOT NULL DEFAULT nextval('{%= $sequence %}'::regclass) primary key,
   ts  timestamp without time zone NOT NULL DEFAULT now(),
@@ -20,7 +31,7 @@ create table IF NOT EXISTS "аренда/помещения" (
   "площадь" numeric not null,
   "коммент" text
 /*
-id1("аренда/объекты")->id2("аренда/помещения")
+id1("аренда/объекты/литеры")->id2("аренда/помещения")
 */
 );
 

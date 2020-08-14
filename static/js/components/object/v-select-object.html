@@ -5,7 +5,7 @@
 
 <v-select v-if=" ready " :select=" select " :param=" param " :items=" list " @on-select=" SelectObject ">
   <template v-slot:selected="{ selected }">
-    <h4 class=" blue-text text-darken-3  hover-bottom-shadow-blue-darken-3" :class="{'fw500 animated slideInUp': !!selected}">
+    <h4 class=" blue-text text-darken-3  input-hover" :class="{'fw500 animated slideInUp': !!selected}">
       <i class="material-icons fs10">place</i>
       <span>{{ (selected && selected.$item && selected.$item.name) || param.placeholder || 'Выбрать объект' }}</span>
     </h4>

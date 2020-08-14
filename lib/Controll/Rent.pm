@@ -52,6 +52,12 @@ sub сохранить_объект {
   my $tx_db = $c->model->dbh->begin;
   local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
   
+  while (my ($id, $liter) = each %{$data->{litersEdit}}) {
+    #~ $data->{'@литеры'}{id} = $c->model->сохранить_литер($liter)->{id};# тут без связей
+    $c->log->error($c->dumper($liter));
+  }
+
+  
   map {
     my $room = $_;
     
@@ -64,13 +70,13 @@ sub сохранить_объект {
     $room->{uid} = $c->auth_user->{id}
       unless $room->{id};
     
-    $room->{id} = $c->model->сохранить_кабинет($room)->{id};
+    $room->{id} = $c->model->сохранить_кабинет($room)->{id};# тут без связей
   } @{ $data->{'@кабинеты'}};
   
   $data->{uid} = $c->auth_user->{id}
       unless $data->{id};
   
-  my $r = $c->model->сохранить_объект($data);
+  my $r = $c->model->сохранить_объект($data);# тут связи с литерами и помещениями
   
   $tx_db->commit
     if ref $r;
