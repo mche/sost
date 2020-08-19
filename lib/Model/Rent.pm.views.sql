@@ -86,7 +86,10 @@ from
   join "аренда/помещения" p on p.id=r1.id1
   
   join refs r2 on p.id=r2.id2
-  join "аренда/объекты" o on o.id=r2.id1
+  join "аренда/объекты/литеры" lit on lit.id=r2.id1
+  
+  join refs r3  on lit.id=r3.id2
+  join "аренда/объекты" o on o.id=r3.id1
   
   join refs ro on o.id=ro.id2
   join "roles" ob on ob.id=ro.id1
@@ -117,7 +120,10 @@ from
   join "аренда/помещения" p on p.id=r1.id1
   
   join refs r2 on p.id=r2.id2
-  join "аренда/объекты" o on o.id=r2.id1
+  join "аренда/объекты/литеры" lit on lit.id=r2.id1
+  
+  join refs r3 on lit.id=r3.id2
+  join "аренда/объекты" o on o.id=r3.id1
   
   join refs ro on o.id=ro.id2
   join "roles" ob on ob.id=ro.id1
@@ -341,6 +347,7 @@ from
         from (
           select
             p.id as "помещение/id", row_to_json(p) as "$помещение/json",
+            lit.id as "литер/id", row_to_json(lit) as "$литер/json",
             o.id as "аренда/объект/id", row_to_json(o) as "$аренда/объект/json",
             ob.id as "объект/id", row_to_json(ob) as "$объект/json",
             p."площадь" as "площадь помещения",
@@ -354,7 +361,9 @@ from
             join refs r1 on dp.id=r1.id2
             join "аренда/помещения" p on p.id=r1.id1
             join refs r2 on p.id=r2.id2
-            join "аренда/объекты" o on o.id=r2.id1
+            join "аренда/объекты/литеры" lit on lit.id=r2.id1
+            join refs r3 on lit.id=r3.id2
+            join "аренда/объекты" o on o.id=r3.id1
             join refs ro on o.id=ro.id2
             join "roles" ob on ob.id=ro.id1
           ) dp

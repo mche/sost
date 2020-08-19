@@ -105,7 +105,7 @@ AddRoom(liter, room){// индекс вставки, если undefined или -
     _id,
     "номер-название": '',
     "этаж":(room && room['этаж']) || this.showFloors[liter.id],
-    "литер":{"id":liter.id, "title":liter.title,},
+    "$литер":{"id":liter.id, "title":liter.title,},
   };
   
   var idx = room ? form["@кабинеты"].indexOf(room) : 0;
@@ -149,12 +149,14 @@ CopyRoom(room){
   //~ }
 },
 
-AddLiter(){
-  let liter = {"id":0, "title": '',};
+AddLiter(room){///room -  перенести помещение в новый литер
+  let liter = (this.litersEdit &&  this.litersEdit[0]) || {"id":0, "title": '',};
   this.Edit(liter);
-  this.AddRoom(liter);
+  if (room) room.$литер = liter;
+  else this.AddRoom(liter);
+  
   this.Expands('развернуть помещения:'+liter.id);
-  setTimeout(a=>document.getElementById('liter-'+liter.id).scrollIntoView({ "block": 'start', "behavior": 'smooth', }), 300);
+  setTimeout(_=>document.getElementById('liter-'+liter.id).scrollIntoView({ "block": 'start', "behavior": 'smooth', }), 300);
 },
 
 Save(){
@@ -241,7 +243,7 @@ OnFloorSelect(item, propSel){
 },
 
 OnSelectLiter(liter, propSel){
-  if (propSel.room['литер'].id != liter.id) propSel.room['литер'] = liter;
+  if (propSel.room['$литер'].id != liter.id) propSel.room['$литер'] = liter;
   
 },
 
@@ -251,12 +253,16 @@ _CompareFloor(a,b){
   return 0;
 },
 
+//~ _ReduceLiters(a, liter) {
+  //~ if (!a[liter.id]) a[liter.id] = Object.assign({"_id": this.idMaker.next().value, "площадь":0, "помещения":[], "по этажам":{},}, liter);
+  //~ return a;
+//~ },
 
 _ReduceRooms(a,room){/// разбор списка кабинетов объекта на литеры, этажи и выч площадей
   this.counter++;
   if (!room._id) room._id = this.idMaker.next().value;
-  if (!a[room['литер'].id]) a[room['литер'].id] = Object.assign({"_id": this.idMaker.next().value, "площадь":0, "помещения":[], "по этажам":{},}, room['литер']);
-  let liter = a[room['литер'].id] ;
+  if (!a[room['$литер'].id]) a[room['$литер'].id] = Object.assign({"_id": this.idMaker.next().value, "площадь":0, "помещения":[], "по этажам":{},}, this.form.litersEdit[room['$литер'].id] || room['$литер']);
+  let liter = a[room['$литер'].id] ;
   liter['помещения'].push(room);
   if (!liter['по этажам'][room['этаж']]) liter['по этажам'][room['этаж']] = {"литер/id": liter.id, "площадь":0, "помещения":[], "name": floors[room['этаж']]};
   let s = this.ParseNum(room['площадь'] || 0)
@@ -270,7 +276,7 @@ _ReduceRooms(a,room){/// разбор списка кабинетов объек
 Edit(liter, event){
   //~ let inp = event.target.parentElement.getElementsByTagName('input')[0];
   //~ console.log("edit", event.target.parentElement, inp);
-  this.$set(this.form.litersEdit, liter.id, {"id": liter.id, "title": liter.title});
+  if (!this.form.litersEdit[liter.id]) this.$set(this.form.litersEdit, liter.id, {"id": liter.id, "title": liter.title});
   //~ setTimeout(()=>inp.focus(), 300);
 },
 
@@ -301,7 +307,9 @@ Liters(){// площади по этажам  и вообще разбор по�
   //~ var vm = this;
   this.totalSquare = 0.0;
   //~ this.showFloors = {};
-  const liters = /*this.SortRooms(*/this.form["@кабинеты"].reduce((a, room)=>this._ReduceRooms(a, room), {});
+  //~ let liters = this.form["@литеры"].reduce((a, liter)=>this._ReduceLiters(a, liter), {});
+  const liters = this.form["@кабинеты"].reduce((a, room)=>this._ReduceRooms(a, room), {});
+  
   for (const [literId, floor] of Object.entries(this.showFloors))
     if (!(liters[literId] && liters[literId]['по этажам'][floor]))
       this.showFloors[literId] = undefined;
@@ -310,6 +318,7 @@ Liters(){// площади по этажам  и вообще разбор по�
     if (! liters[id]) {
       this.$delete(this.form.litersEdit, id);
       this.$delete(this.expands, 'развернуть помещения:'+id);
+      //~ console.log("Удалил ред. литер", id);
     }
   
   const litersArray = Object.entries(liters).map(a=>({"id":a[0], "title": this.form.litersEdit[a[0]] ? this.form.litersEdit[a[0]].title : a[1].title}));

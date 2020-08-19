@@ -40,7 +40,7 @@ Ready(){/// метод
   var vm = this;
   var loader = vm.LoadData();
   $EventBus.$on('Дайте список объектов аренды', function(cb){
-    cb(loader);
+    cb(vm.data);
   });
   loader.then(function(){
     vm.ready = true;
@@ -52,7 +52,7 @@ LoadData(){
   var vm = this;
   return $http.get(appRoutes.urlFor('аренда/объекты/список'))
     .then(function(resp){
-      vm.data.push(...resp.data.map((item)=>{ vm.SortItemRoomsIndexes(item); return item; }));
+      vm.data.push(...resp.data.map((item)=>{ vm.ItemRoomsIndexes(item); return item; }));
       return vm.data;
     });
 },
@@ -68,16 +68,19 @@ New(){
 
 OnSave(data){ ///  из события сохранения формы
   var vm = this;
+  
   if (vm.newObject) vm.newObject = undefined;
   if (data) {
     var f = vm.data.find(util.IsEqualId, data);
     if (f) { /// редакт или удалил
       if (data['удалить']) return vm.data.removeOf(f);
       if (f._edit) f._edit = undefined;
+      if (data['@кабинеты']) vm.ItemRoomsIndexes(data);
       Object.assign(f, data);
     } else {/// новая
       vm.data.push(data);
     }
+    
   }
 },
 
@@ -97,17 +100,21 @@ ParseNum(num){
   return parseFloat(Util.numeric(num));
 },
 
-SortItemRoomsIndexes(item){///вместо самого массива помещений используется массив сортировки индексов
+ItemRoomsIndexes(item){///вместо самого массива помещений используется массив сортировки индексов
   var vm = this;
   item._sortItemRooms = !item._sortItemRooms;
+  //~ for (let liter in item['@литеры']) liter['количество помещений'] = 0;
   //~ if ( === undefined) return item.rooms = item['@кабинеты'];///без сортировки
-  item.roomsIndexes = Array(item['@кабинеты'].length).fill().map((item, idx) => idx);
+  item.roomsIndexes = Array(item['@кабинеты'].length).fill()
+    .map((item, idx) => idx)
+    .filter(idx=>vm.FilterRoomsByIdx(item, idx))
+  ;
   //~ item.rooms = item['@кабинеты'].sort((a, b) => {
   item.roomsIndexes.sort((a,b) => vm._CompareItemRoom(a, b, item));
   return item.roomsIndexes;
 },
 
-_CompareItemRoom(a, b, item){/// для SortItemRoomsIndexes
+_CompareItemRoom(a, b, item){/// для ItemRoomsIndexes
   let d1 =  /^\d/.test(item['@кабинеты'][a]['номер-название']);
   let d2 = /^\d/.test(item['@кабинеты'][b]['номер-название']);
   let v1 = d1 ? item['@кабинеты'][a]['номер-название'].replace(/^(\d+).*/, '$1') : item['@кабинеты'][a]['номер-название'];
@@ -128,9 +135,21 @@ _CompareItemRoom(a, b, item){/// для SortItemRoomsIndexes
   }
 },
 
+FilterRoomsByIdx(item, idx){///idx index помещения
+  //~ item['@литеры']['количество помещений']
+  if (!item.showLiter) return true;
+  return item['@кабинеты'][idx].$литер.id == item.showLiter.id;
+  
+},
+
 GoToContract(id){
   $EventBus.$emit('Прокрути к договору', id);
   
+},
+
+ShowLiter(item, liter){
+  this.$set(item, 'showLiter', liter);
+  this.ItemRoomsIndexes(item);
 },
 
 }; /// конец methods
@@ -146,6 +165,7 @@ const  data = function(){
     "data": [],
     "newObject": undefined,
     "selectedObject": undefined,
+    //~ "filters": {"литер": undefined,},
     //~ "sortItemRooms": undefined,
     };
   //);

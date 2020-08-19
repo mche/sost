@@ -53,9 +53,13 @@ sub сохранить_объект {
   local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
   
   while (my ($id, $liter) = each %{$data->{litersEdit}}) {
-    #~ $data->{'@литеры'}{id} = $c->model->сохранить_литер($liter)->{id};# тут без связей
-    $c->log->error($c->dumper($liter));
+    $liter->{uid} = $liter->{id} ? undef : $c->auth_user->{id};
+    delete $liter->{id}
+      unless $liter->{id};
+    $data->{'%литеры изменения'}{$id} = $c->model->сохранить_литер($liter)->{id};# тут без связей
+    #~ $c->log->error($c->dumper($liter));
   }
+  #~ $c->log->error($c->dumper($data->{'%литеры изменения'}));
 
   
   map {

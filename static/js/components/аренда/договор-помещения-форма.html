@@ -1,6 +1,6 @@
 @@@ аренда/договор/помещения/форма
 
-  <table class="z-depth-1 bordered highlight">
+  <table class="z-depth-1 bordered highlight000">
     <tbody class="striped " :class="extParam['bgClass'] || 'lime lighten-4' ">
       <tr v-for="(room, idx) in dataRooms" :key=" room._id ">
         <td class="right-align relative padd-05 vtop" style="width:1%;">
@@ -16,6 +16,7 @@
               <h5 v-if="selected" class="relative padd-0-05 lime-text text-darken-4 animated slideInRight input-hover ">
                 <span><i class="material-icons fs8 padd-0">place</i></span>
                 <span>{{ selected.$объект['name'] }}</span>
+                <span class="nowrap chip padd-0-05"><span class="fs8 grey-text">лит. </span> <span class="bold">{{ selected.$помещение.$литер.title }}</span></span>
                 <span class="nowrap chip padd-0-05"><span class="fs8 grey-text">№</span> <span class="bold">{{ selected.$помещение['номер-название'] }}</span></span>
                 <span class="nowrap chip padd-0-05"><span class="">{{ selected.$помещение['этаж'] }}</span> <span class="fs8 grey-text">эт.</span></span>
                 <span class="nowrap chip padd-0-05"><span class="" :class="{'through': !!(room['площадь'] || room['площадь'] === 0), 'bold':!(room['площадь'] || room['площадь'] === 0)}">{{ ParseNum(selected.$помещение['площадь']).toLocaleString() }}</span> <span class="fs8 grey-text">м<sup>2</sup></span></span>
@@ -27,6 +28,7 @@
               <h6 class="padd-0-05 lime-text text-darken-4 hover-shadow3d relative"  :class="{'bold fs12': listItem === selected, 'fw500': listItem === highlighted}"  style="">
                 <span><i class="material-icons fs8 padd-0">place</i></span>
                 <span >{{ listItem.$объект['name'] }}</span>
+                <span class="nowrap chip padd-0-05"><span class="fs8 grey-text">лит. </span> <span class="">{{ listItem.$помещение.$литер.title }}</span></span>
                 <span class="nowrap chip padd-0-05"><span class="fs8 grey-text">№</span> <span class="">{{ listItem.$помещение['номер-название'] }}</span></span>
                 <span class="nowrap chip padd-0-05"><span class="">{{ listItem.$помещение['этаж'] }}</span> <span class="fs8 grey-text">эт.</span></span>
                 <span class="nowrap chip padd-0-05"><span class="">{{ ParseNum(listItem.$помещение['площадь']).toLocaleString() }}</span> <span class="fs8 grey-text">м<sup>2</sup></span></span>

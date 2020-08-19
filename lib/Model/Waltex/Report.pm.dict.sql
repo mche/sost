@@ -934,7 +934,10 @@ from
           join "аренда/помещения" p on p.id=r1.id1
           
           join refs r2 on p.id=r2.id2
-          join "аренда/объекты" o on o.id=r2.id1
+          join "аренда/объекты/литеры" lit on lit.id=r2.id1
+          
+          join refs r3 on lit.id=r3.id2
+          join "аренда/объекты" o on o.id=r3.id1
           
           join refs ro on o.id=ro.id2
           join "roles" ob on ob.id=ro.id1

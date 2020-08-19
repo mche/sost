@@ -26,6 +26,7 @@ monkey_patch(__PACKAGE__, 'float',    \&numeric);
 sub monkey_patch { Mojo::Util::monkey_patch(@_) }
 
 sub numeric {
+  return unless defined $_[0];
   #~ (( shift =~ s/$RE{non_digit}//gr) =~ s/$RE{to_dots}/./gr )=~ s/$RE{left_dots}//gr;
   ((( shift =~ s/$RE{inner_minus}/$1/gr) =~  s/$RE{non_digit}//gr ) =~ s/$RE{to_dots}/./gr ) =~ s/$RE{left_dots}//gr;
 }

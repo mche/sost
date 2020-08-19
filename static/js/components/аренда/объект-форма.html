@@ -41,20 +41,21 @@
         <h4>
           <i class="material-icons">format_list_numbered</i>
           <span> Помещения и кабинеты </span>
-          <span class="chip lime darken-3 white-text">
+          <span class="chip lime darken-3 white-text z-depth-1">
             <span v-show="liter.id === 0">новый </span>
+            <span v-show="form.litersEdit[liter.id||'']">изменить </span>
             литер: 
             <span v-if="form.litersEdit.hasOwnProperty(liter.id) || !liter.title" class="input-field iblock white padd-0-05 fs8 animated zoomIn fast" style="border-radius:5px; width:5rem;">
               <sup v-show="!form.litersEdit[liter.id].title" class="chip red" style="position: absolute; z-index: 1; top:0; left:0; padding:0.3rem;"></sup>
-              <input type="text" v-model.lazy="form.litersEdit[liter.id].title" class="bold lime-text text-darken-4" placeholder="Указать литеру" />
+              <input type="text" v-model.lazy="form.litersEdit[liter.id].title" class="bold lime-text text-darken-4" placeholder="Указать литер" />
             </span>
-            <a v-else class="chip padd-0-05 bold lime-text text-darken-3 hoverable hover-shadow3d" @click="Edit(liter, $event)" href="javascript:">{{ liter.title }}</a>
+            <a v-else class="chip padd-0-05 bold lime-text text-darken-3 hoverable hover-shadow3d hover-white" @click="Edit(liter, $event)" href="javascript:">{{ liter.title }}</a>
           </span>
           
         </h4>
 
         <div class="nowrap">
-          <h6 class="fw500 helmet tab-shadow z-depth-1 " :class="{'active lime lighten-4 marg-0-05': !showFloors[liter.id]}">
+          <h6 class="fw500 helmet tab-shadow z-depth-1" :class="{'active  lime lighten-4 marg-0-05': !showFloors[liter.id], 'hover-white': !!showFloors[liter.id],}">
             <a @click="ShowFloor(liter)" href="javascript:" class="" :class="{'bold': !showFloors[liter.id], 'hover-shadow3d': !!showFloors[liter.id]}">
               <span>Все</span>
               <sup class="chip fs8">{{ liter['помещения'].length }}</sup>
@@ -66,7 +67,7 @@
             </span>
           </h6>
           
-          <h6 v-for="floor_id in Object.keys(liter['по этажам']).sort(_CompareFloor)" v000-for="[floor_id, item] of Object.entries(liter['по этажам']) " :key="floor_id" v-show=" floor_id !== 'undefined' " class="fw500 helmet tab-shadow  z-depth-1  " :class="{'active z-depth-1 lime lighten-4 marg-0-05':  showFloors[liter.id] == floor_id}">
+          <h6 v-for="floor_id in Object.keys(liter['по этажам']).sort(_CompareFloor)" v000-for="[floor_id, item] of Object.entries(liter['по этажам']) " :key="floor_id" v-show=" floor_id !== 'undefined' " class="fw500 helmet tab-shadow z-depth-1  " :class="{'active  lime lighten-4 marg-0-05':  showFloors[liter.id] == floor_id, 'hover-white': showFloors[liter.id] != floor_id}">
             <a @click="ShowFloor(liter, floor_id)" href="javascript:" class="" :class="{'bold': showFloors[liter.id] == floor_id, 'hover-shadow3d': showFloors[liter.id] != floor_id}">
               <!--i class="material-icons">format_list_numbered</i-->
               <span>{{ _floors[floor_id] }}</span>
@@ -139,7 +140,8 @@
                     <i class="material-icons lime-text-darken-3 ">add_box</i>
                   </a>
                   <h5>Изменить литер</h5>
-                  <v-select-liter :key="keys['список литер']" :select=" {'id': room['литер'].id, 'room':room,} " :items=" liters " :param=" {'без удаления':true, 'без поля поиска': true, 'без стрелки раскрытия списка':true, ulDropDownClass: ['striped']} " @on-select=" OnSelectLiter ">
+                  <a @click="AddLiter(room)" href="javascript:" class="btn-flat">перенести в новый литер</a>
+                  <v-select-liter :key="keys['список литер']" :select=" {'id': room['$литер'].id, 'room':room,} " :items=" liters " :param=" {'без удаления':true, 'без поля поиска': true, 'без стрелки раскрытия списка':true, ulDropDownClass: ['striped']} " @on-select=" OnSelectLiter ">
                   <template v-slot:selected="{ selected }">
                     <h4 v-if="selected" class="chip  lime darken-3 white-text input-hover-нет hoverable fw500 nowrap">
                       <span>литер </span>
@@ -227,7 +229,7 @@
       </div>
     </div></div><!-- col+row -->
     
-    <!--div class="fs8 pre-wrap">{{ form.litersEdit }}</div-->
+    <!---div class="fs8 pre-wrap">{{ form.litersEdit }}</div--->
     
     <h4 class="nowrap right-align">
       Всего площадь объекта

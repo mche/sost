@@ -241,7 +241,7 @@ $func$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION "номера актов/аренда помещений"(date/*месяц*/, int[]/*договоры*/,int/* uid */)
 RETURNS SETOF "акты/аренда/помещения"
 AS $func$
-/*
+/* 
 ** Присвоение номеров счетов
 ** на входе:
 ** 1 - дата месяца счетов
@@ -309,24 +309,38 @@ from "roles/родители"(null)
 select o.*,
   ob.id as "объект/id",
   row_to_json(ob) as "$объект/json",
-  p."@кабинеты/json", p."@кабинеты/id", p."@помещение в договоре аренды?", "@аренда/договоры/id/json", "@аренда/договоры/json"
+  lit."@литеры/json", lit."@литеры/id", ---lit."@объект:литера/id",
+  p."@кабинеты/json", p."@кабинеты/id", p."@помещение в договоре аренды?", "@аренда/договоры/id/json", "@аренда/договоры/json", p."@@литер,помещение/id"
 from "аренда/объекты" o
   join refs ro on o.id=ro.id2
   join "roles" ob on ob.id=ro.id1
+  join (----отдельно литеры этого объекта
+    select
+      r.id1,
+      jsonb_agg(lit order by lit.title) as "@литеры/json",
+      array_agg(lit.id order by lit.title) as "@литеры/id"
+     ---- array_agg(r.id1::text||':'||r.id2::text) as "@объект:литера/id" --- это для сохранения
+    from "аренда/объекты/литеры" lit
+      join refs r on lit.id=r.id2
+    group by r.id1
+  ) lit on o.id=lit.id1
   join (---помещения объекта
-    select o.id, 
+    select o.id as "аренда/объекты/id", 
       jsonb_agg(p  {%= $order_by_room || ' order by p.id' %}) as "@кабинеты/json",
       array_agg(p.id  {%= $order_by_room || ' order by p.id' %}) as "@кабинеты/id",
       array_agg(coalesce(dp.id, 0)::boolean  {%= $order_by_room || ' order by p.id' %}) as "@помещение в договоре аренды?",
       --- разная размерность! поэтому в одномерную строку
       array_agg('['||array_to_string(coalesce(dp."@аренда/договоры/id", array[]::int[]), ',')||']'  {%= $order_by_room || ' order by p.id' %}) as "@аренда/договоры/id/json",
-      array_agg(dp."@аренда/договоры/json"::text  {%= $order_by_room || ' order by p.id' %}) as "@аренда/договоры/json"
+      array_agg(dp."@аренда/договоры/json"::text  {%= $order_by_room || ' order by p.id' %}) as "@аренда/договоры/json",
+      array_agg(array[p."литер/id", p.id] {%= $order_by_room || ' order by p.id' %}) as "@@литер,помещение/id" --- это для сохранения
     from "аренда/объекты" o
       join "refs" r on o.id=r.id1
       join (
-        select p.*, to_jsonb(lit) as "литер/json"
-        from "аренда/помещения" p, (VALUES ('A', 1)) as lit("title",  "id")
-      ) p on p.id=r.id2
+        select p.*, to_jsonb(lit) as "$литер/json", lit.id as "литер/id"
+        from "аренда/помещения" p
+          join refs r on p.id=r.id2
+          join "аренда/объекты/литеры" lit on lit.id=r.id1---(VALUES ('A', 1)) as lit("title",  "id")
+      ) p on p."литер/id"=r.id2
       left join (--- все договоры с этим помещением
         select p.id, 
           jsonb_agg(dp order by dp."дата1" desc) as "@аренда/договоры/json",
@@ -350,7 +364,7 @@ from "аренда/объекты" o
           group by p.id
     ) dp on p.id=dp.id
     group by o.id
-  ) p on o.id=p.id
+  ) p on o.id=p."аренда/объекты/id"
 {%= $where || '' %}
 {%= $order_by || 'order by ob."name"  ' %}
 
@@ -412,20 +426,23 @@ from
 @@ договоры/помещения
 select
   p.id as "помещение/id", row_to_json(p) as "$помещение/json",
+  lit.id as "литер/id", row_to_json(lit) as "$литер/json",
   o.id as "аренда/объект/id", row_to_json(o) as "$аренда/объект/json",
   ob.id as "объект/id", row_to_json(ob) as "$объект/json",
   p."площадь" as "площадь помещения",
-  coalesce(r."сумма", r."ставка"*p."площадь") as "оплата за помещение",
-  r.*,
+  coalesce(dp."сумма", dp."ставка"*p."площадь") as "оплата за помещение",
+  dp.*,
   d.id as "договор/id"
 from 
   "аренда/договоры" d 
   join refs _r on d.id=_r.id1
-  join "аренда/договоры-помещения" r on r.id=_r.id2
-  join refs r1 on r.id=r1.id2
+  join "аренда/договоры-помещения" dp on dp.id=_r.id2
+  join refs r1 on dp.id=r1.id2
   join "аренда/помещения" p on p.id=r1.id1
   join refs r2 on p.id=r2.id2
-  join "аренда/объекты" o on o.id=r2.id1
+  join "аренда/объекты/литеры" lit on lit.id=r2.id1
+  join refs r3 on lit.id=r3.id2
+  join "аренда/объекты" o on o.id=r3.id1
   join refs ro on o.id=ro.id2
   join "roles" ob on ob.id=ro.id1
 {%= $where || '' %}
