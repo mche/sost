@@ -45,7 +45,7 @@
       </div>
       
       
-      <div style="overflow:auto;" :style="item._expandRooms ? {} : {'max-height':'10rem'}">
+      <div style="" :style="item._expandRooms ? {} : {'max-height':'10rem', 'overflow':'auto',}">
       <table class="bordered striped lime lighten-4 highlight"><tbody>
       <!---in (item.rooms || item['@кабинеты'])  вместо самого массива помещений используется массив сортировки индексов  --->
         <tr v-for="idx in item.roomsIndexes" :key="item['@кабинеты'][idx].id">
