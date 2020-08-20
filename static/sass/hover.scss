@@ -1,3 +1,20 @@
+.hover-bottom-shadow-blue-darken-3:hover {/// как поле формы
+  box-shadow: 0 3px 0 0 color("blue", "darken-3");
+  border-color: transparent;
+}
+.hover-bottom-shadow-teal-darken-3:hover {/// как поле формы
+  box-shadow: 0 3px 0 0 color("teal", "darken-3");
+  border-color: transparent;
+}
+.hover-bottom-shadow-lime-darken-3:hover {/// как поле формы
+  box-shadow: 0 3px 0 0 color("lime", "darken-3");
+  border-color: transparent;
+}
+.hover-bottom-shadow-grey-darken-3:hover {/// как поле формы
+  box-shadow: 0 3px 0 0 color("grey", "darken-3");
+  border-color: transparent;
+}
+
 /*** Фрагменты http://ianlunn.github.io/Hover/ ***/
 
 ///@import "../lib/hover.css/scss/_options.scss";

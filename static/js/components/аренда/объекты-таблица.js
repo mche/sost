@@ -89,7 +89,8 @@ Edit(item){
 },
 SumSquare(item) {
   var s = 0;
-  item['@кабинеты'].map(function(room){ s = s + room['площадь']; });
+  item.roomsIndexes.forEach((idx)=>{s = s + item['@кабинеты'][idx]['площадь'];});
+  //~ item['@кабинеты'].map(function(room){  });
   return s;
 },
 ToggleRooms(item) {

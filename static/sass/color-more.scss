@@ -12,14 +12,7 @@ $darkblue: darken($blue, 15%);
   border-color: color("red", "darken-2") !important;
 }
 
-.hover-bottom-shadow-blue-darken-3:hover {/// как поле формы
-  box-shadow: 0 3px 0 0 color("blue", "darken-3");
-  border-color: transparent;
-}
-.hover-bottom-shadow-teal-darken-3:hover {/// как поле формы
-  box-shadow: 0 3px 0 0 color("teal", "darken-3");
-  border-color: transparent;
-}
+
 
 
 //  Дополнительно цвета для SVG и :before

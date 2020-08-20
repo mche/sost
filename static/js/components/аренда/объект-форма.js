@@ -138,9 +138,11 @@ CopyRoom(room){
   var copy = angular.copy(room);
   var idx = vm.form['@кабинеты'].indexOf(room);
   if (idx < 0) return;
+  copy._copy_id = copy.id;
   copy.id = undefined;
   copy._id = vm.idMaker.next().value;
   vm.form['@кабинеты'].splice(idx, 0, copy);
+  setTimeout(_=>document.getElementById(`room-row-${ copy._id }`).classList.add('slideInRight'));
   //~ if ( vm.showFloor ) {
     //~ vm.ShowFloor();/// сброс вкладки
     //~ setTimeout(()=>{
@@ -243,7 +245,10 @@ OnFloorSelect(item, propSel){
 },
 
 OnSelectLiter(liter, propSel){
-  if (propSel.room['$литер'].id != liter.id) propSel.room['$литер'] = liter;
+  let room = propSel.room;
+  if (room['$литер'].id != liter.id) room['$литер'] = liter;
+  //~ console.log("OnSelectLiter", liter, propSel);
+  //~ this.$set(room, '_showChangeLiter', false);
   
 },
 

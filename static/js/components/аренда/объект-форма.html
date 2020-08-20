@@ -84,7 +84,7 @@
         <div class="" style="position:absolute; top:0.5rem; right:0.5rem; z-index:1;"><a @click="Expands('развернуть помещения:'+liter.id)" href="javascript:" class="chip lime darken-3 white-text hoverable padd-0 z-depth-1"><i class="material-icons" :class="{'rotate180': expands['развернуть помещения:'+liter.id]}">arrow_drop_down</i></a></div>
         
         <div class="z-depth-1 relative" style="" :style="expands['развернуть помещения:'+liter.id] ? {} : {'max-height': 'calc(30vh)', overflow:'auto',}">
-        <table class="tmc top striped bordered lime lighten-4 highlight">
+        <table class="tmc top striped bordered lime lighten-4 highlight-000">
           <thead class=""><tr>
             <th style="width:1%;"></th>
             <th class="center vbottom" style="width:1%;">
@@ -120,16 +120,17 @@
           </tr></thead>
         <tbody >
            <!---transition leave-active-class="animated zoomOutUp"--->
-          <tr v-for="(room, index) in ((showFloors[liter.id] && liter['по этажам'][showFloors[liter.id]] && liter['по этажам'][showFloors[liter.id]]['помещения']) || liter['помещения']) " :key=" room._id " :id=" `room-row-${ room._id }` " class="animated slideInRight---000">
+          <tr v-for="(room, index) in ((showFloors[liter.id] && liter['по этажам'][showFloors[liter.id]] && liter['по этажам'][showFloors[liter.id]]['помещения']) || liter['помещения']) " :key=" room._id " :id=" `room-row-${ room._id }` " class="animated slideInRight---000" :class="{'orange lighten-3':!room.id}">
             <td class="right-align relative padd-05" style=" vertical-align:middle;">
               <span>{{ index+1 }}</span>
               <span v-show=" !!room.id " class="fs7 grey-text" style="position: absolute; z-index: 1; bottom:0; left:0;">#{{ room.id }}</span>
               <span v-show=" !room.id " class="fs7 grey-text" style="position: absolute; z-index: 1; top:0; left:0;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="orange-fill-darken-3" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#asterisk"></use></svg></span>
+              <span v-show="room._copy_id" class="orange-text text-darken-3">копия!</span>
             </td>
             <td class="center middle padd-05" style="">
               <div class="hover-childs-show relative">
                 <span class="chip z-depth-1 padd-0 hover-parent-hide-child"><i class="material-icons">more_horiz</i></span>
-                <div class="chip z-depth-1 padd-0-05 nowrap hover-parent-show-block animated fadeIn" style="position:absolute; left:0rem; top:-1rem; z-index:5;">
+                <div class="chip z-depth-1  nowrap hover-parent-show-block animated fadeIn" style="position:absolute; left:0rem; top:-1rem; z-index:5;">
                   <a v-show=" ValidRoom(room) "  @click=" CopyRoom(room)" href="javascript:" class="btn-flat padd-0 " style="" title="копировать">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" class="green-fill fill-darken-3 ng-scope" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#copy"></use></svg>
                   </a>
@@ -139,20 +140,22 @@
                   <a v000-show=" index == form['@кабинеты'].length - 1 || !form.id" @click=" AddRoom(liter, room) " href="javascript:" class="btn-flat padd-0" style="" title="добавить">
                     <i class="material-icons lime-text-darken-3 ">add_box</i>
                   </a>
-                  <h5>Изменить литер</h5>
-                  <a @click="AddLiter(room)" href="javascript:" class="btn-flat">перенести в новый литер</a>
-                  <v-select-liter :key="keys['список литер']" :select=" {'id': room['$литер'].id, 'room':room,} " :items=" liters " :param=" {'без удаления':true, 'без поля поиска': true, 'без стрелки раскрытия списка':true, ulDropDownClass: ['striped']} " @on-select=" OnSelectLiter ">
+                  <a @click="AddLiter(room)" href="javascript:" class="btn fs8 lime lighten-2  lime-text text-darken-4">перенести в новый литер</a>
+                  <h5 v0000-show="!room._showChangeLiter"><a @click="$set(room, '_showChangeLiter', true)" href="javascript:">Изменить литер</a><span class="chip bold lime-text-darken-3 white padd-0-05">{{ room['$литер'].title || 'НОВЫЙ' }}</span></h5>
+                  
+                  <v-select-liter v-if="room._showChangeLiter" :key="keys['список литер']" :select=" {'id': room['$литер'].id, 'room':room,} " :items=" liters " :param=" {'без удаления':true, 'без поля поиска': true, 'без стрелки раскрытия списка':true, 'раскрыть список':true, ulDropDownClass: ['striped']} " @on-select=" OnSelectLiter ">
                   <template v-slot:selected="{ selected }">
-                    <h4 v-if="selected" class="chip  lime darken-3 white-text input-hover-нет hoverable fw500 nowrap">
+                    <!--h4 v-if="selected" class="chip  lime darken-3 white-text input-hover-нет hoverable fw500 nowrap">
                       <span>литер </span>
                       <span class="chip lime-text-darken-3 white padd-0-05">{{ selected.title || 'НОВЫЙ' }}</span>
-                    </h4>
-                    <!--h4 v-else class="grey-text text-darken-1">Выбрать этаж</h4-->
+                    </h4-->
+                    <h6>Выбрать литер</h6>
                   </template>
                   <template v-slot:listItem="{ listItem, selected, highlighted }">
-                    <h4 class="padd-0-05 lime-text text-darken-4 hover-shadow3d nowrap"  :class="{'bold': listItem === selected, 'fw500': listItem === highlighted}"  style="">
+                    <h4 class="padd-0-05 lime-text text-darken-4 hover-shadow3d nowrap relative"  :class="{'bold': listItem === selected, 'fw500': listItem === highlighted}"  style="">
                       <span >литер </span>
                       <span class="chip padd-0-05">{{ listItem.title || 'НОВЫЙ' }}</span>
+                      <span class="grey-text fs7" style="position:absolute; right:0; bottom:0;">#{{ listItem.id }}</span>
                     </h4>
                   </template>
                 </v-select-liter>

@@ -26,17 +26,17 @@
         <a @click=" SortItemRoomsIndexes(item) " href="javascript:" class="chip hoverable padd-0-02 z-depth-1 lime darken-3 white-text" title="сортировать по номеру"><i class="material-icons">sort</i></a>
       </div--->
       <div style="position: absolute; top: 0.5rem; right: 0.5rem; z-index: 1;">
-        <a @click="ToggleRooms(item)" href="javascript:" class="chip lime darken-3  white-text hoverable padd-0 z-depth-1" title="развернуть/свернуть строки помещений"><i class="material-icons">arrow_drop_down</i></a>
+        <a @click="ToggleRooms(item)" href="javascript:" class="chip lime darken-3  white-text hoverable padd-0 z-depth-1" title="развернуть/свернуть строки помещений"><i class="material-icons" :class="{'rotate180': !!item._expandRooms}">arrow_drop_down</i></a>
       </div>
       
       <div>
-        <h6 class="fw500 helmet tab-shadow  " :class="{'active z-depth-1 lime lighten-4 marg-0-05': !item.showLiter, 'grey-lighten-1 hover-white': !!item.showLiter}" style="    margin-bottom: 0.4rem !important;">
+        <h6 class="fw500 helmet tab-shadow  " :class="{'active z-depth-1 lime lighten-4 marg-0-05': !item.showLiter, 'grey-lighten-2 hover-white': !!item.showLiter}" style="    margin-bottom: 0.4rem !important;">
           <a @click="ShowLiter(item)" href="javascript:" class="lime-text text-darken-4 hover-shadow3d">
             <span>Все лит.</span>
             <sup class="chip fs8">{{ item['@кабинеты'].length }}</sup>
           </a>
         </h6>
-        <h6 v-for="liter in item['@литеры']" :key="liter.id" class="fw500 helmet tab-shadow   " :class="{'active z-depth-1 lime lighten-4 marg-0-05':  liter === item.showLiter, 'grey-lighten-1 hover-white': liter !== item.showLiter}" style="    margin-bottom: 0.4rem !important;">
+        <h6 v-for="liter in item['@литеры']" :key="liter.id" class="fw500 helmet tab-shadow   " :class="{'active z-depth-1 lime lighten-4 marg-0-05':  liter === item.showLiter, 'grey-lighten-2 hover-white': liter !== item.showLiter}" style="    margin-bottom: 0.4rem !important;">
           <a @click="ShowLiter(item, liter)" href="javascript:" class="lime-text text-darken-4 hover-shadow3d">
             <span>лит. {{ liter.title }}</span>
             <sup v-show="liter === item.showLiter" class="chip fs8">{{ item.roomsIndexes.length }}</sup>
@@ -45,7 +45,7 @@
       </div>
       
       
-      <div style="" :style="item._expandRooms ? {} : {'max-height':'10rem', 'overflow':'auto',}">
+      <div class="row" :style="item._expandRooms ? {} : {'max-height':'10rem', 'overflow':'auto',}">
       <table class="bordered striped lime lighten-4 highlight"><tbody>
       <!---in (item.rooms || item['@кабинеты'])  вместо самого массива помещений используется массив сортировки индексов  --->
         <tr v-for="idx in item.roomsIndexes" :key="item['@кабинеты'][idx].id">
@@ -103,9 +103,10 @@
         </tr>
       </tbody></table>
       </div>
-      <div class="chip  right-align hoverable  line-height-10" style="">
-        <!--span @click="ToggleRooms(item)" href="javascript:void('развернуть строки помещений/кабинетов')" title="развернуть строки помещений/кабинетов" class="black-text hover-shadow3d"-->общая площадь <span class="bold fs12">{{ SumSquare(item).toLocaleString() }}</span> м² в <span class="bold fs12">{{ item['@кабинеты'].length }}</span> помещениях <!--i class="material-icons">arrow_forward</i></span-->
-      </div>
+      <h4 class="chip  right-align" style="">
+        <!--span @click="ToggleRooms(item)" href="javascript:void('развернуть строки помещений/кабинетов')" title="развернуть строки помещений/кабинетов" class="black-text hover-shadow3d"-->Итого площадь <span class="bold fs12">{{ SumSquare(item).toLocaleString() }}</span> м² <!--i class="material-icons">arrow_forward</i></span-->
+        <!-- в <span class="bold fs12">{{ item['@кабинеты'].length }}</span> помещениях -->
+      </h4>
     </div><!--card-content -->
 </div><!--card -->
     <!--/td>

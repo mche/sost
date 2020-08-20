@@ -3,7 +3,7 @@
 <div><!-- обязательно один корень Vue -->
 <v-progress-indeterminate v-show=" !ready " :color=" 'teal' " :message=" 'Загружается...' "></v-progress-indeterminate>
 
-<div v-if=" ready " class="relative"  style="border-bottom:1px solid grey;">
+<div v-if=" ready " class="relative"  style000="border-bottom:1px solid grey;">
   <!--i class="material-icons" style="position: absolute; z-index: 1; right:0rem; top:0rem;">arrow_drop_down</i-->
   <a v-show="!param['без стрелки раскрытия списка']" @click=" DropDownShow " href="javascript:" class=""  style="position: absolute; z-index: 1; right:0; top:0.3rem;">
     <sup class="chip000 fs7 right">{{ itemsLen }}</sup>
@@ -18,7 +18,7 @@
     </slot>
   </a>
   
-  <div  v-show=" dropDownShow " class="z-depth-1" style="position: absolute; z-index: 2; top:0; width:100%;">
+  <div  v-show=" dropDownShow " class="z-depth-1" style="position:absolute; width:100%;  z-index:2; top:0;">
     <div v-show="!param['без поля поиска']" class="input-field padd-0-05 grey lighten-4 ">
       <a v-show=" inputQuery " @click=" ClearInput " href="javascript:" style="position: absolute; z-index: 1; right:0.5rem; top:0.3rem; "><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"  class="red-fill fill-darken-1" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#left-clear-fill"></use></svg></a>
       <input type="text" v-model=" inputQuery "  @keydown=" OnKeyDown " :placeholder=" param.placeholder || 'поиск объекта' " class="" >
@@ -27,14 +27,14 @@
     <a v-show=" !param['без удаления'] && selected" @click=" Select() " href="javascript:" class="circle hoverable" style="position: absolute; z-index: 1001; right:-0.5rem; top:-0.5rem;" title="очистить выбор"><!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"  class="middle red-fill fill-darken-1" style="height: 1.5rem; "><use xlink:href="/fonts/icons.svg#left-clear-fill" /></svg--><i class="material-icons red-text">cancel</i></a>
     
   
-    <ul class=" dropdown-content select-dropdown z-depth-3 animated fadeIn  fast " :class="extParam.ulDropDownClass" style="opacity: 1; display:block; width:100%;">
+    <ul class=" dropdown-content select-dropdown z-depth-3 animated fadeIn  fast " :class="extParam.ulDropDownClass" style="opacity: 1; display:block; width:100%; ">
       
       <!--li><h4 class="input-field relative">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" v-show=" inputQuery " @click=" inputQuery = ''; ChangeInput(); " class="middle red-fill fill-darken-1" style="height: 1.5rem; position: absolute; z-index: 1; right:1rem; top:1rem; cursor:pointer;"><use xlink:href="/fonts/icons.svg#left-clear-fill"></use></svg>
         <input type="text" v-model=" inputQuery "  @keydown=" ChangeInput " placeholder=" поиск объекта " class="padd-05 blue lighten-4 blue-text text-darken-4" >
       </li-->
 
-      <li v-for="item in itemsPage" :key="item.id" class="animated fadeIn" :class=" {'active selected': item === selected || item === highlighted} ">
+      <li v-for="item in itemsPage" :key="item.id" class000="animated slideInRight" :class=" {'active selected': item === selected || item === highlighted} ">
         <a @click=" Select(item) " href="javascript:">
           <slot name="listItem" :listItem="item" :selected="selected" :highlighted="highlighted"><h3 class000=" ItemClass(item) " class="blue-text text-darken-3">{{ item }}</h3></slot>
         </a>

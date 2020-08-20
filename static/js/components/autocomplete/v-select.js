@@ -38,6 +38,7 @@ const props = {
   },
   "select": Object,/// нужен только id, все содержимое возвращается на событии вторым аргументом
   "items": Array,
+  //~ "@items": Array,
   /*
   массив элементов {id:..., _match:..., ...}
   */
@@ -73,7 +74,7 @@ Ready(){
   
   setTimeout(function(){
     vm.dropDown = $('.select-dropdown', $(vm.$el));///.addClass('dropdown-content');
-    if (vm.select === undefined) vm.DropDownShow();
+    if (vm.select === undefined || vm.param['раскрыть список']) vm.DropDownShow();
   });
 },
   
@@ -81,6 +82,7 @@ Select(it){ /// выбор/сброс позиции
   var vm = this;
   //~ console.log("Select", it);
   if (it !== vm.selected) {///}return vm.DropDownHide();
+    //~ if (!noEmit /*|| !vm.select || !it || it.id != vm.select.id*/) 
     vm.$emit('on-select',it, vm.select);
     //~ vm.selected = undefined;
     vm.highlighted = it;

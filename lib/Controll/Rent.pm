@@ -65,14 +65,13 @@ sub сохранить_объект {
   map {
     my $room = $_;
     
-    $data->{$_} = &Util::numeric($data->{$_})
+    $room->{$_} = &Util::numeric($room->{$_})
     for qw(площадь);
     
     return $c->render(json=>{error=>"Не заполнен кабинет"})
       unless (scalar grep($room->{$_}, qw(номер-название площадь))) eq 2 && defined $room->{'этаж'};
     
-    $room->{uid} = $c->auth_user->{id}
-      unless $room->{id};
+    $room->{uid} = $room->{id} ? undef : $c->auth_user->{id};
     
     $room->{id} = $c->model->сохранить_кабинет($room)->{id};# тут без связей
   } @{ $data->{'@кабинеты'}};
