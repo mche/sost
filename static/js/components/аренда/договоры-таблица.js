@@ -48,6 +48,7 @@ Ready(){/// метод
   $EventBus.$on('Прокрути к договору', function(id/*договора*/){
     //~ console.log('Прокрути к договору', id, vm.data.find(util.IsEqualId, {id}));
     let d = vm.data.find(util.IsEqualId, {id});
+    vm.$set(d, 'архив', vm.IsArchiveContract(d));
     vm.filters['архивные договоры'] = !!d['архив'];
     vm.ChbChange('архивные договоры', !!d['архив']);
     setTimeout(()=>{
@@ -299,7 +300,7 @@ OnChangeFilter(event, ms){
 _FilterData(item){
   var vm = this;
   if (!item.hasOwnProperty('крыжик')) item['крыжик']  = undefined;/// доп реакт свойство
-  item['архив'] = item.hasOwnProperty('архив') ? item['архив'] : !dateFns.isWithinRange(new Date(), new Date(/*item['дата1']*/ '2000-01-01'), new Date(item['дата расторжения'] || (item['продление срока'] ? '2100-01-01' : item['дата2'])));
+  item['архив'] = item.hasOwnProperty('архив') ? item['архив'] : vm.IsArchiveContract(item);
   if (item['архив']) vm.archLen += 1;
   const test = (vm.filters['архивные договоры'] ? item['архив'] : !item['архив'])
     && (vm.filters['арендодатель'] ? item['проект/id'] == vm.filters['арендодатель'].id : true)
@@ -307,6 +308,10 @@ _FilterData(item){
     && ( (vm.filters['объект'] && vm.filters['объект'].id) ? item['@помещения'] && item['@помещения'][0].$объект.id == vm.filters['объект'].id : true);
   //~ console.log("filteredData", test);
   return test;
+},
+
+IsArchiveContract(item){
+  return !dateFns.isWithinRange(new Date(), new Date(/*item['дата1']*/ '2000-01-01'), new Date(item['дата расторжения'] || (item['продление срока'] ? '2100-01-01' : item['дата2'])));
 },
 
 FilterData(){

@@ -128,7 +128,7 @@ sub помещения_договора {
   my $self  =  shift;
   my $data = ref $_[0] ? shift : {@_};
   my ($where, @bind) = $self->SqlAb->where({
-    $data->{id} ? (' r.id ' => $data->{id}) : (),
+    $data->{id} ? (' dp.id ' => $data->{id}) : (),
     });
   $self->dbh->selectall_arrayref($self->sth('договоры/помещения', where=>$where), {Slice=>{}}, @bind);
   
