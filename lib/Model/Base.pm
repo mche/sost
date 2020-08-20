@@ -109,7 +109,7 @@ END_SQL
   (
     $schema, $table,
     join(', ', map qq|"$_"|, @cols),
-    join(', ', map { ($expr->{$_} && '('.$expr->{$_}.')::'.$type->{$_}{array_type}.($type->{$_}{data_type} eq 'ARRAY' ? '[]' : '')) || sprintf(qq|?::%s|,  $type->{$_}{array_type}.($type->{$_}{data_type} eq 'ARRAY' ? '[]' : '')) } @cols), # values
+    join(', ', map { ($expr->{$_} && '('.$expr->{$_}.')::'.$type->{$_}{array_type}.($type->{$_}{data_type} eq 'ARRAY' ? '[]' : '')) || sprintf('?::%s',  $type->{$_}{array_type}.($type->{$_}{data_type} eq 'ARRAY' ? '[]' : '')) } @cols), # values
     join(', ', map qq|"$_"|, @cols), # values colnames
     $schema, $table,
     join(' and ', map qq|v."$_"=t."$_"|, @$key_cols), # on left join
@@ -172,6 +172,9 @@ sub _update {
     die "Нет параметра key_cols";
   }
   
+  my $set = join(', ', map(sprintf(' "%s"=%s', $_, ($expr->{$_} && '('.$expr->{$_}.')::'.$type->{$_}{array_type}.($type->{$_}{data_type} eq 'ARRAY' ? '[]' : '')) || sprintf('?::%s', $type->{$_}{array_type}.($type->{$_}{data_type} eq 'ARRAY' ? '[]' : ''))), @cols));
+  #~ warn $set;
+  
   my $sth = $self->_prepare(sprintf(<<END_SQL, 
 update "%s"."%s" t
 set %s
@@ -180,7 +183,7 @@ returning *;
 END_SQL
   (
     $schema, $table,
-    join(', ', map(sprintf(qq|"$_"=%s|, ($expr->{$_} && '('.$expr->{$_}.')::'.$type->{$_}{array_type}.($type->{$_}{data_type} eq 'ARRAY' ? '[]' : '')) || sprintf(qq|?::%s|, $type->{$_}{array_type}.($type->{$_}{data_type} eq 'ARRAY' ? '[]' : ''))), @cols)), # set
+    $set, # set
     $where, # where
     
   )));
@@ -224,7 +227,7 @@ END_SQL
     join(', ', map qq|v."$_"|, @upd_cols), # set
     
     #~ join(',', map $expr->{$_} || sprintf(qq|?::%s|,  $type->{$_}{data_type} eq 'ARRAY' ? $type->{$_}{array_type}.'[]' : $type->{$_}{data_type}), @cols), # values
-    join(', ', map { ($expr->{$_} && '('.$expr->{$_}.')::'.$type->{$_}{array_type}.($type->{$_}{data_type} eq 'ARRAY' ? '[]' : '')) || sprintf(qq|?::%s|,  $type->{$_}{array_type}.($type->{$_}{data_type} eq 'ARRAY' ? '[]' : '')) } @cols), # values
+    join(', ', map { ($expr->{$_} && '('.$expr->{$_}.')::'.$type->{$_}{array_type}.($type->{$_}{data_type} eq 'ARRAY' ? '[]' : '')) || sprintf('?::%s ',  $type->{$_}{array_type}.($type->{$_}{data_type} eq 'ARRAY' ? '[]' : '')) } @cols), # values
     #~ join(',', map qq|?::@{[$type->{$_}{data_type} eq 'ARRAY' ? $type->{$_}{array_type}.'[]' : $type->{$_}{data_type} ]}|, @cols), # values
     join(',', map qq|"$_"|, @cols), # values
     
