@@ -180,7 +180,7 @@ returning *;
 END_SQL
   (
     $schema, $table,
-    join(', ', map sprintf(qq|"$_"=%s|, ($expr->{$_} && '('.$expr->{$_}.')::'.$type->{$_}{array_type}.($type->{$_}{data_type} eq 'ARRAY' ? '[]' : '')) || sprintf(qq|?::%s|, $type->{$_}{array_type}.($type->{$_}{data_type} eq 'ARRAY' ? '[]' : ''))), @cols), # set
+    join(', ', map(sprintf(qq|"$_"=%s|, ($expr->{$_} && '('.$expr->{$_}.')::'.$type->{$_}{array_type}.($type->{$_}{data_type} eq 'ARRAY' ? '[]' : '')) || sprintf(qq|?::%s|, $type->{$_}{array_type}.($type->{$_}{data_type} eq 'ARRAY' ? '[]' : ''))), @cols)), # set
     $where, # where
     
   )));
