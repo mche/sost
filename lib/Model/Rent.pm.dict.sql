@@ -530,6 +530,7 @@ select
   coalesce(num1."номер", '000')/*(random()*1000)::int*/ as "номер счета",
   coalesce(num1.ts, now())::date as "дата счета",
   timestamp_to_json(coalesce(num1.ts, now())) as "$дата счета",
+  timestamp_to_json(case when coalesce(d."оплата до числа", 5) = 5 then (date_trunc('month', dp."дата")+interval '4 days') else (date_trunc('month', dp."дата")-interval '1 month'+interval '24 days') end)  as "$дата оплатить счет",
   
   coalesce(num2."номер", '000')/*(random()*1000)::int*/ as "номер акта",
   coalesce(/*num2.ts*/date_trunc('month', num2."месяц")+interval '1 month'-interval '1 day', /*now()*/null)::date as "дата акта",--- на последнее число мес
@@ -900,6 +901,7 @@ context = {
     'seller': seller,
     'sign_images': sign_images,
     'str':str,
+    'len':len,
 }
 
 
