@@ -418,6 +418,7 @@ sub счет_оплата_docx {# сделать docx во врем папке �
   #~ $c->app->log->error($docx);
   return $c->render_file(
     'filepath' => "static/tmp/$docx",
+    'format'   => $docx =~ /pdf/ ? 'pdf' : 'docx',
     #~ 'format'   => 'pdf',                 # will change Content-Type "application/x-download" to "application/pdf"
     #~ 'content_disposition' => 'inline',   # will change Content-Disposition from "attachment" to "inline"
     'cleanup'  => 1,                     # delete file after completed
@@ -442,15 +443,18 @@ sub счет_оплата_docx {# сделать docx во врем папке �
   return $c->render(json=>{error=>"Не найдено счетов"})
     unless $data->{data};
   
-  #~ $c->log->error($c->dumper($c->app->json->decode($data->{data})));
+  #~ $c->log->error($c->dumper($c->app->json->decode($data->{data})->[0]{"номер $param->{'счет или акт'}а"}));
+  #~ my @nums  = map {$_->{"номер $param->{'счет или акт'}а"}} @{ $c->app->json->decode($data->{data}) };
   
   #~ return $c->render(json=>{data=>$data});
-  $docx = sprintf("%s-%s.docx", $param->{'счет или акт'}, $c->auth_user->{id});
+  my $tmp = Mojo::File::tempfile->basename;
+  $docx = sprintf("%s-%s.%s", $param->{'счет или акт'}, $c->auth_user->{id}, $param->{'pdf формат'} ? 'pdf' : 'docx');#
   my $out_file = "static/tmp/$docx";
   #~ my $err_file = "$data->{docx_out_file}.error";
   my $err_file = "$out_file.error";
+  my $pdf_conv = $param->{'pdf формат'} ? sprintf(" | doc2pdf -M Title='%s' -M Author='%s' -M Subject='%s' -n --stdin --stdout ", $param->{'счет или акт'}, '', '') : '';
   
-  open(PYTHON, "| python  2>'$err_file' > '$out_file' ")
+  open(PYTHON, "| python  2>'$err_file' $pdf_conv > '$out_file' ")
     || die "can't fork: $!";
   #~ ##local $SIG{PIPE} = sub { die "spooler pipe broke" };
   say PYTHON $data->{python};

@@ -226,7 +226,7 @@ PrintPay(month, month2){/// счета и акты
   vm.httpProcess = true;
   //~ console.log("PrintPay", month, ids);
   /// вернет урл для скачивания
-  return $http.post(appRoutes.urlFor('аренда/счет#docx', '-'/*обязательно что-нибудь*/), {"месяц": month, "месяц2":month2, "договоры": ids, "присвоить номера": vm.payNums, "счет или акт": vm.radioSchetAkt, /*"объекты":obs*/}).then(function(resp){
+  return $http.post(appRoutes.urlFor('аренда/счет#docx', '-'/*обязательно что-нибудь*/), {"месяц": month, "месяц2":month2, "договоры": ids, "присвоить номера": vm.payNums, "счет или акт": vm.radioSchetAkt, "pdf формат": vm.payPDF,/*"объекты":obs*/}).then(function(resp){
     vm.httpProcess  = false;
     modal.modal('close');
     if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 border fw500  animated zoomInUp');
@@ -387,6 +387,7 @@ const  data = function(){
     "payMonth":  new Date().toISOString().replace(/T.+/, ''),
     "payMonth2": undefined,
     "payNums": true, ///крыжик счета с номерами
+    "payPDF": true,///крыжик 
     "radioSchetAkt": 'счет',/// или акт
     "filters": {"арендодатель": undefined, "арендаторы": '', "объект": {}, "архивные договоры": false,},
     //~ "rentObjects":[],

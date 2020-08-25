@@ -272,18 +272,18 @@
         <div class=" row">
           <h2 class="">За какой месяц или с/по месяцы</h2>
           <h4 class="col s1 right-align" v-show="payMonth2">С</h4>
-          <h4 class="col s4 input-field chip padd-05 hoverable">
+          <h4 class="col s4 input-field chip padd-05 hoverable shadow-inset-10">
             <!--span v-if="payMonth2" class="prefix"></span-->
             <input name="payMonth" type="text" class="datepicker pay-month fs18 fw500" style="" :data-value=" payMonth ">
           </h4>
           <h4 class="col s1 right-align" v-show="payMonth2">По</h4>
-          <h4 class="col s5 input-field chip padd-05 hoverable" :key=" keys['payMonth2'] ">
+          <h4 class="col s5 input-field chip padd-05 hoverable shadow-inset-10" :key=" keys['payMonth2'] ">
             <a v-show="payMonth2" @click=" ClearDate('payMonth2') " href="javascript:" class="hover-shadow3d" style="position:absolute; top:0.3rem; right:0.3rem; z-index:1;"><i class="material-icons red-text">cancel</i></a>
             <input name="payMonth2" type="text" class="datepicker pay-month fs18 fw500" style="" data-value000=" payMonth2 " placeholder="по месяц включительно">
           </h4>
         </div>
         <!-- переключатель -->
-        <div class="chip hoverable">
+        <div class="chip hoverable hoverable shadow-inset-10">
           <div class="iblock">
             <input type="radio" id="radioSchet" v-model="radioSchetAkt" :value=" 'счет' ">
             <label for="radioSchet"  class="before-yellow-lighten-4 brown-text-darken-3 checked-after-brown-darken-3" >Счета</label>
@@ -296,10 +296,16 @@
           </div>
         </div>
         <!-- крыжик -->
-        <div class="input-field chip hoverable">
+        <div class="input-field chip hoverable shadow-inset-10">
           <input type="checkbox" id="крыжик-нумеровать-счета" v-model="payNums">
           <label for="крыжик-нумеровать-счета" class="hover-shadow3d chb-yellow-lighten-4 orange-text chip yellow lighten-4 hoverable" style="padding-left:16px;" ></label><!-- это лабел квадратика крыжика -->
           <label for="крыжик-нумеровать-счета" class=""><h5 class="hover-shadow3d chb-yellow-lighten-4 orange-text text-darken-4 inline">Присвоить номера счетам/актам</h5></label>
+        </div>
+        <!-- крыжик -->
+        <div class="input-field chip hoverable shadow-inset-10">
+          <input type="checkbox" id="крыжик-pdf" v-model="payPDF">
+          <label for="крыжик-pdf" class="hover-shadow3d chb-yellow-lighten-4 orange-text chip yellow lighten-4 hoverable" style="padding-left:16px;" ></label><!-- это лабел квадратика крыжика -->
+          <label for="крыжик-pdf" class=""><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 56 56" style="height: 2.7rem;"><use xlink:href="/fonts/icons.svg#pdf-file"></use></svg></label>
         </div>
       </div>
       
