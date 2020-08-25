@@ -24,22 +24,25 @@
   </div>
   
   <div v-if="param['реквизиты']" class="">
-    <div class="col s4 ">
-      <div v-show="param['реквизиты'].hasOwnProperty('ИНН')" class="input-field">
-        <input  type="text" name="ИНН" v-model=" form['реквизиты']['ИНН'] " @input="InputExtra" placeholder="ИНН" title="ИНН">
+    <div class="col s5 ">
+      <div v-show="param['реквизиты'].hasOwnProperty('ИНН')" class="input-field right-align">
+        <h5  class="iblock">ИНН</h5>
+        <input  type="text" name="ИНН" v-model=" form['реквизиты']['ИНН'] "  placeholder="ИНН" title="ИНН" style="width:12rem;">
       </div>
-      <div v-show="param['реквизиты'].hasOwnProperty('email')" class="input-field">
-        <input type="text" name="email" v-model=" form['реквизиты']['email'] " @input="InputExtra" placeholder="@email" title=" эл.почта ">
+      <div v-show="param['реквизиты'].hasOwnProperty('email')" class="input-field right-align">
+        <h5  class="iblock">@почта</h5>
+        <input type="text" name="email" v-model=" form['реквизиты']['email'] "  placeholder="@email" title=" эл.почта " style="width:12rem;">
       </div>
-      <div v-if="param['реквизиты'].hasOwnProperty('тел')" class="chip transparent shadow-inset-10">
-        <div v-for="(tel, idx) in form['реквизиты']['тел']" :key="idx" class="input-field">
-          <input  type="text" name="phone" v-model=" form['реквизиты']['тел'][idx] " @input="InputExtra(tel, idx, $event)" placeholder="телефоны" title=" телефоны ">
+      <div v-if="param['реквизиты'].hasOwnProperty('тел')" class000="chip transparent shadow-inset-10">
+        <div v-for="(tel, idx) in form['реквизиты']['тел']" :key="idx" class="input-field right-align">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 363.84 363.84" class="teal-fill fill-darken-3" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#agenda"></use></svg>
+          <input  type="text" name="phone" v-model=" form['реквизиты']['тел'][idx] " @input="InputPhone(tel, idx, $event)" placeholder="телефоны (1 в строке)" title=" телефоны "  style="width:12rem;">
         </div>
       </div>
     </div>
-    <div class="col s8 ">
+    <div class="col s7 ">
       <div v-show="param['реквизиты'].hasOwnProperty('юр. адрес')" class="input-field">
-        <textarea name="юр. адрес" v-if=" form['реквизиты']" v-model.trim="form['реквизиты']['юр. адрес']" @input="InputExtra" placeholder="юр. адрес" class="materialize-textarea padd-0 fs8" style="min-height: 3rem;" title="юр. адрес"></textarea>
+        <textarea name="юр. адрес" v-if=" form['реквизиты']" v-model.trim="form['реквизиты']['юр. адрес']"  placeholder="юр. адрес" class="materialize-textarea padd-0 fs8" style="min-height: 3rem;" title="юр. адрес"></textarea>
       </div>
       
       <div v-show="param['реквизиты'].hasOwnProperty('физ. лицо')" class="input-field chip transparent">

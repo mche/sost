@@ -191,10 +191,10 @@ ChbEdit(){
   //~ vm.form._isEdit = vm.chbEdit;
 },
 
-InputExtra(tel, idx, event){///доп реквизиты
+InputPhone(tel, idx, event){///доп реквизиты
   if (event.target.name != 'phone') return;// console.log("InputExtra", event.target.parentNode.childNodes[1]);
-  if (this.timeoutField) window.clearTimeout(this.timeoutField);
-  this.timeoutField = window.setTimeout(()=>{
+  if (this.timeoutPhone) window.clearTimeout(this.timeoutPhone);
+  this.timeoutPhone = window.setTimeout(()=>{
     if (!!this.form['реквизиты']['тел'][this.form['реквизиты']['тел'].length-1]) this.form['реквизиты']['тел'].push('');
     else if (!this.form['реквизиты']['тел'][idx] && (this.form['реквизиты']['тел'].length-1) != idx) this.form['реквизиты']['тел'].splice(idx, 1);
   }, 700);
