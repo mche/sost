@@ -431,10 +431,10 @@ sub счет_оплата_docx {# сделать docx во врем папке �
   $param->{'договоры'} = undef
     if $param->{'договоры'} && !@{$param->{'договоры'}};
   
-  $param->{docx} = sprintf("%s-%s.docx", $param->{'счет или акт'}, $c->auth_user->{id});
-  $param->{docx_template_file} = sprintf("static/аренда-%s.template.docx", $param->{'счет или акт'},);
+  #~ $param->{docx} = sprintf("%s-%s.docx", $param->{'счет или акт'}, $c->auth_user->{id});
+  $param->{docx_template_file} = sprintf("templates/аренда/%s.template.docx", $param->{'счет или акт'},);
   $param->{uid} = $c->auth_user->{id};
-  $param->{auth_user} = $c->auth_user;
+  #~ $param->{auth_user} = $c->auth_user;
   my $data = $c->model->счет_оплата_docx($param);
   $c->log->error($c->dumper($data))
     and return $c->render(json=>{error=>$data})
@@ -442,13 +442,15 @@ sub счет_оплата_docx {# сделать docx во врем папке �
   return $c->render(json=>{error=>"Не найдено счетов"})
     unless $data->{data};
   
-  #~ $c->log->error($c->dumper($data));
+  #~ $c->log->error($c->dumper($c->app->json->decode($data->{data})));
   
   #~ return $c->render(json=>{data=>$data});
+  $docx = sprintf("%s-%s.docx", $param->{'счет или акт'}, $c->auth_user->{id});
+  my $out_file = "static/tmp/$docx";
+  #~ my $err_file = "$data->{docx_out_file}.error";
+  my $err_file = "$out_file.error";
   
-  my $err_file = "$data->{docx_out_file}.error";
-  
-  open(PYTHON, "| python  2>'$err_file' ")
+  open(PYTHON, "| python  2>'$err_file' > '$out_file' ")
     || die "can't fork: $!";
   #~ ##local $SIG{PIPE} = sub { die "spooler pipe broke" };
   say PYTHON $data->{python};
@@ -459,8 +461,7 @@ sub счет_оплата_docx {# сделать docx во врем папке �
   unlink $err_file;
   
   #~ $c->render(json=>{data=>$data});
-  #~ $c->render(json=>{url=>$data->{docx_out_file}});
-  $c->render(json=>{docx=>$data->{docx}});
+  $c->render(json=>{docx=>$docx});# $c->render(json=>{docx=>$data->{docx}})
 }
 
 sub счет_расходы_docx {# сделать docx во врем папке и вернуть урл
@@ -482,10 +483,10 @@ sub счет_расходы_docx {# сделать docx во врем папке
     unless $param->{'аренда/расходы/id'};
   
   $param->{'счет или акт'} = 'счет';
-  $param->{docx} = sprintf("%s-%s.docx", $param->{'счет или акт'}, $c->auth_user->{id});
-  $param->{docx_template_file} = sprintf("static/аренда-%s.template.docx", $param->{'счет или акт'},);
+  #~ $param->{docx} = sprintf("%s-%s.docx", $param->{'счет или акт'}, $c->auth_user->{id});
+  $param->{docx_template_file} = sprintf("templates/аренда/%s.template.docx", $param->{'счет или акт'},);
   $param->{uid} = $c->auth_user->{id};
-  $param->{auth_user} = $c->auth_user;
+  #~ $param->{auth_user} = $c->auth_user;
   my $data = $c->model->счет_расходы_docx($param);
   $c->log->error($c->dumper($data))
     and return $c->render(json=>{error=>$data})
@@ -494,13 +495,14 @@ sub счет_расходы_docx {# сделать docx во врем папке
   return $c->render(json=>{error=>"Не найдено счетов"})
     unless $data->{data};
   
-  #~ $c->log->error($c->dumper($data));
+  #~ $c->log->error($c->dumper($data->{data}));
   
   #~ return $c->render(json=>{data=>$data});
+  $docx = sprintf("%s-%s.docx", $param->{'счет или акт'}, $c->auth_user->{id});
+  my $out_file = "static/tmp/$docx";
+  my $err_file = "$out_file.error";
   
-  my $err_file = "$data->{docx_out_file}.error";
-  
-  open(PYTHON, "| python  2>'$err_file' ")
+  open(PYTHON, "| python  2>'$err_file' > '$out_file' ")
     || die "can't fork: $!";
   #~ ##local $SIG{PIPE} = sub { die "spooler pipe broke" };
   say PYTHON $data->{python};
@@ -512,7 +514,7 @@ sub счет_расходы_docx {# сделать docx во врем папке
   
   #~ $c->render(json=>{data=>$data});
   #~ $c->render(json=>{url=>$data->{docx_out_file}});
-  $c->render(json=>{docx=>$data->{docx}});
+  $c->render(json=>{docx=>$docx});
 }
 
 =pod

@@ -302,13 +302,13 @@ sub счет_оплата_docx {# и акты
   unshift @bind, $param->{'месяц'}, $param->{'месяц2'} || $param->{'месяц'}, $param->{'счет или акт'} eq 'акт' ? 929979 : 0;# отключить обеспечит предоплата для актов, $param->{'присвоить номера'} ? $param->{"договоры"} : [], $param->{uid};
   my $data = $self->dbh->selectrow_array($self->sth('счета и акты', select=>' jsonb_agg(s) as "json" ', where=>$where), undef, @bind);
   my $r = {};
-  $r->{docx} = $param->{docx} || "счет-$param->{uid}.docx";
-  $r->{docx_out_file} = "static/tmp/$r->{docx}";
+  #~ $r->{docx} = $param->{docx} || "счет-$param->{uid}.docx";
+  #~ $r->{docx_out_file} = "static/tmp/$r->{docx}";
   
   $r->{data} = $data;
   $r->{python} = $self->dict->{'счет.docx'}->render(
     docx_template_file=>$param->{docx_template_file} || "static/аренда-счет.template.docx",
-    docx_out_file=>$r->{docx_out_file},
+    #~ docx_out_file=>$r->{docx_out_file},
     data=>$data,# $self->app->json->encode($data),
     seller=>{},#$self->dbh->selectrow_array(q<select k."реквизиты"||to_jsonb(k) from "контрагенты" k  where id=123222>),# арендодатель по умолчанию
     #~ sign_image=>-f "static/i/logo/sign-123222.png" && "static/i/logo/sign-123222.png",#
@@ -331,13 +331,13 @@ sub счет_расходы_docx {
   my $data = $self->dbh->selectrow_array($self->sth('счета и акты/доп расходы', select=>' jsonb_agg(a) as "json" ', where=>$where), undef, @bind);
   #~ return $data;
   my $r = {};
-  $r->{docx} = $param->{docx} || "счет-$param->{uid}.docx";
-  $r->{docx_out_file} = "static/tmp/$r->{docx}";
+  #~ $r->{docx} = $param->{docx} || "счет-$param->{uid}.docx";
+  #~ $r->{docx_out_file} = "static/tmp/$r->{docx}";
   
   $r->{data} = $data;
   $r->{python} = $self->dict->{'счет.docx'}->render(
     docx_template_file=>$param->{docx_template_file} || "static/аренда-счет.template.docx",
-    docx_out_file=>$r->{docx_out_file},
+    #~ docx_out_file=>$r->{docx_out_file},
     data=>$data,# $self->app->json->encode($data),
     seller=>'{}', #$self->dbh->selectrow_array('select k."реквизиты" from "контрагенты" k  where id=123222'),# пока один датель
     #~ sign_image=>undef, #-f "static/i/logo/sign-123222.png" && "static/i/logo/sign-123222.png",#

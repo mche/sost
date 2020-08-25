@@ -872,7 +872,7 @@ pip install docxtpl
 from docxtpl import DocxTemplate, InlineImage, R, Listing
 %#from docx.shared import Mm, Inches, Pt
 from docx.shared import Mm
-import os.path
+import sys, os
 %#os.path.exists(file_path)
 %#os.path.isfile(file_path)
 tpl=DocxTemplate(u'{%= $docx_template_file %}')
@@ -907,6 +907,7 @@ context = {
 
 
 tpl.render(context)
-tpl.save(u'{%= $docx_out_file %}')
-
+%# tpl.save(u'{%= $docx_out_file %}')
+out = os.fdopen(sys.stdout.fileno(), 'wb')
+tpl.save(out)
 
