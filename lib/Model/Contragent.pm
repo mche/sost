@@ -36,13 +36,21 @@ sub сохранить_контрагент {
      #~ $self->app->log->error($self->app->dumper($data));
     my $k = $self->_select($self->{template_vars}{schema}, $main_table, ["id"], $data);
     if ($k  && $k->{'реквизиты'} && $data->{'реквизиты'}) {
-      require Hash::Merge;
+      #~ require Hash::Merge;
       
       #~ $self->app->log->error($self->app->dumper($data->{'реквизиты'}));
-      $data->{'реквизиты'} = $json->encode(Hash::Merge::merge(
-        ref $data->{'реквизиты'} eq 'HASH' ? $data->{'реквизиты'} : $json->decode($data->{'реквизиты'}),
-        $json->decode($k->{'реквизиты'})
-      ));
+      $data->{'реквизиты'} = $json->decode($data->{'реквизиты'})
+        unless ref $data->{'реквизиты'};
+      $k->{'реквизиты'} = $json->decode($k->{'реквизиты'});
+      #~ $data->{'реквизиты'} = $json->encode(Hash::Merge::merge(
+        #~ ref $data->{'реквизиты'} eq 'HASH' ? $data->{'реквизиты'} : $json->decode($data->{'реквизиты'}),
+        #~ $json->decode($k->{'реквизиты'})
+      #~ ));
+      while (my ($key,$value) = each %{ $data->{'реквизиты'} }) {
+        $k->{'реквизиты'}{$key} = $value;
+      }
+
+      $data->{'реквизиты'} = $k->{'реквизиты'};
     }
     $data->{'реквизиты'} = $json->encode($data->{'реквизиты'})
       if ref $data->{'реквизиты'} eq 'HASH';
