@@ -82,10 +82,11 @@ const methods = {/*методы*/
 
 InitForm(){
   var vm = this;
+  //~ console.log("InitForm", vm.item );
   var form  = angular.copy(vm.item);
   if (!form.title) form.title = '';
-  if (vm.param['реквизиты']) form['реквизиты'] = Object.assign(form['реквизиты'] || {}, vm.param['реквизиты']);
-    //~ console.log("InitForm", form, vm.param);
+  if (vm.param['реквизиты']) form['реквизиты'] = Object.assign({}, vm.param['реквизиты'], form['реквизиты'] || {});
+    
   return form;
 },
   
@@ -118,11 +119,13 @@ SetItem(item, onSelect){
   var vm = this;
   //~ vm.form.title = item.title;
   //~ vm.$set(vm.form, 'id', item.id); /// не понятно
-  //~ console.log("SetItem", vm.form['реквизиты'], item['реквизиты'], vm.param['реквизиты']);
+  //~ 
   vm.$set(vm, 'form', item);
   vm.form._isEdit = !!vm.chbEdit;
   
-  if (vm.param['реквизиты'] && !vm.form['реквизиты']) vm.form['реквизиты'] = Object.assign({}, vm.param['реквизиты']);
+  if (vm.param['реквизиты'] /*&& !vm.form['реквизиты']*/)  vm.$set(vm.form, 'реквизиты', Object.assign({}, vm.param['реквизиты'] || {}, vm.form['реквизиты'] || {}));
+  //~ console.log("SetItem", vm.form['реквизиты'], item['реквизиты'], vm.param['реквизиты']);
+  
   if (onSelect) vm.$emit('on-select', vm.form);
 },
 
@@ -188,8 +191,13 @@ ChbEdit(){
   //~ vm.form._isEdit = vm.chbEdit;
 },
 
-InputExtra(event){///доп реквизиты
-  //~ console.log("InputExtra", event.target.name);
+InputExtra(tel, idx, event){///доп реквизиты
+  //~ if (event.target.name == 'phone') console.log("InputExtra", event.target.parentNode.childNodes[1]);
+  if (this.timeoutField) window.clearTimeout(this.timeoutField);
+  this.timeoutField = window.setTimeout(_=>{
+    if (!!this.form['реквизиты']['тел'][this.form['реквизиты']['тел'].length-1]) this.form['реквизиты']['тел'].push('');
+    //~ else if ()
+  }, 700);
   
 },
 
