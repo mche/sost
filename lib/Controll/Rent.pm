@@ -25,6 +25,16 @@ sub расходы {
     );
 }
 
+sub акты {
+  my $c = shift;
+  return $c->render('аренда/акты',
+    handler=>'ep',
+    'header-title' => 'Аренда акты',
+    stylesheets=>[],# 'js/dist/аренда/договор-форма.css',
+    assets=>["аренда-акты.js",],# 'js/dist/аренда/договор-форма.js' 'lib/v-calendar/dist/v-calendar.umd.js'],#'lib/v-calendar/dist2/lib.js',
+    );
+}
+
 sub объекты_список {
   my $c = shift;
   $c->render(json=>$c->model->список_объектов());
@@ -551,7 +561,7 @@ sub реестр_актов_xlsx {
   require Excel::Writer::XLSX;
   
   my ($month, $month2) = split /:/, $c->param('month');
-  my $data = $c->model->реестр_актов("месяц"=> $month, "месяц2"=> $month2, "счет или акт"=>'акт');
+  my $data = $c->model->реестр_актов("месяц"=>$month, "месяц2"=>$month2, "счет или акт"=>'акт');
   my @names = ('номер акта', 'дата акта', 'сумма/num', 'договор/номер','договор/дата начала', 'договор/дата завершения', 'контрагент/title', 'ИНН', 'объект',);
   #~ my $filename=sprintf("static/tmp/%s-реестр-актов.xlsx", $c->auth_user->{id}, $month);
   
@@ -567,6 +577,23 @@ sub реестр_актов_xlsx {
   #~ $c->render(data=>$fdata, format=>'xlsx');
   # Render data from memory as file
   $c->render_file('data' => $fdata, 'filename' => 'реестр-актов.xlsx', format=>'xlsx');
+}
+
+sub акты_список {
+  my $c = shift;
+  my $param = $c->req->json;
+  my $data = $c->model->реестр_актов("select000"=>' jsonb_agg(a) ', "проект/id"=>$param->{project}{id}, "месяц"=>$param->{month}, "месяц2"=>$param->{month2}, "счет или акт"=>'акт', order_by=>'order by k.title');
+  $c->render(json=>$data);
+}
+
+sub сохранить_подписание_акта {
+  my $c = shift;
+  my $param = $c->req->json;
+  my $r = $c->model->сохранить_подписание_акта($param->{'акт/id'});
+  $c->render(json=>{error=>$r})
+    unless ref $r;
+  $c->render(json=>{success=>$r});
+  
 }
 
 1;

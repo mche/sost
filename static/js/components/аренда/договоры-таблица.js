@@ -387,7 +387,7 @@ const  data = function(){
     "payMonth":  new Date().toISOString().replace(/T.+/, ''),
     "payMonth2": undefined,
     "payNums": true, ///крыжик счета с номерами
-    "payPDF": true,///крыжик 
+    "payPDF": false,///крыжик 
     "radioSchetAkt": 'счет',/// или акт
     "filters": {"арендодатель": undefined, "арендаторы": '', "объект": {}, "архивные договоры": false,},
     //~ "rentObjects":[],

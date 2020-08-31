@@ -11,7 +11,9 @@ $darkblue: darken($blue, 15%);
 .red-border.border-darken-2, .border-red-darken-2 {
   border-color: color("red", "darken-2") !important;
 }
-
+.orange-border.border-darken-3, .border-orange-darken-3 {
+  border-color: color("orange", "darken-3") !important;
+}
 
 
 

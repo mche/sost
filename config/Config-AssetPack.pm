@@ -820,6 +820,17 @@ sub map_grep_mode {
         js/c/object/v-select-object.html
         )],
         
+        ['аренда-акты.js' => grep !/^--/, qw(
+        js/c/аренда/акты/index.js
+        js/c/project/v-list.js
+        js/c/аренда/акты/акты-таблица.js
+        js/util/IdMaker.js
+        )],
+        ['аренда-акты.html' => grep !/^--/, qw(
+        js/c/project/v-list.html
+        js/c/аренда/акты/акты-таблица.html
+        )],
+        
         ['контрагенты/замена.js' => grep !/^--/, qw(
         js/c/contragent/data.js
         js/c/contragent/v-item.js

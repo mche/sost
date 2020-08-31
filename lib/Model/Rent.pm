@@ -300,7 +300,7 @@ sub счет_оплата_docx {# и акты
 #    ' dp."объект/id" ' => \[ ' = any(?) ', $param->{"объекты"} ],
   });
   unshift @bind, $param->{'месяц'}, $param->{'месяц2'} || $param->{'месяц'}, $param->{'счет или акт'} eq 'акт' ? 929979 : 0;# отключить обеспечит предоплата для актов, $param->{'присвоить номера'} ? $param->{"договоры"} : [], $param->{uid};
-  my $data = $self->dbh->selectrow_array($self->sth('счета и акты', select=>' jsonb_agg(s) as "json" ', where=>$where), undef, @bind);
+  my $data = $self->dbh->selectrow_array($self->sth('счета и акты', select=>' jsonb_agg(a) as "json" ', where=>$where), undef, @bind);
   my $r = {};
   #~ $r->{docx} = $param->{docx} || "счет-$param->{uid}.docx";
   #~ $r->{docx_out_file} = "static/tmp/$r->{docx}";
@@ -350,13 +350,16 @@ sub реестр_актов {
   my $self  =  shift;
   my $param = ref $_[0] ? shift : {@_};
   
+  #~ $self->app->log->error($self->app->dumper($param));
+  
   my ($where, @bind) = $self->SqlAb->where({
     $param->{"договоры"} ? (' d.id ' => \[ ' = any(?) ', $param->{"договоры"} ]) : (),
     q| not coalesce((coalesce(k."реквизиты",'{}'::jsonb)->'физ. лицо'), 'false')::boolean |=>\[],
-#    ' dp."объект/id" ' => \[ ' = any(?) ', $param->{"объекты"} ],
+    $param->{'проект/id'} ? (' pr."проект/id" ' => $param->{'проект/id'}) : (),
+ #    ' dp."объект/id" ' => \[ ' = any(?) ', $param->{"объекты"} ],
   });
   unshift @bind, $param->{'месяц'}, $param->{'месяц2'} || $param->{'месяц'}, $param->{'счет или акт'} eq 'акт' ? 929979 : 0;# отключить обеспечит предоплата для актов, $param->{'присвоить номера'} ? $param->{"договоры"} : [], $param->{uid};
-  $self->dbh->selectall_arrayref($self->sth('счета и акты', where=>$where), {Slice=>{}}, @bind);
+  $self->dbh->selectall_arrayref($self->sth('счета и акты', select=>$param->{select}, where=>$where, 'order_by'=>$param->{order_by}), {Slice=>{}}, @bind);
 }
 
 sub расходы_категории {
@@ -458,6 +461,11 @@ sub список_расходов {
     });
   $self->dbh->selectall_arrayref($self->sth('расходы', where=>$where, $data->{order_by} ? (order_by=>$data->{order_by}) : ()), {Slice=>{}}, @bind);
   
+}
+
+sub сохранить_подписание_акта {
+  my ($self, $id)  =  @_;
+  $self->dbh->selectrow_hashref($self->sth('сохранить подписание акта'), undef, $id);
 }
 
 1;
