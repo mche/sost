@@ -1,0 +1,40 @@
+@@@ аренда/акты/таблица
+
+<div>
+<v-progress-indeterminate v-show=" !ready " :color=" 'teal' " :message=" 'Загружается...' "></v-progress-indeterminate>
+
+<div v-if="ready">
+  <table class="teal lighten-4 striped bordered highlight z-depth-2">
+    <thead></thead>
+    <tbody class="">
+      <tr v-for="item in FilteredData" :key=" item._id ">
+        <td style="width:1%;"><h4 class="truncate" style="width:calc(20vw);">{{ item.$контрагент.title }}</h4></td>
+        <td>
+          <h4><span class="grey-text fs8">дог. № </span><span class="chip padd-0-05 bold fs14">{{  item['договор/номер'] }}</span></h4>
+          <div class="iblock relative line-height-10" style="">
+            <!--span class="chip padd-0-05 nowrap" :title=" item.$договор['дата1'] "><span class="fs8 grey-text">c </span><span class="bold">{{ item.$договор.$дата1.day }}</span> <span class="fs8">{{ item.$договор.$дата1['мес'] }}</span><span v-show="(new Date).getYear()+1900 != item.$договор.$дата1.year"> {{ item.$договор.$дата1.year }}</span></span--->
+            <span class="chip padd-0-05 nowrap" :title=" item.$договор['$дата договора'] "><span class="fs8 grey-text"> с </span><span class="bold">{{ item.$договор['$дата договора'].day }}</span> <span class="fs8">{{ item.$договор['$дата договора']['мес'] }}</span><span v-show="(new Date).getYear()+1900 != item.$договор['$дата договора'].year"> {{ item.$договор['$дата договора'].year }}</span><span v-show="item.$договор['продление срока']" class="material-icons circle purple lighten-5 purple-text" style="position: absolute; right:-2rem; bottom:0;">alarm_add</span></span>
+            <span class="chip padd-0-05 nowrap  middle" :class="{ 'red-text':!!item.$договор['дата расторжения'] }" :title=" JSON.stringify(item.$договор['$дата завершения']) "><span class="fs8 grey-text"> по </span><span class="bold">{{ item.$договор['$дата завершения'].day }}</span> <span class="fs8">{{ item.$договор['$дата завершения']['мес'] }}</span><span v-show="(new Date).getYear()+1900 != item.$договор['$дата завершения'].year"> {{ item.$договор['$дата завершения'].year }}</span><i v-show="item.$договор['дата расторжения']" class="material-icons fs10">lock</i></span>
+
+          </div>
+        </td>
+        <td>
+          <span class="fs10 grey-text">акт №</span> <span class="chip padd-0-05 bold fs14">{{ item['номер акта'] }}</span>
+          <!--span class="chip padd-0-05 nowrap" :title=" item['$дата акта/json'] "><span class="fs8 grey-text">от </span><span class="bold">{{ item['$дата акта/json'].day }}</span> <span class="fs8">{{ item['$дата акта/json']['мес'] }}</span><span v-show="(new Date).getYear()+1900 != item['$дата акта/json'].year"> {{ item['$дата акта/json'].year }}</span></span-->
+          <!-- крыжик -->
+          <div v-if="!!item['$акты/аренда']">
+            <div v-if="!item._saving" class="input-field chip shadow-inset-10 hoverable">
+              <input type="checkbox" :id="`крыжик-${item['$акты/аренда'].id}`" v-model="item['крыжик']" @input="Save(item)">
+              <label :for="`крыжик-${item['$акты/аренда'].id}`" class="hover-shadow3d chip hoverable                  before-yellow-lighten-4 orange-text yellow lighten-4"  style=" padding-left:16px;" ></label>
+              <label :for="`крыжик-${item['$акты/аренда'].id}`" class=""  ><h5 class="orange-text text-darken-3">Подписан</h5></label>
+            </div>
+            <div v-else class="iblock"><v-preloader-circular-small :color=" 'orange-darken-3' "></v-preloader-circular-small><!--span>сохраняется...</span--></div>
+          </div>
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+</div>

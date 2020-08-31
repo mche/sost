@@ -1,0 +1,21 @@
+% layout 'main';
+
+
+<div ng-app="Аренда::Акты"  ng-controller="Controll as ctrl" class="row">
+
+  <v-project-list @on-select-project="SelectProject"></v-project-list>
+  
+  <div class="relative">
+
+    <div>
+      <h3 class="iblock middle">Месяц</h3>
+      <h3 class="input-field chip padd-05 shadow-inset-10 hoverable">
+        <input name="месяц" type="text" class="datepicker month fs18 fw500" style="" :data-value=" month  ">
+      </h3>
+    </div>
+
+    <v-table v-if=" project" :key=" project.id + month " :param="{month, project}" ></v-table>
+    
+  </div>
+
+</div>
