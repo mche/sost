@@ -7,7 +7,7 @@
   
   <div class="relative">
 
-    <div>
+    <div class="row">
       <h3 class="iblock middle">Месяц</h3>
       <h3 class="input-field chip padd-05 shadow-inset-10 hoverable">
         <input name="месяц" type="text" class="datepicker month fs18 fw500" style="" :data-value=" month  ">

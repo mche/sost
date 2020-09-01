@@ -62,6 +62,7 @@ Save(item){
   this.$set(item, '_saving', $http.post(appRoutes.urlFor('аренда/акты/сохранить подписание'), {"акт/id":item['$акты/аренда'].id})
     .then(resp => {
       vm.$delete(item, '_saving');
+      if (resp.data.success) vm.$set(item, '$акты/аренда', resp.data.success);
       Materialize.toast('Сохранено успешно', 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
     },
     resp => {
@@ -94,6 +95,8 @@ FilterData(item){
   //~ vm.filteredData = /// [...vm.data];
     //~ vm.data.filter((item)=>{
       item._id = item._id || vm.idMaker.next().value;
+  //~ item['крыжик'] =  : undefined;
+  if (item['$акты/аренда'] && !!item['$акты/аренда']['подписан']) console.log(vm.checkedItems.push(item), item);
       //~ const cur = dateFns.isWithinRange(new Date(), new Date(/*item['дата1']*/ '2000-01-01'), new Date(item['дата расторжения'] || item['дата2']));
       //~ if (!cur) vm.archLen += 1;
       const test = true;
@@ -124,7 +127,10 @@ FilterData(item){
 
 const computed = {
 FilteredData(){
-  return this.data.filter((item)=>this.FilterData);
+  //~ this.filters.filtered = true;
+  this.checkedItems.splice(0);
+  //~ console.log(f);
+  return  this.data.filter((item)=>this.FilterData(item));
   
 },
 };/* computed */
@@ -137,6 +143,8 @@ const  data = function(){
   return {
     "ready": false,
     "data":[],
+    "checkedItems":[],
+    //~ "filters":{"filtered": false,},
   };
 };///конец data
 
