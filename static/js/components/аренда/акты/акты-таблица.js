@@ -62,7 +62,8 @@ Save(item){
   this.$set(item, '_saving', $http.post(appRoutes.urlFor('аренда/акты/сохранить подписание'), {"акт/id":item['$акты/аренда'].id})
     .then(resp => {
       vm.$delete(item, '_saving');
-      if (resp.data.success) vm.$set(item, '$акты/аренда', resp.data.success);
+      if (!resp.data.success) return  Materialize.toast("Ошибка сохранения: " + JSON.stringify(resp), 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
+      vm.$set(item, '$акты/аренда', resp.data.success);
       Materialize.toast('Сохранено успешно', 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
     },
     resp => {
@@ -75,20 +76,20 @@ Save(item){
 },
 
 
-ParseNum(num){
-  return parseFloat(Util.numeric(num));
-},
+//~ ParseNum(num){
+  //~ return parseFloat(Util.numeric(num));
+//~ },
 
 
 
-OnChangeFilter(event){
-  var vm = this;
-  if (vm.filters.timeout) clearTimeout(vm.filters.timeout);
-  vm.filters.timeout = setTimeout(() => {
-    vm.FilterData();
-  }, 700);
+//~ OnChangeFilter(event){
+  //~ var vm = this;
+  //~ if (vm.filters.timeout) clearTimeout(vm.filters.timeout);
+  //~ vm.filters.timeout = setTimeout(() => {
+    //~ vm.FilterData();
+  //~ }, 700);
   
-},
+//~ },
 
 FilterData(item){
   var vm = this;
