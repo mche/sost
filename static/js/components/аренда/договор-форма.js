@@ -169,7 +169,7 @@ ObjectData(){/// список объектов
         //~ rentRoomsData = [];
         vm.rentRooms = [];
         data.map(function(item){
-          console.log("Дайте список объектов аренды",  item['$объект']);
+          //~ console.log("Дайте список объектов аренды",  item['$объект']);
           item['@кабинеты'].map(function(room){
             vm.rentRooms.push({"id": room.id, /*"объект-помещение": `${ item['$объект']['name']  }: №${ room['номер-название'] }, ${ room['этаж'] } эт., ${ room['площадь'] } м²`,*/ "_match": `${ item['$объект']['name']  } лит.${ room.$литер.title } ${ room['номер-название'] } ${ room['этаж'] } ${ room['площадь'] }`.toLowerCase(), /*"адрес": item['адрес'],*/ "$помещение": room, "$объект": item['$объект'],/*"$item": angular.copy(item),*/});
           });
