@@ -52,7 +52,7 @@ LoadData(){
   var vm = this;
   return $http.get(appRoutes.urlFor('аренда/объекты/список'))
     .then(function(resp){
-      vm.data.push(...resp.data.map((item)=>{ vm.ItemRoomsIndexes(item); return item; }));
+      vm.data.push(...resp.data.map(item => { vm.ItemRoomsIndexes(item); item.chbByFloors = true; return item; }));
       return vm.data;
     });
 },
@@ -108,7 +108,7 @@ ItemRoomsIndexes(item){///вместо самого массива помеще�
   //~ if ( === undefined) return item.rooms = item['@кабинеты'];///без сортировки
   item.roomsIndexes = Array(item['@кабинеты'].length).fill()
     .map((item, idx) => idx)
-    .filter(idx=>vm.FilterRoomsByIdx(item, idx))
+    .filter(idx=>item.showLiter ? vm.FilterRoomsByIdx(item, idx, item.showLiter) : true)
   ;
   //~ item.rooms = item['@кабинеты'].sort((a, b) => {
   item.roomsIndexes.sort((a,b) => vm._CompareItemRoom(a, b, item));
@@ -116,10 +116,12 @@ ItemRoomsIndexes(item){///вместо самого массива помеще�
 },
 
 _CompareItemRoom(a, b, item){/// для ItemRoomsIndexes
-  let d1 =  /^\d/.test(item['@кабинеты'][a]['номер-название']);
-  let d2 = /^\d/.test(item['@кабинеты'][b]['номер-название']);
-  let v1 = d1 ? item['@кабинеты'][a]['номер-название'].replace(/^(\d+).*/, '$1') : item['@кабинеты'][a]['номер-название'];
-  let v2 = d2 ? item['@кабинеты'][b]['номер-название'].replace(/^(\d+).*/, '$1') : item['@кабинеты'][b]['номер-название'];
+  let r1 = item['@кабинеты'][a];
+  let r2 = item['@кабинеты'][b];
+  let d1 =  /^\d/.test(r1['номер-название']);
+  let d2 = /^\d/.test(r2['номер-название']);
+  let v1 = d1 ? r1['номер-название'].replace(/^(\d+).*/, '$1') : r1['номер-название'];
+  let v2 = d2 ? r2['номер-название'].replace(/^(\d+).*/, '$1') : r2['номер-название'];
   let l1 = v1.length;
   let l2 = v2.length;
   
@@ -136,16 +138,14 @@ _CompareItemRoom(a, b, item){/// для ItemRoomsIndexes
   }
 },
 
-FilterRoomsByIdx(item, idx){///idx index помещения
+FilterRoomsByIdx(item, idx, liter){///idx index помещения
   //~ item['@литеры']['количество помещений']
-  if (!item.showLiter) return true;
-  return item['@кабинеты'][idx].$литер.id == item.showLiter.id;
-  
+  if (!liter) return true;
+  return item['@кабинеты'][idx].$литер.id == liter.id;
 },
 
 GoToContract(id){
   $EventBus.$emit('Прокрути к договору', id);
-  
 },
 
 ShowLiter(item, liter){

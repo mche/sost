@@ -35,22 +35,23 @@
       </div>
       
       <div>
-        <h6 class="fw500 helmet tab-shadow  " :class="{'active z-depth-1 lime lighten-5 marg-0-05': !item.showLiter, 'grey-lighten-2 hover-white': !!item.showLiter}" style="    margin-bottom: 0.4rem !important;">
+        <h6 class="fw500 helmet tab-shadow  " :class="{'active z-depth-1 lime lighten-5 marg-0-05': !item.showLiter, 'grey-lighten-2 hover-white': !!item.showLiter}" style="">
           <a @click="ShowLiter(item)" href="javascript:" class="lime-text text-darken-4 hover-shadow3d">
             <span>Все лит.</span>
             <sup class="chip fs8">{{ item['@кабинеты'].length }}</sup>
           </a>
         </h6>
-        <h6 v-for="liter in item['@литеры']" :key="liter.id" class="fw500 helmet tab-shadow   " :class="{'active z-depth-1 lime lighten-5 marg-0-05':  liter === item.showLiter, 'grey-lighten-2 hover-white': liter !== item.showLiter}" style="    margin-bottom: 0.4rem !important;">
+        <h6 v-for="liter in item['@литеры']" :key="liter.id" class="fw500 helmet tab-shadow   " :class="{'active z-depth-1 lime lighten-5 marg-0-05 bold':  liter === item.showLiter, 'grey-lighten-2 hover-white': liter !== item.showLiter}" style000="    margin-bottom: 0.4rem !important;">
           <a @click="ShowLiter(item, liter)" href="javascript:" class="lime-text text-darken-4 hover-shadow3d">
-            <span>лит. {{ liter.title }}</span>
-            <sup v-show="liter === item.showLiter" class="chip fs8">{{ item.roomsIndexes.length }}</sup>
+            <span class="grey-text fs8">лит. </span>
+            <span class="chip">{{ liter.title }}</span>
+            <sup v-show="liter === item.showLiter" class="chip000 fs8 fw100">{{ item.roomsIndexes.length }}</sup>
           </a>
         </h6>
       </div>
       
       
-      <div v-if=" ! item.chbByFloors " class="row" :style="item._expandRooms ? {} : {'max-height':'10rem', 'overflow':'auto',}">
+      <div v-if=" ! item.chbByFloors " class="row animated slideInUp fast" :style="item._expandRooms ? {} : {'max-height':'10rem', 'overflow':'auto',}">
       <table class="bordered striped lime lighten-4 highlight"><tbody>
       <!---in (item.rooms || item['@кабинеты'])  вместо самого массива помещений используется массив сортировки индексов  --->
         <tr v-for="idx in item.roomsIndexes" :key="item['@кабинеты'][idx].id">
@@ -92,26 +93,36 @@
       </tbody></table>
       </div>
       
-      <div v-else><!-- item.chbByFloors показ по этажам -->
-        <table class="bordered striped lime lighten-4 highlight">
+      <div v-else class="animated slideInRight fast"><!-- item.chbByFloors показ по этажам -->
+        <table class="bordered striped lime lighten-4 highlight000">
+          <thead v-if="!item.showLiter"><tr class="lime lighten-3 ">
+            <td></td>
+            <th v-for="liter in item['@литеры']">
+              <h4 class="center lime-text text-darken-4">лит. <span class="chip bold">{{ liter.title }}</span></h4>
+            </th>
+          </tr></thead> 
           <tbody>
             <tr v-for=" [_, floor] of ByFoors(item) ">
               <td style="width:1%;"><span class="bold">{{ floor['этаж'] }}</span> эт.</td>
-              <td>
-                <div v-for="idx in floor.roomsIndexes " class="chip z-depth-1 white   nowrap line-height-10" :class="{'green lighten-3':!!(item['@кол-во действующих договоров'][idx]>0)}">
-                  <div class="lime-text-darken-4">
-                    <span v-show="/^\d/.test(item['@кабинеты'][idx]['номер-название'])" class="fs8 grey-text">№ </span><span class="bold">{{ item['@кабинеты'][idx]['номер-название'] }}</span>
+              <td v-for="liter in (item.showLiter ? [item.showLiter] : item['@литеры'])" class="vtop" :style="!item.showLiter && {'border-left': '4px double #d0d0d0',}">
+                <div v-for="idx in floor.roomsIndexes.filter(idx=>liter ? FilterRoomsByIdx(item, idx, liter) : true) " class="chip z-depth-1 white   nowrap line-height-10" :class="{'lime lighten-2':!!(item['@кол-во действующих договоров'][idx]>0)}">
+                  <div class="">
+                    <span v-show="/^\d/.test(item['@кабинеты'][idx]['номер-название'])" class="fs8 grey-text">№ </span><span class="lime-text-darken-4 bold">{{ item['@кабинеты'][idx]['номер-название'] }}</span>
                     <span v-if="!!item['@помещение в договоре аренды?'][idx]" class="hover-childs-show relative">
                       <span v-if="item['@кол-во действующих договоров'][idx]==0">
                         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 252 252" class="red-fill fill-darken-3" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#exit"></use></svg>
                       </span>
-                      <span v-else class="chip padd-0 border green-text-darken-3">
+                      <span v-else class="chip padd-0 border green-text-darken-3 white">
                         <svg v-for="i in Array(parseInt(item['@кол-во действующих договоров'][idx])).fill()" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 90 90" class="green-fill fill-darken-3 " style="height: 1rem;"><use xlink:href="/fonts/icons.svg#seat" /></svg>
                       </span>
                       <div class="hover-parent-show-block card padd-05 teal-lighten-4 animated fadeIn fast" style="position:absolute; top:-0.3rem; left:1rem; z-index:1;">
                         <v-contracts  :room=" item['@кабинеты'][idx] " :contracts="item['@аренда/договоры'][idx]"></v-contracts>
                       </div>
                     </span>
+                  </div>
+                  <div v-show="!item.showLiter" class="center" style="">
+                    <span class="fs8 grey-text">лит. </span>
+                    <span class="lime-text-darken-4 line-height-10">{{ item['@кабинеты'][idx].$литер.title }}</span>
                   </div>
                   <div class="center" style="">
                     <span class="bold">{{ ParseNum(item['@кабинеты'][idx]['площадь']).toLocaleString() }} </span>
