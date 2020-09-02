@@ -1,4 +1,4 @@
-(function () {'use strict';
+!(function () {'use strict';
 /*
   Компонент Vue
   USAGE:
@@ -95,7 +95,7 @@ SumSquare(item) {
 },
 ToggleRooms(item) {
   this.$set(item, '_expandRooms', !item._expandRooms);
-  console.log('ToggleRooms', item._expandRooms);
+  //~ console.log('ToggleRooms', item._expandRooms);
 },
 ParseNum(num){
   return parseFloat(Util.numeric(num));
@@ -153,6 +153,22 @@ ShowLiter(item, liter){
   this.ItemRoomsIndexes(item);
 },
 
+ByFoors(item){/// по этажам
+  //~ console.log("ByFoors", item.roomsIndexes);
+  let vm = this;
+  let r = item.roomsIndexes.reduce((a, idx)=>this.ReduceByFloors(a, idx,  item['@кабинеты']), {});
+  return Object.entries(r).sort((a,b)=>a[0].localeCompare(b[0]));//.map(it => {it[1].roomsIndexes.sort((a,b)=>vm._CompareItemRoom(a, b, item)); return it;});
+},
+
+ReduceByFloors(a, idx, rooms){
+  let room = rooms[idx];
+  //~ console.log("ReduceByFloors", room);
+  let title = room['этаж'].toString();
+  if (!a[title]) a[title]  = {"roomsIndexes": [], "этаж": room['этаж'].toString().replace(/-1/, 'подв.').replace(/0/, 'цок.')};
+  a[title].roomsIndexes.push(idx);
+  return a;
+},
+
 }; /// конец methods
 
 const  data = function(){
@@ -194,7 +210,14 @@ const $Конструктор = function (/*data, $c, $scope*/){
   let $this = this;
   //~ data = data || {};
   $Компонент.template = $templateCache.get('аренда/объекты/таблица');
-  $Компонент.components = {'v-rent-object-form': new $КомпонентАрендаОбъектФорма(), };
+  $Компонент.components = $Компонент.components || {
+    'v-rent-object-form': new $КомпонентАрендаОбъектФорма(),
+    'v-contracts': {
+      "props":['contracts', 'room'],
+      "template":  $templateCache.get('аренда/объекты/таблица помещений/договоры'),
+      methods,
+    },
+  };
 
   return $Компонент;
 };

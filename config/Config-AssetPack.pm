@@ -783,6 +783,7 @@ sub map_grep_mode {
         js/c/аренда/договор-форма.html
         js/c/аренда/договор-помещения-форма.html
         js/c/аренда/объекты-таблица.html
+        js/c/аренда/объекты-таблица-помещений-договоры.html
         js/c/аренда/объект-форма.html
         js/c/contragent/v-item.html
         js/c/autocomplete/v-suggestions.html

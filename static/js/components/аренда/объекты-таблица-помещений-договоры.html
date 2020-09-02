@@ -1,0 +1,29 @@
+@@@ аренда/объекты/таблица помещений/договоры
+
+<!-- обязательно один корень Vue -->
+<div>
+  <h5 class="card-title-000"><!--i class="icon-left fs8 " style="position:absolute; top:1rem; left:-0.5rem;"></i-->Договоры по помещению <span class="bold">{{ room['номер-название'] }}</span></h5>
+  <ul class="card-content padd-0 fs8">
+    <li v-for="d in contracts" class="nowrap teal-text text-darken-3">
+      <a @click="GoToContract(d.id)" href="javascript:" :href000=" `#contract-${ d.id }`" class="hover-shadow3d">
+      <svg  v-show="!d['действующий договор?']"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 252 252" class="red-fill fill-darken-3" style="height:1.5rem;"><use xlink:href="/fonts/icons.svg#exit"></use></svg>
+      <svg v-show="!!d['действующий договор?']" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 90 90" class="green-fill fill-darken-3 circle white border" style="height:1.5rem;"><use xlink:href="/fonts/icons.svg#seat" /></svg>
+        <span class="chip"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="  teal-fill fill-darken-3" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#contragent"></use></svg> {{ d['контрагент/title'] }}</span>
+        <span class="chip ">№ {{ d['номер'] }}</span>
+        <span class="chip nowrap" :title=" d['дата1'] ">
+          <span class="fs8 grey-text">c </span>
+          <span class="bold"> {{ d.$дата1.day }} </span>
+          <span class="fs8"> {{ d.$дата1['мес'] }} </span>
+          <span v-show="(new Date).getYear()+1900 != d.$дата1.year"> {{ d.$дата1.year }} </span>
+          <span v-if="!d['продление срока'] || !!d['дата расторжения']"  :title=" d['дата?'] ">
+            <span class="fs8 grey-text"> по </span>
+            <span class="bold"> {{ d.$дата2.day }} </span>
+            <span class="fs8"> {{ d.$дата2['мес'] }} </span>
+            <span v-show="(new Date).getYear()+1900 != d.$дата2.year"> {{ d.$дата2.year }} </span>
+          </span>
+          <span v-else >с продлением</span>
+        </span>
+      </a>
+    </li>
+  </ul>
+</div><!--- конец списка договоров -->

@@ -1,0 +1,14 @@
+@@@ date/month
+
+<div>
+<!--v-progress-indeterminate v-show=" !ready " :color=" 'teal' " :message=" 'Загружается...' "></v-progress-indeterminate-->
+
+<ul  class="tabs z-depth-1000 card000 tabs-transparent white" style="display: block; white-space: initial; height: auto;">
+  <li v-for="item in Data" :key="item" class="tab  teal lighten-2" :class=" {'z-depth-1 noprint': item !== current, 'shadow-inset-10': item === current} " :id="`item-${item}`">
+    <h3>
+      <a @click="SelectItem(item)" href="javascript:" :class="{'active white-text': item === current}" class="hvr-overline-from-center before-white" style="font-size:inherit;">{{item}}</a>
+    </h3>
+  </li>
+</ul>
+
+</div>

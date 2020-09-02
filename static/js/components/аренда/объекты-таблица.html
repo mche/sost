@@ -26,17 +26,22 @@
         <a @click=" SortItemRoomsIndexes(item) " href="javascript:" class="chip hoverable padd-0-02 z-depth-1 lime darken-3 white-text" title="сортировать по номеру"><i class="material-icons">sort</i></a>
       </div--->
       <div style="position: absolute; top: 0.5rem; right: 0.5rem; z-index: 1;">
+        <div class="input-field chip shadow-inset-10 hoverable nowrap">
+          <input type="checkbox" :id=" `крыжик-по-этажам-${item.id}`"  v-model=" item.chbByFloors ">
+          <label :for="`крыжик-по-этажам-${item.id}`" class="hover-shadow3d chip hoverable                  before-yellow-lighten-4 orange-text yellow lighten-4"  style=" padding-left:16px;" ></label>
+          <label :for="`крыжик-по-этажам-${item.id}`" class=""  ><h6 class="orange-text text-darken-3">По этажам</h6></label>
+        </div>
         <a @click="ToggleRooms(item)" href="javascript:" class="chip lime darken-3  white-text hoverable padd-0 z-depth-1" title="развернуть/свернуть строки помещений"><i class="material-icons" :class="{'rotate180': !!item._expandRooms}">arrow_drop_down</i></a>
       </div>
       
       <div>
-        <h6 class="fw500 helmet tab-shadow  " :class="{'active z-depth-1 lime lighten-4 marg-0-05': !item.showLiter, 'grey-lighten-2 hover-white': !!item.showLiter}" style="    margin-bottom: 0.4rem !important;">
+        <h6 class="fw500 helmet tab-shadow  " :class="{'active z-depth-1 lime lighten-5 marg-0-05': !item.showLiter, 'grey-lighten-2 hover-white': !!item.showLiter}" style="    margin-bottom: 0.4rem !important;">
           <a @click="ShowLiter(item)" href="javascript:" class="lime-text text-darken-4 hover-shadow3d">
             <span>Все лит.</span>
             <sup class="chip fs8">{{ item['@кабинеты'].length }}</sup>
           </a>
         </h6>
-        <h6 v-for="liter in item['@литеры']" :key="liter.id" class="fw500 helmet tab-shadow   " :class="{'active z-depth-1 lime lighten-4 marg-0-05':  liter === item.showLiter, 'grey-lighten-2 hover-white': liter !== item.showLiter}" style="    margin-bottom: 0.4rem !important;">
+        <h6 v-for="liter in item['@литеры']" :key="liter.id" class="fw500 helmet tab-shadow   " :class="{'active z-depth-1 lime lighten-5 marg-0-05':  liter === item.showLiter, 'grey-lighten-2 hover-white': liter !== item.showLiter}" style="    margin-bottom: 0.4rem !important;">
           <a @click="ShowLiter(item, liter)" href="javascript:" class="lime-text text-darken-4 hover-shadow3d">
             <span>лит. {{ liter.title }}</span>
             <sup v-show="liter === item.showLiter" class="chip fs8">{{ item.roomsIndexes.length }}</sup>
@@ -45,41 +50,24 @@
       </div>
       
       
-      <div class="row" :style="item._expandRooms ? {} : {'max-height':'10rem', 'overflow':'auto',}">
+      <div v-if=" ! item.chbByFloors " class="row" :style="item._expandRooms ? {} : {'max-height':'10rem', 'overflow':'auto',}">
       <table class="bordered striped lime lighten-4 highlight"><tbody>
       <!---in (item.rooms || item['@кабинеты'])  вместо самого массива помещений используется массив сортировки индексов  --->
         <tr v-for="idx in item.roomsIndexes" :key="item['@кабинеты'][idx].id">
           <td style="">
             <div class="nowrap truncate000 lime-text-darken-4 line-height-10" style="/*width:10rem;*/">
-              <span class="fs8 grey-text">№ </span><span class="bold">{{ item['@кабинеты'][idx]['номер-название'] }}</span>
+              <span class="fs8 grey-text" :class="{'transparent-text':!/^\d/.test(item['@кабинеты'][idx]['номер-название'])}">№ </span><span class="bold">{{ item['@кабинеты'][idx]['номер-название'] }}</span>
               <!--span v-show="!!item['@помещение в договоре аренды'][idx]" class="chip red padd-05">&nbsp;</span-->
               <span v-if="!!item['@помещение в договоре аренды?'][idx]" class="hover-childs-show relative">
-                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32" class="teal-fill fill-darken-3 " style="height: 1rem;"><use xlink:href="/fonts/icons.svg#handshake" /></svg>
-                <!---sup class="chip">{{ item['@аренда/договоры'][idx].length }}</sup--->
+                <span v-if="item['@кол-во действующих договоров'][idx]==0">
+                  <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 252 252" class="red-fill fill-darken-3" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#exit"></use></svg>
+                </span>
+                <span v-else class="chip padd-0 border green-text-darken-3">
+                  <svg v-for="i in Array(parseInt(item['@кол-во действующих договоров'][idx])).fill()" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 90 90" class="green-fill fill-darken-3 " style="height: 1rem;"><use xlink:href="/fonts/icons.svg#seat" /></svg>
+                </span>
                 <div class="hover-parent-show-block card padd-05 teal-lighten-4 animated fadeIn fast" style="position:absolute; top:-0.3rem; left:1rem; z-index:1;">
-                  <h5 class="card-title-000"><!--i class="icon-left fs8 " style="position:absolute; top:1rem; left:-0.5rem;"></i-->Договоры по помещению <span class="bold">{{ item['@кабинеты'][idx]['номер-название'] }}</span></h5>
-                  <ul class="card-content padd-0 fs8">
-                    <li v-for="d in item['@аренда/договоры'][idx]" class="nowrap teal-text text-darken-3">
-                      <a @click="GoToContract(d.id)" href="javascript:" :href000=" `#contract-${ d.id }`" class="hover-shadow3d">
-                        <span class="chip nowrap" :title=" d['дата1'] ">
-                          <span class="fs8 grey-text">c </span>
-                          <span class="bold"> {{ d.$дата1.day }} </span>
-                          <span class="fs8"> {{ d.$дата1['мес'] }} </span>
-                          <span v-show="(new Date).getYear()+1900 != d.$дата1.year"> {{ d.$дата1.year }} </span>
-                          <span v-if="!d['продление срока'] || !!d['дата расторжения']"  :title=" d['дата?'] ">
-                            <span class="fs8 grey-text"> по </span>
-                            <span class="bold"> {{ d.$дата2.day }} </span>
-                            <span class="fs8"> {{ d.$дата2['мес'] }} </span>
-                            <span v-show="(new Date).getYear()+1900 != d.$дата2.year"> {{ d.$дата2.year }} </span>
-                          </span>
-                          <span v-else >с продлением</span>
-                        </span>
-                        <span class="chip ">№ {{ d['номер'] }}</span>
-                        <span class="chip"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="  teal-fill fill-darken-3" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#contragent"></use></svg> {{ d['контрагент/title'] }}</span>
-                      </a>
-                    </li>
-                  </ul>
-                </div><!--- конец списка договоров -->
+                  <v-contracts  :room=" item['@кабинеты'][idx] " :contracts="item['@аренда/договоры'][idx]"></v-contracts>
+                </div>
               </span>
             </div>
           </td>
@@ -103,6 +91,39 @@
         </tr>
       </tbody></table>
       </div>
+      
+      <div v-else><!-- item.chbByFloors показ по этажам -->
+        <table class="bordered striped lime lighten-4 highlight">
+          <tbody>
+            <tr v-for=" [_, floor] of ByFoors(item) ">
+              <td style="width:1%;"><span class="bold">{{ floor['этаж'] }}</span> эт.</td>
+              <td>
+                <div v-for="idx in floor.roomsIndexes " class="chip z-depth-1 white   nowrap line-height-10" :class="{'green lighten-3':!!(item['@кол-во действующих договоров'][idx]>0)}">
+                  <div class="lime-text-darken-4">
+                    <span v-show="/^\d/.test(item['@кабинеты'][idx]['номер-название'])" class="fs8 grey-text">№ </span><span class="bold">{{ item['@кабинеты'][idx]['номер-название'] }}</span>
+                    <span v-if="!!item['@помещение в договоре аренды?'][idx]" class="hover-childs-show relative">
+                      <span v-if="item['@кол-во действующих договоров'][idx]==0">
+                        <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 252 252" class="red-fill fill-darken-3" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#exit"></use></svg>
+                      </span>
+                      <span v-else class="chip padd-0 border green-text-darken-3">
+                        <svg v-for="i in Array(parseInt(item['@кол-во действующих договоров'][idx])).fill()" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 90 90" class="green-fill fill-darken-3 " style="height: 1rem;"><use xlink:href="/fonts/icons.svg#seat" /></svg>
+                      </span>
+                      <div class="hover-parent-show-block card padd-05 teal-lighten-4 animated fadeIn fast" style="position:absolute; top:-0.3rem; left:1rem; z-index:1;">
+                        <v-contracts  :room=" item['@кабинеты'][idx] " :contracts="item['@аренда/договоры'][idx]"></v-contracts>
+                      </div>
+                    </span>
+                  </div>
+                  <div class="center" style="">
+                    <span class="bold">{{ ParseNum(item['@кабинеты'][idx]['площадь']).toLocaleString() }} </span>
+                    <span class="fs8 grey-text"> м<sup>2</sup></span>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
       <h4 class="chip  right-align" style="">
         <!--span @click="ToggleRooms(item)" href="javascript:void('развернуть строки помещений/кабинетов')" title="развернуть строки помещений/кабинетов" class="black-text hover-shadow3d"-->Итого площадь <span class="bold fs12">{{ SumSquare(item).toLocaleString() }}</span> м² <!--i class="material-icons">arrow_forward</i></span-->
         <!-- в <span class="bold fs12">{{ item['@кабинеты'].length }}</span> помещениях -->
