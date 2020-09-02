@@ -305,7 +305,7 @@ _FilterData(item){
   const test = (vm.filters['архивные договоры'] ? item['архив'] : !item['архив'])
     && (vm.filters['арендодатель'] ? item['проект/id'] == vm.filters['арендодатель'].id : true)
     && (vm.filters['арендаторы'] ? item['$контрагент'].title.toLowerCase().indexOf(vm.filters['арендаторы'].toLowerCase()) >= 0 : true)
-    && ( (vm.filters['объект'] && vm.filters['объект'].id) ? item['@помещения'] && item['@помещения'][0].$объект.id == vm.filters['объект'].id : true);
+    && ( (vm.filters['объект'] && vm.filters['объект'].id) ? item['@помещения'] && item['@помещения'][0] && item['@помещения'][0].$объект.id == vm.filters['объект'].id : true);
   //~ console.log("filteredData", test);
   return test;
 },
