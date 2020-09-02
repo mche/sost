@@ -28,20 +28,20 @@
       <div style="position: absolute; top: 0.5rem; right: 0.5rem; z-index: 1;">
         <div class="input-field chip shadow-inset-10 hoverable nowrap">
           <input type="checkbox" :id=" `крыжик-по-этажам-${item.id}`"  v-model=" item.chbByFloors ">
-          <label :for="`крыжик-по-этажам-${item.id}`" class="hover-shadow3d chip hoverable                  before-yellow-lighten-4 orange-text yellow lighten-4"  style=" padding-left:16px;" ></label>
-          <label :for="`крыжик-по-этажам-${item.id}`" class=""  ><h6 class="orange-text text-darken-3">По этажам</h6></label>
+          <label :for="`крыжик-по-этажам-${item.id}`" class="hover-shadow3d chip hoverable                  before-yellow-lighten-4 lime-text text-darken-3 yellow lighten-4"  style=" padding-left:16px;" ></label>
+          <label :for="`крыжик-по-этажам-${item.id}`" class=""  ><h6 class="lime-text text-darken-4">По этажам</h6></label>
         </div>
         <a @click="ToggleRooms(item)" href="javascript:" class="chip lime darken-3  white-text hoverable padd-0 z-depth-1" title="развернуть/свернуть строки помещений"><i class="material-icons" :class="{'rotate180': !!item._expandRooms}">arrow_drop_down</i></a>
       </div>
       
       <div>
-        <h6 class="fw500 helmet tab-shadow  " :class="{'active z-depth-1 lime lighten-5 marg-0-05': !item.showLiter, 'grey-lighten-2 hover-white': !!item.showLiter}" style="">
+        <h6 class="fw500 helmet tab-shadow vbottom " :class="{'active z-depth-1 lime lighten-5 marg-0-05': !item.showLiter, 'grey-lighten-2 hover-white': !!item.showLiter}" style="">
           <a @click="ShowLiter(item)" href="javascript:" class="lime-text text-darken-4 hover-shadow3d">
             <span>Все лит.</span>
             <sup class="chip fs8">{{ item['@кабинеты'].length }}</sup>
           </a>
         </h6>
-        <h6 v-for="liter in item['@литеры']" :key="liter.id" class="fw500 helmet tab-shadow   " :class="{'active z-depth-1 lime lighten-5 marg-0-05 bold':  liter === item.showLiter, 'grey-lighten-2 hover-white': liter !== item.showLiter}" style000="    margin-bottom: 0.4rem !important;">
+        <h6 v-for="liter in item['@литеры']" :key="liter.id" class="fw500 helmet tab-shadow vbottom  " :class="{'active z-depth-1 lime lighten-5 marg-0-05 bold':  liter === item.showLiter, 'grey-lighten-2 hover-white': liter !== item.showLiter}" style000="    margin-bottom: 0.4rem !important;">
           <a @click="ShowLiter(item, liter)" href="javascript:" class="lime-text text-darken-4 hover-shadow3d">
             <span class="grey-text fs8">лит. </span>
             <span class="chip">{{ liter.title }}</span>
@@ -103,11 +103,12 @@
           </tr></thead> 
           <tbody>
             <tr v-for=" [_, floor] of ByFoors(item) ">
-              <td style="width:1%;"><span class="bold">{{ floor['этаж'] }}</span> эт.</td>
-              <td v-for="liter in (item.showLiter ? [item.showLiter] : item['@литеры'])" class="vtop" :style="!item.showLiter && {'border-left': '4px double #d0d0d0',}">
+              <td class="padd-05" style="width:1%;"><span class="bold">{{ floor['этаж'] }}</span> эт.</td>
+              <td v-for="liter in (item.showLiter ? [item.showLiter] : item['@литеры'])" class="vtop padd-05" :style="!item.showLiter && {'border-left': '4px double #d0d0d0',}">
                 <div v-for="idx in floor.roomsIndexes.filter(idx=>liter ? FilterRoomsByIdx(item, idx, liter) : true) " class="chip z-depth-1 white   nowrap line-height-10" :class="{'lime lighten-2':!!(item['@кол-во действующих договоров'][idx]>0)}">
                   <div class="">
-                    <span v-show="/^\d/.test(item['@кабинеты'][idx]['номер-название'])" class="fs8 grey-text">№ </span><span class="lime-text-darken-4 bold">{{ item['@кабинеты'][idx]['номер-название'] }}</span>
+                    <span v-show="/^\d/.test(item['@кабинеты'][idx]['номер-название'])" class="fs8 grey-text">№ </span>
+                    <span class="lime-text-darken-4 bold iblock truncate middle" style="max-width:5rem;" :title="item['@кабинеты'][idx]['номер-название']">{{ item['@кабинеты'][idx]['номер-название'] }}</span>
                     <span v-if="!!item['@помещение в договоре аренды?'][idx]" class="hover-childs-show relative">
                       <span v-if="item['@кол-во действующих договоров'][idx]==0">
                         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 252 252" class="red-fill fill-darken-3" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#exit"></use></svg>
