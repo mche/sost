@@ -147,12 +147,9 @@ lock</i><span class="bold">{{ item['$дата расторжения'].day }}</s
       <tbody>
         <tr v-for="(room, idx) in (item['@доп.соглашения'] ? item['@доп.соглашения'][item['@доп.соглашения'].length-1]['@помещения'] : item['@помещения'])" :key="room.id" class="">
           <td class="relative000" style-000="width:calc(30vw);">
-            <!-- не катит div style="position:absolute; left:-1rem;"><i class="material-icons fs8 lime-text-darken-4 padd-0">place</i></div-->
-            <h5  class="truncate-000 nowrap blue-text-darken-4 line-height-12" style="width:calc(10vw);" :title=" room.$объект['name'] ">
+            <h5 class="truncate-000 nowrap blue-text-darken-4 line-height-12" style="width:calc(10vw);" :title=" room.$объект['name'] ">
               <span><i class="material-icons fs8 padd-0">place</i></span>
               <span :class="{'transparent-text': idx > 0 && room.$объект.id == item['@помещения'][idx].$объект.id }">{{ room.$объект['name'] }}</span>
-              <!--span class="nowrap chip padd-0-05"><span class="fs8">№</span><span class="">{{ room.$помещение['номер-название'] }}</span></span-->
-              <!--span class="nowrap chip padd-0-05"><span class="">{{ room.$помещение['этаж'] }}</span><span class="fs8"> эт.</span></span-->
             </h5>
           </td>
           <td class="relative000">
@@ -173,8 +170,6 @@ lock</i><span class="bold">{{ item['$дата расторжения'].day }}</s
           </td>
           <td class="right-align" style="width:5rem;">
             <div class="nowrap line-height-10 lime-text-darken-4" style="width: calc(5vw);">
-              <!--span class="bold">{{ ParseNum(room.$помещение['площадь']).toLocaleString() }}</span>
-              <span class="fs8 grey-text">м<sup>2</sup></span-->
               <span class="nowrap " class-000="{'right': item['@помещения'].length == 1, 'chip padd-0-05': item['@помещения'].length > 1}"><span class="" :class="{'fw500': item['@помещения'].length == 1}">{{ RoomSquare(room).toLocaleString() }}</span><span class="fs8 grey-text"> м²</span></span>
             </div>
           </td>
@@ -192,7 +187,7 @@ lock</i><span class="bold">{{ item['$дата расторжения'].day }}</s
               <span class="fs8 grey-text"> ₽</span>
             </div>
             <h5 v-show="item['@помещения'].length == 1" class="nowrap">
-              <span class="bold " title=" руб./мес. ">{{ RoomSum(room).toLocaleString({"currency": 'RUB', "minimumFractionDigits":2,}) }}</span><!--.replace(/[.,]\d+/, '') -->
+              <span class="bold " title=" руб./мес. ">{{ RoomSum(room).toLocaleString({"currency": 'RUB', "minimumFractionDigits":2,}) }}</span>
               <span class="fs8 grey-text"> ₽</span>
             </h5>
           </td>

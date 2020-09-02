@@ -64,9 +64,10 @@ InitRooms(){
   
 },
 
-Ready(){/// метод
-  var vm = this;
-},
+//~ Ready(){/// метод
+  //~ var vm = this;
+  
+//~ },
 
 OnRoomSelect(item, propSelect){/// из компонента выбор из списка помещений
   //~ console.log("OnRoomSelect", item, propSelect);
