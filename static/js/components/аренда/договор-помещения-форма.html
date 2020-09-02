@@ -15,7 +15,7 @@
             <template v-slot:selected="{ selected }">
               <h5 v-if="selected" class="relative padd-0-05 lime-text text-darken-4 animated slideInRight hover-bottom-shadow-lime-darken-3 ">
                 <span><i class="material-icons fs8 padd-0">place</i></span>
-                <span>{{ selected.$объект['name'] }}</span>
+                <span v-if="selected.$объект">{{ selected.$объект['name'] }}</span>
                 <span class="nowrap chip padd-0-05"><span class="fs8 grey-text">лит. </span> <span class="bold">{{ selected.$помещение.$литер.title }}</span></span>
                 <span class="nowrap chip padd-0-05"><span class="fs8 grey-text">№</span> <span class="bold">{{ selected.$помещение['номер-название'] }}</span></span>
                 <span class="nowrap chip padd-0-05"><span class="">{{ selected.$помещение['этаж'] }}</span> <span class="fs8 grey-text">эт.</span></span>
@@ -27,7 +27,7 @@
             <template v-slot:listItem="{ listItem, selected, highlighted }">
               <h6 class="padd-0-05 lime-text text-darken-4 hover-shadow3d relative"  :class="{'bold fs12': listItem === selected, 'fw500': listItem === highlighted}"  style="">
                 <span><i class="material-icons fs8 padd-0">place</i></span>
-                <span >{{ listItem.$объект['name'] }}</span>
+                <span v-if="selected.$объект">{{ listItem.$объект['name'] }}</span>
                 <span class="nowrap chip padd-0-05"><span class="fs8 grey-text">лит. </span> <span class="">{{ listItem.$помещение.$литер.title }}</span></span>
                 <span class="nowrap chip padd-0-05"><span class="fs8 grey-text">№</span> <span class="">{{ listItem.$помещение['номер-название'] }}</span></span>
                 <span class="nowrap chip padd-0-05"><span class="">{{ listItem.$помещение['этаж'] }}</span> <span class="fs8 grey-text">эт.</span></span>

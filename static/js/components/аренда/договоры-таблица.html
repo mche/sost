@@ -148,7 +148,7 @@ lock</i><span class="bold">{{ item['$дата расторжения'].day }}</s
         <tr v-for="(room, idx) in (item['@доп.соглашения'] ? item['@доп.соглашения'][item['@доп.соглашения'].length-1]['@помещения'] : item['@помещения'])" :key="room.id" class="">
           <td class="relative000" style-000="width:calc(30vw);">
             <!-- не катит div style="position:absolute; left:-1rem;"><i class="material-icons fs8 lime-text-darken-4 padd-0">place</i></div-->
-            <h5 class="truncate-000 nowrap blue-text-darken-4 line-height-12" style="width:calc(10vw);" :title=" room.$объект['name'] ">
+            <h5 v-if="room.$объект" class="truncate-000 nowrap blue-text-darken-4 line-height-12" style="width:calc(10vw);" :title=" room.$объект['name'] ">
               <span><i class="material-icons fs8 padd-0">place</i></span>
               <span :class="{'transparent-text': idx > 0 && room.$объект.id == item['@помещения'][idx].$объект.id }">{{ room.$объект['name'] }}</span>
               <!--span class="nowrap chip padd-0-05"><span class="fs8">№</span><span class="">{{ room.$помещение['номер-название'] }}</span></span-->
