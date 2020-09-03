@@ -47,6 +47,7 @@ Ready(){/// метод
   });
   $EventBus.$on('Прокрути к договору', function(id/*договора*/){
     //~ console.log('Прокрути к договору', id, vm.data.find(util.IsEqualId, {id}));
+    vm.checkedItems.splice(0);
     let d = vm.data.find(util.IsEqualId, {id});
     vm.$set(d, 'архив', vm.IsArchiveContract(d));
     vm.filters['архивные договоры'] = !!d['архив'];
@@ -123,6 +124,12 @@ ParseNum(num){
   return parseFloat(Util.numeric(num));
 },
 
+ItemRooms(item){
+  return /*item['@доп.соглашения'] && item['@доп.соглашения'].length
+    ? item['@доп.соглашения'][item['@доп.соглашения'].length-1]['@помещения']
+    :*/ item['@помещения'];
+},
+
 RoomPrice(room){
   return this.ParseNum(room['ставка']) || this.ParseNum(room['сумма'])/this.ParseNum(room['площадь'] || (room['площадь'] === 0 ? room['площадь'] : room.$помещение['площадь']));
 },
@@ -155,43 +162,46 @@ OnSave(data){ ///  из события сохранения формы
     var f = data.id && vm.data.find(util.IsEqualId, data);
     if (data['удалить']) {
       vm.data.removeOf(f);
-      return vm.FilterData();
+      return vm.FilterData();;///
     }
     
     if (f) { /// редакт
       if (f._edit) f._edit = undefined;
+      //~ vm.editItems.splice(vm.editItems.indexOf(f), 1);
       Object.assign(f, data);
     } else {/// новая
       if (data['копия/id']) f = vm.data.find(util.IsEqualId, {"id": data['копия/id']});
       if (f) {
         f._edit = undefined;
+        //~ vm.editItems.splice(vm.editItems.indexOf(f), 1);
         //~ vm.data.splice(vm.data.indexOf(f), 0, data);
       } ///else 
       vm.data.unshift(data);
       //~ console.log("новый договор", data, f);
     }
-    //~ vm.FilterData();/// в шине !!!
+    //~ !vm.FilteredData;/// в шине !!!
     $EventBus.$emit('Прокрути к договору', data.id);
-
   }
 },
 
 Edit(item){
   this.$set(item, '_edit', angular.copy(item));
+  //~ let idx = this.editItems.indexOf(item);
+  //~ if (idx == -1) this.editItems.push(item);
 },
 
 AllChbsChange(val){
   var vm = this;
   if (typeof val == 'boolean') vm.allChbs = val;
-  vm.data.map((item)=>{
-    item['крыжик'] = undefined;
-    
-  });
-  vm.filteredData.forEach((item)=>{
-    item['крыжик'] =  !!vm.allChbs;
-    //~ vm.$set(item, 'крыжик', !!vm.allChbs);
-  });
-  //~ console.log('AllChbsChange', val, vm.filteredData);
+  //~ vm.data.map((item)=>{
+    //~ item['крыжик'] = undefined;
+  //~ });
+  vm.checkedItems.splice(0);
+  
+  //~ vm.filteredData.forEach((item)=>{
+    //~ item['крыжик'] =  !!vm.allChbs;
+  //~ });
+  if (!!vm.allChbs) vm.checkedItems = [...vm.filteredData];
 },
 
 ChbChange(name, val){
@@ -219,7 +229,8 @@ PrintPay(month, month2){/// счета и акты
   //~ console.log("PrintPay", month);
   if (!month) return modal.modal('open');
   
-  var ids = vm.data.filter((item)=>{ return !!item['крыжик']; }).map((item)=>{ return item.id; });
+  var ids = ///vm.data.filter((item)=>{ return !!item['крыжик']; })
+    vm.checkedItems.map((item)=>{ return item.id; });
   //~ var obs = vm.rentObjects.filter((ob)=>{ return !!ob['крыжик печати']; }).map((ob)=>{ return ob['$объект'].id; });
   //~ if (!ids.length) return Materialize.toast("не указаны договоры", 3000, 'red-text text-darken-3 red lighten-3 border fw500  animated zoomInUp');
   //~ if (!obs.length) return Materialize.toast("не указан объект", 3000, 'red-text text-darken-3 red lighten-3 border fw500  animated zoomInUp');
@@ -291,7 +302,6 @@ OnChangeFilter(event, ms){
   //~ console.log("OnKeyDownFilter", event.target.name, event.target.value);
   if (vm.filters.timeout) clearTimeout(vm.filters.timeout);
   vm.filters.timeout = setTimeout(() => {
-    //~ vm.filters[event.target.name] = event.target.value;
     vm.FilterData();
   }, ms || 700);
   
@@ -299,7 +309,10 @@ OnChangeFilter(event, ms){
 
 _FilterData(item){
   var vm = this;
-  if (!item.hasOwnProperty('крыжик')) item['крыжик']  = undefined;/// доп реакт свойство
+  //~ if (!item.hasOwnProperty('_edit')) item['_edit']  = undefined;/// доп реакт свойство
+  item.rooms =  item['@доп.соглашения'] &&  item['@доп.соглашения'].length
+    ? item['@доп.соглашения'][item['@доп.соглашения'].length-1]['@помещения']
+    : item['@помещения'] || [];
   item['архив'] = item.hasOwnProperty('архив') ? item['архив'] : vm.IsArchiveContract(item);
   if (item['архив']) vm.archLen += 1;
   const test = (vm.filters['архивные договоры'] ? item['архив'] : !item['архив'])
@@ -319,8 +332,7 @@ FilterData(){
   //~ if (!vm.filters['арендаторы'].length) return vm.data;
   vm.archLen = 0;
   //~ vm.filteredData.length = 0;
-  vm.filteredData = ///vm.filters['арендаторы'].length || (vm.filters['объект'] && vm.filters['объект'].id) /// || (vm.filters['архивные договоры'] !== undefined)
-    vm.data.filter(vm._FilterData);
+  vm.filteredData =  vm.data.filter(vm._FilterData);
     vm.filters.timeout = undefined;
    // : vm.data;
   
@@ -358,11 +370,16 @@ const computed = {
   //~ console.log("IsChbs");
   //~ return this.data.some((item)=>{ return !!item['крыжик']; });
 //~ },
-FilteredDataLen(){
-  return this.filteredData.length;
-  
-},
+//~ FilteredDataLen(){
+  //~ return this.filteredData.length;
+//~ },
 
+/*FilteredData(){//// !!!!!!!!!! не катит, после обновления через форму нет реакции!!!!!!!!! никак ваще
+  this.archLen = 0;
+  console.log("FilteredData");
+  return this.data.filter(this._FilterData);
+},*/
+  
 EditItemStyle(){
   if (this.elWidth < 1200) return {"width":'110%', "left":'-5%',};
   return {"width":'90%', "left":'5%',};
@@ -383,6 +400,8 @@ const  data = function(){
     "filteredData":[],
     "newContract": undefined,
     "selectedContract": undefined,
+    "checkedItems":[],
+    //~ "editItems":[],
     "allChbs": false, /// крыжик выбора всех договоров
     "payMonth":  new Date().toISOString().replace(/T.+/, ''),
     "payMonth2": undefined,

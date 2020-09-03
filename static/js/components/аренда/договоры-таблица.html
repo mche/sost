@@ -49,15 +49,12 @@
     <td class="relative vbottom padd-05" style="width:1%;">
 
       <!-- все крыжики-->
-      <!--div v-show=" FilteredDataLen " class="input-field nowrap" style="margin-left:0.3rem;">
+      <div class="input-field chip shadow-inset-10 hoverable nowrap">
         <input type="checkbox" id="все крыжики" v-model="allChbs" @change="AllChbsChange">
-        <label for="все крыжики" class="hover-shadow3d chb-yellow-lighten-4 orange-text chip yellow lighten-4 hoverable" style="position:absolute; left:-2rem; bottom: 0; padding-left:16px;" ></label>
-        <label for="все крыжики" click0000="AllChbsChange(!allChbs)" href="javascript:"><h6 class="orange-text text-darken-4 hover-shadow3d">
-          <span>{{ allChbs ? 'снять' : 'отметить' }}</span>
-          <sup class="chip white z-depth-1">{{ FilteredDataLen }}</sup>
-        </h6></label>
-      </div-->
-      <div class="chip padd-0-05"><a @click="AllChbsChange(!allChbs)" href="javascript:" class="hover-shadow3d">договоров {{ filteredData.length }}</a></div>
+        <label for="все крыжики" class="hover-shadow3d chip hoverable                  before-yellow-lighten-4 orange-text yellow lighten-4" style="padding-left: 16px;"></label>
+        <label for="все крыжики"><h6 class="orange-text" :class="{'bold': allChbs}"> {{ checkedItems.length }} договоров из {{ filteredData.length }}</h6></label>
+      </div>
+      <!--div class="chip padd-0-05"><a @click="AllChbsChange(!allChbs)" href="javascript:" class="hover-shadow3d">договоров {{ filteredData.length }}</a></div-->
     </td>
     <td class="padd-05 relative" style="width:calc(30vw);">
           <!-- фильтр истекшие договоры -->
@@ -112,14 +109,18 @@
         <a @click=" Edit(item) " href="javascript: void('редактировать договор аренды') " class="hover-shadow3d" :class="{'maroon-text': !!item['архив']}" title="редактировать договор аренды">{{ item['$контрагент'].title }}</a>
       </h5>
       
-      <transition leave-active-class="animated zoomOutUp"><div v-if=" item._edit " style="position: absolute; z-index:1; " :style="EditItemStyle"><v-rent-contract-form :item=" item._edit " @on-save=" OnSave "></v-rent-contract-form></div></transition>
+      <transition leave-active-class="animated zoomOutUp">
+        <div v-if=" item._edit " style="position: absolute; z-index:1; " :style="EditItemStyle">
+          <v-rent-contract-form :item=" item._edit " @on-save=" OnSave "></v-rent-contract-form>
+        </div>
+      </transition>
     </td>
     <td class="vtop padd-05 relative">
       <div class="relative">
         <span class="fs8-000 grey-text" style="position:absolute; left:-1rem; top:0.2rem;">№</span><span class="nowrap bold fs12" style000="width:calc(5vw);" :title=" item['номер'] ">{{ item['номер'] }}</span>
         <!-- крыжик -->
         <!--div class="input-field"-->
-          <input type="checkbox" :id="`крыжик-${item.id}`" v-model="item['крыжик']">
+          <input type="checkbox" :id="`крыжик-${item.id}`" :value="item" v-model=" checkedItems ">
           <label :for="`крыжик-${item.id}`" class="hover-shadow3d chip hoverable                  before-yellow-lighten-4 orange-text yellow lighten-4" :class000="!{'before-yellow-lighten-4 orange-text yellow lighten-4': !filters['архивные договоры'], 'before-maroon-lighten-5 maroon-text maroon lighten-5': filters['архивные договоры']}" style="position:absolute; right:0; top: 0; padding-left:16px;" ></label>
         <!--/div-->
       </div>
@@ -127,7 +128,7 @@
         
         <!--span class="fs8"> от </span-->
         <span class="chip padd-0-05 nowrap" :title=" item['дата1'] "><span class="fs8 grey-text">c </span><span class="bold">{{ item.$дата1.day }}</span> <span class="fs8">{{ item.$дата1['мес'] }}</span><span v-show="(new Date).getYear()+1900 != item.$дата1.year"> {{ item.$дата1.year }}</span></span>
-        <span class="chip padd-0-05 nowrap breadcrumb" :title=" item['дата2'] "><span class="fs8 grey-text"> по </span><span class="bold">{{ item.$дата2.day }}</span> <span class="fs8">{{ item.$дата2['мес'] }}</span><span v-show="(new Date).getYear()+1900 != item.$дата2.year"> {{ item.$дата2.year }}</span><span v-show="item['продление срока']" class="material-icons circle purple lighten-5  purple-text" style="position: absolute; right:0; bottom:0;">alarm_add</span></span>
+        <span class="chip padd-0-05 nowrap breadcrumb" :title=" item['дата2'] "><span class="fs8 grey-text"> по </span><span class="bold">{{ item.$дата2.day }}</span> <span class="fs8">{{ item.$дата2['мес'] }}</span><span v-show="(new Date).getYear()+1900 != item.$дата2.year"> {{ item.$дата2.year }}</span><span v-show="item['продление срока']" class="material-icons circle purple lighten-5  purple-text" style="">alarm_add</span></span>
         <span v-if="item['дата расторжения']" class="chip padd-0-05 nowrap red-text middle" :title=" JSON.stringify(item['$дата расторжения']) "><!---span class="fs8"> закрыт </span--><i class="material-icons fs10">
 lock</i><span class="bold">{{ item['$дата расторжения'].day }}</span> <span class="fs8">{{ item['$дата расторжения']['мес'] }}</span><span v-show="(new Date).getYear()+1900 != item['$дата расторжения'].year"> {{ item['$дата расторжения'].year }}</span></span>
 
@@ -142,14 +143,13 @@ lock</i><span class="bold">{{ item['$дата расторжения'].day }}</s
     <td class="padd-05">
       <div style-000="item_idx  > 0 ? {'max-height':'10rem', 'overflow':'auto'} : {}">
       <table class="bordered highlight"><!-- striped lime lighten-4 -->
-      <!---thead v-if=" item_idx === 0 " ></thead--->
-      
       <tbody>
-        <tr v-for="(room, idx) in (item['@доп.соглашения'] ? item['@доп.соглашения'][item['@доп.соглашения'].length-1]['@помещения'] : item['@помещения'])" :key="room.id" class="">
+        <tr v-for="(room, idx) in item.rooms" :key="room.id" class=""> <!--- помещения последнего соглашения или самого договора -->
+        <!--td v-if="!room">{{ 'чего?!?'+idx }}</td--->
           <td class="relative000" style-000="width:calc(30vw);">
             <h5 class="truncate-000 nowrap blue-text-darken-4 line-height-12" style="width:calc(10vw);" :title=" room.$объект['name'] ">
               <span><i class="material-icons fs8 padd-0">place</i></span>
-              <span :class="{'transparent-text': idx > 0 && room.$объект.id == item['@помещения'][idx].$объект.id }">{{ room.$объект['name'] }}</span>
+              <span :class="{'transparent-text': idx > 0 && room.$объект.id == item.rooms[0].$объект.id }">{{ room.$объект['name'] }}</span>
             </h5>
           </td>
           <td class="relative000">

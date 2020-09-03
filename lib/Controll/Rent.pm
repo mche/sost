@@ -200,6 +200,8 @@ sub сохранить_договор {
   
   $r = $c->model->список_договоров({id=>$r->{id}})->[0];# еще раз договор
   
+                                      #~ $c->log->error($c->dumper( $c->app->json->decode($r->{'@доп.соглашения/json'}) ));
+  
   $c->render(json=>{success=>$r});
 }
 
@@ -257,10 +259,10 @@ sub сохранить_доп_соглашения {# список
 }
 
 sub сохранить_доп_соглашение {# к договору
-  my ($c, $data, $prev) = @_;
-  $data->{'@помещения'} = [map {
+  my ($c, $dop, $prev) = @_;
+  #~ $c->log->error($c->dumper($dop, $prev));
+  $dop->{'@помещения'} = [map {
     my $r = $c->сохранить_помещение_договора($_);
-    
     #~ $r ||= $@
       #~ and 
     return $r # $c->render(json=>{error=>$r})
@@ -269,13 +271,13 @@ sub сохранить_доп_соглашение {# к договору
     #~ $c->log->error("помещение доп соглашения", $c->dumper($r));
     
     $r;
-  } grep {$_->{'помещение/id'}} @{ $data->{'@помещения'} }];
+  } grep {$_->{'помещение/id'}} @{ $dop->{'@помещения'} }];
   
-  $data->{uid} = $c->auth_user->{id}
-    unless $data->{id};
+  $dop->{uid} = $c->auth_user->{id}
+    unless $dop->{id};
   
-  my $r = eval {$c->model->сохранить_доп_соглашение($data, $prev)};
-  
+  my $r = eval {$c->model->сохранить_доп_соглашение($dop, $prev)};
+  #~ $c->log->error("доп соглашения", $c->dumper($r));
   $r ||= $@
     #~ and $c->log->error($r)
     and return $r # $c->render(json=>{error=>$r})
