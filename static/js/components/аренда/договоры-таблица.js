@@ -124,11 +124,11 @@ ParseNum(num){
   return parseFloat(Util.numeric(num));
 },
 
-ItemRooms(item){
-  return /*item['@доп.соглашения'] && item['@доп.соглашения'].length
+/*ItemRooms(item){
+  return item['@доп.соглашения'] && item['@доп.соглашения'].length
     ? item['@доп.соглашения'][item['@доп.соглашения'].length-1]['@помещения']
-    :*/ item['@помещения'];
-},
+    :*item['@помещения'];
+},*/
 
 RoomPrice(room){
   return this.ParseNum(room['ставка']) || this.ParseNum(room['сумма'])/this.ParseNum(room['площадь'] || (room['площадь'] === 0 ? room['площадь'] : room.$помещение['площадь']));

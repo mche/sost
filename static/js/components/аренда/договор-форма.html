@@ -33,8 +33,7 @@
     <div class="row">
     <div class="col s4 ">
       <h4 class="right-align relative">
-        <!--svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#contragent"></use></svg-->
-        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0  512 450" class="teal-fill fill-darken-3" style="height: 2rem;"><use xlink:href="/fonts/rent.svg#renter"></use></svg>
         <span>Арендодатель</span>
         <sup v-show=" !(form['$проект'] && form['$проект'].id) " class="chip red white-text" style="position: absolute; z-index: 1; top:0;padding:0.3rem;"></sup>
       </h4>
@@ -42,16 +41,16 @@
     </div>
     <div class="col s8  row">
       <!--div class="border fs8">{{ form['$проект'] }}</div-->
-      <v-select v-if=" projectData " :select=" form['$проект'] " :param="{'без поля поиска': true, ulDropDownClass: 'striped teal lighten-4'}" :items=" projectData " @on-select=" SelectProject ">
+      <v-select v-if=" projectData " :select=" form['$проект'] " :param="{'без поля поиска': true, ulDropDownClass: 'striped purple lighten-4'}" :items=" projectData " @on-select=" SelectProject ">
         <template v-slot:selected="{ selected }">
-          <h4 class="fw500 animated slideInUp input-hover">
-            <span>{{ selected ? selected.name : 'Выбрать арендодателя' }}</span>
+          <h4 class="fw500 animated slideInUp card hoverable marg-0 padd-0-05 purple lighten-4 purple-text text-darken-3">
+            <span>{{ selected ? ' ★ '+selected.name : 'Выбрать арендодателя' }}</span>
             <span v-if="form['$проект']" class="grey-text fs7" style="position:absolute; right:0; bottom:-1rem;">#{{ form['$проект'].id }}</span>
           </h4>
         </template>
         <template v-slot:listItem="{ listItem, selected, highlighted }">
-          <h5 class="padd-0-05 b relative"  :class="{'bold fs14': listItem === selected, 'fw500': listItem === highlighted,}"  style="">
-              <span>★ {{ listItem.name }}</span>
+          <h5 class="padd-0-05 relative purple-text text-darken-3"  :class="{'bold fs14': listItem === selected, 'fw500': listItem === highlighted,}"  style="">
+              <span> ★ {{ listItem.name }}</span>
               <span class="grey-text fs7" style="position:absolute; right:0; bottom:0;">#{{ listItem.id }}</span>
           </h5>
         </template>

@@ -17,7 +17,7 @@ var module = angular.module(moduleName, [ 'Аренда::Объект::Форм�
 
 
 module.factory('$КомпонентАрендаОбъектыТаблица',
-function($templateCache, $http, appRoutes, Util,  /*$timeout, $rootScope, /**$compile, */$КомпонентАрендаОбъектФорма, $EventBus ) {// factory
+function($templateCache, $http, appRoutes, Util, $Список, /*$timeout, $rootScope, /**$compile, */$КомпонентАрендаОбъектФорма, $EventBus ) {// factory
 
 const props = {
   "param": {
@@ -41,6 +41,7 @@ Ready(){/// метод
   var loader = vm.LoadData();
   $EventBus.$on('Дайте список объектов аренды', function(cb){
     cb(vm.data);
+    //~ cb(vm.$dataList.)
   });
   loader.then(function(){
     vm.ready = true;
@@ -50,9 +51,10 @@ Ready(){/// метод
 
 LoadData(){
   var vm = this;
-  return $http.get(appRoutes.urlFor('аренда/объекты/список'))
-    .then(function(resp){
-      vm.data.push(...resp.data.map(item => { vm.ItemRoomsIndexes(item); item.chbByFloors = true; return item; }));
+  vm.$dataList = new $Список(appRoutes.urlFor('аренда/объекты/список'));
+  return vm.$dataList.Load()///$http.get(appRoutes.urlFor('аренда/объекты/список'))
+    .then(()=>{
+      vm.data.push(.../*resp.data*/vm.$dataList.Data().map(item => { vm.ItemRoomsIndexes(item); item.chbByFloors = true; return item; }));
       return vm.data;
     });
 },
@@ -73,12 +75,17 @@ OnSave(data){ ///  из события сохранения формы
   if (data) {
     var f = vm.data.find(util.IsEqualId, data);
     if (f) { /// редакт или удалил
-      if (data['удалить']) return vm.data.removeOf(f);
+      if (data['удалить']) {
+        vm.data.removeOf(f);
+        vm.$dataList.Data().removeOf(f);
+        return;
+      }
       if (f._edit) f._edit = undefined;
       if (data['@кабинеты']) vm.ItemRoomsIndexes(data);
       Object.assign(f, data);
     } else {/// новая
       vm.data.push(data);
+      vm.$dataList.Data().push(data);
     }
     
   }
