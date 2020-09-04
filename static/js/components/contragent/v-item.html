@@ -23,7 +23,7 @@
     <a @click="ChbEdit" href="javascript:" class="circle  hoverable" :class="{'green darken-3 white-text':!!chbEdit}" style="position:absolute; left:-2rem; bottom: 0; padding:0.2rem;" title="редактировать наименование"><span class="material-icons">edit</span></a>
   </div>
   
-  <div v-if="param['реквизиты']" class="">
+  <div v-if="param['реквизиты']" class="row">
     <div class="col s5 ">
       <div v-show="param['реквизиты'].hasOwnProperty('ИНН')" class="input-field right-align">
         <h5  class="iblock">ИНН</h5>

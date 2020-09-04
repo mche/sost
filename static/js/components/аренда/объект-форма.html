@@ -171,13 +171,13 @@
               <div class="input-field">
                 <v-select-floor :select=" {'id': room['этаж'], 'room':room,} " :items=" floors " :param=" {'без поля поиска': true, ulDropDownClass: ['striped']} " @on-select=" OnFloorSelect ">
                   <template v-slot:selected="{ selected }">
-                    <h4 v-if="selected" class="padd-0-05 lime-text text-darken-4  input-hover fw500 nowrap">
+                    <h4 v-if="selected" class="padd-0-05 lime-text text-darken-4 hoverable fw500 nowrap">
                       <span>{{ selected.floor }}</span>
                     </h4>
-                    <h4 v-else class="grey-text text-darken-1">Выбрать этаж</h4>
+                    <h4 v-else class="grey-text text-darken-1 hoverable">Выбрать этаж</h4>
                   </template>
                   <template v-slot:listItem="{ listItem, selected, highlighted }">
-                    <h4 class="padd-0-05 lime-text text-darken-4 hover-shadow3d nowrap"  :class="{'bold': listItem === selected, 'fw500': listItem === highlighted}"  style="">
+                    <h4 class="padd-0-05 lime-text text-darken-4 hover-shadow3d hoverable nowrap"  :class="{'bold': listItem === selected, 'fw500': listItem === highlighted}"  style="">
                       <span >{{ listItem.floor }}</span>
                     </h4>
                   </template>
