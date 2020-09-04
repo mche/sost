@@ -13,10 +13,10 @@
 */
 var moduleName = "Аренда::Договор::Помещения::Форма";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Компонент::Выбор в списке', 'Util']);
+var module = angular.module(moduleName, ['Компонент::Выбор в списке', 'Util', 'EventBus',]);
 
 module
-.factory('$КомпонентАрендаДоговорПомещенияФорма', function($templateCache, $КомпонентВыборВСписке, Util) {// factory
+.factory('$КомпонентАрендаДоговорПомещенияФорма', function($templateCache, $КомпонентВыборВСписке, Util, $EventBus) {// factory
 
 const defaultParam = {
   "bgClass": 'lime lighten-4',
@@ -29,13 +29,13 @@ const props = {
       return {};
     },
   },
-  "rooms": {
+  "rooms": {/// помещение договора
     type: Array,
     default: function () {
       return [];
     },
   },
-  "allRooms": Array,
+  //~ "allRooms": Array,
 };///конец props
   
 const util = {/*разное*/
@@ -59,15 +59,37 @@ const util = {/*разное*/
 
 const methods = {/*методы*/
 
+ObjectData(){/// список объектов/помещений
+  var vm = this;
+  return new Promise(function(resolve, reject){
+    $EventBus.$emit('Дайте список объектов аренды', function(/*loader*/data){/// один раз выполнится
+      //~ loader.then(function(data){
+        //~ rentRoomsData = [];
+        vm.rentRooms = [];
+        data.map(function(item){
+          //~ console.log("Дайте список объектов аренды",  item['$объект']);
+          item['@кабинеты'].map(function(room){
+            vm.rentRooms.push({"id": room.id, /*"объект-помещение": `${ item['$объект']['name']  }: №${ room['номер-название'] }, ${ room['этаж'] } эт., ${ room['площадь'] } м²`,*/ "_match": `${ item['$объект']['name']  } лит.${ room.$литер.title } ${ room['номер-название'] } ${ vm.FloorTitle(room['этаж']) } ${ room['площадь'] }`.toLowerCase(), /*"адрес": item['адрес'],*/ "$помещение": room, "$объект": item['$объект'],/*"$item": angular.copy(item),*/});
+          });
+        });
+        //~ console.log("Дайте список объектов аренды",vm.rentRooms );
+        //~ 
+        return resolve(true);
+      //~ }, function(err){ return reject(err); });
+        
+    });
+  });
+},
+  
 InitRooms(){
   this.rooms.map(util.MapItemRooms, this);
   
 },
 
-//~ Ready(){/// метод
-  //~ var vm = this;
-  
-//~ },
+Ready(){/// метод
+  var vm = this;
+  this.ready = true;
+},
 
 OnRoomSelect(item, propSelect){/// из компонента выбор из списка помещений
   //~ console.log("OnRoomSelect", item, propSelect);
@@ -131,6 +153,9 @@ ParseNum(num){
   return parseFloat(Util.numeric(num));
 },
 
+FloorTitle(floor){
+  return floor.toString().replace(/-1/, 'подв.').replace(/0/, 'цок.').replace(/9999/, 'крыша');
+},
 
 
 }; /// конец methods
@@ -192,6 +217,9 @@ const mounted = function(){
     //~ window.uploader = this.$refs.uploader.uploader;
   //~ });
   var vm = this;
+  vm.ObjectData().then(()=>{
+    vm.Ready();
+  });
   //~ console.log("mounted", vm.rooms, vm.dataRooms);
 };/// конец mounted
 

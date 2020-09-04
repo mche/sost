@@ -78,7 +78,7 @@
           </td>
           <td class="right-align" style="width:3%;">
             <div class="nowrap lime-text-darken-4 line-height-10" style="">
-              <span class="bold">{{ item['@кабинеты'][idx]['этаж'].toString().replace(/-1/, 'подв.').replace(/0/, 'цок.') }}</span>
+              <span class="bold">{{ FloorTitle(item['@кабинеты'][idx]['этаж']) }}</span>
               <span class="fs8 grey-text"> эт.</span>
             </div>
           </td>
@@ -98,12 +98,12 @@
           <thead v-if="!item.showLiter"><tr class="lime lighten-3 ">
             <td></td>
             <th v-for="liter in item['@литеры']">
-              <h4 class="center lime-text text-darken-4">лит. <span class="chip bold">{{ liter.title }}</span></h4>
+              <h4 class="center lime-text text-darken-4">лит. <span class="chip bold white padd-0-05">{{ liter.title }}</span></h4>
             </th>
           </tr></thead> 
           <tbody>
             <tr v-for=" [_, floor] of ByFoors(item) ">
-              <td class="padd-05" style="width:1%;"><span class="bold">{{ floor['этаж'] }}</span> эт.</td>
+              <td class="padd-05" style="width:1%;"><span class="bold">{{ FloorTitle(floor['этаж']) }}</span> эт.</td>
               <td v-for="liter in (item.showLiter ? [item.showLiter] : item['@литеры'])" class="vtop padd-05" :style="!item.showLiter && {'border-left': '4px double #d0d0d0',}">
                 <div v-for="idx in floor.roomsIndexes.filter(idx=>liter ? FilterRoomsByIdx(item, idx, liter) : true) " class="chip z-depth-1 white   nowrap line-height-10" :class="{'lime lighten-2':!!(item['@кол-во действующих договоров'][idx]>0)}">
                   <div class="">

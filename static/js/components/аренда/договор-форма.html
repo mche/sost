@@ -34,10 +34,11 @@
     <div class="col s4 ">
       <h4 class="right-align relative">
         <!--svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#contragent"></use></svg-->
+        
         <span>Арендодатель</span>
         <sup v-show=" !(form['$проект'] && form['$проект'].id) " class="chip red white-text" style="position: absolute; z-index: 1; top:0;padding:0.3rem;"></sup>
       </h4>
-      <a v-show="form['$проект'] && form['$проект'].id && form['контрагент'] && form['контрагент'].id" @click="MoneyXLS()" href="javascript:" class="btn-flat z-depth-1 purple lighten-5 purple-text text-darken-4"><i class="icon-balance"></i> Сверка расчетов</a>
+      <a v-show="form['$проект'] && form['$проект'].id && form['контрагент'] && form['контрагент'].id" @click="MoneyXLS()" href="javascript:" class="btn-flat z-depth-1 purple accent-1 purple-text text-darken-4"><i class="icon-balance"></i> <span class="hide-on-med-and-down">Сверка расчетов</span></a>
     </div>
     <div class="col s8  row">
       <!--div class="border fs8">{{ form['$проект'] }}</div-->
@@ -137,11 +138,11 @@
       </div>
     </div>
     
-    <div class="col s8 center">
+    <div class="col s4 push-s4">
       <div class="input-field chip shadow-inset-10 hoverable">
         <input :id=" 'chb-long-' + form._id " name="" type="checkbox" class="" v-model=" form['продление срока'] " >
         <label :for="'chb-long-' + form._id " class="before-yellow before-lighten-4 brown-text text-darken-3 chip yellow lighten-4 hoverable" style="padding-left:16px;"></label>
-        <label :for="'chb-long-' + form._id " class=""><h5 class="inline" style=""> <span class="material-icons" style="">alarm_add</span> <span>Продление срока аренды</span></h5></label>
+        <label :for="'chb-long-' + form._id " class=""><h5 class="inline maroon-text" style=""> <span class="material-icons circle  purple-text white" style="">alarm_add</span> <span>Продление срока аренды</span></h5></label>
       </div>
     
     </div>
@@ -217,7 +218,7 @@
         <a @click="roomsTableIdx = 0" href="javascript:" class="hover-shadow3d">
           <!--i class="material-icons">format_list_numbered</i-->
           <span>Осн. договор</span>
-          <sup class="chip z-depth-1">{{ form['@помещения'].length-1 }}</sup>
+          <sup class="chip z-depth-1 white">{{ form['@помещения'].length-1 }} поз.</sup>
         </a>
       </h5>
       
@@ -226,11 +227,11 @@
           <a @click="DopTable(dop)" href="javascript:" class="hover-shadow3d" :class="{'orange-text': !dop.id && !!dop['дата1']}">
             <sup v-show="!dop.id && !!dop['дата1']" class="" style="">✱</sup>
             <i v-show="!dop['дата1']" class="material-icons">library_add</i> <span>Доп. соглашение</span> <span v-show="!!dop['дата1']">№{{idx+1}}</span>
-            <sup v-if=" !!dop['дата1'] && !!dop['@помещения'] " class="chip z-depth-1">{{ dop['@помещения'].length }}</sup>
+            <sup v-if=" !!dop['дата1'] && !!dop['@помещения'] " class="chip z-depth-1 white">{{ dop['@помещения'].length-1 }} поз.</sup>
           </a>
         </h5>
         <div v-if=" roomsTableIdx == idx+1" >
-          <a v-show=" dop['дата1'] " @click=" RemoveDop(idx) " href="javascript:" class="hover-childs-show" style="position:absolute; top:0.5rem; right:0.5rem; z-index:1;">
+          <a v-show=" dop['дата1'] " @click=" RemoveDop(idx) " href="javascript:" class="hover-childs-show" style="position:absolute; top:2rem; right:0.5rem; z-index:1;">
             <i class="material-icons red-text circle hoverable">cancel</i>
             <span class="hover-parent-show-inline red-text hover-shadow3d nowrap" style="position:absolute;">Удалить доп. соглашение</span>
           </a>
@@ -245,8 +246,8 @@
 
       </div>
     
-      <contract-rooms v-if="roomsTableIdx == 0" :key="roomsTableIdx" :rooms="form['@помещения']" :allRooms="rentRooms" @table-sum="OnTableSum" class="block animated zoomIn fast"></contract-rooms>
-      <contract-rooms v-if=" roomsTableIdx > 0 && form['@доп.соглашения'] && form['@доп.соглашения'][roomsTableIdx-1] && form['@доп.соглашения'][roomsTableIdx-1]['дата1']" :key="roomsTableIdx" :rooms="form['@доп.соглашения'][roomsTableIdx-1]['@помещения']" :allRooms="rentRooms" :param="{'bgClass': 'teal lighten-5'}" @table-sum="OnTableSum" class="block animated slideInUp fast"></contract-rooms>
+      <contract-rooms v-if="roomsTableIdx == 0" :key="roomsTableIdx" :rooms="form['@помещения']"  @table-sum="OnTableSum" class="block animated zoomIn fast"></contract-rooms>
+      <contract-rooms v-if=" roomsTableIdx > 0 && form['@доп.соглашения'] && form['@доп.соглашения'][roomsTableIdx-1] && form['@доп.соглашения'][roomsTableIdx-1]['дата1']" :key="roomsTableIdx" :rooms="form['@доп.соглашения'][roomsTableIdx-1]['@помещения']" :param="{'bgClass': 'teal lighten-5'}" @table-sum="OnTableSum" class="block animated slideInUp fast"></contract-rooms>
       
     </div><!-- col -->
     </div><!-- row -->

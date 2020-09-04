@@ -398,29 +398,35 @@ from "аренда/объекты" o
           join refs r on p.id=r.id2
           join "аренда/объекты/литеры" lit on lit.id=r.id1---(VALUES ('A', 1)) as lit("title",  "id")
       ) p on p."литер/id"=r.id2
-      left join (--- все договоры с этим помещением
+      left join (--- все договоры/доп согл с этим помещением
         select p.id, 
           jsonb_agg(dp order by dp."дата1" desc) as "@аренда/договоры/json",
           array_agg(dp."договор/id" order by dp."дата1" desc) as "@аренда/договоры/id",
           array_agg(dp."действующий договор?" order by dp."дата1" desc) as "@действующий договор?",
+          ----array_agg(dp."доп.согл./id" order by dp."дата1" desc) as "@доп.согл./id",
           sum(coalesce(nullif(0, (not dp."действующий договор?")::int), 1)) as "кол-во действующих договоров"--- по идее 1 должен действовать
         from
           "аренда/помещения" p
           join (--- для проверки удаления строк помещений из объекта
             select d.*, r2.id1 as "помещение/id",
-            timestamp_to_json(d."дата1"::timestamp) as "$дата1",
-            timestamp_to_json(coalesce(d."дата расторжения", d."дата2")::timestamp) as "$дата2",
-            now() between d."дата1" and 
-              case when d."дата расторжения" is null and not coalesce(d."продление срока", false) then d."дата2"
-                else coalesce(d."дата расторжения", now())
-              end as "действующий договор?",
+            timestamp_to_json(dop."дата1"::timestamp) as "$дата1",
+            timestamp_to_json(dop."дата2"::timestamp) as "$дата2",
+            --~ timestamp_to_json(coalesce(d."дата расторжения", d."дата2")::timestamp) as "$дата2",
+            
+            --~ now() between d."дата1" and 
+              --~ case when d."дата расторжения" is null and not coalesce(d."продление срока", false) then d."дата2"
+                --~ else coalesce(d."дата расторжения", now())
+              --~ end 
+            now() between dop."дата1" and coalesce(dop."дата2", now())  as "действующий договор?",
+            dop."доп.согл./id",
             k.id as "контрагент/id", k."title" as "контрагент/title",
             d.id as "договор/id"---, row_to_json(d) as "договор/json"
             from 
               "контрагенты" k 
               join refs rk on k.id=rk.id1
               join "аренда/договоры" d on d.id=rk.id2
-              join refs r on d.id=r.id1
+              join "аренда/договоры/доп.согл/id/даты"() dop on dop."договор/id"=d.id --- мощная развязка договоров с доп. согл. по границам дат действия
+              join refs r on coalesce(dop."доп.согл./id",d.id)=r.id1
               join "аренда/договоры-помещения" p on p.id=r.id2
               join "refs" r2 on p.id=r2.id2
           ) dp on p.id=dp."помещение/id"

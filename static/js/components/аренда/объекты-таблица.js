@@ -169,6 +169,10 @@ ReduceByFloors(a, idx, rooms){
   return a;
 },
 
+FloorTitle(floor){
+  return floor.toString().replace(/-1/, 'подв.').replace(/0/, 'цок.').replace(/9999/, 'крыша');
+},
+
 }; /// конец methods
 
 const  data = function(){

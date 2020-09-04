@@ -372,3 +372,59 @@ from
   ) dop on dop.id=r.id2
 group by d.id
 ;
+
+DROP FUNCTION IF EXISTS "аренда/договоры/id/@даты"();
+DROP FUNCTION IF EXISTS "аренда/договоры/доп.согл/id/даты"();
+CREATE OR REPLACE FUNCTION "аренда/договоры/доп.согл/id/даты"()
+RETURNS TABLE("договор/id" int, "доп.согл./id" int, "дата1" date, "дата2" date)
+AS $func$
+/*
+** мощная развязка договоров с доп. согл. по границам дат действия
+*/
+BEGIN
+
+delete from "аренда/договоры/доп.согл." dop
+---select * from "аренда/договоры/доп.согл." dop
+where not EXISTS (
+  select r.id1
+  from 
+    "refs" r
+    join "аренда/договоры-помещения" p  on p.id=r.id2
+  where dop.id=r.id1
+);
+
+return query
+with agg as (
+  select 
+    d.id as "договор/id",
+    d."дата1"
+    || dop."@доп.согл./дата1"
+    || case when d."дата расторжения" is null and not coalesce(d."продление срока", false) then d."дата2"
+          else d."дата расторжения" end as "@даты",
+    dop."@доп.согл./id"
+  from "аренда/договоры" d
+    left join (
+      select rd.id1 as "договор/id",
+        array_agg(dop.id order by dop."дата1") as "@доп.согл./id",
+        array_agg(dop."дата1" order by dop."дата1") as "@доп.согл./дата1"
+        ---array_agg(p.id order by dop."дата1") as "@доп.согл./дата1"
+      from 
+        "аренда/договоры/доп.согл." dop
+        join refs rd on dop.id=rd.id2
+        ---join refs r on dop.id=r.id1
+        ---join "аренда/договоры-помещения" dp on dp.id=r.id2
+        ---join refs r1 on dp.id=r1.id2
+        ---join "аренда/помещения" p on p.id=r1.id1
+      group by rd.id1
+    ) dop on d.id=dop."договор/id"
+)
+
+select d1."договор/id", d1."@доп.согл./id"[o1.n1-1] as "доп.согл./id", o1.d1, o2.d2
+from agg d1, unnest(d1."@даты") with ordinality o1(d1, n1),
+  agg d2, unnest(d2."@даты") with ordinality o2(d2, n2)
+where d1."договор/id"=d2."договор/id" /*and d1."@границы дат"[1]!=o1*/ /*and o1.d1 < coalesce(o2.d2, now())*/ and o2.n2-o1.n1=1
+---order by "договор/id"--, o1.d1, o2.d2
+
+;
+END
+$func$ LANGUAGE 'plpgsql';
