@@ -119,7 +119,9 @@
     <tr class="">
       <td class="padd-0-05 relative" style="width:50%;">
         <h5 class="fw500"><a href="<%= url_for('МедКол/детальный результат', 'sess_sha1'=>$r->{'сессия/sha1'}[$i]) %>" class="hover-shadow3d blue-text-darken-3 ">
-          % for (grep defined, @{$r->{'@тест/название/родители'}[$i] || []}) {
+          %# $c->log->error($r->{'@тест/название/родители'});
+          % my $test_names = $c->app->json->decode($r->{'@тест/название/родители'}[$i] || '[]');
+          % for (grep defined, @{$test_names || []}) {
             <span class="breadcrumb"><%= $_ %></span>
           % }
           <span class="breadcrumb"><%= $r->{'тест/название'}[$i] %></span>

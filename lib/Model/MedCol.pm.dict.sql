@@ -627,8 +627,11 @@ select
   array_agg("сессия/дата проверки"  {%= $order_by_agg // 'order by "тест/id", "сессия/ts" desc' %}) as "сессия/дата проверки",
   array_agg("сессия/дата проверки/json"  {%= $order_by_agg // 'order by "тест/id", "сессия/ts" desc' %}) as "сессия/дата проверки/json",
   array_agg("тест/id" {%= $order_by_agg // 'order by "тест/id", "сессия/ts" desc' %}) as "тест/id",
-  array_agg("тест/название" {%= $order_by_agg // 'order by "тест/id", "сессия/ts" desc' %}) as "тест/название"
+  array_agg("тест/название" {%= $order_by_agg // 'order by "тест/id", "сессия/ts" desc' %}) as "тест/название",
+  
   ---array_agg("@тест/название/родители" {%= $order_by_agg // 'order by "тест/id", "сессия/ts" desc' %}) as "@тест/название/родители"
+   --- разная размерность! поэтому в одномерную строку
+      array_agg('["'||array_to_string(coalesce("@тест/название/родители", array[]::text[]), '","')||'"]'  {%= $order_by_agg // 'order by "тест/id", "сессия/ts" desc' %}) as "@тест/название/родители"
   {%= $append_select2 || '' %}
   
 from (
