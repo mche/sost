@@ -33,7 +33,7 @@
     <div class="row">
     <div class="col s4 padd-05">
       <h4 class="right-align relative">
-        <a v-show="form['$проект'] && form['$проект'].id && form['контрагент'] && form['контрагент'].id" @click="MoneyXLS()" href="javascript:" class="left btn-flat z-depth-1 purple accent-1 purple-text text-darken-4 hover-childs-show"><i class="icon-balance"></i> <span class="hover-parent-show-inline chip z-depth-1" style="position:absolute; text-transform: none; left:0;">сверка расчетов</span></a>
+        <a v-show="form['$проект'] && form['$проект'].id && form['контрагент'] && form['контрагент'].id" @click="MoneyXLS()" href="javascript:" class="left btn-flat z-depth-1 purple white-text hover-childs-show"><i class="icon-balance"></i> <span class="hover-parent-show-inline chip z-depth-1 purple-text" style="position:absolute; text-transform: none; left:0;">сверка расчетов</span></a>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0  512 400" class="teal-fill fill-darken-3" style="height: 2rem;"><use xlink:href="/fonts/rent.svg#renter"></use></svg>
         <span>Арендодатель</span>
         <sup v-show=" !(form['$проект'] && form['$проект'].id) " class="chip red white-text" style="position: absolute; z-index: 1; top:0;padding:0.3rem;"></sup>
@@ -48,7 +48,7 @@
             <span> ★ {{ selected.name }}</span>
             <span v-if="form['$проект']" class="grey-text fs7" style="position:absolute; right:0; bottom:-1rem;">#{{ form['$проект'].id }}</span>
           </h4>
-          <h4 v-else class="card hoverable padd-05 red-text ">Выбрать арендодателя</h4>
+          <h4 v-else class="card hoverable padd-05 purple-text ">Выбрать арендодателя</h4>
         </template>
         <template v-slot:listItem="{ listItem, selected, highlighted }">
           <h5 class="padd-0-05 relative purple-text text-darken-3"  :class="{'bold fs14': listItem === selected, 'fw500': listItem === highlighted,}"  style="">

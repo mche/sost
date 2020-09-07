@@ -627,8 +627,8 @@ select
   array_agg("сессия/дата проверки"  {%= $order_by_agg // 'order by "тест/id", "сессия/ts" desc' %}) as "сессия/дата проверки",
   array_agg("сессия/дата проверки/json"  {%= $order_by_agg // 'order by "тест/id", "сессия/ts" desc' %}) as "сессия/дата проверки/json",
   array_agg("тест/id" {%= $order_by_agg // 'order by "тест/id", "сессия/ts" desc' %}) as "тест/id",
-  array_agg("тест/название" {%= $order_by_agg // 'order by "тест/id", "сессия/ts" desc' %}) as "тест/название",
-  array_agg("@тест/название/родители" {%= $order_by_agg // 'order by "тест/id", "сессия/ts" desc' %}) as "@тест/название/родители"
+  array_agg("тест/название" {%= $order_by_agg // 'order by "тест/id", "сессия/ts" desc' %}) as "тест/название"
+  ---array_agg("@тест/название/родители" {%= $order_by_agg // 'order by "тест/id", "сессия/ts" desc' %}) as "@тест/название/родители"
   {%= $append_select2 || '' %}
   
 from (
