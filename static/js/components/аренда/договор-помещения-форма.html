@@ -13,25 +13,27 @@
           
           <v-select :select=" {'id': room.$помещение && room.$помещение.id, room: room} " :items=" rentRooms " :param=" {placeholder: 'поиск помещения', 'без стрелки раскрытия списка':true, ulDropDownClass: ['striped lime lighten-3']} " @on-select=" OnRoomSelect ">
             <template v-slot:selected="{ selected }">
-              <h5 v-if="selected" class="relative chip z-depth-1 padd-0-05-000 lime lighten-1 lime-text text-darken-4 animated slideInRight hover-bottom-shadow-lime-darken-3 ">
+              <h4 v-if="selected" class="relative chip z-depth-1 padd-0-05-000 lime lighten-1 lime-text text-darken-4 animated slideInRight hover-bottom-shadow-lime-darken-3 fw500">
                 <span><i class="material-icons padd-0">place</i></span>
                 <span>{{ selected.$объект['name'] }}</span>
-                <span class="nowrap chip padd-0-05"><span class="fs8 grey-text">лит. </span> <span class="bold">{{ selected.$помещение.$литер.title }}</span></span>
-                <span class="nowrap chip padd-0-05"><span class="fs8 grey-text">№</span> <span class="bold">{{ selected.$помещение['номер-название'] }}</span></span>
+                <span class="nowrap chip padd-0-05"><span class="fs8 grey-text">лит. </span> <span class="">{{ selected.$помещение.$литер.title }}</span></span>
                 <span class="nowrap chip padd-0-05"><span class="">{{ FloorTitle(selected.$помещение['этаж']) }}</span> <span class="fs8 grey-text">эт.</span></span>
-                <span class="nowrap chip padd-0-05"><span class="" :class="{'through': !!(room['площадь'] || room['площадь'] === 0), 'bold':!(room['площадь'] || room['площадь'] === 0)}">{{ ParseNum(selected.$помещение['площадь']).toLocaleString() }}</span> <span class="fs8 grey-text">м<sup>2</sup></span></span>
+                <span class="nowrap chip padd-0-05"><span class="fs8 grey-text">№</span> <span class="">{{ selected.$помещение['номер-название'] }}</span></span>
+                <span class="nowrap chip padd-0-05"><span class="" :class="{'through': !!(room['площадь'] || room['площадь'] === 0),}">{{ ParseNum(selected.$помещение['площадь']).toLocaleString() }}</span> <span class="fs8 grey-text">м<sup>2</sup></span></span>
+                <span class="nowrap" style=""><span class="grey-text fs8">{{ selected.$помещение['коммент'] }}</span></span>
                 <!--span class="grey-text fs7" style="position:absolute; right:0; bottom:0;">#{{ selected.id }}</span-->
-              </h5>
+              </h4>
               <h5 v-else class="card grey-text hoverable lime lighten-5  padd-0-05 hover-bottom-shadow-grey-darken-3-00000000000">Выбрать помещение в договор</h5>
             </template>
             <template v-slot:listItem="{ listItem, selected, highlighted }">
-              <h6 class="padd-0-05 lime-text text-darken-4 hover-shadow3d relative"  :class="{'chip z-depth-1 padd-05 lime lighten-1 bold fs12': listItem === selected, 'fw500': listItem === highlighted}"  style="">
+              <h6 class="padd-0-05 lime-text text-darken-4 hover-shadow3d relative nowrap"  :class="{'chip z-depth-1 padd-05 lime lighten-1 fw500 fs12 marg-05': listItem === selected, 'fw500': listItem === highlighted}"  style="">
                 <span><i class="material-icons fs8 padd-0">place</i></span>
                 <span>{{ listItem.$объект['name'] }}</span>
                 <span class="nowrap chip padd-0-05"><span class="fs8 grey-text">лит. </span> <span class="">{{ listItem.$помещение.$литер.title }}</span></span>
-                <span class="nowrap chip padd-0-05"><span class="fs8 grey-text">№</span> <span class="">{{ listItem.$помещение['номер-название'] }}</span></span>
                 <span class="nowrap chip padd-0-05"><span class="">{{ FloorTitle(listItem.$помещение['этаж']) }}</span> <span class="fs8 grey-text">эт.</span></span>
+                <span class="nowrap chip padd-0-05 "><span class="fs8 grey-text">№</span> <span class="middle truncate iblock" style="max-width:7rem;">{{ listItem.$помещение['номер-название'] }}</span></span>
                 <span class="nowrap chip padd-0-05"><span class="">{{ ParseNum(listItem.$помещение['площадь']).toLocaleString() }}</span> <span class="fs8 grey-text">м<sup>2</sup></span></span>
+                <span class="middle truncate iblock" style="max-width:10rem;"><span class="grey-text fs8">{{ listItem.$помещение['коммент'] }}</span></span>
                 <span class="grey-text fs7" style="position:absolute; right:0; bottom:0;">#{{ listItem.id }}</span>
               </h6>
             </template>

@@ -14,14 +14,17 @@
 <tbody>
   <tr v-for=" (item, idx) in data " :key=" item.id " class="relative" :class="{'selected': item === selectedObject}">
     <td class="vtop padd-05" style="width:calc(20vw)"--->
-<div v-for=" (item, idx) in data " :key=" item.id " class="relative card padd-05 blue lighten-4 animated slideInUp" :class="{'selected': item === selectedObject}">
-      <h4 :class="{'bold': item._edit}" class="fw500 line-height-10 card-title padd-05" style=""><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" style="height: 1.2rem;" class="blue-fill-darken-3"><use xlink:href="/fonts/icons.svg#realty-1"></use></svg>  <a @click=" Edit(item) " href="javascript:void('редактировать объект аренды') " class="hover-shadow3d blue-text text-darken-3" title="редактировать объект аренды">{{ (item['$объект'] && item['$объект'].name) || item['адрес'] }}</a></h4>
+<div v-for=" (item, idx) in data " :key=" item.id " :id="`rent-object-${item.id}`" class="relative card padd-05 blue lighten-4 animated slideInUp" :class="{'selected': item === selectedObject}">
+      <h4 :class="{'bold': item._edit}" class="fw500 line-height-10 card-title padd-05" style="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" style="height: 1.2rem;" class="blue-fill-darken-3"><use xlink:href="/fonts/icons.svg#realty-1"></use></svg>
+        <a @click=" Edit(item) " href="javascript:void('редактировать объект аренды') " class="hover-shadow3d blue-text text-darken-3" title="редактировать объект аренды"> {{ (item['$объект'] && item['$объект'].name) || item['адрес'] }} </a>
+      </h4>
       <!--div v-show="item['коммент'] && !!item['коммент'].length " class="chip width100 truncate pre-wrap fs8 grey-text-000 line-height-10" style="height:2rem;" :title=" item['коммент'] ">{{ item['коммент'] }}</div-->
       
       <div v-if=" item._edit " style="position: absolute; left:-5%; width:110%; z-index:2;"><v-rent-object-form :item=" item._edit " @on-save=" OnSave "></v-rent-object-form></div>
     <!--/td>
     <td class="vtop padd-05 relative" style="width:60%;" :style=" item['@кабинеты'].length > 1 ? {'padding-top':'2rem !important'} : {}"-->
-    <div class="card-content padd-05 relative" style="">
+    <div v-if="item._show" class="card-content padd-05 relative" style="">
       <!--div v-show="item['@кабинеты'].length > 1" style="position:absolute; top:0.3rem;">
         <a @click=" SortItemRoomsIndexes(item) " href="javascript:" class="chip hoverable padd-0-02 z-depth-1 lime darken-3 white-text" title="сортировать по номеру"><i class="material-icons">sort</i></a>
       </div--->

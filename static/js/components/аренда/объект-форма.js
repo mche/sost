@@ -53,11 +53,11 @@ InitForm(form){
   
 Ready(){/// метод
   var vm = this;
-
   vm.ready = true;
-  $timeout(function(){
-    $('input[type="text"]', $(vm.$el)).first().focus();
-  });
+  //~ $timeout(()=>{
+    //~ $('input[type="text"]', $(vm.$el)).first().focus();
+    //~ vm.$el.children[0].children[0].scrollIntoView({ "block": 'start', "behavior": 'smooth', });////behavior: 'instant', block: 'center'
+  //~ }, 700);
 },
 
 SelectObject(obj){

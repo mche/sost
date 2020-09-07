@@ -47,6 +47,13 @@ Ready(){/// метод
     vm.ready = true;
     $EventBus.$emit('$КомпонентАрендаОбъектыТаблица - готов');
   });
+  $EventBus.$on('Прокрути к объекту', function(id/*объекта*/){
+    //~ console.log('Прокрути к договору', id, vm.data.find(util.IsEqualId, {id}));
+    setTimeout(()=>{
+      //~ $(`#contract-${ id }`, $(vm.$el)).get(0).scrollIntoView({ "block": 'start', "behavior": 'smooth', });
+      document.getElementById(`rent-object-${ id }`).scrollIntoView({ "block": 'start', "behavior": 'smooth', });
+    });
+  });
 },
 
 LoadData(){
@@ -92,6 +99,7 @@ OnSave(data){ ///  из события сохранения формы
 },
 
 Edit(item){
+  if (!item._show) return this.$set(item, '_show', true);
   this.$set(item, '_edit', angular.copy(item));
 },
 SumSquare(item) {
