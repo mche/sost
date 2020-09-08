@@ -503,7 +503,7 @@ select
   dp.*,
   d.id as "договор/id"
 from 
-  "аренда/договоры" d 
+  {%= $main_table || ' "аренда/договоры" ' %}  d 
   join refs _r on d.id=_r.id1
   join "аренда/договоры-помещения" dp on dp.id=_r.id2
   join refs r1 on dp.id=r1.id2
@@ -517,6 +517,7 @@ from
 {%= $where || '' %}
 {%= $order_by || '' %}
 {%= $limit || '' %}
+
 
 @@ счета и акты
 --- за аренду помещений и предоплату для docx

@@ -39,10 +39,10 @@
             </template>
           </v-select>
           
-          <span  v-show="room['помещение/id']" class="grey-text fs7 " style="position: absolute; right:0.5rem;">#{{ room['помещение/id']}}</span>
+          <span  v-show="room['помещение/id']" class="grey-text fs7 " style="position: absolute; right:0.5rem; top:0;">#{{ room['помещение/id']}}</span>
           <span  v-show="!room['помещение/id'] " class="chip000 padd-0-05-000 red-text fs8 " style000="position: absolute; right:0;">не выбрано помещение, при сохранении позиция будет удалена!</span>
           
-          <div class="right-align" style="margin-top:2rem;">
+          <div class="right-align" style="">
             <h5 class="iblock middle">Точная площадь аренды, м²</h5>
             <div class="input-field iblock middle000" :class="{'chip lime lighten-3  z-depth-1': room['площадь']}" style="width:5rem;">
               <input  type="text" v-model.trim="room['площадь']" @input="InputSquare(room)" :placeholder=" (room.$помещение && room.$помещение['площадь']) || 'м²' " class="right-align" style="">
@@ -50,13 +50,14 @@
           </div>
           
         </td>
-        <td class="padd-05" style="width:20%;">
-          <div class="input-field row" :class="{'chip lime lighten-3 z-depth-1': room['ставка|сумма'] == 'ставка'}">
+        <td class="vtop padd-05" style="width:20%;">
+          <div class="input-field" :class="{'chip lime lighten-3 z-depth-1': room['ставка|сумма'] == 'ставка'}">
+            <p v000-show="room['ставка|сумма'] == 'ставка' && room['ставка']" class="fs8 grey-text line-height-8"> ставка за 1 м²/мес.</p>
             <input type="text" v-model.trim="room['ставка']" placeholder="ставка за 1 м²/мес."  title="ставка за 1 м²/мес." @input=" InputMetr(room) " :disabled="!room['помещение/id']">
             <!---div v-show="room['помещение/id'] && room['ставка']" class="right-align grey-text" title="сумма за месяц">{{ RoomSquare(room).toLocaleString() }}  ₽</div--->
           </div>
           
-          <div class="input-field row" :class="{'chip lime lighten-3 z-depth-1': room['ставка|сумма'] == 'сумма'}">
+          <div class="input-field " :class="{'chip lime lighten-3 z-depth-1': room['ставка|сумма'] == 'сумма'}">
             <p class="fs8 grey-text line-height-8"> или вся сумма за месяц</p>
             <input type="text" v-model.trim="room['сумма']" placeholder="сумма за месяц"  title="сумма за месяц" @input=" InputSum(room)" :disabled="!room['помещение/id']">
           </div>
@@ -66,10 +67,10 @@
             <input type="text" v-model.trim="room['сумма нал']" placeholder="доп. сумма нал."  title="доп. сумма нал." :disabled="!room['помещение/id']">
           </div-->
         </td>
-        <td class="vtop" style="width:20%;">
+        <td class="vtop padd-05" style="width:20%;">
           <div class="card00 padd-0-05 grey-lighten-3-000">
             <div class="input-field">
-              <textarea v-model.trim="room['коммент']" class="materialize-textarea padd-0" style="min-height: 7rem; font-size:0.8rem;" placeholder="примечание"></textarea>
+              <textarea v-model.trim="room['коммент']" class="materialize-textarea padd-0" style="min-height: 5rem; font-size:0.8rem;" placeholder="примечание"></textarea>
             </div>
           </div>
         </td>

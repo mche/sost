@@ -115,7 +115,7 @@ sub сохранить_кабинет {
 
 sub сохранить_помещение_договора {# и доп соглашения
   my ($self, $data, $prev)  =  @_;
-  $prev ||= $self->помещения_договора(id=>$data->{id})->[0]
+  $prev ||= $self->помещения_договора(id=>$data->{id})->[0] || $self->помещения_доп_соглашения(id=>$data->{id})->[0]
     if $data->{id};
   my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, 'аренда/договоры-помещения', ["id"], $data);
   $self->связь($data->{'помещение/id'}, $r->{id});
@@ -131,6 +131,16 @@ sub помещения_договора {
     $data->{id} ? (' dp.id ' => $data->{id}) : (),
     });
   $self->dbh->selectall_arrayref($self->sth('договоры/помещения', where=>$where), {Slice=>{}}, @bind);
+  
+}
+
+sub помещения_доп_соглашения {
+  my $self  =  shift;
+  my $data = ref $_[0] ? shift : {@_};
+  my ($where, @bind) = $self->SqlAb->where({
+    $data->{id} ? (' dp.id ' => $data->{id}) : (),
+    });
+  $self->dbh->selectall_arrayref($self->sth('договоры/помещения', main_table=>' "аренда/договоры/доп.согл." ', where=>$where), {Slice=>{}}, @bind);
   
 }
 
