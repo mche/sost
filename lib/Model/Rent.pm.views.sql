@@ -11,7 +11,7 @@ from
 join lateral (--- повторить по месяцам договоров
 --- тут один первый месяц договора (возможно неполный)
 select d."дата1" as "дата", ---date_trunc('month', d."дата1") as "месяц",
----extract(day FROM date_trunc('month', d."дата1"+interval '1 month') - d."дата1")/extract(day FROM date_trunc('month', d."дата1") + interval '1 month - 1 day') as "доля дней",--- первого неполного месяца
+  ----extract(day FROM date_trunc('month', d."дата1")+interval '1 month - 1 day') as "дней в месяце",
   extract(day FROM date_trunc('month', d."дата1"+interval '1 month') - d."дата1") as "дней оплаты",
   ---' за ' || extract(day FROM date_trunc('month', d."дата1"+interval '1 month') - d."дата1")::text || ' дн. неполн. мес.' as "коммент",
   ---null::int[] as "@категории/id", null::text[] as "@категории/title"
@@ -68,9 +68,9 @@ CREATE OR REPLACE VIEW "аренда/суммы платежей" as
 */
 select
   d.id as "договор/id", ---p.id as "помещение/id"
-  /*date_trunc('month', */d."дата1", ---) as "сумма с даты",
+  ---/*date_trunc('month', */d."дата1", ---) as "сумма с даты",
   --~ array[null::int]::int[] as "@доп.согл./id",
-  null::int as "доп.согл./id", null::int as "номер доп.согл.",
+  null::int as "доп.согл./id", ---null::int as "номер доп.согл.",
   array_agg(distinct ob.id) as "@объекты/id",
   array_agg(p."номер-название" order by p."номер-название") as "@помещения-номера",---для коммента
   sum(coalesce(dp."сумма", dp."ставка"*coalesce(dp."площадь", p."площадь"))) as "сумма безнал", --- без налички
@@ -100,9 +100,9 @@ group by d.id, d."дата1"
 union all
 select
   d.id as "договор/id", ---p.id as "помещение/id"
-  /*date_trunc('month', */dop."дата1",
+  ----/*date_trunc('month', */dop."дата1",
   --~ array_agg(dop.id order by dop."дата1") as "@доп.согл./id",
-  dop.id  as "доп.согл./id", row_number() OVER (ORDER BY dop."дата1") as "номер доп.согл.",
+  dop.id  as "доп.согл./id", ----row_number() OVER (ORDER BY dop."дата1") as "номер доп.согл.",
   array_agg(distinct ob.id) as "@объекты/id",
   array_agg(p."номер-название" order by p."номер-название") as "@помещения-номера",---для коммента
   sum(coalesce(dp."сумма", dp."ставка"*coalesce(dp."площадь", p."площадь"))) as "сумма безнал", --- без налички
@@ -132,13 +132,72 @@ group by d.id, dop."дата1", dop."сумма нал", dop.id
 
 ;--- конец view
 
+/*****************************************/
+
+DROP FUNCTION IF EXISTS "аренда/договоры/id/@даты"();
+DROP FUNCTION IF EXISTS "аренда/договоры/доп.согл/id/даты"() CASCADE;
+CREATE OR REPLACE FUNCTION "аренда/договоры/доп.согл/id/даты"()
+RETURNS TABLE("договор/id" int, "доп.согл./id" int, "дата1" date, "дата2" date, "номер доп.согл." int)
+AS $func$
+/*
+** мощная развязка договоров с доп. согл. по границам дат действия
+*/
+BEGIN
+
+delete from "аренда/договоры/доп.согл." dop
+---select * from "аренда/договоры/доп.согл." dop
+where not EXISTS (
+  select r.id1
+  from 
+    "refs" r
+    join "аренда/договоры-помещения" p  on p.id=r.id2
+  where dop.id=r.id1
+);
+
+return query
+with agg as (
+  select 
+    d.id as "договор/id",
+    d."дата1"
+    || dop."@доп.согл./дата1"
+    || case when d."дата расторжения" is null and not coalesce(d."продление срока", false) then d."дата2"
+          else d."дата расторжения" end as "@даты",
+    dop."@доп.согл./id"
+  from "аренда/договоры" d
+    left join (
+      select rd.id1 as "договор/id",
+        array_agg(dop.id order by dop."дата1") as "@доп.согл./id",
+        array_agg(dop."дата1" order by dop."дата1") as "@доп.согл./дата1"
+        ---array_agg(p.id order by dop."дата1") as "@доп.согл./дата1"
+      from 
+        "аренда/договоры/доп.согл." dop
+        join refs rd on dop.id=rd.id2
+        ---join refs r on dop.id=r.id1
+        ---join "аренда/договоры-помещения" dp on dp.id=r.id2
+        ---join refs r1 on dp.id=r1.id2
+        ---join "аренда/помещения" p on p.id=r1.id1
+      group by rd.id1
+    ) dop on d.id=dop."договор/id"
+)
+
+select d1."договор/id", d1."@доп.согл./id"[o1.n1-1] as "доп.согл./id", o1.d1, o2.d2, (o1.n1-1)::int
+from agg d1, unnest(d1."@даты") with ordinality o1(d1, n1),
+  agg d2, unnest(d2."@даты") with ordinality o2(d2, n2)
+where d1."договор/id"=d2."договор/id" /*and d1."@границы дат"[1]!=o1*/ /*and o1.d1 < coalesce(o2.d2, now())*/ and o2.n2-o1.n1=1
+---order by "договор/id"--, o1.d1, o2.d2
+
+;
+END
+$func$ LANGUAGE 'plpgsql';
 
 /************************************/
 DROP VIEW IF EXISTS "движение ДС/аренда/счета" CASCADE;--- расходные записи движения по аренде
+
 CREATE OR REPLACE VIEW "движение ДС/аренда/счета" as
 -- 
 select d.id  as "договор/id", d.ts as "договор/ts", sum."дата",
-  /*-1::numeric**/sum."сумма"*(sum."дней оплаты"/sum."всего дней в месяце")*(1-sum."% скидки"/100) as "сумма", sum."сумма безнал"*(sum."дней оплаты"/sum."всего дней в месяце")*(1-sum."% скидки"/100) as "сумма безнал",
+  /*-1::numeric**/sum."сумма"*(sum."дней оплаты"/sum."дней в месяце")*(1-sum."% скидки"/100) as "сумма",
+  sum."сумма безнал"*(sum."дней оплаты"/sum."дней в месяце")*(1-sum."% скидки"/100) as "сумма безнал",
   sum."доп.согл./id", sum."номер доп.согл.",
   --~ -1::numeric as "sign", --- счет-расход
   sum."@категории/id" as "категории",
@@ -152,7 +211,7 @@ select d.id  as "договор/id", d.ts as "договор/ts", sum."дата"
   array[[pr."id", null], [null, null]]::int[][] as "кошельки/id", ---  проект+кошелек, ...
   --~ null::text[][] as "кошельки", --- пока не знаю
   --~ null::int[][] as "кошельки/id",  --- пока не знаю
-  'счет ' || coalesce('№'||num1."номер", '') || ' по дог. ' || d."номер" || case when sum."номер доп.согл." is not null then '(доп. согл. ' || sum."номер доп.согл."::text ||')' else E'' end || ' ★ ' || ob.name /*|| E'\n' || coalesce(d."коммент", ''::text)*/ as "примечание"
+  'счет ' || coalesce('№'||num1."номер", '') || ' по дог. ' || d."номер" || case when sum."номер доп.согл." > 0 then '(доп. согл. ' || sum."номер доп.согл."::text ||')' else E'' end || ' ★ ' || ob.name /*|| E'\n' || coalesce(d."коммент", ''::text)*/ as "примечание"
   
 from
   "аренда/договоры" d
@@ -170,61 +229,35 @@ from
   
   
   join (-- суммы в мес по договору и доп согл
-    select 
-      "договор/id", "дата", 
-      "@объекты/id",
-      "@категории/id", "@категории/title", 
-       "сумма безнал", "сумма", "% скидки",
-       "всего дней в месяце",
-      case
-        when "даты1" is null or not "это начало доп соглашения" then coalesce("дней оплаты", "всего дней в месяце")
-        else "всего дней в месяце"-coalesce("дней оплаты", 0)
-      end as "дней оплаты",
-      --~ "@доп.согл./id", 
-      "@доп.согл./id"[case when "даты1" is null then 2 else 1 end] as "доп.согл./id",
-      "@номера доп.согл."[case when "даты1" is null then 2 else 1 end] as "номер доп.согл."
-    from (
 
-      select  a."договор/id", "дата"::date,---"месяц"
-        case when "@категории/id"[array_length("@категории/id",1)]=929979 then 0::numeric else coalesce(dc."%", 0::numeric) end as "% скидки",
-        "@объекты/id",
-        "@категории/id", "@категории/title",
-        unnest("суммы безнал"[1\:case when /*array_length("дней", 1) = 1 or*/ "дней оплаты доп"[1] < interval '0 days' then 2 else 1 end]) as "сумма безнал",
-        unnest("суммы"[1\:case when /*array_length("дней", 1) = 1 or*/ "дней оплаты доп"[1] < interval '0 days' then 2 else 1 end]) as "сумма",
-        unnest("даты1"[1:1])  as "даты1",
-        "@доп.согл./id", "@номера доп.согл.",
-        ---generate_subscripts("@доп.согл./id"[1:1], 1) as "номер доп.согл.",
-        extract(day FROM date_trunc('month', "дата") + interval '1 month - 1 day') as "всего дней в месяце",
-        case when array_length("дней оплаты доп", 1) > 1 and "дней оплаты доп"[1] < interval '0 days' then extract(day FROM -1*"дней оплаты доп"[1]) else "дней оплаты осн" end as "дней оплаты",
-        "дней оплаты доп"[1] < interval '0 days' as "это начало доп соглашения"
-        ---"номер доп.согл."
+      select  sum."договор/id",  "доп.согл./id", "номер доп.согл.", "дата"::date,---"месяц"
+        "@объекты/id", "@категории/id", "@категории/title",  "дней оплаты", "дней в месяце",
+        "сумма безнал", "сумма", case when "@категории/id"[array_length("@категории/id",1)]=929979 then 0::numeric else coalesce(dc."%", 0::numeric) end as "% скидки"
+        
       from (
-        select d1."договор/id", d1."дата", d1."дней оплаты" as "дней оплаты осн", sum."@объекты/id", ---sum."@доп.согл./id",
-          d1."@категории/id", d1."@категории/title",
-          array_agg(sum."доп.согл./id" order by d1."дата"-sum."дата1") as "@доп.согл./id",
-          array_agg(sum."номер доп.согл." order by d1."дата"-sum."дата1") as "@номера доп.согл.",
-          array_agg(sum."сумма безнал" order by d1."дата"-sum."дата1") as "суммы безнал",
-          array_agg(sum."сумма" order by d1."дата"-sum."дата1") as "суммы",
-          array_agg(sum."дата1" order by d1."дата"-sum."дата1") as "даты1",
-          array_agg(d1."дата"-sum."дата1"order by d1."дата"-sum."дата1") as "дней оплаты доп" --- если тут первый интервал отрицательный - месяц разделяется доп соглашением (две суммы)
-
-        from
-          --~ (
-          --~ values ( '2020-01-04'::date, 1000::money), ( '2020-04-14'::date, 2000::money),  ( '2020-08-20'::date, 3000::money)
-          --~ ) sum("дата1", "сумма")
-          -- сумма в мес по договору и доп соглашениям
-          "аренда/суммы платежей" sum
-          --~ join (
-            --~ select date_trunc('month', '2020-01-04'::date + interval '0 month')+make_interval(months=>m) "месяц"
-            --~ from generate_series(0, 11) m
-          --~ ) d1 on date_trunc('month', sum."дата1")<=d1."месяц"
-          --~ group by d1."месяц"
-          join  "аренда/даты платежей" d1 on d1."договор/id"=sum."договор/id" and date_trunc('month', sum."дата1")<=d1."дата"
-      --~ where sum."договор/id"=1010760 --- --946000
-        group by d1."договор/id", d1."дата", d1."дней оплаты", sum."@объекты/id", d1."@категории/id", d1."@категории/title"---, sum."@доп.согл./id"
-
-
-      ) a
+        select d.*, m."дата", m."@категории/id", m."@категории/title",
+          coalesce(m."дней оплаты", 
+          case 
+            when date_trunc('month', m."дата"::date)=date_trunc('month', d."дата1") and date_trunc('month', m."дата"::date)=date_trunc('month',  d."дата2")
+              then d."дата2"-d."дата1"
+            when date_trunc('month', m."дата"::date)=date_trunc('month',  d."дата2")
+              then d."дата2"-m."дата"::date
+            when date_trunc('month', m."дата"::date)=date_trunc('month',  d."дата1")
+              then (m."дата"+interval '1 month')::date-d."дата1"
+            else
+               extract(day FROM m."дата"+interval '1 month - 1 day' )
+            end
+            ) as "дней оплаты",
+            extract(day FROM m."дата"+interval '1 month - 1 day' ) as "дней в месяце",
+            sum."@объекты/id", sum."@помещения-номера", sum."сумма безнал", sum."сумма"
+            ---
+            
+        ---select *
+        from "аренда/договоры/доп.согл/id/даты"() d ---where "договор/id"=872495;
+          join "аренда/даты платежей" m on d."договор/id"=m."договор/id" and (m."дата" between d."дата1" and coalesce(d."дата2", (now()+interval '1 year')::date) or date_trunc('month', m."дата"::date)=date_trunc('month', d."дата1") or date_trunc('month', m."дата"::date)=date_trunc('month',  d."дата2"))
+          
+          join  "аренда/суммы платежей"  sum on coalesce(d."доп.согл./id", d."договор/id")=coalesce(sum."доп.согл./id", sum."договор/id")
+      ) sum
       left join (--- скидки по месяцам
         select
           dc.*,
@@ -232,10 +265,7 @@ from
         from "аренда/договоры" d
           join "refs" r on d.id=r.id1
           join "аренда/договоры/скидки" dc on dc.id=r.id2
-      ) dc on dc."договор/id"=a."договор/id" and date_trunc('month', a."дата"::date)=date_trunc('month', dc."месяц")
-      ---unnest("даты1") with ordinality as d ("_даты1", "номер доп.согл.")
-      ---generate_subscripts("даты1", 1) as "номер доп.согл."
-    ) a
+      ) dc on dc."договор/id"=sum."договор/id" and date_trunc('month', sum."дата"::date)=date_trunc('month', dc."месяц")
   ) sum on sum."договор/id"=d.id
   
     ---нумерация счетов (может быть отключена)
@@ -373,58 +403,3 @@ from
 group by d.id
 ;
 
-DROP FUNCTION IF EXISTS "аренда/договоры/id/@даты"();
-DROP FUNCTION IF EXISTS "аренда/договоры/доп.согл/id/даты"();
-CREATE OR REPLACE FUNCTION "аренда/договоры/доп.согл/id/даты"()
-RETURNS TABLE("договор/id" int, "доп.согл./id" int, "дата1" date, "дата2" date)
-AS $func$
-/*
-** мощная развязка договоров с доп. согл. по границам дат действия
-*/
-BEGIN
-
-delete from "аренда/договоры/доп.согл." dop
----select * from "аренда/договоры/доп.согл." dop
-where not EXISTS (
-  select r.id1
-  from 
-    "refs" r
-    join "аренда/договоры-помещения" p  on p.id=r.id2
-  where dop.id=r.id1
-);
-
-return query
-with agg as (
-  select 
-    d.id as "договор/id",
-    d."дата1"
-    || dop."@доп.согл./дата1"
-    || case when d."дата расторжения" is null and not coalesce(d."продление срока", false) then d."дата2"
-          else d."дата расторжения" end as "@даты",
-    dop."@доп.согл./id"
-  from "аренда/договоры" d
-    left join (
-      select rd.id1 as "договор/id",
-        array_agg(dop.id order by dop."дата1") as "@доп.согл./id",
-        array_agg(dop."дата1" order by dop."дата1") as "@доп.согл./дата1"
-        ---array_agg(p.id order by dop."дата1") as "@доп.согл./дата1"
-      from 
-        "аренда/договоры/доп.согл." dop
-        join refs rd on dop.id=rd.id2
-        ---join refs r on dop.id=r.id1
-        ---join "аренда/договоры-помещения" dp on dp.id=r.id2
-        ---join refs r1 on dp.id=r1.id2
-        ---join "аренда/помещения" p on p.id=r1.id1
-      group by rd.id1
-    ) dop on d.id=dop."договор/id"
-)
-
-select d1."договор/id", d1."@доп.согл./id"[o1.n1-1] as "доп.согл./id", o1.d1, o2.d2
-from agg d1, unnest(d1."@даты") with ordinality o1(d1, n1),
-  agg d2, unnest(d2."@даты") with ordinality o2(d2, n2)
-where d1."договор/id"=d2."договор/id" /*and d1."@границы дат"[1]!=o1*/ /*and o1.d1 < coalesce(o2.d2, now())*/ and o2.n2-o1.n1=1
----order by "договор/id"--, o1.d1, o2.d2
-
-;
-END
-$func$ LANGUAGE 'plpgsql';
