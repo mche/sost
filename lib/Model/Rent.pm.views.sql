@@ -245,10 +245,10 @@ from
             when date_trunc('month', m."дата"::date)=date_trunc('month',  d."дата1")
               then (m."дата"+interval '1 month')::date-d."дата1"
             else
-               extract(day FROM m."дата"+interval '1 month - 1 day' )
+               extract(day FROM date_trunc('month', m."дата"::date)+interval '1 month - 1 day' )
             end
             ) as "дней оплаты",
-            extract(day FROM m."дата"+interval '1 month - 1 day' ) as "дней в месяце",
+            extract(day FROM date_trunc('month', m."дата"::date)+interval '1 month - 1 day' ) as "дней в месяце",
             sum."@объекты/id", sum."@помещения-номера", sum."сумма безнал", sum."сумма"
             ---
             

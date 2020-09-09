@@ -344,7 +344,7 @@ ClearDateDop(name, val){
       vm.InitDatePicker(el, undefined, function(date){
         //~ vm.$set(vm.form['@доп.соглашения'][idx-1], name, undefined);
         //~ setTimeout(()=>{
-        if (!vm.form['@доп.соглашения'][idx-1][name]) Materialize.toast('Новое доп соглашение', 3000, 'green-text text-darken-3 green lighten-4 fw500 border animated zoomInUp slow');
+        if (!vm.form['@доп.соглашения'][idx-1][name]) Materialize.toast('Новое доп соглашение', 3000, 'orange-text text-darken-3 orange lighten-4 fw500 border animated zoomInUp slow');
         var foo = vm.form['предоплата'];/// тупой передерг
         vm.form['предоплата'] = undefined;
           vm.$set(vm.form['@доп.соглашения'][idx-1], name, dateFns.format(new Date(date), 'YYYY-MM-DD'));////new Date('2020-4-20').toISOString() ---  хрень
@@ -362,9 +362,10 @@ RemoveDop(idx){///удалить доп соглашение
   var vm = this;
   vm.ClearDateDop('дата1');
   vm.roomsTableIdx -= 1;
-  //~ vm.form['@доп.соглашения'].splice(idx, 1);
+  //~
   //~ vm.form['@доп.соглашения'][idx]['@помещения'].length = 0;
   vm.form['@доп.соглашения'][idx]['@помещения'] = undefined;
+  if (vm.form['@доп.соглашения'][idx].id) vm.form['@доп.соглашения'].splice(idx, 1);
   Materialize.toast('Доп соглашение будет удалено', 3000, 'green-text text-darken-3 orange lighten-4 fw500 border animated zoomInUp slow');
 },
 
@@ -458,6 +459,7 @@ const data = function() {
   let vm = this;
   vm.idMaker = idMaker;
   var form = vm.InitForm(angular.copy(vm.item));
+  vm.dateFns = dateFns;
   //~ if (form.id) vm.Uploads(form.id);
 
   return {//
