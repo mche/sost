@@ -1,0 +1,40 @@
+% layout 'main';
+
+<h1>Сообщения через WebSocket + Mojo::Pg::PubSub</h1>
+<div>
+
+  <div class="col s6 card padd-05 teal lighten-4">
+    <h2>Основной канал: <span class="chip bold padd-0-05">channel</span></h2>
+    <p>
+      Например оповещение:
+       <code class="iblock">select pg_notify('channel', '{"msg":"♥ ok ♥"}');</code>
+    </p>
+    
+    <ul id="channel" class="pre-wrap white"></ul><!-- тут сообщения канала -->
+  </div>
+
+  <div class="col s6 card padd-05 teal lighten-4">
+    <h2>Еще канал: 
+    % if (param('custom')) {
+    <span class="chip bold padd-0-05"><%= param('custom') %></span></h2>
+    <p>Оповещение: <code class="iblock">select pg_notify('<%= param('custom') %>', '{"msg":"..."}');</code></p>
+    <ul id="<%= param('custom') %>" class=" pre-wrap white"></ul><!-- тут сообщения канала -->
+    % } else {
+      </h2>
+      <form method="get">
+        <div class="input-field chip"><input name="custom" placeholder="название канала"></div>
+        <input type="submit" value="Подписка">
+      </form>
+    % }
+  </div>
+</div>
+
+<script>
+  
+  var ws  = new WebSocket('<%= url_for('websocket pubsub')->query('custom'=>param('custom'))->to_abs %>');
+  ws.onmessage = function (resp) {
+    var data = JSON.parse(resp.data);
+    console.log(resp.data, data);
+    if (data['channel']) $('#'+data.channel).append($('<li>').html('<span class="grey-text fs8 padd-0-05 breadcrumb">'+dateFns.format(data.time*1000, 'D MMMM YYYY HH:mm:ss', {locale: dateFns.locale_ru})+'</span><span class="brown-text breadcrumb">'+data['msg']+'</span>'));
+  };
+</script>

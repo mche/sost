@@ -254,7 +254,7 @@ from
             
         ---select *
         from "аренда/договоры/доп.согл/id/даты"() d ---where "договор/id"=872495;
-          join "аренда/даты платежей" m on d."договор/id"=m."договор/id" and (m."дата" between d."дата1" and coalesce(d."дата2", (now()+interval '1 year')::date) or date_trunc('month', m."дата"::date)=date_trunc('month', d."дата1") or date_trunc('month', m."дата"::date)=date_trunc('month',  d."дата2"))
+          join "аренда/даты платежей" m on d."договор/id"=m."договор/id" and (m."дата" between d."дата1" and coalesce(d."дата2"-interval '1 day', (now()+interval '1 year')::date) or date_trunc('month', m."дата"::date)=date_trunc('month', d."дата1") or date_trunc('month', m."дата"::date)=date_trunc('month',  d."дата2"-interval '1 day'))
           
           join  "аренда/суммы платежей"  sum on coalesce(d."доп.согл./id", d."договор/id")=coalesce(sum."доп.согл./id", sum."договор/id")
       ) sum

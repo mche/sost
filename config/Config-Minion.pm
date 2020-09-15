@@ -1,7 +1,7 @@
 use Mojo::Base -strict;
 use Mojo::IOLoop;
 
-['Minion::Workers' => {
+['Minion::Workers' => {#plugin
   Pg => sub { shift->dbh->{'main'}->pg },
   workers=>2,
   manage=>1,
@@ -9,7 +9,7 @@ use Mojo::IOLoop;
     slow_log => sub { # SQLite => 'sqlite:minion.db',
       my ($job, $arg1) = @_;
       my $jid = $job->id;#app->dumper($job->info);
-      $job->app->log->info(qq{slow_log ARG="$arg1", worker pid [$ENV{MINION_PID}] job-id: $jid});#, keys %{$app->models}
+      $job->app->log->error(qq{minion task => slow_log =>"$arg1", worker pid [$ENV{MINION_PID} $$] job-id: $jid});#, keys %{$app->models}
       $job->finish;
     },
     tg_api_request => sub {#для вебхука

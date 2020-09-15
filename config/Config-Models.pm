@@ -30,4 +30,6 @@ grep !/^--/, qw(
   Tg
   Chem|Химия
   TimeRest|Отпуск
+  ---Video|Видео
+  PubSub
   );#

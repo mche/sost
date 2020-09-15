@@ -37,4 +37,5 @@ my @models = do 'config/Config-Models.pm';
       async => 1 # WARNING: may fail if Mojo::UserAgent is not available!
     );
   },
+
 };

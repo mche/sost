@@ -1,0 +1,53 @@
+{
+  "_from": "jsmpeg",
+  "_id": "jsmpeg@1.0.0",
+  "_inBundle": false,
+  "_integrity": "sha1-fkFRbXSHIOBjNjku65UXCa5TJEI=",
+  "_location": "/jsmpeg",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "jsmpeg",
+    "name": "jsmpeg",
+    "escapedName": "jsmpeg",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/jsmpeg/-/jsmpeg-1.0.0.tgz",
+  "_shasum": "7e41516d748720e06336392eeb951709ae532442",
+  "_spec": "jsmpeg",
+  "_where": "/home/guest",
+  "author": {
+    "name": "Leonardo Gatica",
+    "email": "lgatica@protonmail.com",
+    "url": "https://about.me/lgatica"
+  },
+  "bugs": {
+    "url": "https://github.com/lgaticaq/jsmpeg/issues"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "An MPEG1 Video Decoder in JavaScrip",
+  "homepage": "https://github.com/lgaticaq/jsmpeg#readme",
+  "keywords": [
+    "mpeg",
+    "decoder"
+  ],
+  "license": "MIT",
+  "main": "jsmpg.js",
+  "name": "jsmpeg",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lgaticaq/jsmpeg.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "1.0.0"
+}
