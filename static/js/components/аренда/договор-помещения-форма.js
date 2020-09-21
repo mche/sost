@@ -29,10 +29,16 @@ const props = {
       return {};
     },
   },
-  "rooms": {/// помещение договора
+  "помещения": {/// помещение договора
     type: Array,
     default: function () {
       return [];
+    },
+  },
+  "всегоСуммаБезнал": {/// сумма безнал договора, которая вместо построчного суммирования
+    type: Object,
+    default: function () {
+      return {};
     },
   },
   //~ "allRooms": Array,
@@ -88,7 +94,9 @@ InitRooms(){
 
 Ready(){/// метод
   var vm = this;
+  vm.InitRooms();
   this.ready = true;
+  
 },
 
 OnRoomSelect(item, propSelect){/// из компонента выбор из списка помещений
@@ -109,9 +117,14 @@ OnRoomSelect(item, propSelect){/// из компонента выбор из с�
     ((room['ставка|сумма'] == 'ставка') && vm.InputMetr(room)) || vm.InputSum(room);
   } else {///удалить строку формы
     //~ rooms.removeOf(room);
-    room['помещение/id'] = undefined;
-    room.$помещение = undefined;
+    let idx = rooms.indexOf(room);
+    if (rooms.length > 1 && idx < rooms.length-1) rooms.splice(rooms.length-1, 1);
+    //~ else {
+      room['помещение/id'] = undefined;
+      room.$помещение = undefined;
+    //~ }
   }
+  this.$emit('rooms-change', rooms);
 },
 
 InputMetr(room){///ставка за1м/мес
@@ -157,6 +170,13 @@ FloorTitle(floor){
   return floor.toString().replace(/-1/, 'подв.').replace(/0/, 'цок.').replace(/9999/, 'крыша');
 },
 
+InputTotalMoney(){
+  this.totalMoney['сумма'] = this.ParseNum(this.totalMoney['сумма']);
+  //~ console.log("InputTotalMoney", this.totalMoney['сумма']);
+  if (isNaN(this.totalMoney['сумма'])) this.totalMoney['сумма'] = null;
+  this.$emit('table-sum', this.totalMoney['сумма']  === 0 ? this.totalMoney : ( this.totalMoney['сумма'] && this.totalMoney) || this.TotalSum);
+  
+},
 
 }; /// конец methods
 
@@ -169,7 +189,7 @@ TotalSum(){
     return a + vm.ParseNum(room['сумма'])+ vm.ParseNum(room['сумма нал'] || 0);
   }, 0);
   //~ console.log("TotalSum", s);
-  vm.$emit('table-sum', s);
+  if (this.totalMoney['сумма'] !== 0 && !this.totalMoney['сумма']) vm.$emit('table-sum', s);
   return s;
 },
 
@@ -198,14 +218,15 @@ const idMaker = IdMaker();/// глобал util/IdMaker.js
 const data = function() {
   let vm = this;
   vm.idMaker = idMaker;
-  vm.InitRooms();
+  
   vm.extParam = Object.assign({}, defaultParam, vm.param);
   //~ if (form.id) vm.Uploads(form.id);
   //~ console.log("data", vm.rooms);
 
   return {//
     "ready": false,
-    "dataRooms": vm.rooms,
+    "rooms": vm['помещения'],
+    "totalMoney": this['всегоСуммаБезнал'],
     //~ "form": form,
     //~ "uploads": [],
   };

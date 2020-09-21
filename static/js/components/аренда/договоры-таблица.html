@@ -168,26 +168,28 @@ lock</i><span class="bold">{{ item['$дата расторжения'].day }}</s
               <span class="nowrap chip-000 padd-0-05"><span class="">{{ room.$помещение['этаж'] }}</span><span class="fs8 grey-text"> эт.</span></span>
             </div>
           </td>
+          
           <td class="right-align" style="width:5rem;">
             <div class="nowrap line-height-10 lime-text-darken-4" style="width: calc(5vw);">
               <span class="nowrap " class-000="{'right': item['@помещения'].length == 1, 'chip padd-0-05': item['@помещения'].length > 1}"><span class="" :class="{'fw500': item['@помещения'].length == 1}">{{ RoomSquare(room).toLocaleString() }}</span><span class="fs8 grey-text"> м²</span></span>
             </div>
           </td>
-          <td class="right-align" style="width:5rem;">
-            <div class="nowrap line-height-10" style="width: calc(5vw);">
-              <span class="" title="руб. за м²/мес. ">{{ RoomPrice(room).toLocaleString().replace(/[.,]\d+/, '') }}</span>
+          
+          <td class="right-align" style="width:5rem;"><!-- ставка за помещение -->
+            <div v-show="!((item['@доп.соглашения'] ? item['@доп.соглашения'][item['@доп.соглашения'].length-1] : item)['сумма безнал'])" class="nowrap line-height-10" style="width: calc(5vw);">
+              <span class="" title="руб. за м²/мес. ">{{ RoomPrice(room).toLocaleString(undefined, {"currency": 'RUB', "minimumFractionDigits":0, maximumFractionDigits:1,}) }}</span><!-- .replace(/[.,]\d+/, '')-->
               <span class="fs8 grey-text">₽</span>
             </div>
             
           </td>
           
-          <td class="right-align" style="width:5rem;">
-            <div v-show="item['@помещения'].length > 1" class="nowrap line-height-10" style="width: calc(5vw);">
-              <span class="bold " :class000="{'bold': item['@помещения'].length == 1}" title=" руб./мес. ">{{ RoomSum(room).toLocaleString().replace(/[.,]\d+/, '') }}</span>
+          <td class="right-align" style="width:5rem;"><!--- сумма за помещение --->
+            <div v-show="!((item['@доп.соглашения'] ? item['@доп.соглашения'][item['@доп.соглашения'].length-1] : item)['сумма безнал']) && (item['@доп.соглашения'] ? item['@доп.соглашения'][item['@доп.соглашения'].length-1] : item)['@помещения'].length > 1" class="nowrap line-height-10" style="width: calc(5vw);" title="">
+              <span class="bold " :class000="{'bold': item['@помещения'].length == 1}" title=" руб./мес. ">{{ RoomSum(room).toLocaleString(undefined, {"currency": 'RUB', "minimumFractionDigits":0, maximumFractionDigits:0,}) }}</span><!-- .replace(/[.,]\d+/, '')-->
               <span class="fs8 grey-text"> ₽</span>
             </div>
-            <h5 v-show="item['@помещения'].length == 1" class="nowrap">
-              <span class="bold " title=" руб./мес. ">{{ RoomSum(room).toLocaleString({"currency": 'RUB', "minimumFractionDigits":2,}) }}</span>
+            <h5 v-show="(item['@доп.соглашения'] ? item['@доп.соглашения'][item['@доп.соглашения'].length-1] : item)['@помещения'].length == 1" class="nowrap">
+              <span class="bold " title=" руб./мес. ">{{ (ParseNum((item['@доп.соглашения'] ? item['@доп.соглашения'][item['@доп.соглашения'].length-1] : item)['сумма безнал'] || 0) || RoomSum(room)).toLocaleString(undefined, {"currency": 'RUB', "minimumFractionDigits":0, maximumFractionDigits:0,}) }}</span>
               <span class="fs8 grey-text"> ₽</span>
             </h5>
           </td>
@@ -197,25 +199,25 @@ lock</i><span class="bold">{{ item['$дата расторжения'].day }}</s
           </td>
         </tr>
         <!--- Строка суммы за помещения -->
-        <tr v-if="item['@доп.соглашения'] ? item['@доп.соглашения'][item['@доп.соглашения'].length-1]['@помещения'].length > 1 : item['@помещения'] && item['@помещения'].length > 1" class="grey-000 lighten-4">
+        <tr v-if="(item['@доп.соглашения'] ? item['@доп.соглашения'][item['@доп.соглашения'].length-1]['@помещения'] : item['@помещения'] || []).length > 1" class="grey-000 lighten-4">
           <td colspan="4"></td>
           <td class="right-align">
             <h5 class="nowrap lime-text text-darken-4">
-              <span class="bold ">{{ RoomsSquare(item).toLocaleString().replace(/([.,]\d{2})\d+/, '$1') }}</span>
+              <span class="bold ">{{ RoomsSquare(item).toLocaleString(undefined, {maximumFractionDigits:2,}).replace(/([.,]\d{2})\d+/, '$1') }}</span>
               <span class="fs8"> м²</span>
             </h5>
           </td>
-          <td></td>
+          <td class="right-align"><h6>Всего:</h6></td>
           <td class="right-align">
-            <h5 class="nowrap">
-              <span class="bold">{{ RoomsSum(item).toLocaleString({"currency": 'RUB', "minimumFractionDigits":2,}) }}</span><!-- .replace(/[.,]\d+/, '')-->
+            <h5 class="nowrap" title="сумма безнал">
+              <span class="bold">{{ (ParseNum((item['@доп.соглашения'] ? item['@доп.соглашения'][item['@доп.соглашения'].length-1] : item)['сумма безнал']) || RoomsSum(item)).toLocaleString(undefined, {"currency": 'RUB', "minimumFractionDigits":0, maximumFractionDigits:0,}) }}</span><!-- .replace(/[.,]\d+/, '')-->
               <span class="fs8"> ₽</span>
             </h5>
           </td>
           <td></td>
         </tr>
         <!--- Строка суммы налички -->
-        <tr v-if="item['@доп.соглашения'] ? item['@доп.соглашения'][item['@доп.соглашения'].length-1]['сумма нал'] : item['сумма нал']" class="">
+        <tr v-if="(item['@доп.соглашения'] ? item['@доп.соглашения'][item['@доп.соглашения'].length-1] : item)['сумма нал']" class="">
           <td colspan="4" class="right-align-000"></td>
           <td class="right-align">
             <h5 class="nowrap lime-text text-darken-4">
@@ -226,14 +228,14 @@ lock</i><span class="bold">{{ item['$дата расторжения'].day }}</s
           </td>
           <td class="right-align">
             <h5 class="nowrap">
-              <span class="bold">{{ ParseNum(item['@доп.соглашения'] ? item['@доп.соглашения'][item['@доп.соглашения'].length-1]['сумма нал'] : item['сумма нал']).toLocaleString({"currency": 'RUB', "minimumFractionDigits":2,}) }}</span><!--.replace(/[.,]\d+/, '') -->
+              <span class="bold">{{ ParseNum((item['@доп.соглашения'] ? item['@доп.соглашения'][item['@доп.соглашения'].length-1] : item)['сумма нал']).toLocaleString(undefined, {"currency": 'RUB', "minimumFractionDigits":0, maximumFractionDigits:0,}) }}</span><!--.replace(/[.,]\d+/, '') -->
               <span class="fs8"> ₽</span>
             </h5>
           </td>
           <td></td>
         </tr>
         <!--- Строка всего если наличка -->
-        <tr v-if="item['@доп.соглашения'] ? item['@доп.соглашения'][item['@доп.соглашения'].length-1]['сумма нал'] : item['сумма нал']" class="">
+        <tr v-if="(item['@доп.соглашения'] ? item['@доп.соглашения'][item['@доп.соглашения'].length-1] : item)['сумма нал']" class="">
           <td colspan="4" class="right-align-000"></td>
           <td class="right-align">
             <h5 class="nowrap lime-text text-darken-4">
@@ -244,7 +246,7 @@ lock</i><span class="bold">{{ item['$дата расторжения'].day }}</s
           </td>
           <td class="right-align">
             <h5 class="nowrap">
-              <span class="bold">{{ (RoomsSum(item) + ParseNum(item['@доп.соглашения'] ? item['@доп.соглашения'][item['@доп.соглашения'].length-1]['сумма нал'] : item['сумма нал'])).toLocaleString({"currency": 'RUB', "minimumFractionDigits":2,}) }}</span><!--.replace(/[.,]\d+/, '') -->
+              <span class="bold">{{ ((ParseNum((item['@доп.соглашения'] ? item['@доп.соглашения'][item['@доп.соглашения'].length-1] : item)['сумма безнал']) || RoomsSum(item)) + ParseNum((item['@доп.соглашения'] ? item['@доп.соглашения'][item['@доп.соглашения'].length-1] : item)['сумма нал']) || 0).toLocaleString(undefined, {"currency": 'RUB', "minimumFractionDigits":0, maximumFractionDigits:0,}) }}</span><!--.replace(/[.,]\d+/, '') -->
               <span class="fs8"> ₽</span>
             </h5>
           </td>

@@ -203,9 +203,10 @@
     
     <div class="row">
     <div class=" col s12 ">
-      <h4>
+      <h4 class="relative">
         <i class="material-icons">format_list_numbered</i>
         <span>Сданы в аренду помещения/офисы объекта</span>
+        <sup v-show=" !validDop " class="chip red white-text" style="position: absolute; z-index: 1; top:0;padding:0.3rem;"></sup>
       </h4>
     
       <h5 class="helmet tab-shadow z-depth-1 lime lighten-4  " :class="{'fw500 active lime lighten-4': roomsTableIdx == 0, 'hoverable':roomsTableIdx != 0, }">
@@ -245,8 +246,8 @@
 
       </div>
     
-      <contract-rooms v-if="roomsTableIdx == 0" :key="roomsTableIdx" :rooms="form['@помещения']"  @table-sum="OnTableSum" class="block animated zoomIn fast"></contract-rooms>
-      <contract-rooms v-if=" roomsTableIdx > 0 && form['@доп.соглашения'] && form['@доп.соглашения'][roomsTableIdx-1] && form['@доп.соглашения'][roomsTableIdx-1]['дата1']" :key="roomsTableIdx" :rooms="form['@доп.соглашения'][roomsTableIdx-1]['@помещения']" :param="{'bgClass': !!form['@доп.соглашения'][roomsTableIdx-1].id ? 'teal lighten-5' : 'orange lighten-5'}" @table-sum="OnTableSum" class="block animated slideInUp fast"></contract-rooms>
+      <contract-rooms v-if="roomsTableIdx == 0" :key="roomsTableIdx" :помещения="form['@помещения']" :всегоСуммаБезнал=" {'сумма':form['сумма безнал']} " @table-sum="OnTableSum" @rooms-change="OnRoomsChange" class="block animated zoomIn fast"></contract-rooms>
+      <contract-rooms v-if=" roomsTableIdx > 0 && form['@доп.соглашения'] && form['@доп.соглашения'][roomsTableIdx-1] && form['@доп.соглашения'][roomsTableIdx-1]['дата1']" :key="roomsTableIdx" :помещения="form['@доп.соглашения'][roomsTableIdx-1]['@помещения']" :param="{'bgClass': !!form['@доп.соглашения'][roomsTableIdx-1].id ? 'teal lighten-5' : 'orange lighten-5'}" :всегоСуммаБезнал="{'сумма':form['@доп.соглашения'][roomsTableIdx-1]['сумма безнал']}" @table-sum="OnTableSum" @rooms-change="OnRoomsChange" class="block animated slideInUp fast"></contract-rooms>
       
     </div><!-- col -->
     </div><!-- row -->
@@ -334,7 +335,7 @@
 <div class="card-action center grey lighten-2">
   <v-progress-indeterminate v-show=" cancelerHttp " :color=" 'teal' " :message=" 'Сохраняется...' "></v-progress-indeterminate>
       <div v-show="!cancelerHttp">
-        <a @click=" Save() " href="javascript:" :disabled="!Valid()" class="btn" >
+        <a @click=" Save() " href="javascript:" :disabled="!Valid || !validDop" class="btn" >
           <i class="material-icons">save</i>
           <span>Сохранить</span>
         </a>
