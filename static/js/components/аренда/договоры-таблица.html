@@ -203,11 +203,11 @@ lock</i><span class="bold">{{ item['$дата расторжения'].day }}</s
           <td colspan="4"></td>
           <td class="right-align">
             <h5 class="nowrap lime-text text-darken-4">
-              <span class="bold ">{{ RoomsSquare(item).toLocaleString(undefined, {maximumFractionDigits:2,}).replace(/([.,]\d{2})\d+/, '$1') }}</span>
+              <span class="bold ">{{ RoomsSquare(item).toLocaleString(undefined, {maximumFractionDigits:2,}) }}</span>
               <span class="fs8"> м²</span>
             </h5>
           </td>
-          <td class="right-align"><h6>Всего:</h6></td>
+          <td class="right-align"><h6>Сумма безнал:</h6></td>
           <td class="right-align">
             <h5 class="nowrap" title="сумма безнал">
               <span class="bold">{{ (ParseNum((item['@доп.соглашения'] ? item['@доп.соглашения'][item['@доп.соглашения'].length-1] : item)['сумма безнал']) || RoomsSum(item)).toLocaleString(undefined, {"currency": 'RUB', "minimumFractionDigits":0, maximumFractionDigits:0,}) }}</span><!-- .replace(/[.,]\d+/, '')-->
