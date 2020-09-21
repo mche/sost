@@ -1,8 +1,10 @@
 package Controll::Video;
 use Mojo::Base 'Mojolicious::Controller';
 
-has model => sub { $_[0]->app->models->{'Видео'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
+#~ has model => sub { $_[0]->app->models->{'Видео'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
 has pubsub => sub { $_[0]->app->models->{'PubSub'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
+
+
 
 sub cam1 {
   my $c = shift;
@@ -24,18 +26,20 @@ sub ws_feed {
   my $feed = $ws->param('feed')
     or return $ws->send({json   => {error=>"none param feed?"}});#=> sub { $ws->log->error("Sended", $ws->req->headers->user_agent)});
   
-  my $r = $ws->model->subws($feed, $ws);
+  my $r = $ws->model->subws($ws, $feed);
   return $ws->send({json   => {error=>$r}})
     unless ref $r;
   
   $ws->on(
     finish => sub {
       #~ my( $ws, $code, $reason ) = @_ ;
-      $ws->model->unsubws($feed, $ws);
+      $ws->model->unsubws($ws, $feed);
     }
   );
   
 }
+
+
 
 =pod
 sub ws_feed {
@@ -156,5 +160,7 @@ sub ffmpeg_cam1 {
   });
 }
 =cut
+
+
 
 1;

@@ -5,11 +5,13 @@ use Mojo::Base 'Model::Base';
 
 has [qw(app)];
 
-has cam1 => sub {
+has cam_ip10 => sub {
+  my $self = shift;
   open my $pipe, qq(ffmpeg  -i 'rtsp://192.168.128.10:554/user=admin&password=&channel=1&stream=0.sdp?' -f mpegts -codec:v mpeg1video  -b:v 1200k  -bf 0 -an  -crf  50  - 2>/dev/null |)      or return;#die "cannot run command: $!";-s 1280x720
   binmode($pipe);
   my $stream = Mojo::IOLoop::Stream->new($pipe);
   $stream->start;
+  $self->app->log->error("Feed $stream started");
   return $stream;
   #~ return $pipe;
 };
@@ -17,7 +19,7 @@ has cam1 => sub {
 has feeds => sub {
   my $self = shift;
   my $app = $self->app;
-  my $cam1 = $self->cam1;
+  my $cam1 = $self->cam_ip10;
   
   my $feeds = {'/feed/cam1'=>{tx=>$cam1, clients=>{}}};
   
@@ -30,16 +32,23 @@ has feeds => sub {
   return $feeds;
 };
 
+#~ has disable_destroy => 0;#  пропускать DESTROY когда init 
+
 sub init {
   my $self = shift;
-  #~ $self->feeds; ## до форка
+  #~ $self->disable_destroy(1);
+  #~ my $quit = $SIG{QUIT};
+  #~ $SIG{QUIT} = sub { $self->DESTROY(); $quit->(); };
+  #~ my $usr2 = $SIG{USR2};
+  #~ $SIG{USR2} = sub { $self->DESTROY(); $usr2->(); };
+  #~ $self->feeds; ## до форка не надо
   #~ $self->dbh->do($self->sth('функции'));
-  #~ $self->app->log->error("init Model::Video", $self->dict->render('1'));
-  #~ return $self;
+  #~ $self->app->log->error($self->app->server);
+  return $self;
 }
 
 sub subws {
-  my ($self, $feed, $ws) = @_;
+  my ($self, $ws, $feed) = @_;
   $ws->log->error("Client connect try feed=$feed, now feeds=[@{[ keys %{ $self->feeds} ]}]");
   
   $feed = $self->feeds->{$feed}
@@ -51,25 +60,30 @@ sub subws {
 }
 
 sub unsubws {
-  my ($self, $feed, $ws) = @_;
+  my ($self, $ws, $feed) = @_;
   
   delete $self->feeds->{$feed}{clients}{ "$ws" };
-  $ws->log->error("Client disconnected: $ws; clients: @{[ scalar keys %{ $feed->{clients} } ]}");
+  $ws->log->error("Client disconnected: $ws; clients: @{[ scalar keys %{ $self->feeds->{$feed}{clients} } ]}");
 }
 
-sub DESTROY {
+sub DESTROY000 {
   my $self = shift;
-  return unless $self->feeds;
-  while (my ($path, $feed) = each %{$self->feeds}) {
-    while (my ($client, $ws) = each %{ $feed->{clients} }) {
-      delete $feed->{clients}{$client};
-      $self->app->log->error("Client destroied; clients: @{[ scalar keys %{ $feed->{clients} } ]}");
+  $self->app->log->error("DESTROY 1");
+  return if $self->disable_destroy;
+  $self->app->log->error("DESTROY 2");
+  my $feeds = $self->feeds
+    || return;
+  while (my ($path, $feed) = each %$feeds) {
+    while (my ($id, $ws) = each %{ $feed->{clients} }) {
+      $ws->finish;
+      delete $feed->{clients}{$id};
+      $self->app->log->error("Client [$id] destroied; clients: @{[ scalar keys %{ $feed->{clients} } ]}");
     }
-    $self->app->log->error("Feed [$path] stopped");
-    $feed->tx->stop;
+    delete $feeds->{$path} and   next unless $feed->tx;
+    $self->app->log->error("Stream [$path] stopped");
+    #~ $feed->tx->stop;
     $feed->tx->close;
-    delete $self->feeds->{$path};
-    $self->app->log->error("Feed [$path] destroied; feeds: @{[ scalar keys %{ $self->feeds } ]}");
+    $self->app->log->error("Feed [$path] destroied; feeds: @{[ scalar keys %$feeds ]}");
   }
   
 }

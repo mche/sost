@@ -662,21 +662,23 @@ WITH param as (
 
 select {%= $select || '*' %} from (
 select
-   pr."реквизиты"||to_jsonb(pr) as "$арендодатель", ---as "арендодатель/реквизиты", --- item['арендодатель/реквизиты']
+  pr."проект" as "проект",
+   pr."реквизиты"||to_jsonb(pr) as "$арендодатель/json", ---as "арендодатель/реквизиты", --- item['арендодатель/реквизиты']
   coalesce(r."номер", '000')/*(random()*1000)::int*/ as "номер счета",
   r."дата" as "дата счета",
-  timestamp_to_json(r."дата"::timestamp) as "$дата счета",
+  timestamp_to_json(r."дата"::timestamp) as "$дата счета/json",
+  --~ timestamp_to_json(case when coalesce(d."оплата до числа", 5) = 5 then (date_trunc('month', r."дата")+interval '4 days') else (date_trunc('month', r."дата")-interval '1 month'+interval '24 days') end)  as "$дата оплатить счет",
   
   ---coalesce(num2."номер", '000')/*(random()*1000)::int*/ as "номер акта",
   ---coalesce(/*num2.ts*/date_trunc('month', num2."месяц")+interval '1 month'-interval '1 day', /*now()*/null)::date as "дата акта",--- на последнее число мес
   ---timestamp_to_json(coalesce(/*num2.ts*/(date_trunc('month', num2."месяц")+interval '1 month'-interval '1 day')::timestamp, now())) as "$дата акта",--- на последнее число мес
   
   ob.name as "объект",
-  row_to_json(d) as "$договор", 
+  row_to_json(d) as "$договор/json", 
   d."номер!" as "договор/номер",
   d."дата1" as "договор/дата начала",
   coalesce(d."дата расторжения", d."дата2") as "договор/дата завершения",
-  row_to_json(k) as "$контрагент",
+  row_to_json(k) as "$контрагент/json",
   k.id as "контрагент/id",
   k.title as "контрагент/title", coalesce(k."реквизиты",'{}'::jsonb)->>'ИНН' as "ИНН",
   pos."сумма", replace(pos."сумма"::numeric::text, '.', ',') as "сумма/num",
@@ -700,7 +702,7 @@ from
   
   --- по объекту (одна строка из арендованных помещений)
   ---join refs _rp on d.id=_rp.id1
-  /*left*/ join (
+  left join (
     select dp."договор/id",
       ---jsonb_agg(dp order by dp.id) as "@помещения/json",
       ---array_agg(dp."помещение/id" order by dp.id) as "@кабинеты/id",
@@ -717,7 +719,7 @@ from
     group by "договор/id"--d.id
   ) dp on d.id=dp."договор/id"
   
-  join  "roles" ob on ob.id=dp."@объекты/id"[1]--- один объект
+  left join  "roles" ob on ob.id=dp."@объекты/id"[1]--- один объект
   
   join refs _rr on d.id=_rr.id1
   join "аренда/расходы" r on r.id=_rr.id2
@@ -728,7 +730,7 @@ from
   join (--- позиции
     select 
       "расход/id",
-      sum(coalesce(pos."сумма", pos."сумма2")) as "сумма",
+      sum(coalesce(pos."сумма", pos."сумма позиции")) as "сумма",
       array_agg(row_to_json(pos) order by pos."order_by") as "@позиции",
       count(pos) as "всего позиций"
     from (
@@ -744,7 +746,7 @@ from
         ('{"' || cat.title || ' за '||param."месяц"||' '||param."год"||' г."}')::text[]  as "номенклатура",
         pos.id as "order_by",
         pos.*,
-        pos."количество"*pos."цена" as "сумма2"
+        coalesce(pos."сумма", pos."количество"*pos."цена") as "сумма позиции"
       from
         param,
         "аренда/расходы" r
