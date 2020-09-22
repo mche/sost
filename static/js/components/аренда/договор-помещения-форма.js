@@ -222,6 +222,7 @@ const data = function() {
   vm.extParam = Object.assign({}, defaultParam, vm.param);
   //~ if (form.id) vm.Uploads(form.id);
   //~ console.log("data", vm.rooms);
+  if (this['всегоСуммаБезнал']) this.$emit('table-sum', this['всегоСуммаБезнал']);
 
   return {//
     "ready": false,

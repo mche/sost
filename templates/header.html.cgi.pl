@@ -36,7 +36,7 @@ div({-class=>"nav-wrapper valign-wrapper",},
     h1({-class=>"left--- white-text fw500 font-effect-3d-float", -style=>"padding-left: 0.5rem;",},
     #i({-class=>"material-icons",}, 'menu'),
       span({-class=>"middle-000"}, $c->stash('header-title') || $c->title || ''),
-      span({-class=>"teal-text-darken-1"}, '★'.$c->app->config('Проект')),#i({-class=>"material-icons"}, 'keyboard_arrow_right'), 
+      span({-class=>"teal-text"}, '★'.$c->app->config('Проект')),#i({-class=>"material-icons"}, 'keyboard_arrow_right'), 
       
       #~ $uid ? span({-class=>"chip red-text animated slideInRight slower"}, 'восстановлено на 24 сентября!') : (),
     ),

@@ -246,8 +246,8 @@
 
       </div>
     
-      <contract-rooms v-if="roomsTableIdx == 0" :key="roomsTableIdx" :помещения="form['@помещения']" :всегоСуммаБезнал=" {'сумма':form['сумма безнал']} " @table-sum="OnTableSum" @rooms-change="OnRoomsChange" class="block animated zoomIn fast"></contract-rooms>
-      <contract-rooms v-if=" roomsTableIdx > 0 && form['@доп.соглашения'] && form['@доп.соглашения'][roomsTableIdx-1] && form['@доп.соглашения'][roomsTableIdx-1]['дата1']" :key="roomsTableIdx" :помещения="form['@доп.соглашения'][roomsTableIdx-1]['@помещения']" :param="{'bgClass': !!form['@доп.соглашения'][roomsTableIdx-1].id ? 'teal lighten-5' : 'orange lighten-5'}" :всегоСуммаБезнал="{'сумма':form['@доп.соглашения'][roomsTableIdx-1]['сумма безнал']}" @table-sum="OnTableSum" @rooms-change="OnRoomsChange" class="block animated slideInUp fast"></contract-rooms>
+      <contract-rooms v-if="roomsTableIdx == 0" :key="roomsTableIdx" :помещения="form['@помещения']" :всегоСуммаБезнал=" {'сумма':form['сумма безнал'] || null} " @table-sum="OnTableSum" @rooms-change="OnRoomsChange" class="block animated zoomIn fast"></contract-rooms>
+      <contract-rooms v-if=" roomsTableIdx > 0 && form['@доп.соглашения'] && form['@доп.соглашения'][roomsTableIdx-1] && form['@доп.соглашения'][roomsTableIdx-1]['дата1']" :key="roomsTableIdx" :помещения="form['@доп.соглашения'][roomsTableIdx-1]['@помещения']" :param="{'bgClass': !!form['@доп.соглашения'][roomsTableIdx-1].id ? 'teal lighten-5' : 'orange lighten-5'}" :всегоСуммаБезнал="{'сумма':form['@доп.соглашения'][roomsTableIdx-1]['сумма безнал'] || null}" @table-sum="OnTableSum" @rooms-change="OnRoomsChange" class="block animated slideInUp fast"></contract-rooms>
       
     </div><!-- col -->
     </div><!-- row -->
