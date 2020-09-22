@@ -1,20 +1,20 @@
 package Controll::Video;
 use Mojo::Base 'Mojolicious::Controller';
 
-#~ has model => sub { $_[0]->app->models->{'Видео'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
+has model => sub { $_[0]->app->models->{'Видео'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
 has pubsub => sub { $_[0]->app->models->{'PubSub'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
 
 
 
-sub cam1 {
+sub index {
   my $c = shift;
   #~ my $cam1 = $c->app->cam1;
   
-  return $c->render('видео/cam1',
+  return $c->render('видео/index',
     handler=>'ep',
-    'header-title' => 'Камера Вход 1',
+    'header-title' => 'Камеры Стаханка',
     #~ stylesheets=>["uploader.css",],# 'js/dist/аренда/договор-форма.css',
-    #~ assets=>["аренда.js",],# 'js/dist/аренда/договор-форма.js' 'lib/v-calendar/dist/v-calendar.umd.js'],#'lib/v-calendar/dist2/lib.js',
+    #~ assets=>["видео.js",],# 'js/dist/аренда/договор-форма.js' 'lib/v-calendar/dist/v-calendar.umd.js'],#'lib/v-calendar/dist2/lib.js',
     );
 }
 

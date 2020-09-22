@@ -1,0 +1,9 @@
+% layout 'main';
+
+<h1>Вход №1</h1>
+<canvas>Загружается...</canvas>
+<script type="text/javascript" src="/lib/jsmpeg/jsmpeg.min.js"></script>
+<script type="text/javascript">
+  var canvas = document.getElementsByTagName('canvas')[0]; /// $c->req->url->path->to_route)->to_abs
+  var player = new JSMpeg.Player('<%= url_for('ws feed', 'feed'=> 'cam1')->to_abs %>', {canvas: canvas, autoplay: true,});
+</script>

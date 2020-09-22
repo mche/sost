@@ -1,4 +1,5 @@
 use Mojo::Base -strict;
+use Mojolicious::Plugin::RoutesAuthDBI::Util qw(load_class);
 use JSON::PP;
 my @models = do 'config/Config-Models.pm';
 
@@ -6,26 +7,34 @@ my @models = do 'config/Config-Models.pm';
   dbh => sub {
     do 'config/Config-DB.pm';
   },
-  init_models => sub {
-    my $app = shift;
-    map {
-      my @names = split '\|', $_;
-      my $class = load_class("Model::$names[0]");
-      $class->new(app=>$app)->init()
-        if $class;
-    } @models;
-  },
+  #~ init_models => sub {
+    #~ my $app = shift;
+    #~ map {
+      #~ my @names = split '\|', $_;
+      #~ my $class = load_class("Model::$names[0]");
+      #~ $class->new(app=>$app)->init()
+        #~ if $class;
+    #~ } @models;
+  #~ },
   models => sub {
     my $app = shift;
     return +{map {
       my @names = split '\|', $_;
-      my $class = load_class("Model::$names[0]");
-      my $model = $class->new(app=>$app)
-        if $class;
-      $app->log->info("create model [@names]");
+      my $model;
+      if (my $class = load_class("Model::$names[0]")) {
+        $model = $class->new(app=>$app);
+        if ($model) {
+          $app->log->info("Создал модель [@names]");
+          $model->init()
+            if $model->can('init');
+        } else {
+          $app->log->error("Не смог создать модель Model::$names[0]");
+        }
+      } else {
+        $app->log->error("Не смог загрузить класс модели Model::$names[0]");
+      }
       $model ? (map {$_ => $model} @names) : ();
-    } @models, 
-    };
+    } @models};
   },
   json => sub { JSON::PP->new->utf8(0)->allow_nonref(1); },
   JSON => sub { shift->json },

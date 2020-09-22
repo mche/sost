@@ -1,8 +1,0 @@
-% layout 'main';
-
-<canvas></canvas>
-<script type="text/javascript" src="/lib/jsmpeg/jsmpeg.min.js"></script>
-<script type="text/javascript">
-  var canvas = document.getElementsByTagName('canvas')[0];
-  var player = new JSMpeg.Player('<%= url_for('websocket feed')->query('feed'=> $c->req->url->path->to_route)->to_abs %>', {canvas: canvas, autoplay: true,});
-</script>
