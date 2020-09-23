@@ -5,36 +5,20 @@ use Mojo::Base 'Model::Base';
 
 has [qw(app)];
 
-has cam_ip10 => sub {
-  my $self = shift;
-  open my $pipe, qq(ffmpeg  -i 'rtsp://192.168.128.10:554/user=admin&password=&channel=1&stream=0.sdp?' -f mpegts -codec:v mpeg1video  -b:v 1300k   -bf 0   - 2>/dev/null |)      or return;#die "cannot run command: $!";-s 1280x720 -crf  50 -an 
-  binmode($pipe);
-  my $stream = Mojo::IOLoop::Stream->new($pipe);
-  $stream->start;
-  $self->app->log->info("Feed [cam1] $stream started");
-  return $stream;
-  #~ return $pipe;
-};
+has cam1 => qq(ffmpeg  -i 'rtsp://192.168.128.10:554/user=admin&password=&channel=1&stream=0.sdp?' -f mpegts -codec:v mpeg1video  -b:v 1300k   -bf 0   - 2>/dev/null |); #-s 1280x720 -crf  50 -an 
+
 
 has feeds => sub {
   my $self = shift;
-  my $app = $self->app;
-  my $cam1 = $self->cam_ip10;
+  my $feeds = {};
   
-  #~ my $clients = $self->clients->{'cam1'} = {};
+  my $cam1 = $self->stream($self->cam1);
+  $self->start_feed('cam1', $cam1, $feeds);
   
-  my $feeds = {'cam1'=>{tx=>$cam1, clients=>{},}};
-  
-  $cam1->on(read => sub {
-    my ($stream, $bytes) = @_;
-      #~ warn "got bytes ", length($bytes);
-      $_->tx->send({binary => $bytes})
-          for (values %{$feeds->{'cam1'}{clients}});
-  });
   return $feeds;
 };
 
-#~ has clients => sub { {} };
+has clients => sub { {} };
 
 #~ has disable_destroy => 0;#  пропускать DESTROY когда init 
 
@@ -51,33 +35,86 @@ sub init {
   my $server = $self->app->сервер; # в хуке before_server_start
   if ($server->isa('Mojo::Server::Prefork')) {
     $server->on(finish => sub {
-      $self->destroy;
+      #~ $self->destroy;
+      die;
     });
   } elsif ($server->isa('Mojo::Server::Daemon')) {
     $server->ioloop->on(finish => sub {
-      $self->destroy;
+      #~ $self->destroy;
+      die;
     });
   }
   return $self;
+}
+
+sub stream {# создать поток
+  my ($self, $cmd) = @_;
+  open my $pipe, $cmd     or die "cant run [$cmd]: $!"; 
+  binmode($pipe);
+  my $stream = Mojo::IOLoop::Stream->new($pipe);
+  $stream->start;
+  
+  return $stream;
+}
+
+sub start_feed {
+  my ($self, $name, $stream, $feeds) = @_;
+  my $app = $self->app;
+  
+  $app->log->info("Feed [$name] $stream started");
+  #~ my $clients = $self->clients->{'cam1'} = {};
+  
+  $feeds ||= $self->feeds;#{'cam1'=>{tx=>$cam1, clients=>{},}};
+  $feeds->{$name} = $stream;
+  
+  $stream->on(error => sub  {
+    my ($stream, $err) = @_;
+    $app->log->info("Feed [$name] $stream failed: [$err]");
+  });
+  
+  #~ $stream->on(timeout => sub {
+    #~ my ($stream) = @_;
+    #~ $app->log->info("Feed [$name] $stream timeout");
+  #~ });
+  
+  $stream->on(close => sub {# перезапустить поток
+    #~ my ($stream) = @_;
+    $app->log->info("Feed [$name] $stream close, restarting...");
+    my $cam = $self->stream($self->$name);#cam_ip10
+    #~ my $clients = $feeds->{$name}{clients};
+    $self->start_feed($name, $cam);
+    #~ $_->finish
+      #~ for values %$clients;
+    #~ $feeds->{$name}{clients} = $clients;
+  });
+  
+  $stream->on(read => sub {
+    my ($stream, $bytes) = @_;
+      #~ warn "got bytes ", length($bytes);
+      $_->tx->send({binary => $bytes})
+          for (values %{$self->clients->{$name}});
+  });
+  
+  return $feeds->{$name};
 }
 
 sub subws {
   my ($self, $ws, $feed) = @_;
   $ws->log->info("Client connect try feed=$feed, now feeds=[@{[ keys %{ $self->feeds} ]}]");
   
-  $feed = $self->feeds->{$feed}
-    or return " no yet feed ";#.$ws->param('feed')
+  my $stream = $self->feeds->{$feed}
+    or return " no yet feed=[$feed]";#.$ws->param('feed')
   
-  $feed->{clients}{"$ws"} = $ws;
-  $ws->log->info("Client connected: $ws; to feed: ".$feed->{tx}. "; clients: @{[ scalar keys %{ $feed->{clients} } ]}");
-  return $feed;
+  $self->clients->{$feed}{"$ws"} = $ws;
+  $ws->log->info("Client connected: $ws; to: ".$stream. "; clients: @{[ scalar keys %{ $self->clients->{$feed} } ]}");
+  return $stream;
 }
 
 sub unsubws {
   my ($self, $ws, $feed) = @_;
   
-  delete $self->feeds->{$feed}{clients}{ "$ws" };
-  $ws->log->info("Client disconnected: $ws; clients: @{[ scalar keys %{ $self->feeds->{$feed}{clients} } ]}");
+  delete $self->clients->{$feed}{ "$ws" };
+  $ws->log->info("Client disconnected: $ws; clients: @{[ scalar keys %{ $self->clients->{$feed} } ]}");
 }
 
 sub destroy {
