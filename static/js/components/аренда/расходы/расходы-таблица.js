@@ -13,9 +13,11 @@
 */
 var moduleName = "Аренда::Расходы::Таблица";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, [ 'Аренда::Расходы::Форма', /*'Компонент::Выбор в списке',*/ 'Компонент::Выбор объекта',]);
+var module = angular.module(moduleName, ['EventBus', 'Аренда::Расходы::Форма', /*'Компонент::Выбор в списке',*/ 'Компонент::Выбор объекта',]);
 
-module.factory('$КомпонентАрендаРасходыТаблица', function($templateCache, $http, appRoutes,  /*$EventBus, Util,*/ $КомпонентАрендаРасходыФорма, /*$КомпонентВыборВСписке,*/ $КомпонентВыборОбъекта ) {// 
+module.factory('$КомпонентАрендаРасходыТаблица', function($templateCache, $http, appRoutes,   /*$EventBus,$Список, Util,*/ $КомпонентАрендаРасходыФорма, /*$КомпонентАрендаДоговорыВыбор*/ $КомпонентВыборОбъекта ) {// 
+
+
 
 const props = {
   "param": {
@@ -60,9 +62,20 @@ LoadData(){
     });
 },
 
+/**ContragentContractData(){
+  var vm = this;
+  return vm.contragentContracts || $http.post(appRoutes.urlFor('аренда/договоры/список'), {"договоры на дату": vm.form['дата'], "order_by": " order by  lower(regexp_replace(k.title, '^\W', '', 'g')) "}).then(function(resp){
+     resp.data.map(function(item){
+      item._match = `${ item['$контрагент']['title']  } ${ item.$контрагент['реквизиты'] && item.$контрагент['реквизиты']['ИНН'] } ${  item['@помещения'] && item['@помещения'][0]['$объект'].name } ${ item['дата1'] } ${ item['номер'] }`.toLowerCase();
+     /// , "адрес": item['адрес'], "$помещение": room, "$объект": item['$объект'],});
+      ///${ item['@помещения'].map(p=>{ return p['$помещение']['номер-название']; }).join(':') } 
+      return item;
+    });
+  });
+},***/
 
 New(){
-  this.newForm = {};
+  this.newForm = {"договор/id": this.param['договор'].id};
 },
 
 
@@ -225,6 +238,7 @@ const mounted = function(){
   //~ console.log('mounted', this);
   var vm = this;
   var $el = $(vm.$el);
+  
   vm.Ready().then(function(){
     setTimeout(function(){
       $('.modal', $el).modal( );// Callback for Modal close} {"complete": vm.ModalComplete}
@@ -249,6 +263,7 @@ const $Конструктор = function (/*data, $c, $scope*/){
   $Компонент.template = $templateCache.get('аренда/расходы/таблица');
   $Компонент.components['v-form'] =  new $КомпонентАрендаРасходыФорма();
   $Компонент.components['v-object-select'] = new $КомпонентВыборОбъекта();
+  //~ $Компонент.components['v-contract-select'] = new $КомпонентАрендаДоговорыВыбор();
 
   return $Компонент;
 };

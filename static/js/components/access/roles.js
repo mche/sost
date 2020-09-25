@@ -50,14 +50,16 @@ var Controll = function($scope, $rootScope, $http, $q, $timeout, $element, appRo
         if(item) {
           //~ console.log("RefreshData", item);
           var it = $c.data.filter($c.FilterItem, item).pop();
-          $c.data.filter($c.FilterItems, it.parents_id).map(function(it){it._expand=true;});//~ $c.ExpandItem(item);
-          
-          
-          $timeout(function() {
-             //~ $c.Scroll2Item(item);
-            $c.SelectItem(it, true);
-          }, 100);
-          
+          if (it) {
+            $c.data.filter($c.FilterItems, it.parents_id).map(function(it){it._expand=true;});//~ $c.ExpandItem(item);
+            
+            
+            $timeout(function() {
+               //~ $c.Scroll2Item(item);
+              $c.SelectItem(it, true);
+            }, 100);
+            
+          }
         }
         
         $('.tabs', $($element[0])).tabs({"indicatorClass": 'red',});
@@ -366,8 +368,12 @@ var Controll = function($scope, $rootScope, $http, $q, $timeout, $element, appRo
       .then(function(resp){
         $c.cancelerHttp.resolve();
         delete $c.cancelerHttp;
-        if(resp.data.error) $c.error = resp.data.error;
+        if(resp.data.error) {
+          $c.error = resp.data.error;
+          Materialize.toast(resp.data.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
+        }
         if(resp.data.roles) {
+          Materialize.toast('Сохранено успешно', 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
           //~ $c.data = resp.data.success;
           // запускаем событие вверх
           $scope.$emit('RefreshData', resp.data.roles, resp.data.item);
@@ -378,7 +384,11 @@ var Controll = function($scope, $rootScope, $http, $q, $timeout, $element, appRo
         
         //~ $c.ready = true;
         
-      });
+      }, function(resp){
+      console.log("Ошибка сохранения", resp);
+      Materialize.toast("Ошибка сохранения "+resp.status+" - "+ resp.statusText, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
+      //~ vm.cancelerHttp = undefined;
+    });
     
     
   };

@@ -69,6 +69,7 @@ sub map_grep_mode {
         lib/vue/dist/vue.min.js::production
         ---lib/vuex/dist/vuex.js::development
         ---lib/vuex/dist/vuex.min.js::production
+        lib/v-runtime-template/dist/v-runtime-template.umd.js
 
         materialize.js
         js/c/template-cache/script.js
@@ -798,7 +799,7 @@ sub map_grep_mode {
         
         ['аренда-расходы.js' => grep !/^--/, qw(
         js/c/аренда/расходы/index.js
-        js/c/project/list.js
+        js/c/project/v-list.js
         js/c/аренда/расходы/расходы-таблица.js
         js/c/аренда/расходы/расходы-форма.js
         ---js/c/contragent/data.js
@@ -809,9 +810,10 @@ sub map_grep_mode {
         ----v-uploader.js
         js/c/autocomplete/v-select.js
         js/c/object/v-select-object.js
+        js/c/аренда/выбор-договора-аренды.js
         )],
         ['аренда-расходы.html' => grep !/^--/, qw(
-        js/c/project/list.html
+        js/c/project/v-list.html
         js/c/аренда/расходы/расходы-таблица.html
         js/c/аренда/расходы/расходы-форма.html
         ---js/c/contragent/v-item.html
@@ -819,6 +821,7 @@ sub map_grep_mode {
         ---v-uploader.html
         js/c/autocomplete/v-select.html
         js/c/object/v-select-object.html
+        js/c/аренда/выбор-договора-аренды.html
         )],
         
         ['аренда-акты.js' => grep !/^--/, qw(

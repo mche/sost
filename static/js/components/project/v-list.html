@@ -3,7 +3,7 @@
 <div>
 <v-progress-indeterminate v-show=" !ready " :color=" 'teal' " :message=" 'Загружается...' "></v-progress-indeterminate>
 
-<ul v-if="ready" class="tabs z-depth-1000 card000 tabs-transparent white" style="display: block; white-space: initial; height: auto;">
+<ul v-if="ready" class="tabs z-depth-1000 card000 tabs-transparent" style="display: block; white-space: initial; height: auto;">
   <li v-for="p in data" :key="p.id" class="tab  teal lighten-2" :class=" {'z-depth-1 noprint': p !== project, 'shadow-inset-10': p === project} " :id="`project-list-${p.id}`">
     <h3>
       <a @click="SelectProject(p)" href="javascript:" :class="{'active white-text': p === project}" class="hvr-overline-from-center before-white" style="font-size:inherit;">{{p.name}}</a>

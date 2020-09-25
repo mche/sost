@@ -5,7 +5,7 @@ use Mojo::Base -strict;
   "before_server_start" => [
     sub {
       my ($server, $app) = @_;
-      $app->attr( 'сервер' => sub { $server } );# это has, пригодится
+      $app->attr( 'сервер' => sub { $server } );# это  пригодится
       #~ $app->log->info("start ".$app->сервер);
       $app->models();
       

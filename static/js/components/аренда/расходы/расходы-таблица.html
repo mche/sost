@@ -19,7 +19,8 @@
     </div>
   </div>
   
-  <div class="striped teal lighten-4">
+  <h3 v-if="!FilteredDataLen" class="orange-text">Нет счетов</h3>
+  <div v-else class="striped teal lighten-4">
     <!-- типа thead колонки повторяют  -->
     <div class="flex-row " style="">
       <div class="flex-col-sm-1 padd-05 relative" style="">

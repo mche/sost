@@ -5,80 +5,80 @@
 
 var moduleName = "Аренда::Расходы";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['TemplateCache', /*'Util', 'appRoutes',*/ 'ProjectList', 'Аренда::Расходы::Таблица', /*'EventBus',*/]);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['TemplateCache', /*'Util', 'appRoutes','ProjectList'*/ 'Проекты::Список', 'Аренда::Договоры::Выбор', 'Аренда::Расходы::Таблица', /*'EventBus',*/]);//'ngSanitize',, 'dndLists'
 
-module.controller('Controll', function  (/*$scope, $q,*/ $timeout, $element, /*$http ,*/ appRoutes, TemplateCache,  $КомпонентАрендаРасходыТаблица/*,$EventBus*/) {
+module.controller('Controll', function  (/*$scope, $q,*/ $timeout, $element, /*$http ,*/ appRoutes, TemplateCache, $КомпонентПроектыСписок, $КомпонентАрендаДоговорыВыбор, $КомпонентАрендаРасходыТаблица/*,$EventBus*/) {
   var ctrl = this;
-
-  
-  //~ $EventBus.$on('', function(){
-  //~ });
-
-
   var tCache = TemplateCache.split(appRoutes.urlFor('assets', 'аренда-расходы.html'), 1);
-  
-const methods = {/*методы*/
-  $onInit(){
-    ctrl.param = {
-      "месяц":new Date(),//.toISOString().replace(/T.+/, ''),
-    };
-    
-    tCache.then(function(proms){
-      ctrl.ready  = true;
-      $timeout(function(){
-        $('.datepicker.month', $($element[0])).pickadate({// все настройки в файле русификации ru_RU.js
+
+//~ ctrl.$onInit = function(){
+  tCache.then((proms)=>{
+  //~ setTimeout(()=>{
+    //~ });
+    new Vue({
+      "el": $element[0],/// харакири ангуляр
+      "data": function(){
+        return {
+          "month": new Date().toISOString().replace(/T.+/, ''),
+          "project": {},
+          //~ "projectId": undefined,
+          //~ "projectName": undefined,
+          "contract": {},
+          //~ "_contract": {},/// целиком
+          //~ "contractId": undefined,
+          //~ "tpl": `<div>key {{(project.id || '0') + month + (contract.id || '0')}}</div>`,
+        };
+      },
+      "methods":{
+        SelectProject(p){
+          this.project = p;
+          //~ this.project.id = p && p.id;
+          //~ this.project.name = p && p.name;
+          //~ this.projectName = p && p.name;
+          //~ this.projectId = p && p.id;
+          //~ console.log("SelectProject", p);
+        },
+        //~ ProjectName(){
+          //~ console.log("ProjectName", this.project);
+          //~ return this.project.name;
+        //~ },
+        OnContractSelect(item){
+          //~ console.log("OnContractSelect", item);
+          if (item) this.SelectProject({"id": item && item['проект/id'], "name": item && item['проект/name'], });
+          this.$set(this.contract, 'id', item && item.id);
+          //~ this.contractId = item && item.id;
+          //~ Object.assign(this._contract, item || {});
+          //~ this.$set(this, '_contract', item || {});
+        }
+      },
+      "mounted": function(){
+        let vm = this;
+        $('.datepicker').pickadate({// все настройки в файле русификации ru_RU.js
           monthsFull: [ 'январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь' ],
           format: 'mmmm yyyy',
           monthOnly: 'OK',// кнопка
           selectYears: true,
           onClose: function (context) {
             var s = this.component.item.select;
-            //~ vm.$set(vm, "payMonth" , [s.year, s.month+1, s.date].join('-'));
             var date = new Date([s.year, s.month+1, s.date].join('-')).toISOString().replace(/T.+/, '');
-            if ( ctrl.param['месяц'] == date ) return;
-            //~ ctrl.param['месяц'] = undefined;
-            //~ $timeout(function(){
-              ctrl.param['месяц'] = date;
-              //~ console.log("set date", ctrl.param['месяц']);
-              //~ $timeout(()=>{ ctrl.Vue(); });
-              //~ ctrl.Vue();
-            //~ });
-            //~ vm.LoadData();
+            if ( vm.month == date ) return;
+              vm.month = date;
           },
         });//{closeOnSelect: true,}
-        
-        //~ ctrl.Vue();
-        
-      });
+      },
+      "components": {
+        'v-table':new $КомпонентАрендаРасходыТаблица(),
+        'v-project-list': new $КомпонентПроектыСписок(),
+        'v-contract-select': new $КомпонентАрендаДоговорыВыбор(),
+      },
+      //~ "computed": {
+        //~ ProjectName(){ return this.project.name; },
+        //~ ContractId() { return this.contract.id; },
+      //~ },
     });
-    
-  },
+  });
   
-  SelectProject(p){
-    //~ if (p && ctrl.param["проект"] !== p) $timeout(function(){
-      ctrl.param["проект"] = p;
-      ctrl.Vue();
-      //~ $timeout(()=>{ ctrl.Vue(); }); 
-    //~ });
-    //~ ctrl.param["проект"] = undefined;
-  },
-  
-  Vue(){
-    if (ctrl.vue) return;
-    //~ var el =  document.getElementById('тут компонент расходы таблица');
-    //~ if (!el) return console.log("Нет document.getElementById('тут компонент расходы таблица')");
-    ctrl.vue = new Vue({"el": '#тут-компонент-расходы-таблица', "data":function(){ return {"param":ctrl.param}; }, "components":{'v-table':new $КомпонентАрендаРасходыТаблица(),}});
-    //~ vue.$set(vue.param, 'param2', 'foo')
-    ///ctrl.vueComp = new Vue(Object.assign(new $КомпонентАрендаРасходыТаблица(), {"el": el,}));
-    //~ if (ctrl.vueComp) ctrl.vueComp.param=ctrl.param;
-    //~ console.log("Vue", vue.param);
-    
-  },
-  
-};/* конец methods*/
-  
-  Object.assign(ctrl, methods);
-  
+//~ };
 }
 
 /*=============================================================*/

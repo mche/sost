@@ -13,10 +13,10 @@
 */
 var moduleName = "Аренда::Расходы::Форма";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, [ 'EventBus', 'Компонент::Поиск в списке', 'Компонент::Выбор в списке', /* 'Uploader::Файлы',*/ ]);
+var module = angular.module(moduleName, [ 'EventBus', 'Компонент::Поиск в списке', 'Аренда::Договоры::Выбор', /* 'Uploader::Файлы',*/ ]);
 
 module
-.factory('$КомпонентАрендаРасходыФорма', function($templateCache, $http, $q, $timeout, appRoutes, $EventBus, $КомпонентПоискВСписке, $КомпонентВыборВСписке, Util/*$КомпонентФайлы */) {// factory
+.factory('$КомпонентАрендаРасходыФорма', function($templateCache, $http, /*$q,$timeout,*/  appRoutes, $EventBus, $КомпонентПоискВСписке, $КомпонентАрендаДоговорыВыбор, Util/*$КомпонентФайлы */) {// factory
 
 //~ var rentRoomsData;///синглетон для данных объектов аренды
 //~ $Контрагенты.Load();
@@ -59,7 +59,7 @@ Ready(){/// метод
   //~ vm.rentRooms = rentRoomsData;
 
   vm.ready = true;
-  $timeout(function(){
+  setTimeout(function(){
     //~ $('input[type="text"]', $(vm.$el)).first().focus();
     
     vm.InitDatepicker($('.datepicker', $(vm.$el)));
@@ -83,17 +83,20 @@ InitDatepicker(el){
   
 },
 
+/*
 ContragentContractData(){
   var vm = this;
-  return $http.post(appRoutes.urlFor('аренда/договоры/список'), {"договоры на дату": vm.form['дата'], "order_by": " order by  lower(regexp_replace(k.title, '^\W', '', 'g')) "}).then(function(resp){
-    vm.contragentContracts = resp.data.map(function(item){
-      item._match = `${ item['$контрагент']['title']  } ${ item.$контрагент['реквизиты'] && item.$контрагент['реквизиты']['ИНН'] } ${  item['@помещения'] && item['@помещения'][0]['$объект'].name } ${ item['дата1'] } ${ item['номер'] }`.toLowerCase();
-     /// , /*"адрес": item['адрес'],*/ "$помещение": room, "$объект": item['$объект'],});
-      ///${ item['@помещения'].map(p=>{ return p['$помещение']['номер-название']; }).join(':') } 
-      return item;
-    });
+  return new Promise((resolve, reject) => {
+      $EventBus.$emit('Дайте список договоров арендаторов', function(loader){/// один раз выполнится
+        loader.Load().then(()=>{
+          vm.contragentContracts = loader.Data();
+          //~ console.log(vm.contragentContracts);
+          return resolve(true);
+        });
+      });
   });
-},
+  
+},*/
 
 CategoryData(){/// категория позиций
   var vm = this;
@@ -159,6 +162,11 @@ InitForm(item){/// обязательные реактивные поля
   item._uploads = [];
   item._id = vm.idMaker.next().value;
   return item;
+},
+
+ContragentContractsFilter(item){///для компонента выбора
+  
+  
 },
 
 
@@ -303,6 +311,7 @@ const data = function() {
   let vm = this;
   vm.idMaker = idMaker;
   var form = vm.InitForm(angular.copy(vm.item));
+  //~ vm.templateCache = $templateCache;
   //~ if (form.id) vm.Uploads(form.id);
 
   return {//
@@ -310,16 +319,19 @@ const data = function() {
     "cancelerHttp": undefined,
     "form": form,
     "keys": {"дата расторжения": vm.idMaker.next().value, "дата договора":vm.idMaker.next().value}, ///передерг рендер
+    "contragentContracts":[],
     //~ "uploads": [],
   };
-  //);
+
 };///конец data
 
 const mounted = function(){
 
   var vm = this;
-  $q.all([vm.ContragentContractData(), vm.CategoryData()]).then(function(){
+  //~ vm.ContragentContractData();
+  Promise.all([/*vm.ContragentContractData(),*/ vm.CategoryData()]).then(function(){
     vm.Ready();
+    
   });
 };/// конец mounted
 
@@ -339,9 +351,10 @@ const $Конструктор = function (/*data, $c, $scope*/){
   let $this = this;
   $Компонент.template = $templateCache.get('аренда/расходы/форма');
   $Компонент.components['v-suggest'] = new $КомпонентПоискВСписке();
-  $Компонент.components['v-select'] = new $КомпонентВыборВСписке();
+  $Компонент.components['v-contract-select'] = new $КомпонентАрендаДоговорыВыбор();
   //~ $Компонент.components['v-uploads'] = new $КомпонентФайлы();
   //~ $Компонент.components['v-uploader'] = new $Uploader();
+  //~ $Компонент.components['v-runtime-template'] = vRuntimeTemplate;
   //~ console.log($Компонент);
   return $Компонент;
 };

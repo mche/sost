@@ -80,7 +80,7 @@ Ready(){
   
 Select(it){ /// выбор/сброс позиции
   var vm = this;
-  //~ console.log("Select", it);
+  //~ console.log("Select", vm.$slots);
   if (it !== vm.selected) {///}return vm.DropDownHide();
     //~ if (!noEmit /*|| !vm.select || !it || it.id != vm.select.id*/) 
     vm.$emit('on-select',it, vm.select);

@@ -124,6 +124,10 @@ sub сохранить_роль {
   #~ my $tx_db = $self->dbh->begin;
   #~ local $self->{dbh} = $tx_db;
   
+  $data->{'name'} =~ s/^#(\d+)$//s
+    and return $self->связь($data->{parent}, $1)
+    if $data->{parent};
+  
   if ($data->{attach}) {
     my $r = ($data->{parent} && $data->{id}) && $self->связь_получить(@$data{qw(parent id)});# $self->dbh->selectrow_array($self->sth('роль/предок'), undef, $data->{id})
       #~ if $data->{parent} && $data->{id};

@@ -11,7 +11,7 @@ module.controller('Controll', function(/*$scope, $q, $timeout, */$element, /*$ht
   var ctrl = this;
   var tCache = TemplateCache.split(appRoutes.urlFor('assets', 'аренда-акты.html'), 1);
   
-ctrl.$onInit = function(){
+//~ ctrl.$onInit = function(){
   tCache.then((proms)=>{
   //~ setTimeout(()=>{
     //~ });
@@ -51,7 +51,7 @@ ctrl.$onInit = function(){
     });
   });
   
-};
+//~ };
   
   
 }

@@ -20,15 +20,9 @@ has feeds => sub {
 
 has clients => sub { {} };
 
-#~ has disable_destroy => 0;#  пропускать DESTROY когда init 
-
 sub init {
   my $self = shift;
   #~ $self->disable_destroy(1);
-  #~ my $quit = $SIG{QUIT};
-  #~ $SIG{QUIT} = sub { $self->DESTROY(); $quit->(); };
-  #~ my $usr2 = $SIG{USR2};
-  #~ $SIG{USR2} = sub { $self->DESTROY(); $usr2->(); };
   #~ $self->feeds; ## до форка не надо
   #~ $self->dbh->do($self->sth('функции'));
   #~ $self->app->log->info("$self->initing ".);
@@ -62,7 +56,6 @@ sub start_feed {
   my $app = $self->app;
   
   $app->log->info("Feed [$name] $stream started");
-  #~ my $clients = $self->clients->{'cam1'} = {};
   
   $feeds ||= $self->feeds;#{'cam1'=>{tx=>$cam1, clients=>{},}};
   $feeds->{$name} = $stream;
@@ -81,11 +74,9 @@ sub start_feed {
     #~ my ($stream) = @_;
     $app->log->info("Feed [$name] $stream close, restarting...");
     my $cam = $self->stream($self->$name);#cam_ip10
-    #~ my $clients = $feeds->{$name}{clients};
     $self->start_feed($name, $cam);
     #~ $_->finish
       #~ for values %$clients;
-    #~ $feeds->{$name}{clients} = $clients;
   });
   
   $stream->on(read => sub {

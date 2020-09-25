@@ -19,7 +19,7 @@ module
 .factory('$КомпонентПроектыСписок', function($templateCache, $ПроектыДанные) {// factory
 
 const props = {
-  //~ "project":Object,
+  "проект":Object,
   //~ "param": {
     //~ type: Object,
     //~ default: function () {
@@ -53,7 +53,7 @@ const  data = function(){
   return {
     "ready": false,
     "data": [],
-    "project": undefined, /// тек проект/таб
+    "project": this['проект'], /// тек проект/таб
     //~ "selectedProject": undefined,
     };
 };///конец data

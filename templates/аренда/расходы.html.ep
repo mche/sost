@@ -3,21 +3,42 @@
 
 <div ng-app="Аренда::Расходы"  ng-controller="Controll as ctrl" class="row">
 
-  <project-list ng-if="ctrl.ready" data-param="param" data-on-select-project="ctrl.SelectProject(p)"></project-list>
-  
-  <div ng-if="ctrl.ready " class="relative"><!--  && ctrl.param['проект'] && ctrl.param['проект'].id-->
+<template>
 
+  <div class="card teal lighten-4 padd-05">
     <div>
-      <h3 class="iblock middle">Месяц</h3>
-      <div class="input-field chip padd-05">
-        <input name="месяц" type="text" class="datepicker month fs18 fw500" style="" data-value=" {{ ctrl.param['месяц'] }}  ">
+      <!-- project-list ng-if="ctrl.ready" data-param="param" data-on-select-project="ctrl.SelectProject(p)"></project-list-->
+      <div v-if="!contract.id"><v-project-list :проект=" project " @on-select-project="SelectProject"></v-project-list></div>
+      <h2 v-else :key="contract.id" class="chip bold shadow-inset-10 teal white-text">{{ project.name }}</h2>
+    </div>
+      
+    
+    <div class="relative">
+
+      <div class="row">
+        <h2 v-show="!contract.id" class="col s1 middle right-align">Месяц</h2>
+        <div v-show="!contract.id" class="col s2 input-field chip z-depth-1 white padd-05">
+          <input name="месяц" type="text" class="datepicker month fs18 fw500" style="" :data-value=" month  " />
+        </div>
+        <h4 v-show="!!contract.id" class="col s2">все счета по договору</h4>
+        
+         <h2 class="col s1 middle right-align">Договор</h2>
+        <div class="col s7">
+          <v-contract-select :item=" contract " @on-select=" OnContractSelect " ></v-contract-select>
+        </div>
+        
       </div>
+    
     </div>
 
-    <div id="тут-компонент-расходы-таблица">
-      <v-table v-if=" param['проект']" :key="param['проект'].id + (param['месяц'].toISOString ? param['месяц'].toISOString() : param['месяц']) " :param="param" ></v-table>
-    </div>
-    
   </div>
+
+  <div v-if=" project.id " id="тут-компонент-расходы-таблица-000" class="relative">
+    <!--v-runtime-template :template=" tpl "></v-runtime-template-->
+    <!--v-table v-if=" param['проект']" :key="param['проект'].id + (param['месяц'].toISOString ? param['месяц'].toISOString() : param['месяц']) " :param="param" ></v-table-->
+    <v-table  :key=" project.id + month + contract.id  " :param="{'месяц':month, 'проект': project, 'договор': contract,}" ></v-table>
+  </div>
+
+</template>
 
 </div>
