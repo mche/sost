@@ -66,6 +66,7 @@ OnSelect(item, propSelect){/// из компонента выбор из спи�
 
 const data = function() {
   let vm = this;
+  vm.templateCache = $templateCache;
 
   return {//
     "ready": false,

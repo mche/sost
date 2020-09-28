@@ -5,7 +5,7 @@ use Mojo::Base 'Model::Base';
 
 has [qw(app)];
 
-has cam1 => qq(ffmpeg  -i 'rtsp://192.168.128.10:554/user=admin&password=&channel=1&stream=0.sdp?' -f mpegts -codec:v mpeg1video  -b:v 1300k   -bf 0   - 2>/dev/null |); #-s 1280x720 -crf  50 -an 
+has cam1 => qq(ffmpeg  -i 'rtsp://192.168.128.18:554/user=admin&password=&channel=1&stream=0.sdp?' -f mpegts -codec:v mpeg1video  -b:v 1300k   -bf 0   - 2>/dev/null |); #-s 1280x720 -crf  50 -an 
 
 
 has feeds => sub {

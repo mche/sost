@@ -9,7 +9,7 @@
   <!--div>{{ param }}</div-->
    
   <div><!--  новая форма --->
-    <div style="position: absolute; top:0.3rem; right:1rem;">
+    <div style="position: absolute; top:0rem; right:1rem;">
       <a v-show=" !newForm " @click=" New " href="javascript:" class="btn-flat z-depth-1 green lighten-4 green-text text-darken-4"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="green-fill fill-darken-4" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#form-add" /></svg> Новый счет</a>
       <!--a v-show="checkedData.length" @click="Print()" disabled-000="!IsChbs" href="javascript:" class="btn-flat  z-depth-1 orange lighten-4 black-text">Печать</a-->
       
@@ -28,7 +28,7 @@
         <div v-show=" FilteredDataLen " class="input-field-000 nowrap" style="">
           <input type="checkbox" id="все крыжики" v-model="allChbs" @change="AllChbsChange">
           <label for="все крыжики" class="hover-shadow3d chb-yellow-lighten-4 orange-text chip yellow lighten-4" style="position:absolute; left:-2rem; padding-left:16px;" ></label>
-          <label  for="все крыжики"><h6 class="orange-text text-darken-4">
+          <label  for="все крыжики"><h6 class="orange-text text-darken-4 chip">
             <span>{{ allChbs ? 'снять' : 'отметить' }}</span>
             <sup class="chip white z-depth-1">{{ FilteredDataLen }}</sup>
           </h6></label>

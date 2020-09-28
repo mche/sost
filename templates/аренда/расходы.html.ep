@@ -8,8 +8,10 @@
   <div class="card teal lighten-4 padd-05">
     <div class="row">
       <!-- project-list ng-if="ctrl.ready" data-param="param" data-on-select-project="ctrl.SelectProject(p)"></project-list-->
-      <div v-if="!contract.id" class="col s7"><v-project-list :проект=" project " @on-select-project="SelectProject"></v-project-list></div>
-      <h2 v-else :key="contract.id" class="col s7 chip bold shadow-inset-10 teal white-text">{{ project.name }}</h2>
+      <div class="col s7">
+        <v-project-list v-if="!contract.id" :проект=" project " @on-select-project="SelectProject"></v-project-list>
+        <h2  v-else :key="contract.id" class="chip bold shadow-inset-10 teal white-text">{{ project.name }}</h2>
+      </div>
       <div  v-show="!contract.id" class="col s5 hoverable card padd-05 marg-0 blue lighten-4"><v-object-select :select=" object " :param=" {placeholder: 'По объекту аренды',} " @on-select-object=" SelectObject "></v-object-select></div>
     </div>
       
