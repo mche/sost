@@ -24,7 +24,7 @@
       <input type="text" v-model=" inputQuery "  @keydown=" OnKeyDown " :placeholder=" param.placeholder || 'поиск объекта' " class="" >
     </div>
     
-    <a v-show=" !param['без удаления'] && selected" @click=" Select() " href="javascript:" class="circle hoverable" style="position: absolute; z-index: 1001; right:-0.5rem; top:-0.5rem;" title="очистить выбор"><!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"  class="middle red-fill fill-darken-1" style="height: 1.5rem; "><use xlink:href="/fonts/icons.svg#left-clear-fill" /></svg--><i class="material-icons red-text">cancel</i></a>
+    <a v-show=" !param['без удаления'] && selected" @click=" Select() " href="javascript:" class="circle hoverable" style="position: absolute; z-index: 1001; right:-0.7rem; top:-0.7rem;" title="очистить выбор"><!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"  class="middle red-fill fill-darken-1" style="height: 1.5rem; "><use xlink:href="/fonts/icons.svg#left-clear-fill" /></svg--><i class="material-icons red-text fs18">cancel</i></a>
     
   
     <ul class=" dropdown-content select-dropdown z-depth-3 animated fadeIn  fast " :class="extParam.ulDropDownClass" style="opacity: 1; display:block; width:100%; ">

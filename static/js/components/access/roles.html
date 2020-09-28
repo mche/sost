@@ -76,7 +76,7 @@
         <li class="inline breadcrumb teal-text-000"><span class="chip shadow-inset-10">{{$c.parent.name}}</span> <span class="chip fs8 grey-text">#{{ $c.parent.id }}</span></li>
       </ul>
     </div>
-    <h5>Название группы <span ng-show="$c.parent.id" class="chip padd-0-05 orange-text-darken-3">или #id2 - любой ИД системы</span></h5>
+    <h5>Название группы <span ng-show="$c.parent.id" class="chip padd-0-05 orange-text-darken-3 right">или #id2 - любой ИД системы</span></h5>
     <div class="input-field padd-05">
       <input ng-init="$c.InitSearch(newItem)" ng-hide="newItem.attach" type="text" ng-model="newItem.name" placeholder="поиск или новая роль / должность" title="в {{$c.parent.parents_name.join(' > ')+' > '+($c.parent.name || 'Группы')}}" class="new-item"  style="margin:0;">
       <div ng-show="newItem.attach">

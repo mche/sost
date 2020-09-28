@@ -23,7 +23,7 @@
   <div v-else class="striped teal lighten-4">
     <!-- типа thead колонки повторяют  -->
     <div class="flex-row " style="">
-      <div class="flex-col-sm-1 padd-05 relative" style="">
+      <div class="flex-col-sm-1-000 padd-05 relative" style="">
         <!-- все крыжики-->
         <div v-show=" FilteredDataLen " class="input-field-000 nowrap" style="">
           <input type="checkbox" id="все крыжики" v-model="allChbs" @change="AllChbsChange">
@@ -32,8 +32,7 @@
             <span>{{ allChbs ? 'снять' : 'отметить' }}</span>
             <sup class="chip white z-depth-1">{{ FilteredDataLen }}</sup>
           </h6></label>
-          <br>
-          <a v-show="checkedData.length" @click="Print()" href="javascript:" class="btn-flat  z-depth-1 orange lighten-4 black-text padd-0">
+          <a v-show="checkedData.length" @click="Print()" href="javascript:" class="btn-flat  z-depth-1 orange lighten-4 black-text">
             <i class="material-icons">print</i>
             <span class="fs8">Печать</span>
             <sup class="chip white">{{ checkedData.length }}</sup>
@@ -42,17 +41,18 @@
         
       </div>
       <!-- вторая колонка -->
-      <div class="flex-col-sm-3" style="">
+      <!--div class="flex-col-sm-3" style=""-->
         <!-- фильтр арендатора -->
-        <div class="input-field" style="">
+        <!--div class="input-field" style="">
           <a v-show=" filters['арендаторы'] && filters['арендаторы'].length " @click=" ClearFilter('арендаторы') " href="javascript:" style="position: absolute; z-index: 1; right:0.5rem; top:0.3rem; "><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"  class="red-fill fill-darken-1" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#left-clear-fill"></use></svg></a>
           <input type="text" name="арендаторы"  v-model="filters['арендаторы']" @input=" OnChangeFilter " :placeholder=" 'фильтр арендатора' " class="">
-        </div>
+        </div--->
         
         <!-- фильтр по объекту -->
-        <div>
-          <!-- <v-object-select v-if=" rentObjects.length " :select=" item['$объект'] " :data-list=" rentObjects " @on-select-object=" SelectObjectFilter "></v-object-select>-->
-          <v-object-select :select=" filters['объект'] " :param=" {placeholder: 'фильтр по объекту',} " @on-select-object=" SelectObjectFilter "></v-object-select>
+        <!--div -->
+
+          <!--v-object-select :select=" filters['объект'] " :param=" {placeholder: 'фильтр по объекту',} " @on-select-object=" SelectObjectFilter "></v-object-select-->
+          
           <!--v-select :select=" filters['объект'] " :items=" rentObjects " :param=" {'без поля поиска': true} " @on-select=" SelectObjectFilter ">
             <template v-slot:selected="{ selected }">
               <h5 class="fw500 blue-text text-darken-3 animated fadeIn slow hover-bottom-shadow-blue-darken-3" style="">{{ (selected && selected.$item && selected.$item.name) || 'По объекту' }}</h5>
@@ -64,13 +64,13 @@
               </h4>
             </template>
           </v-select-->
-        </div>
-      </div>
+        <!--/div>
+      </div-->
       <!-- третья колонка -->
-      <div class="flex-col-sm-8 padd-05" style="">
+      <!--div class="flex-col-sm-8 padd-05" style="">
       
-      </div>
-    </div>
+      </div-->
+    </div><!-- flex-row -->
       <!-- типа tbody --->
      <div v-for="row in filteredData" :key="row.id" class="relative flex-row flex-end-xs-000" style="">
       <div class="flex-col-sm-1 padd-05 relative-000" style="">
@@ -88,7 +88,7 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#contragent"></use></svg>
           <a @click=" Edit(row) " href="javascript: void('редактировать') " class="hover-shadow3d" title="редактировать">{{ row['$контрагент'].title }}</a>
         </h4>
-        <span class-000="chip padd-0-05">дог. {{ row.$договор['номер'] }}</span>
+        <span class-000="chip padd-0-05">дог. <span class="chip bold">{{ row.$договор['номер'] }}</span></span>
         <h5 class="right iblock blue-text text-darken-3">
           <i class="material-icons fs8">place</i>
           <span v-if="row.$объект">{{ row.$объект.name }}</span>

@@ -253,9 +253,10 @@ sub сохранить_скидки {# список
 sub список_договоров {
   my $self  =  shift;
   my $data= ref $_[0] ? shift : {@_};
+  my $id = $data->{id} || $data->{'договор/id'} || ($data->{'договор'} && $data->{'договор'}{id});
   my ($where, @bind) = $self->SqlAb->where({
-    $data->{id} ? (' d.id ' => $data->{id}) : (),
-    $data->{'договоры на дату'} ? (qq{ date_trunc('month', ?::date) } => { -between => \[qq{ date_trunc('month', d."дата1") and (date_trunc('month', coalesce(d."дата расторжения", d."дата2") + interval '1 month') - interval '1 day') }, , $data->{'договоры на дату'}] }) : (),
+    $id ? (' d.id ' => $id) : (),
+    #~ $data->{'договоры на дату'} ? (qq{ date_trunc('month', ?::date) } => { -between => \[qq{ date_trunc('month', d."дата1") and (date_trunc('month', coalesce(d."дата расторжения", d."дата2") + interval '1 month') - interval '1 day') }, , $data->{'договоры на дату'}] }) : (),
     });
   $self->dbh->selectall_arrayref($self->sth('договоры', where=>$where, $data->{order_by} ? (order_by=>$data->{order_by}) : ()), {Slice=>{}}, @bind);
 }
@@ -466,10 +467,14 @@ sub список_расходов {
   my $self  =  shift;
   my $data= ref $_[0] ? shift : {@_};
   my $pid = $data->{'проект/id'} || ($data->{'проект'} && $data->{'проект'}{id});
+  my $cid = $data->{'договор/id'} || ($data->{'договор'} && $data->{'договор'}{id});
+  my $oid = $data->{'объект/id'} || ($data->{'объект'} && $data->{'объект'}{id});
   my ($where, @bind) = $self->SqlAb->where({
-    $data->{id} ? (' r.id ' => $data->{id}) : (),
-    $pid ? (' pr.id '=> $pid) : (),
-    $data->{'месяц'} ? (qq{ date_trunc('month', r."дата") } => \[qq{ = date_trunc('month', ?::date) }, $data->{'месяц'}] ) : (),
+    $data->{id} ? (' id ' => $data->{id}) : (),
+    !$cid && $pid ? (' "проект/id" '=> $pid) : (),
+    !$cid && $oid ? (' "объект/id" '=> $oid) : (),
+    $cid ? (' "договор/id" '=> $cid) : (),
+    !$cid && $data->{'месяц'} ? (qq{ date_trunc('month', "дата") } => \[qq{ = date_trunc('month', ?::date) }, $data->{'месяц'}] ) : (),
     });
   $self->dbh->selectall_arrayref($self->sth('расходы', where=>$where, $data->{order_by} ? (order_by=>$data->{order_by}) : ()), {Slice=>{}}, @bind);
   

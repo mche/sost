@@ -13,9 +13,9 @@
 */
 var moduleName = "Аренда::Расходы::Таблица";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['EventBus', 'Аренда::Расходы::Форма', /*'Компонент::Выбор в списке',*/ 'Компонент::Выбор объекта',]);
+var module = angular.module(moduleName, ['EventBus', 'Аренда::Расходы::Форма', /*'Компонент::Выбор в списке', 'Компонент::Выбор объекта',*/ ]);
 
-module.factory('$КомпонентАрендаРасходыТаблица', function($templateCache, $http, appRoutes,   /*$EventBus,$Список, Util,*/ $КомпонентАрендаРасходыФорма, /*$КомпонентАрендаДоговорыВыбор*/ $КомпонентВыборОбъекта ) {// 
+module.factory('$КомпонентАрендаРасходыТаблица', function($templateCache, $http, appRoutes,   /*$EventBus,$Список, Util,*/ $КомпонентАрендаРасходыФорма, /*$КомпонентАрендаДоговорыВыбор, $КомпонентВыборОбъекта*/  ) {// 
 
 
 
@@ -262,7 +262,7 @@ const $Конструктор = function (/*data, $c, $scope*/){
   //~ data = data || {};
   $Компонент.template = $templateCache.get('аренда/расходы/таблица');
   $Компонент.components['v-form'] =  new $КомпонентАрендаРасходыФорма();
-  $Компонент.components['v-object-select'] = new $КомпонентВыборОбъекта();
+  //~ $Компонент.components['v-object-select'] = new $КомпонентВыборОбъекта();
   //~ $Компонент.components['v-contract-select'] = new $КомпонентАрендаДоговорыВыбор();
 
   return $Компонент;

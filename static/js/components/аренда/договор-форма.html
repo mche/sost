@@ -48,7 +48,7 @@
             <span> ★ {{ selected.name }}</span>
             <span v-if="form['$проект']" class="grey-text fs7" style="position:absolute; right:0; bottom:-1rem;">#{{ form['$проект'].id }}</span>
           </h4>
-          <h4 v-else class="card hoverable padd-05 purple-text ">Выбрать арендодателя</h4>
+          <h4 v-else class="card hoverable padd-05 purple-text purple lighten-4 ">Выбрать арендодателя</h4>
         </template>
         <template v-slot:listItem="{ listItem, selected, highlighted }">
           <h5 class="padd-0-05 relative purple-text text-darken-3"  :class="{'bold fs14': listItem === selected, 'fw500': listItem === highlighted,}"  style="">

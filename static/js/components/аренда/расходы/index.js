@@ -5,9 +5,9 @@
 
 var moduleName = "Аренда::Расходы";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['TemplateCache', /*'Util', 'appRoutes','ProjectList'*/ 'Проекты::Список', 'Аренда::Договоры::Выбор', 'Аренда::Расходы::Таблица', /*'EventBus',*/]);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['TemplateCache', /*'Util', 'appRoutes','ProjectList'*/ 'Проекты::Список', 'Аренда::Договоры::Выбор', 'Компонент::Выбор объекта', 'Аренда::Расходы::Таблица', /*'EventBus',*/]);//'ngSanitize',, 'dndLists'
 
-module.controller('Controll', function  (/*$scope, $q,*/ $timeout, $element, /*$http ,*/ appRoutes, TemplateCache, $КомпонентПроектыСписок, $КомпонентАрендаДоговорыВыбор, $КомпонентАрендаРасходыТаблица/*,$EventBus*/) {
+module.controller('Controll', function  (/*$scope, $q,*/ $timeout, $element, /*$http ,*/ appRoutes, TemplateCache, $КомпонентПроектыСписок, $КомпонентАрендаДоговорыВыбор, $КомпонентВыборОбъекта, $КомпонентАрендаРасходыТаблица/*,$EventBus*/) {
   var ctrl = this;
   var tCache = TemplateCache.split(appRoutes.urlFor('assets', 'аренда-расходы.html'), 1);
 
@@ -21,6 +21,7 @@ module.controller('Controll', function  (/*$scope, $q,*/ $timeout, $element, /*$
         return {
           "month": new Date().toISOString().replace(/T.+/, ''),
           "project": {},
+          "object": {},
           //~ "projectId": undefined,
           //~ "projectName": undefined,
           "contract": {},
@@ -38,6 +39,11 @@ module.controller('Controll', function  (/*$scope, $q,*/ $timeout, $element, /*$
           //~ this.projectId = p && p.id;
           //~ console.log("SelectProject", p);
         },
+        SelectObject(o){
+          //~ console.log("SelectObject", o);
+          this.object = o;// ? {"id": o.id,} : {};
+          
+        },
         //~ ProjectName(){
           //~ console.log("ProjectName", this.project);
           //~ return this.project.name;
@@ -49,7 +55,7 @@ module.controller('Controll', function  (/*$scope, $q,*/ $timeout, $element, /*$
           //~ this.contractId = item && item.id;
           //~ Object.assign(this._contract, item || {});
           //~ this.$set(this, '_contract', item || {});
-        }
+        },
       },
       "mounted": function(){
         let vm = this;
@@ -70,11 +76,15 @@ module.controller('Controll', function  (/*$scope, $q,*/ $timeout, $element, /*$
         'v-table':new $КомпонентАрендаРасходыТаблица(),
         'v-project-list': new $КомпонентПроектыСписок(),
         'v-contract-select': new $КомпонентАрендаДоговорыВыбор(),
+        'v-object-select': new $КомпонентВыборОбъекта(),
       },
-      //~ "computed": {
+      "computed": {
+        RefreshKey(){
+          return this.month + (this.project ? this.project.id : '0') + (this.contract ? this.contract.id : '0') + (this.object ? this.object.id : '0');
+        },
         //~ ProjectName(){ return this.project.name; },
         //~ ContractId() { return this.contract.id; },
-      //~ },
+      },
     });
   });
   

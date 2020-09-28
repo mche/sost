@@ -3,15 +3,15 @@
 <div><!-- обязательно один корень Vue -->
 <v-progress-indeterminate v-if=" !ready " :color=" 'teal' " :message=" 'Загружается...' "></v-progress-indeterminate>
 
-<v-select v-else :select=" item " :items=" items " :param=" {placeholder: 'поиск договора арендатора', ulDropDownClass: ['striped blue lighten-4']} " @on-select=" OnSelect ">
+<v-select v-else :select=" item " :items=" items " :param=" {placeholder: 'поиск договора арендатора', ulDropDownClass: ['striped teal lighten-4']} " @on-select=" OnSelect ">
 <template v-slot:selected="{ selected }">
-  <h3 v-if="selected" class="relative card white padd-0-05 animated slideInRight hover-bottom-shadow-blue-darken-3-000 hoverable" :class=" {'maroon-text maroon lighten-5': selected['архив?'], 'blue-text text-darken-4 blue lighten-4': !selected['архив?'],} " >
+  <h3 v-if="selected" class="relative animated slideInRight hover-bottom-shadow-blue-darken-3-000" :class=" {'maroon-text ': selected['архив?'], 'teal-text text-darken-4': !selected['архив?'],} " ><!-- maroon lighten-5 blue lighten-4-->
     
     <span class="chip000 nowrap padd-0-05 fw500">{{ selected.$контрагент.title }}</span>
     <span v-show="selected.$контрагент['реквизиты'] && selected.$контрагент['реквизиты']['ИНН']" class="chip000 nowrap padd-0-05 fs10"><span class="fs8 grey-text">ИНН:</span> {{ selected.$контрагент['реквизиты']['ИНН'] }}</span>
     <span class="chip000 nowrap padd-0-05" title="номер договора">
       <!--svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32" class="blue-fill-darken-3" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#handshake"></use></svg-->
-      <span class="fs8 grey-text">дог. №</span> {{ selected['номер'].replace('№', '') }} <span class="fs8 grey-text">от</span> {{ selected['дата договора'] || selected['дата1'] }}
+      <span class="fs8-000 grey-text">дог. №</span> {{ selected['номер'].replace('№', '') }} <span class="fs8-000 grey-text">от</span> {{ selected['дата договора'] || selected['дата1'] }}
     </span>
     <span class="chip000 nowrap padd-0-05 fs10-000" title="объект и помещения">
       <span><i class="material-icons fs10">place</i></span>
@@ -23,15 +23,15 @@
     </span>
     <!--span class="grey-text fs7" style="position:absolute; right:0; bottom:0;">#{{ selected.id }}</span-->
   </h3>
-  <h4 v-else class="grey-text hoverable card white padd-0-05">Выбрать договор арендатора</h4>
+  <h4 v-else class="grey-text">Выбрать договор арендатора</h4>
 </template>
 
 <template v-slot:listItem="{ listItem, selected, highlighted }">
-  <h5 class="padd-0-05  relative hover-shadow3d"  :class="{'maroon-text': listItem['архив?'], 'blue-text text-darken-4': !listItem['архив?'], 'bold fs12': listItem === selected, 'fw500': listItem === highlighted, 'nowrap': listItem !== selected}"  style="">
+  <h5 class="padd-0-05  relative hover-shadow3d"  :class="{'maroon-text': listItem['архив?'], 'teal-text text-darken-4': !listItem['архив?'], 'bold fs12': listItem === selected, 'fw500': listItem === highlighted, 'nowrap': listItem !== selected}"  style="">
     <span class="chip padd-0-05">{{ listItem.$контрагент.title }}</span>
     <span class="chip padd-0-05 fs8"><span class="fs8 grey-text">ИНН:</span> {{ listItem.$контрагент['реквизиты'] && listItem.$контрагент['реквизиты']['ИНН'] }}</span>
     
-    <span class="chip padd-0-05" title="номер договора"><span class="fs8 grey-text">дог.</span> № {{ listItem['номер'].replace('№', '') }} от {{ listItem['дата договора'] || listItem['дата1'] }}</span>
+    <span class="chip padd-0-05" title="номер договора"><span class="fs8-000 grey-text">дог.</span> № {{ listItem['номер'].replace('№', '') }} от {{ listItem['дата договора'] || listItem['дата1'] }}</span>
     <span class="chip padd-0-05" title="объект и помещения">
       <span><i class="material-icons fs10">place</i></span>
       <span class="fs8">{{ listItem['@помещения'] && listItem['@помещения'][0] && listItem['@помещения'][0].$объект.name  }}</span>

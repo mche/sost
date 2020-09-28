@@ -49,13 +49,13 @@
     
   <div class="row">
     <div class="col s2 ">
-      <h4 class="right-align relative">
+      <h4 class="right-align relative padd-05">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#contragent"></use></svg>
         <span>Арендатор и договор</span>
         <sup v-show=" !Valid('договор/id') " class="chip red white-text" style="position: absolute; z-index: 1; top:0;padding:0.3rem;"></sup>
       </h4>
     </div>
-    <div class="col s10  row">
+    <div class="col s10  row card teal lighten-3">
       <!--div class="border fs8">{{ form['контрагент'] }}</div-->
         <!--v-runtime-template :template=" templateCache.get('выбор договора аренды') "></v-runtime-template--->
         <v-contract-select :item=" {'id': form['договор/id'],} " :param=" { 'фильтр договоров000': ContragentContractsFilter } " @on-select=" OnContragentSelect " ></v-contract-select>

@@ -854,9 +854,9 @@ select
   pos.*--- позиции сгруппированы
 from 
 {%= $DICT->render('расходы/join') %}
+) q
 {%= $where || '' %}
 {%= $order_by || '' %} ---order by d."дата1" desc, d.id desc  
-) q
 
 @@ расходы/позиции
 select 
