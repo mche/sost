@@ -20,7 +20,8 @@
         <span v-show=" form.id " >Редактировать счет</span>
         
         <span> от </span>
-        <span class="chip bold bold shadow-inset-10 teal white-text">{{ param['проект'].name }}</span>
+        <!--span class="chip bold bold shadow-inset-10 teal white-text">{{ param['проект'].name }}</span-->
+        <span v-show="form['проект/name']" class="chip bold bold shadow-inset-10 teal white-text">{{ form['проект/name'] }}</span>
         
         <span v-show="form.id" class="grey-text fs8">#{{form.id}}</span>
         

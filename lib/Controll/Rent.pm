@@ -348,8 +348,8 @@ sub сохранить_расход {
   
   return $c->render(json=>{error=>"Нет даты"})
     unless (scalar grep($data->{$_}, qw(дата))) eq 1;
-  return $c->render(json=>{error=>"Нет проекта"})
-    unless $data->{'проект/id'};
+  #~ return $c->render(json=>{error=>"Нет проекта"})
+    #~ unless $data->{'проект/id'};
   return $c->render(json=>{error=>"Нет договора"})
     unless $data->{'договор/id'};
   

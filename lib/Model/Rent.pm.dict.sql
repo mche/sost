@@ -726,7 +726,8 @@ from
   join refs _rr on d.id=_rr.id1
   join "аренда/расходы" r on r.id=_rr.id2
   
-  join refs _rpr on r.id=_rpr.id2
+  --- проект через договор
+  join refs _rpr on d.id=_rpr.id2
   join "контрагенты/проекты"  pr on pr."проект/id"=_rpr.id1
   
   join (--- позиции
@@ -796,6 +797,9 @@ left join lateral (
   join refs _r on d.id=_r.id2
   join "контрагенты" k on k.id=_r.id1
   
+  join refs _rp on d.id=_rp.id2
+  join "roles" pr on pr.id=_rp.id1
+  
   --- по объекту (одна строка из арендованных помещений)
   ---join refs _rp on d.id=_rp.id1
   left join (
@@ -818,8 +822,9 @@ left join lateral (
   join refs _rr on d.id=_rr.id1
   join "аренда/расходы" r on r.id=_rr.id2
   
-  join refs _rp on r.id=_rp.id2
-  join "roles" pr on pr.id=_rp.id1
+  --~ join refs _rp on r.id=_rp.id2
+  --~ join "roles" pr on pr.id=_rp.id1
+  
   --~ join (
     --~ select distinct id, name, descr, disable
     --~ from "проекты"
@@ -848,7 +853,7 @@ select
   to_json(k) as "$контрагент/json",
   k.id as "контрагент/id",
   dp."@объекты/id"[1] as "объект/id", dp."@объекты/json"[1] as "$объект/json",
-  pr.id as "проект/id",
+  pr.id as "проект/id", pr."name" as "проект/name",
   r.*,
   timestamp_to_json(r."дата"::timestamp) as "$дата/json",
   pos.*--- позиции сгруппированы

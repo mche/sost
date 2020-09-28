@@ -41,7 +41,7 @@ LoadData(){
 },
 
 SelectProject(p){
-  if (this.project === p) return;
+  if (this.project === p) /*return;//*/p = undefined;
   this.project = p;
   this.$emit('on-select-project', this.project);
 },

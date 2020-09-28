@@ -300,6 +300,9 @@ from
   join refs _r on d.id=_r.id2
   join "контрагенты" k on k.id=_r.id1
   
+  join refs _rpr on d.id=_rpr.id2
+  join "roles" pr on pr.id=_rpr.id1
+  
   --- по объекту (одна строка из арендованных помещений)
   ---join refs _rp on d.id=_rp.id1
   /*left*/ join (
@@ -323,9 +326,6 @@ from
   
   join refs _rr on d.id=_rr.id1
   join "аренда/расходы" r on r.id=_rr.id2
-  
-  join refs _rpr on r.id=_rpr.id2
-  join "roles" pr on pr.id=_rpr.id1
   
   join (--- позиции
     select 

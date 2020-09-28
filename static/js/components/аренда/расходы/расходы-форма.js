@@ -243,6 +243,9 @@ OnContragentSelect(item, propSelect){/// из компонента выбор и
   //~ console.log("OnContractSelect", item, propSelect);
   var vm = this;
   vm.form['договор/id'] = item ? item.id : undefined;
+  //~ this.$set(vm.form, 'проект', item ? {"id":item['проект/id'], "name":item['проект/name'], };
+  vm.form['проект/id'] = item ? item['проект/id'] : undefined;
+  vm.form['проект/name'] = item ? item['проект/name'] : undefined;
 }, 
 
 

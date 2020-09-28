@@ -9,10 +9,10 @@
     <div class="row">
       <!-- project-list ng-if="ctrl.ready" data-param="param" data-on-select-project="ctrl.SelectProject(p)"></project-list-->
       <div class="col s7">
-        <v-project-list v-if="!contract.id" :проект=" project " @on-select-project="SelectProject"></v-project-list>
+        <v-project-list v-if="!contract.id" :проект=" project || {} " @on-select-project="SelectProject"></v-project-list>
         <h2  v-else :key="contract.id" class="chip bold shadow-inset-10 teal white-text">{{ project.name }}</h2>
       </div>
-      <div  v-show="!contract.id" class="col s5 hoverable card padd-05 marg-0 blue lighten-4"><v-object-select :select=" object " :param=" {placeholder: 'По объекту аренды',} " @on-select-object=" SelectObject "></v-object-select></div>
+      <div  v-show="!contract.id" class="col s5 hoverable card padd-05 marg-0 blue lighten-4"><v-object-select :select=" object || {} " :param=" {placeholder: 'Все объекты или выбрать объект аренды',} " @on-select-object=" SelectObject "></v-object-select></div>
     </div>
       
     
@@ -36,7 +36,7 @@
 
   </div>
 
-  <div v-if=" project.id || object.id " id="тут-компонент-расходы-таблица-000" class="relative">
+  <div v0000-if=" (project && project.id) || (object && object.id) " id="тут-компонент-расходы-таблица-000" class="relative">
     <!--v-runtime-template :template=" tpl "></v-runtime-template-->
     <!--v-table v-if=" param['проект']" :key="param['проект'].id + (param['месяц'].toISOString ? param['месяц'].toISOString() : param['месяц']) " :param="param" ></v-table-->
     <v-table  :key=" RefreshKey  " :param="{'месяц':month, 'проект': project, 'договор': contract, 'объект': object}" ></v-table>
