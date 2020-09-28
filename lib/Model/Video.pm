@@ -20,6 +20,8 @@ has feeds => sub {
 
 has clients => sub { {} };
 
+has restart_timeout => 3;
+
 sub init {
   my $self = shift;
   #~ $self->disable_destroy(1);
@@ -73,8 +75,11 @@ sub start_feed {
   $stream->on(close => sub {# перезапустить поток
     #~ my ($stream) = @_;
     $app->log->info("Feed [$name] $stream close, restarting...");
-    my $cam = $self->stream($self->$name);#cam_ip10
-    $self->start_feed($name, $cam);
+      $self->restart_timeout($self->restart_timeout +1 );
+     Mojo::IOLoop->timer($self->restart_timeout => sub {
+        my $cam = $self->stream($self->$name);#cam_ip10
+        $self->start_feed($name, $cam);
+      });
     #~ $_->finish
       #~ for values %$clients;
   });
