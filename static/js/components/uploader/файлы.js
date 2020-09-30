@@ -171,7 +171,7 @@ FileAttachment(file){///скачивание файла
 
 ViewIframe(file){///посмотр тут
   var vm = this;
-  var iframe = {"src": appRoutes.urlFor('файл-инлайн', [file.sha1]), "height": parseInt($window.innerHeight*0.8)/*modal max-height:90%;*/, "width": window.innerWidth, "content_type": file.content_type, "timeouts":[]};
+  var iframe = {"src": appRoutes.urlFor('файл-инлайн', [file.sha1]), "height": parseInt(window.innerHeight*0.8)/*modal max-height:90%;*/, "width": window.innerWidth, "content_type": file.content_type, "timeouts":[]};
   if (vm.iframeFile) {
     vm.iframeFile = undefined;
     setTimeout(function(){ vm.iframeFile = iframe; });

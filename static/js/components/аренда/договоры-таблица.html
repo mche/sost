@@ -52,7 +52,7 @@
       <div class="input-field chip shadow-inset-10 hoverable nowrap">
         <input type="checkbox" id="все крыжики" v-model="allChbs" @change="AllChbsChange">
         <label for="все крыжики" class="hover-shadow3d chip hoverable                  before-yellow-lighten-4 orange-text yellow lighten-4" style="padding-left: 16px;"></label>
-        <label for="все крыжики"><h6 class="orange-text" :class="{'bold': allChbs}"> {{ checkedItems.length }} договоров из {{ filteredData.length }}</h6></label>
+        <label for="все крыжики"><h6 class="orange-text" :class="{'bold000': allChbs}">  договоров <span class="chip padd-0 bold z-depth-1 ">{{ checkedItems.length }}</span> из {{ filteredData.length }}</h6></label>
       </div>
       <!--div class="chip padd-0-05"><a @click="AllChbsChange(!allChbs)" href="javascript:" class="hover-shadow3d">договоров {{ filteredData.length }}</a></div-->
     </td>
@@ -62,6 +62,7 @@
         <input type="checkbox" id="архивные крыжики" v-model="filters['архивные договоры']" @change="ChbChange('архивные договоры')">
         <label for="архивные крыжики" class="hover-shadow3d before-maroon-lighten-5 maroon-text chip maroon lighten-5 hoverable" style="position:absolute; left:-2rem; bottom: 0; padding-left:16px;" ></label>
         <label for="архивные крыжики" class="hover-shadow3d " style=""><h5 class="maroon-text">
+          <span class="material-icons">lock</span>
           <span>Архив</span>
           <sup class="chip white z-depth-1">{{ archLen }}</sup>
         </h5></label>
@@ -117,7 +118,7 @@
     </td>
     <td class="vtop padd-05 relative">
       <div class="relative">
-        <span class="fs8-000 grey-text" style="position:absolute; left:-1rem; top:0.2rem;">№</span><span class="nowrap bold fs12" style000="width:calc(5vw);" :title=" item['номер'] ">{{ item['номер'] }}</span>
+        <span class="fs8-000 grey-text" style="position:absolute; left:-1rem; top:0.2rem;">№</span><span class="nowrap bold fs12" style000="width:calc(5vw);" :title=" item['номер'] ">{{ item['номер!'] || item['номер'] }}</span>
         <!-- крыжик -->
         <!--div class="input-field"-->
           <input type="checkbox" :id="`крыжик-${item.id}`" :value="item" v-model=" checkedItems ">
@@ -274,7 +275,7 @@ lock</i><span class="bold">{{ item['$дата расторжения'].day }}</s
         <div class=" row">
           <h2 class="">За какой месяц или с/по месяцы</h2>
           <h4 class="col s1 right-align" v-show="payMonth2">С</h4>
-          <h4 class="col s4 input-field chip padd-05 hoverable shadow-inset-10">
+          <h4 class="col s5 input-field chip padd-05 hoverable shadow-inset-10">
             <!--span v-if="payMonth2" class="prefix"></span-->
             <input name="payMonth" type="text" class="datepicker pay-month fs18 fw500" style="" :data-value=" payMonth ">
           </h4>
@@ -287,13 +288,13 @@ lock</i><span class="bold">{{ item['$дата расторжения'].day }}</s
         <!-- переключатель -->
         <div class="chip hoverable hoverable shadow-inset-10">
           <div class="iblock">
-            <input type="radio" id="radioSchet" v-model="radioSchetAkt" :value=" 'счет' ">
+            <input type="radio" id="radioSchet" v-model="radioAccAct" :value=" 'счет' ">
             <label for="radioSchet"  class="before-yellow-lighten-4 brown-text-darken-3 checked-after-brown-darken-3" >Счета</label>
             <!--label for="radioSchet"></label-->
           </div>
           <span class="grey-text padd-0-05"> или </span>
           <div class="iblock">
-            <input type="radio" id="radioAkt" v-model="radioSchetAkt" :value=" 'акт' ">
+            <input type="radio" id="radioAkt" v-model="radioAccAct" :value=" 'акт' ">
             <label for="radioAkt" class=" before-yellow-lighten-4 brown-text-darken-3 checked-after-brown-darken-3" style="">Акты</label>
           </div>
         </div>
@@ -327,9 +328,69 @@ lock</i><span class="bold">{{ item['$дата расторжения'].day }}</s
     <v-progress-indeterminate v-show=" httpProcess " :color=" 'teal' " :message=" 'Загружается...' "></v-progress-indeterminate>
     <a @click=" PrintPay(payMonth, payMonth2) " href="javascript:" class="modal-action waves-effect waves-green btn-flat z-depth-1 green lighten-4 green-text text-darken-4" style="float:none;"><svg ng-hide="$c.cancelerHttp" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="blue-fill " style="height: 1.7rem;"><use xlink:href="/fonts/icons.svg#ms-word" class=""></use></svg><span>Получить распечатку</span></a>
     <a @click=" Reestr(payMonth, payMonth2) " href="javascript:" class="modal-action waves-effect waves-green btn-flat z-depth-1 blue lighten-4 blue-text text-darken-4" style="float:none;"><!--svg ng-hide="$c.cancelerHttp" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="blue-fill " style="height: 1.7rem;"><use xlink:href="/fonts/icons.svg#ms-word" class=""></use></svg--><span>Реестр актов</span></a>
+    <a @click=" SendMail(payMonth, payMonth2) " href="javascript:" class="modal-action waves-effect waves-green btn-flat z-depth-1 purple lighten-3 purple-text text-darken-3" style="float:none;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0  490 490" class="purple-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/rent.svg?20200929#email"></use></svg><span>Отправить на почту</span></a>
     <a  href="javascript:" class="modal-action modal-close waves-effect waves-red btn-flat z-depth-1 red lighten-3 red-text text-darken-3"><i class="material-icons">cancel</i><span>Отмена</span></a>
   </div>
 
+</div>
+
+
+  <!-- Modal Structure --> <!-- из uploader/файлы.html -->
+  <div id="modal-view-in-iframe" class="modal" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInUp" data-modal-out="animated  slideOutDown fast"  style="max-height:90%; width:100%; bottom:0;">
+    <div class="modal-content0000">
+      <iframe 
+        v-if="iframePDF && iframePDF.src"
+        :src="iframePDF.src"
+        :height="iframePDF.height"
+        :width="iframePDF.width"
+        :type="iframePDF.content_type"
+        frameborder="0"
+        class="PDF-inline"
+      ></iframe>
+    </div>
+      <a click.stop=" ClickStop " href="javascript:" class="modal-action modal-close waves-effect waves-green btn-flat red lighten-3 red-text text-darken-3" style="position:absolute;bottom:0; right:0;"><i class="material-icons">cancel</i><span>Закрыть просмотр</span></a>
+  </div>
+  
+  <!-- Modal Structure -->
+  <div id="modal-email" class="modal" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInUp" data-modal-out="animated  slideOutDown fast"  style="max-height:90%; width:100%; bottom:0;">
+    <div v-if="dataEmail" class="modal-content">
+      <h2>Список писем на отправку <span class="chip bold">{{ dataEmail.length }}</span></h2>
+      <table class="striped bordered highlight teal lighten-4 z-depth-1">
+        <tbody>
+          <tr v-for="item in dataEmail" :key="item['договор/id']">
+            <td class="padd-05 vtop" style="width:1%;">
+              <h4 class="nowrap"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class=" " :class=" !!item['архив'] ? 'maroon-fill' : 'teal-fill fill-darken-3' " style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#contragent"></use></svg> <span>{{ item['@документы'][0]['$контрагент'].title }}</span></h4>
+              <div class="chip padd-0-05 purple lighten-3 purple-text text-darken-3">{{ item['@документы'][0]['$контрагент']['реквизиты'].email }}</div>
+            </td>
+            <td  class="padd-05 vtop " style="width:1%;">
+              <h5 class="nowrap">
+                договор <span class="chip bold">{{ item['@документы'][0]['$договор']['номер!'] }}</span>
+                <span class="chip padd-0-05 nowrap" :title=" item['@документы'][0]['$договор']['дата1'] "><span class="fs8 grey-text">c </span><span class="bold">{{ item['@документы'][0]['$договор'].$дата1.day }}</span> <span class="fs8">{{ item['@документы'][0]['$договор'].$дата1['мес'] }}</span><span v-show="(new Date).getYear()+1900 != item['@документы'][0]['$договор'].$дата1.year"> {{ item['@документы'][0]['$договор'].$дата1.year }}</span></span>
+              </h5>
+            </td>
+            <td class="padd-05 vtop" style="width:1%;">
+              <div v-for="doc in  item['@документы']">
+                <div v-for="pos in  doc['@позиции']" class="nowrap right-align">
+                  <span class="fw100"><span v-for="n in pos['номенклатура']">{{ n }}</span></span>
+                  <span class="chip">{{ pos['сумма'] }}</span>
+                </div>
+              </div>
+            </td>
+            <td style="width:1%;"><a @click="ViewIframePDF({src: appRoutes.urlFor('аренда/счет#docx', item.file) + '?inline=1&cleanup=0', content_type:'application/pdf' })" href="javascript:" class="btn-flat padd-05"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 56 56" style="height: 2.7rem;"><use xlink:href="/fonts/icons.svg#pdf-file"></use></svg></a></td>
+            <td>
+              <!-- статус отправки -->
+                <div class="pre-wrap">{{ item['статус отправки письма'] }}</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="modal-footer center">
+    <v-progress-indeterminate v-show=" httpProcess " :color=" 'teal' " :message=" 'Отправляется...' "></v-progress-indeterminate>
+    <a @click=" SendMail(payMonth, payMonth2, true) " href="javascript:" class="modal-action waves-effect waves-green btn-flat z-depth-1 purple lighten-3 purple-text text-darken-3" style="float:none;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0  490 490" class="purple-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/rent.svg?20200929#email"></use></svg><span>Выполнить отправку писем</span></a>
+    <a  href="javascript:" class="modal-action modal-close waves-effect waves-red btn-flat z-depth-1 red lighten-3 red-text text-darken-3"><i class="material-icons">cancel</i><span>Отмена</span></a>
+  </div>
+  
 </div>
 
 </div>

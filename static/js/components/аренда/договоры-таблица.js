@@ -237,14 +237,38 @@ PrintPay(month, month2){/// счета и акты
   vm.httpProcess = true;
   //~ console.log("PrintPay", month, ids);
   /// вернет урл для скачивания
-  return $http.post(appRoutes.urlFor('аренда/счет#docx', '-'/*обязательно что-нибудь*/), {"месяц": month, "месяц2":month2, "договоры": ids, "присвоить номера": vm.payNums, "счет или акт": vm.radioSchetAkt, "pdf формат": vm.payPDF,/*"объекты":obs*/}).then(function(resp){
+  return $http.post(appRoutes.urlFor('аренда/счет#docx', '-'/*обязательно что-нибудь*/), {"месяц": month, "месяц2":month2, "договоры": ids, "присвоить номера": vm.payNums, "счет или акт": vm.radioAccAct, "pdf формат": vm.payPDF,/*"объекты":obs*/}).then(function(resp){
     vm.httpProcess  = false;
     modal.modal('close');
     if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 border fw500  animated zoomInUp');
-    if (resp.data.docx) window.location.href = appRoutes.urlFor('аренда/счет#docx', resp.data.docx);/// а это get-запрос
+    if (resp.data.docx) {
+      let url = appRoutes.urlFor('аренда/счет#docx', resp.data.docx);
+      console.log("PrintPay", vm.payPDF, url);
+      if (vm.payPDF) return vm.ViewIframePDF({"src": url+'?inline=1', "content_type":'application/pdf' });
+      window.location.href = url;/// а это get-запрос
+    }
     if (resp.data.data) console.log("счет", resp.data.data);///отладка
     //~ window.location.href = appRoutes.urlFor('тмц/накладная.docx', $c.data.id);
   });
+},
+
+ViewIframePDF(file){/// из uploader/файлы.js
+  var vm = this;
+  var iframe = {"src": file.src, "height": parseInt(window.innerHeight*0.8)/*modal max-height:90%;*/, "width": window.innerWidth, "content_type": file.content_type, "timeouts":[]};
+  if (vm.iframePDF) {
+    vm.iframePDF = undefined;
+    setTimeout(function(){ vm.iframePDF = iframe; });
+  } else 
+  vm.iframePDF = iframe;
+  iframe.timeouts.push(setTimeout(vm.CallbackWaitIframePDFLoad, 100));
+},
+CallbackWaitIframePDFLoad(){/// из uploader/файлы.js
+  var vm = this;
+  var iframe = vm.$el.getElementsByTagName('iframe')[0];
+  if (!iframe) return console.log("CallbackWaitIframePDFLoad просмотр закрыт");
+  if (vm.iframePDF.timeouts.length > 30 /* 30*100 мсек = 300 сек общее ожидание вызова просмотра*/) return console.log("CallbackWaitIframePDFLoad: нет просмотра по timeouts");
+  if (!iframe.contentDocument || iframe.contentDocument.URL/*contentWindow.document.URL*/ != 'about:blank') return $('#modal-view-in-iframe', $(vm.$el)).modal('open');
+  vm.iframePDF.timeouts.push(setTimeout(vm.CallbackWaitIframePDFLoad, 100));
 },
 
 Reestr(month, month2){
@@ -275,6 +299,32 @@ Reestr(month, month2){
     vm.httpProcess  = false;
     modal.modal('close');
   }, 2000);
+  
+},
+
+SendMail(month, month2, send){/// без send выйдет просмотр таблички
+  let vm = this;
+  var ids = ///vm.data.filter((item)=>{ return !!item['крыжик']; })
+    vm.checkedItems.map((item)=>{ return item.id; });
+  vm.httpProcess = true;
+  vm.dataEmail = undefined;
+  return $http.post(appRoutes.urlFor('аренда/емайл'), {"месяц": month, "месяц2":month2, "договоры": ids, "присвоить номера": vm.payNums, "счет или акт": vm.radioAccAct, "pdf формат": vm.payPDF, "отправить":send,}).then(function(resp){
+    vm.httpProcess  = false;
+    $('#modal-pay', $(vm.$el)).modal('close');
+    if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 border fw500  animated zoomInUp');
+    if (resp.data.data) {
+      vm.dataEmail = resp.data.data;
+      $('#modal-email', $(vm.$el)).modal('open');
+    }
+    //~ if (resp.data.data) console.log("счет", resp.data.data);///отладка
+    //~ window.location.href = appRoutes.urlFor('тмц/накладная.docx', $c.data.id);
+  },
+  function(resp){
+      console.log("Ошибка", resp);
+      Materialize.toast("Ошибка "+resp.status+" - "+ resp.statusText, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
+      vm.httpProcess = undefined;
+    }
+  );
   
 },
 
@@ -392,6 +442,8 @@ const  data = function(){
   //~ console.log("on data item", this.item);
   let vm = this;
   vm.data = [];
+  vm.appRoutes = appRoutes;
+  
   return {//angular.extend(// return dst
     //data,// dst
     //{/// src
@@ -407,7 +459,7 @@ const  data = function(){
     "payMonth2": undefined,
     "payNums": true, ///крыжик счета с номерами
     "payPDF": false,///крыжик 
-    "radioSchetAkt": 'счет',/// или акт
+    "radioAccAct": 'счет',/// или акт
     "filters": {"арендодатель": undefined, "арендаторы": '', "объект": {}, "архивные договоры": false,},
     //~ "rentObjects":[],
     "archLen":0, /// кол-во архивных договоров
@@ -416,6 +468,8 @@ const  data = function(){
     "keys":{'payMonth2':Math.random()},
     "httpProcess": undefined,
     "elWidth": undefined,/// будет при resizeObserver
+     "iframePDF": undefined,/// 
+    "dataEmail": undefined, /// модальная таблица рассылки на почту
     };
   //);
 };///конец data

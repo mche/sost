@@ -5,6 +5,18 @@ use Util;
 has model => sub { $_[0]->app->models->{'Аренда'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
 has model_contragent => sub { $_[0]->app->models->{'Contragent'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
 
+has email => sub {
+  #~ require Mojolicious::Plugin::RoutesAuthDBI::Util;
+    #~ and Mojolicious::Plugin::RoutesAuthDBI::Util->import('load_class');
+  require Email;
+  require Email::MIME;
+  #~ require MIME::Base64; MIME::Base64->import();  
+  #~ require IO::All;
+  #~ IO::All->import();
+  require Mojo::Asset::File;
+  Email->new(%{$_[0]->app->config->{'Email'}});
+};
+
 sub index {
   my $c = shift;
   return $c->render('аренда/index',
@@ -433,7 +445,8 @@ sub счет_оплата_docx {# сделать docx во врем папке �
     'format'   => $docx =~ /pdf/ ? 'pdf' : 'docx',
     #~ 'format'   => 'pdf',                 # will change Content-Type "application/x-download" to "application/pdf"
     #~ 'content_disposition' => 'inline',   # will change Content-Disposition from "attachment" to "inline"
-    'cleanup'  => 1,                     # delete file after completed
+    $c->param('inline') ? ('content_disposition' => 'inline') : (),
+    defined $c->param('cleanup') ? ('cleanup'  => $c->param('cleanup')) : ( 'cleanup'  => 1),# delete file after completed
   )  if $c->req->method eq 'GET';#$docx;
   
   my $param =  $c->req->json || {};
@@ -445,39 +458,49 @@ sub счет_оплата_docx {# сделать docx во врем папке �
     if $param->{'договоры'} && !@{$param->{'договоры'}};
   
   #~ $param->{docx} = sprintf("%s-%s.docx", $param->{'счет или акт'}, $c->auth_user->{id});
-  $param->{docx_template_file} = sprintf("templates/аренда/%s.template.docx", $param->{'счет или акт'},);
+  #~ $param->{docx_template_file} = sprintf("templates/аренда/%s.template.docx", $param->{'счет или акт'},);
   $param->{uid} = $c->auth_user->{id};
   #~ $param->{auth_user} = $c->auth_user;
-  my $data = $c->model->счет_оплата_docx($param);
+  my $data = $c->model->счет_помещения_docx($param);
   $c->log->error($c->dumper($data))
     and return $c->render(json=>{error=>$data})
     unless ref $data;
   return $c->render(json=>{error=>"Не найдено счетов"})
-    unless $data->{data};
-  
-  #~ $c->log->error($c->dumper($c->app->json->decode($data->{data})->[0]{"номер $param->{'счет или акт'}а"}));
+    unless @$data && $data->[0]{'jsonb_agg'};
+  #~ $c->app->json->decode(
+  #~ $c->log->error($c->dumper($data->[0]));#{"номер $param->{'счет или акт'}а"}
   #~ my @nums  = map {$_->{"номер $param->{'счет или акт'}а"}} @{ $c->app->json->decode($data->{data}) };
   
   #~ return $c->render(json=>{data=>$data});
-  my $tmp = Mojo::File::tempfile->basename;
-  $docx = sprintf("%s-%s.%s", $param->{'счет или акт'}, $c->auth_user->{id}, $param->{'pdf формат'} ? 'pdf' : 'docx');#
-  my $out_file = "static/tmp/$docx";
+  #~ my $tmp = Mojo::File::tempfile->basename;
+  my $file = sprintf("%s-%s.%s", $param->{'счет или акт'}, $c->auth_user->{id}, $param->{'pdf формат'} ? 'pdf' : 'docx');#
+  my $out_file = "static/tmp/$file";
   #~ my $err_file = "$data->{docx_out_file}.error";
   my $err_file = "$out_file.error";
-  my $pdf_conv = $param->{'pdf формат'} ? sprintf(" | doc2pdf -M Title='%s' -M Author='%s' -M Subject='%s' -n --stdin --stdout ", $param->{'счет или акт'}, '', '') : '';
+  my $pdf_conv_pipe = $param->{'pdf формат'} ? sprintf(" | doc2pdf -M Title='%s' -M Author='%s' -M Subject='%s' -n --stdin --stdout ", $param->{'счет или акт'}, '', '') : '';
   
-  open(PYTHON, "| python  2>'$err_file' $pdf_conv > '$out_file' ")
-    || die "can't fork: $!";
-  #~ ##local $SIG{PIPE} = sub { die "spooler pipe broke" };
-  say PYTHON $data->{python};
-  close PYTHON
+  my $python = $c->model->dict->{'счет.docx'}->render(
+    docx_template_file=>sprintf("templates/аренда/%s.template.docx", $param->{'счет или акт'},),# || "static/аренда-счет.template.docx",
+    #~ docx_out_file=>$r->{docx_out_file},
+    data=>$data->[0]{'jsonb_agg'},# $self->app->json->encode($data),
+    seller=>{},#$self->dbh->selectrow_array(q<select k."реквизиты"||to_jsonb(k) from "контрагенты" k  where id=123222>),# арендодатель по умолчанию
+    #~ sign_image=>-f "static/i/logo/sign-123222.png" && "static/i/logo/sign-123222.png",#
+    #~ {% if item['$арендодатель'] and sign_images.get(str(item['$арендодатель']['id'])) %} {{ sign_images.get(str(item['$арендодатель']['id'])) }} {% elif sign_images.get(str(seller['id'])) %} {{ sign_images.get(str(seller['id'])) }} {% endif %}
+  );
+  
+  open(my $pipe, "| python  2>'$err_file' $pdf_conv_pipe > '$out_file' ")
+      or die "can't fork: $!";
+    binmode($pipe, ':encoding(UTF-8)');
+    #~ ##local $SIG{PIPE} = sub { die "spooler pipe broke" };
+    say $pipe $python;
+    close($pipe)
     #~ || die "bads: $! $?"
-    || return $c->render_file('filepath' => $err_file,  'format'   => 'txt', 'content_disposition' => 'inline', 'cleanup'  => 1,);
+      or return $c->render_file('filepath' => $err_file,  'format'   => 'txt', 'content_disposition' => 'inline', 'cleanup'  => 1,);
   
   unlink $err_file;
   
   #~ $c->render(json=>{data=>$data});
-  $c->render(json=>{docx=>$docx});# $c->render(json=>{docx=>$data->{docx}})
+  $c->render(json=>{docx=>$file});# $c->render(json=>{docx=>$data->{docx}})
 }
 
 sub счет_расходы_docx {# сделать docx во врем папке и вернуть урл
@@ -487,6 +510,7 @@ sub счет_расходы_docx {# сделать docx во врем папке
   #~ $c->app->log->error($docx);
   return $c->render_file(
     'filepath' => "static/tmp/$docx",
+    'format'   => $docx =~ /pdf/ ? 'pdf' : 'docx',
     #~ 'format'   => 'pdf',                 # will change Content-Type "application/x-download" to "application/pdf"
     #~ 'content_disposition' => 'inline',   # will change Content-Disposition from "attachment" to "inline"
     'cleanup'  => 1,                     # delete file after completed
@@ -514,11 +538,14 @@ sub счет_расходы_docx {# сделать docx во врем папке
   #~ $c->log->error($c->dumper($data->{data}));
   
   #~ return $c->render(json=>{data=>$data});
-  $docx = sprintf("%s-%s.docx", $param->{'счет или акт'}, $c->auth_user->{id});
+  #~ my $tmp = Mojo::File::tempfile->basename;
+  $docx = sprintf("%s-%s.%s", $param->{'счет или акт'}, $c->auth_user->{id}, $param->{'pdf формат'} ? 'pdf' : 'docx');#
   my $out_file = "static/tmp/$docx";
+  #~ my $err_file = "$data->{docx_out_file}.error";
   my $err_file = "$out_file.error";
+  my $pdf_conv = $param->{'pdf формат'} ? sprintf(" | doc2pdf -M Title='%s' -M Author='%s' -M Subject='%s' -n --stdin --stdout ", $param->{'счет или акт'}, '', '') : '';
   
-  open(PYTHON, "| python  2>'$err_file' > '$out_file' ")
+  open(PYTHON, "| python  2>'$err_file' $pdf_conv > '$out_file' ")
     || die "can't fork: $!";
   #~ ##local $SIG{PIPE} = sub { die "spooler pipe broke" };
   say PYTHON $data->{python};
@@ -596,6 +623,112 @@ sub сохранить_подписание_акта {
     unless ref $r;
   $c->render(json=>{success=>$r});
   
+}
+
+sub на_емайл {# счета и акты, создать pdf файлы для каждого договора и вернуть данные для таблицы
+  my $c = shift;
+  my $param =  $c->req->json || {};
+  return $c->render(json=>{error=>'не указан месяц'})
+    unless $param->{'месяц'};
+  #~ return $c->render(json=>{error=>'не указаны договоры'})
+    #~ unless $param->{'договоры'};
+  $param->{'договоры'} = undef
+    if $param->{'договоры'} && !@{$param->{'договоры'}};
+  $param->{uid} = $c->auth_user->{id};
+  #~ $param->{auth_user} = $c->auth_user;
+  $param->{"на емайл"} = 1;# у кого есть емайлы
+  $param->{'pdf формат'} = 1;
+  $param->{'select'} = ' "договор/id", jsonb_agg(a) as "@документы/json" ';
+  $param->{'group_by'} = ' group by "договор/id" ';
+  my $data = $c->model->счет_помещения_docx($param);
+  $c->log->error($c->dumper($data))
+    and return $c->render(json=>{error=>$data})
+    unless ref $data;
+  return $c->render(json=>{error=>"Не найдено счетов/актов"})
+    unless @$data && $data->[0]{'@документы/json'};
+  #~ $param->{docx} = sprintf("%s-%s.docx", $param->{'счет или акт'}, $c->auth_user->{id});
+  my $docx_template_file = sprintf("templates/аренда/%s.template.docx", $param->{'счет или акт'},);
+  
+  for my $r (@$data) {# по одному договору
+    
+    #~ my $data = $c->app->json->decode($r->{jsonb_agg});
+
+    my $file = sprintf("%s-%s-%s-%s.%s", $param->{'счет или акт'}, $c->auth_user->{id}, $r->{'договор/id'}, $param->{'месяц'}, $param->{'pdf формат'} ? 'pdf' : 'docx');#
+    my $out_file = "static/tmp/$file";
+    #~ my $err_file = "$data->{docx_out_file}.error";
+    my $err_file = "$out_file.error";
+    my $pdf_conv_pipe = $param->{'pdf формат'} ? sprintf(" | doc2pdf -M Title='%s' -M Author='%s' -M Subject='%s' -n --stdin --stdout 2>'$err_file' ", $param->{'счет или акт'}, '', '') : '';
+    
+    my $python = $c->model->dict->{'счет.docx'}->render(
+      docx_template_file=>$docx_template_file,# || "static/аренда-счет.template.docx",
+      #~ docx_out_file=>$r->{docx_out_file},
+      data=>$r->{'@документы/json'},# $self->app->json->encode($data),
+      seller=>{},#$self->dbh->selectrow_array(q<select k."реквизиты"||to_jsonb(k) from "контрагенты" k  where id=123222>),# арендодатель по умолчанию
+      #~ sign_image=>-f "static/i/logo/sign-123222.png" && "static/i/logo/sign-123222.png",#
+      #~ {% if item['$арендодатель'] and sign_images.get(str(item['$арендодатель']['id'])) %} {{ sign_images.get(str(item['$арендодатель']['id'])) }} {% elif sign_images.get(str(seller['id'])) %} {{ sign_images.get(str(seller['id'])) }} {% endif %}
+    );
+    
+    open my $pipe, "| python  2>'$err_file' $pdf_conv_pipe > '$out_file' "
+      or die "can't fork: $!";
+    binmode($pipe, ':encoding(UTF-8)');
+    #~ ##local $SIG{PIPE} = sub { die "spooler pipe broke" };
+    say $pipe $python;
+    close($pipe)
+      #~ || die "bads: $! $?"
+      || return $c->render_file('filepath' => $err_file,  'format'   => 'txt', 'content_disposition' => 'inline', 'cleanup'  => 1,);
+    
+    unlink $err_file;
+    #~ @$r{keys %$data} = values %$data;
+    $r->{file} = $file;
+    $r->{'статус отправки письма'} = $c->отправить_письмо($param, $r)
+      if $param->{'отправить'};
+  }
+  #~ $c->log->error($c->dumper($data));
+  $c->render(json=>{data=>$data, });#from=>$c->app->config->{'Email'}
+}
+
+sub отправить_письмо {
+  my ($c, $param, $data) = @_;
+  my $docs = $c->app->json->decode($data->{'@документы/json'});
+  #~ $c->log->error($c->dumper($docs->[0]{'$арендодатель/json'}));
+  #~ $c->log->error(Mojo::Asset::File->new(path => "static/tmp/$data->{file}")->slurp);
+  my $mailer = $c->email;
+ my $message = Email::MIME->create(
+    header_str => [
+      From    => $mailer->smtp_user,
+      To      =>  sprintf("Арендатору <%s>", $docs->[0]{'$контрагент/json'}{'реквизиты'}{'email'}),#
+      Subject => " Аренда помещений $docs->[0]{'объект'} ",
+      $docs->[0]{'$арендодатель/json'}{'реквизиты'} && $docs->[0]{'$арендодатель/json'}{'реквизиты'}{'email'} ? ("Reply-To"=> $docs->[0]{'$арендодатель/json'}{'реквизиты'}{'email'}) : (), #'John Doe <John.Doe@gmail.com>',
+      #~ "Sender" => 'John Doe <John.Doe@gmail.com>',# Sender or From header address rejected: not owned by authorized user
+    ],
+    parts => [
+          Email::MIME->create(
+            attributes => {
+                    encoding => 'quoted-printable',
+                    charset  => 'UTF-8',
+                    content_type => 'text/html',
+            },
+            body_str => $c->render_to_string('аренда/письмо арендатору', format => 'html', docs=>$docs, param=>$param), #$c->model->dict->{'письмо аренда помещений'}->render(data=>$docs, param=>$param), #"<h1>Тест 2!</h1>\n",
+          ),
+          Email::MIME->create(
+            #~ body => io("static/tmp/счет-1732-1044957-2020-09-30.pdf")->binary->all,
+            body=> Mojo::Asset::File->new(path => "static/tmp/$data->{file}")->slurp,
+            attributes => {
+                filename => "$param->{'счет или акт'}.pdf",
+                content_type => 'application/pdf',
+                charset=>'UTF-8',
+                encoding => 'Base64',
+                #~ encoding     => "quoted-printable",
+            },
+         ),
+    ]
+  );
+  my $sent = eval { $mailer->send_message($message)->{message} };
+  $sent = ($@ =~ /^(.+?)\n/)[0]
+    and $c->log->error($sent)
+    unless $sent;
+  #~ $c->log->error($c->dumper($sent));
+  return $sent;
 }
 
 1;

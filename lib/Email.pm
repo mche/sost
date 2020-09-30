@@ -12,44 +12,24 @@ cpanm Net::SMTP::TLS
 =cut
 
 use Mojo::Base -base;
-#~ no if $] >= 5.018, warnings => "experimental::smartmatch";
-#~ binmode(STDOUT, ':utf8');
-#~ binmode(STDERR, ':utf8');
-#~ use Mail::Mailer;
-#~ use Mail::Sendmail;
 use Email::Sender::Simple qw(sendmail);
 use Email::Sender::Transport::SMTP;#::Persistent qw()
 use Email::MIME;
 
-has port=>25;
-has [qw(ssl host smtp_user smtp_pw)];
+has smtp_port => 465;#25;
+has smtp_ssl => 1;
+has [qw(smtp_host smtp_user smtp_pw)];
 
 has transport => sub {
   my $self = shift;
-  Email::Sender::Transport::SMTP->new({
-    ssl => $self->ssl,
-    host => $self->host,
-    port => $self->port,
+  Email::Sender::Transport::SMTP->new({#::Persistent
+    ssl => $self->smtp_ssl,
+    host => $self->smtp_host,
+    port => $self->smtp_port,
     sasl_username=>$self->smtp_user,
     sasl_password=>$self->smtp_pw, 
   });
 };
-
-=pod
-sub new {
-  my $class = shift;
-  my $self = {
-    #~ transport=>
-    #~ host=>
-    port=>25,
-    #~ sasl_username|sasl_user|sasl_login|smtp_username|smtp_user|smtp_login =>
-    #~ sasl_password|sasl_passwd|sasl_pw|smtp_passwd|smtp_password|smtp_pw=>
-    debug=>1,
-    @_,
-  };
-  bless $self, $class;
-}
-=cut
 
 sub send {
   my $self = shift;
@@ -64,8 +44,8 @@ sub send {
   );
   my $message = Email::MIME->create(
     header_str => [
-      From=>$arg{from} || $self->smtp_user,
-      To=>$arg{to},
+      From=>$arg{from} || $arg{From} || $self->smtp_user,
+      To=>$arg{to} || $arg{To} ,
       Subject=>$arg{Subject} || $arg{subject} || '<Без темы>',
       map { $_ => $arg{$_} } grep($arg{$_}, qw(Cc Reply-To)),
       #~ $arg{bcc} ? НЕ ТУТ! ниже в sendmail
@@ -74,21 +54,34 @@ sub send {
       #~ 'X-Spam'=> 'Not detected',
     ],
     attributes => {content_type=>$arg{content_type}, charset=>$arg{charset}, encoding => $arg{encoding},},
-    body_str   => $arg{body},
-    
+    $arg{body} ? (body_str   => $arg{body}) : (),
+    $arg{parts} ? (parts => $arg{parts}) : (),
   );
   my $send = sendmail(
       $message,
       {
         $arg{bcc} ? (to => $arg{bcc}) : (),#[ref $arg{bcc} eq 'ARRAY' ? $arg{bcc} : 
-        from => $self->smtp_user,# ???$arg{smtp_user} || 
+        #~ from => $self->smtp_user,# ???$arg{smtp_user} || 
         transport => $self->transport,
       },
     );
-  die "Ошибка отправки ➜ [$arg{to}]:", $send
-    unless $send =~ /Success/i;
-  return join("\n", "Успешно ➜ [$arg{to} :", @{$arg{bcc} || []}, $send);
-  #~ return $send;
+  #~ return "Ошибка отправки ➜ [$arg{to}]:", $send
+    #~ unless $send =~ /Success/i;
+  #~ return join("\n", "Успешно ➜ [$arg{to} :", @{$arg{bcc} || []}, $send);
+  return $send;
+}
+
+sub send_message {
+  my ($self, $message) = @_;
+  sendmail(
+    $message,
+    {
+      #~ $arg{bcc} ? (to => $arg{bcc}) : (),#[ref $arg{bcc} eq 'ARRAY' ? $arg{bcc} : 
+      #~ from => $self->smtp_user,# ???$arg{smtp_user} || 
+      transport => $self->transport,
+    },
+  );
+  
 }
 
 sub DESTROY {

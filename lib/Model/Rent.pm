@@ -296,7 +296,7 @@ sub удалить_договор {
   return $r;
 }
 
-sub счет_оплата_docx {# и акты
+sub счет_помещения_docx {# и акты
   my $self  =  shift;
   my $param = ref $_[0] ? shift : {@_};
   
@@ -310,27 +310,21 @@ sub счет_оплата_docx {# и акты
   my ($where, @bind) = $self->SqlAb->where({
     $param->{"договоры"} ? (' d.id ' => \[ ' = any(?) ', $param->{"договоры"} ]) : (),
     q| not coalesce((coalesce(k."реквизиты",'{}'::jsonb)->'физ. лицо'), 'false')::boolean |=>\[],
+    $param->{"на емайл"} ? (q| coalesce(k."реквизиты",'{}'::jsonb)->>'email' | => { '!=', q|''| }) : (),
 #    ' dp."объект/id" ' => \[ ' = any(?) ', $param->{"объекты"} ],
   });
   unshift @bind, $param->{'месяц'}, $param->{'месяц2'} || $param->{'месяц'}, $param->{'счет или акт'} eq 'акт' ? 929979 : 0;# отключить обеспечит предоплата для актов, $param->{'присвоить номера'} ? $param->{"договоры"} : [], $param->{uid};
-  my $data = $self->dbh->selectrow_array($self->sth('счета и акты', select=>' jsonb_agg(a) as "json" ', where=>$where), undef, @bind);
-  my $r = {};
+  my $data = $self->dbh->selectall_arrayref($self->sth('счета и акты', счет_или_акт=>$param->{'счет или акт'}, select=>$param->{select} || ' jsonb_agg(a) ', where=>$where, group_by=>$param->{group_by}), {Slice=>{}}, @bind);
+  #~ my $r = {};
   #~ $r->{docx} = $param->{docx} || "счет-$param->{uid}.docx";
   #~ $r->{docx_out_file} = "static/tmp/$r->{docx}";
   
-  $r->{data} = $data;
-  $r->{python} = $self->dict->{'счет.docx'}->render(
-    docx_template_file=>$param->{docx_template_file} || "static/аренда-счет.template.docx",
-    #~ docx_out_file=>$r->{docx_out_file},
-    data=>$data,# $self->app->json->encode($data),
-    seller=>{},#$self->dbh->selectrow_array(q<select k."реквизиты"||to_jsonb(k) from "контрагенты" k  where id=123222>),# арендодатель по умолчанию
-    #~ sign_image=>-f "static/i/logo/sign-123222.png" && "static/i/logo/sign-123222.png",#
-    #~ {% if item['$арендодатель'] and sign_images.get(str(item['$арендодатель']['id'])) %} {{ sign_images.get(str(item['$арендодатель']['id'])) }} {% elif sign_images.get(str(seller['id'])) %} {{ sign_images.get(str(seller['id'])) }} {% endif %}
-  );
+  #~ $r->{data} = $data;
+  
   
   #~ $self->app->log->error($r->{python});
   
-  return $r;#для отладки - коммент линию
+  return $data;#для отладки - коммент линию
 }
 
 sub счет_расходы_docx {
@@ -341,7 +335,7 @@ sub счет_расходы_docx {
     # ничего
   });
   unshift @bind, $param->{'месяц'}, $param->{'аренда/расходы/id'};
-  my $data = $self->dbh->selectrow_array($self->sth('счета и акты/доп расходы', select=>' jsonb_agg(a) as "json" ', where=>$where), undef, @bind);
+  my $data = $self->dbh->selectrow_array($self->sth('счета и акты/доп расходы', счет_или_акт=>$param->{'счет или акт'} || 'счет', select=>' jsonb_agg(a) ', where=>$where), undef, @bind);
   #~ return $data;
   my $r = {};
   #~ $r->{docx} = $param->{docx} || "счет-$param->{uid}.docx";
@@ -484,5 +478,7 @@ sub сохранить_подписание_акта {
   my ($self, $id)  =  @_;
   $self->dbh->selectrow_hashref($self->sth('сохранить подписание акта'), undef, $id);
 }
+
+
 
 1;

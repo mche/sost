@@ -547,22 +547,26 @@ num as (---нумерация счетов
 select {%= $select || '*' %} from (
 select
   pr."проект" as "проект",
-  pr."реквизиты"||to_jsonb(pr) as "$арендодатель/json", --- as "арендодатель/реквизиты",
+  coalesce(pr."реквизиты",'{}'::jsonb) || to_jsonb(pr) as "$арендодатель/json", --- as "арендодатель/реквизиты",
 
+  num1.id as "счет/id",
   coalesce(num1."номер", '---')/*(random()*1000)::int*/ as "номер счета",
   coalesce(num1.ts, now())::date as "дата счета",
   timestamp_to_json(coalesce(num1.ts, now())) as "$дата счета/json",
   timestamp_to_json(case when coalesce(d."оплата до числа", 5) = 5 then (date_trunc('month', dp."дата")+interval '4 days') else (date_trunc('month', dp."дата")-interval '1 month'+interval '24 days') end)  as "$дата оплатить счет",
+  to_json(num1) as "$счет/json",
   
+  num2.id as "акт/id",
   coalesce(num2."номер", '---')/*(random()*1000)::int*/ as "номер акта",
   coalesce(/*num2.ts*/date_trunc('month', num2."месяц")+interval '1 month'-interval '1 day', /*now()*/null)::date as "дата акта",--- на последнее число мес
   timestamp_to_json(coalesce(/*num2.ts*/(date_trunc('month', num2."месяц")+interval '1 month'-interval '1 day')::timestamp, now())) as "$дата акта/json",--- на последнее число мес
-  row_to_json(num2) as "$акты/аренда/json",
+  row_to_json(num2) as "$акт/json",
   
   ob.name as "объект",
   row_to_json(d) as "$договор/json", 
   row_to_json(k) as "$контрагент/json",
   k.id as "контрагент/id",
+  d."id" as "договор/id",
   d."номер!" as "договор/номер",
   d."дата1" as "договор/дата начала",
    coalesce(d."дата расторжения", d."дата2") as "договор/дата завершения",
@@ -601,21 +605,20 @@ from
   ---join "движение ДС/аренда/счета" dp on d.id=dp.id and param."month"=date_trunc('month', dp."дата") and dp."примечание"!~'предоплата'
   join /*lateral*/ (
     select 
-      dp."договор/id", dp."дата",
+      dp."договор/id", dp."дата", dp."месяц", dp."год",
       sum(dp."сумма") as "сумма",
       jsonb_agg(dp order by dp."order_by") as "@позиции",
       array_agg(dp."объект/id" order by dp."order_by") as "@объекты/id",
       count(dp) as "всего позиций"
     from (
       select
-        dp."договор/id", dp."дата",
+        dp."договор/id", dp."дата",m."месяц",to_char(dp."дата", 'YYYY') as "год",
         /*-1::numeric**/dp."сумма безнал" as "сумма",
         dp."объект/id", dp."номер доп.согл.",
         not 929979=any(dp."категории") as "order_by",
         case when 929979=any(dp."категории")---ид категории
-          then ('{"Обеспечительный платеж"}')::text[]
-          ---'||param."месяц"||' '||param."год"||'
-          else ('{"Арендная плата за нежилое помещение за ' || m."месяц"|| ' ' || to_char(dp."дата", 'YYYY') ||' г.' || (case when dp."номер доп.согл." >0 then ' (доп. согл. ' || dp."номер доп.согл."::text || ')' else '' end) || '"}')::text[]
+            then ('{"Обеспечительный платеж"}')::text[]
+            else ('{%= $счет_или_акт eq "акт" ? q|{"Аренда нежилого помещения за | : q|{"Арендная плата за нежилое помещение за | %}' || m."месяц"|| ' ' || to_char(dp."дата", 'YYYY') ||' г.' || (case when dp."номер доп.согл." >0 then ' (доп. согл. ' || dp."номер доп.согл."::text || ')' else '' end) || '"}')::text[]
         end  as "номенклатура"
       from "движение ДС/аренда/счета" dp
         join  (VALUES (1, 'январь'), (2, 'февраль'), (3, 'март'), (4, 'апрель'), (5, 'май'), (6, 'июнь'), (7, 'июль'), (8, 'август'), (9, 'сентябрь'), (10, 'октябрь'), (11, 'ноябрь'), (12, 'декабрь'))
@@ -626,7 +629,7 @@ from
         and not ?::int = any(dp."категории")
         ---and not coalesce(dd."оплата наличкой", false)
     ) dp
-    group by dp."договор/id", dp."дата"
+    group by dp."договор/id", dp."дата", dp."месяц", dp."год"
   ) dp on d.id=dp."договор/id"
   
   join  "roles" ob on ob.id=dp."@объекты/id"[1]
@@ -651,6 +654,7 @@ from
 {%= $where || '' %}
 {%= $order_by || 'order by dp."дата", d."дата1" desc, d.id desc  ' %}
 ) a
+{%= $group_by || '' %}
 
 @@ счета и акты/доп расходы
 ---  для docx
@@ -936,4 +940,5 @@ tpl.render(context)
 %# tpl.save(u'{%= $docx_out_file %}')
 out = os.fdopen(sys.stdout.fileno(), 'wb')
 tpl.save(out)
+
 
