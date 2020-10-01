@@ -366,7 +366,7 @@ sub реестр_актов {
  #    ' dp."объект/id" ' => \[ ' = any(?) ', $param->{"объекты"} ],
   });
   unshift @bind, $param->{'месяц'}, $param->{'месяц2'} || $param->{'месяц'}, $param->{'счет или акт'} eq 'акт' ? 929979 : 0;# отключить обеспечит предоплата для актов, $param->{'присвоить номера'} ? $param->{"договоры"} : [], $param->{uid};
-  $self->dbh->selectall_arrayref($self->sth('счета и акты', select=>$param->{select}, where=>$where, 'order_by'=>$param->{order_by}), {Slice=>{}}, @bind);
+  $self->dbh->selectall_arrayref($self->sth('счета и акты', счет_или_акт=>'акт', безнал_или_всего=>1,  select=>$param->{select}, where=>$where, 'order_by'=>$param->{order_by}), {Slice=>{}}, @bind);
 }
 
 sub расходы_категории {
