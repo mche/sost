@@ -18,7 +18,7 @@
 <div>
   <!-- фильтр арендодателя-->
   <div class="iblock" style=" width:20rem;">
-    <v-select v-if="projectData" :select=" {} " :param="{'без стрелки раскрытия списка': true, 'без поля поиска': true, ulDropDownClass: 'striped teal lighten-4'}" :items=" projectData " @on-select=" SelectProjectFilter ">
+    <v-select v-if="projectData" :key=" keys['арендодатель'] " :select=" {} " :param="{'без стрелки раскрытия списка': true, 'без поля поиска': true, ulDropDownClass: 'striped teal lighten-4'}" :items=" projectData " @on-select=" SelectProjectFilter ">
       <template v-slot:selected="{ selected }">
         <h4 class="  hoverable" :class="{'grey-text':!selected, 'fw500 animated slideInUp': !!selected}">
           <span class="material-icons">filter_list</span>
@@ -80,7 +80,7 @@
 
         <!-- фильтр арендатора -->
         <div class="input-field" style=" width:9rem; max-width:calc(10vw);"><!-- стили ширины соотв. стилям первой колонки position:absolute; top:-2.3rem; left:0;-->
-          <a v-show=" filters['арендаторы'] && filters['арендаторы'].length " @click=" ClearFilter('арендаторы') " href="javascript:" style="position: absolute; z-index: 1; right:0.5rem; top:0.3rem; "><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"  class="red-fill fill-darken-1" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#left-clear-fill"></use></svg></a>
+          <a v-show=" filters['арендаторы'] && filters['арендаторы'].length " @click=" ОчиститьФильтр('арендаторы') " href="javascript:" style="position: absolute; z-index: 1; right:0.5rem; top:0.3rem; "><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"  class="red-fill fill-darken-1" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#left-clear-fill"></use></svg></a>
           <input type="text" name="арендаторы"  v-model="filters['арендаторы']" @input=" OnChangeFilter " :placeholder=" 'поиск арендатора' " class="">
         </div>
     </td>
@@ -103,7 +103,7 @@
             <th class="vbottom">
               <!-- фильтр по объекту :data-list=" rentObjects "-->
               <div v0000-if=" rentObjects.length " style-000="width:calc(20vw);">
-                <v-object-select  :select=" filters['объект'] " :param="{'без поля поиска': true, ulDropDownClass: 'striped blue lighten-4'}" @on-select-object=" SelectObjectFilter "></v-object-select>
+                <v-object-select :key="keys['объект']" :select=" {/*не нужен*/} " :param="{'без поля поиска': true, ulDropDownClass: 'striped blue lighten-4'}" @on-select-object=" SelectObjectFilter "></v-object-select>
                 <!--v-select :select=" filters['объект'] " :items=" rentObjects " :param=" {'без поля поиска': true} " @on-select=" SelectObjectFilter ">
                   <template v-slot:selected="{ selected }">
                     <h5 class="fw500 blue-text text-darken-3 animated fadeIn slow hover-bottom-shadow-blue-darken-3" style="">{{ (selected && selected.$item && selected.$item.name) || 'По объекту' }}</h5>

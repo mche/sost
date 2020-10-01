@@ -50,8 +50,9 @@ Ready(){/// метод
     vm.checkedItems.splice(0);
     let d = vm.data.find(util.IsEqualId, {id});
     vm.$set(d, 'архив', vm.IsArchiveContract(d));
-    vm.filters['архивные договоры'] = !!d['архив'];
-    vm.filters['физ лица'] = undefined;
+    vm.checkedItems.push(d);
+    vm.СброситьВсеФильтры();
+    //~ vm.FilterData(); ///в ChbChange
     vm.ChbChange('архивные договоры', !!d['архив']);
     setTimeout(()=>{
       //~ $(`#contract-${ id }`, $(vm.$el)).get(0).scrollIntoView({ "block": 'start', "behavior": 'smooth', });
@@ -393,10 +394,20 @@ FilterData(){
   return vm;
 },
 
-ClearFilter(name){
+ОчиститьФильтр(name){
   var vm = this;
   vm.filters[name] = '';
   vm.FilterData();
+},
+
+СброситьВсеФильтры(){
+    //~ vm.filters['архивные договоры'] = !!d['архив'];
+    //~ vm.filters['физ лица'] = undefined;
+    //~ Object.keys(vm._cleanFilters).map((key)=>{ vm.$set(vm.filters, key, vm._cleanFilters[key]); console.log("Прокрути к договору", key, vm.filters[key]); } );
+    this.filters = {...this._cleanFilters};
+    this.keys['арендодатель'] = Math.random();
+    this.keys['объект'] = Math.random();
+  
 },
 
 SelectObjectFilter(data){
@@ -456,6 +467,7 @@ const  data = function(){
   let vm = this;
   vm.data = [];
   vm.appRoutes = appRoutes;
+  vm._cleanFilters = {"арендодатель": undefined, "арендаторы": '', "объект": undefined, "архивные договоры": false, "физ лица": undefined/*радио 3 состояния*/,}
   
   return {//angular.extend(// return dst
     //data,// dst
@@ -474,12 +486,12 @@ const  data = function(){
     "payPDF": false,///крыжик 
     "radioAccAct": 'счет',/// или акт
     "radioNalBezNal": 'безнал',/// или вместе нал и безнал
-    "filters": {"арендодатель": undefined, "арендаторы": '', "объект": {}, "архивные договоры": false, "физ лица": undefined/*радио 3 состояния*/,},
+    "filters": {...vm._cleanFilters},
     //~ "rentObjects":[],
     "archLen":0, /// кол-во архивных договоров
     "clipBoard": undefined,
     "projectData":undefined,///арендодатели для компонетов
-    "keys":{'payMonth2':Math.random()},
+    "keys":{'payMonth2':Math.random(), "объект":Math.random(), "арендодатель":Math.random(), },
     "httpProcess": undefined,
     "elWidth": undefined,/// будет при resizeObserver
      "iframePDF": undefined,/// 
