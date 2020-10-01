@@ -51,6 +51,7 @@ Ready(){/// метод
     let d = vm.data.find(util.IsEqualId, {id});
     vm.$set(d, 'архив', vm.IsArchiveContract(d));
     vm.filters['архивные договоры'] = !!d['архив'];
+    vm.filters['физ лица'] = undefined;
     vm.ChbChange('архивные договоры', !!d['архив']);
     setTimeout(()=>{
       //~ $(`#contract-${ id }`, $(vm.$el)).get(0).scrollIntoView({ "block": 'start', "behavior": 'smooth', });
@@ -207,7 +208,7 @@ AllChbsChange(val){
 ChbChange(name, val){
   if (val !== undefined) this.filters[name] = val; 
   this.FilterData();
-  if (val === undefined) this.AllChbsChange(!!this.filters[name]);
+  if (val === undefined) this.AllChbsChange(this.filters[name] === false ? true : !!this.filters[name]);
   //~ else this.AllChbsChange(val);
 },
 
@@ -366,6 +367,7 @@ _FilterData(item){
   item['архив'] = item.hasOwnProperty('архив') ? item['архив'] : vm.IsArchiveContract(item);
   if (item['архив']) vm.archLen += 1;
   const test = (vm.filters['архивные договоры'] ? item['архив'] : !item['архив'])
+    && (vm.filters['физ лица'] === undefined  || ((item['$контрагент']['реквизиты'] || {})['физ. лицо'] || false) === vm.filters['физ лица'])
     && (vm.filters['арендодатель'] ? item['проект/id'] == vm.filters['арендодатель'].id : true)
     && (vm.filters['арендаторы'] ? item['$контрагент'].title.toLowerCase().indexOf(vm.filters['арендаторы'].toLowerCase()) >= 0 : true)
     && ( (item['@помещения'] && item['@помещения'][0] && vm.filters['объект'] && vm.filters['объект'].id ) ?  item['@помещения'][0].$объект.id == vm.filters['объект'].id : true);
@@ -382,6 +384,7 @@ FilterData(){
   //~ if (!vm.filters['арендаторы'].length) return vm.data;
   vm.archLen = 0;
   //~ vm.filteredData.length = 0;
+   //~ vm.filteredData.splice(0);
   vm.filteredData =  vm.data.filter(vm._FilterData);
     vm.filters.timeout = undefined;
    // : vm.data;
@@ -411,6 +414,16 @@ ResizeObserver(){
     }
   });
   vm.resizeObserver.observe(vm.$el);
+},
+
+LabelFLClick(){/// третье состояние радио физ лица
+  let val = this.filters['физ лица'];
+  if (this.filters['физ лица'] !== undefined) setTimeout(()=>{
+    if (val !== this.filters['физ лица']) return;
+    this.filters['физ лица'] = undefined; this.ChbChange('физ лица');
+    
+  });
+  //~ console.log("LClick", this.filters);
 },
 
 }; ///конец methods
@@ -461,7 +474,7 @@ const  data = function(){
     "payPDF": false,///крыжик 
     "radioAccAct": 'счет',/// или акт
     "radioNalBezNal": 'безнал',/// или вместе нал и безнал
-    "filters": {"арендодатель": undefined, "арендаторы": '', "объект": {}, "архивные договоры": false,},
+    "filters": {"арендодатель": undefined, "арендаторы": '', "объект": {}, "архивные договоры": false, "физ лица": undefined/*радио 3 состояния*/,},
     //~ "rentObjects":[],
     "archLen":0, /// кол-во архивных договоров
     "clipBoard": undefined,

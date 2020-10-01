@@ -309,7 +309,7 @@ sub счет_помещения_docx {# и акты
   
   my ($where, @bind) = $self->SqlAb->where({
     $param->{"договоры"} ? (' d.id ' => \[ ' = any(?) ', $param->{"договоры"} ]) : (),
-    q| not coalesce((coalesce(k."реквизиты",'{}'::jsonb)->'физ. лицо'), 'false')::boolean |=>\[],
+    #~ q| not coalesce((coalesce(k."реквизиты",'{}'::jsonb)->'физ. лицо'), 'false')::boolean |=>\[],
     $param->{"на емайл"} ? (q| coalesce(k."реквизиты",'{}'::jsonb)->>'email' | => { '!=', q|''| }) : (),
 #    ' dp."объект/id" ' => \[ ' = any(?) ', $param->{"объекты"} ],
   });
