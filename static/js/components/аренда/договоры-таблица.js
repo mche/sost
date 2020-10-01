@@ -370,7 +370,8 @@ _FilterData(item){
   const test = (vm.filters['архивные договоры'] ? item['архив'] : !item['архив'])
     && (vm.filters['физ лица'] === undefined  || ((item['$контрагент']['реквизиты'] || {})['физ. лицо'] || false) === vm.filters['физ лица'])
     && (vm.filters['арендодатель'] ? item['проект/id'] == vm.filters['арендодатель'].id : true)
-    && (vm.filters['арендаторы'] ? item['$контрагент'].title.toLowerCase().indexOf(vm.filters['арендаторы'].toLowerCase()) >= 0 : true)
+    && (!vm.filters['продление'] || !!item['продление срока'])
+    && (vm.filters['арендаторы'] ? (item['$контрагент'].title + ' ' + item['номер']).toLowerCase().indexOf(vm.filters['арендаторы'].toLowerCase()) >= 0  : true)
     && ( (item['@помещения'] && item['@помещения'][0] && vm.filters['объект'] && vm.filters['объект'].id ) ?  item['@помещения'][0].$объект.id == vm.filters['объект'].id : true);
   //~ console.log("filteredData", test);
   return test;
@@ -467,7 +468,7 @@ const  data = function(){
   let vm = this;
   vm.data = [];
   vm.appRoutes = appRoutes;
-  vm._cleanFilters = {"арендодатель": undefined, "арендаторы": '', "объект": undefined, "архивные договоры": false, "физ лица": undefined/*радио 3 состояния*/,}
+  vm._cleanFilters = {"арендодатель": undefined, "арендаторы": '', "объект": undefined, "архивные договоры": false, "физ лица": undefined/*радио 3 состояния*/, "продление": false,};
   
   return {//angular.extend(// return dst
     //data,// dst
