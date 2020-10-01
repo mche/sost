@@ -285,30 +285,51 @@ lock</i><span class="bold">{{ item['$дата расторжения'].day }}</s
             <input name="payMonth2" type="text" class="datepicker pay-month fs18 fw500" style="" data-value000=" payMonth2 " placeholder="по месяц включительно">
           </h4>
         </div>
-        <!-- переключатель -->
-        <div class="chip hoverable hoverable shadow-inset-10">
-          <div class="iblock">
-            <input type="radio" id="radioSchet" v-model="radioAccAct" :value=" 'счет' ">
-            <label for="radioSchet"  class="before-yellow-lighten-4 brown-text-darken-3 checked-after-brown-darken-3" >Счета</label>
-            <!--label for="radioSchet"></label-->
+
+        
+        <div>
+                  <!-- переключатель -->
+          <div class="chip hoverable hoverable shadow-inset-10">
+            <div class="iblock">
+              <input type="radio" id="radioSchet" v-model="radioAccAct" :value=" 'счет' ">
+              <label for="radioSchet"  class="before-yellow-lighten-4 brown-text-darken-3 checked-after-brown-darken-3" >Счета</label>
+              <!--label for="radioSchet"></label-->
+            </div>
+            <span class="grey-text padd-0-05"> или </span>
+            <div class="iblock">
+              <input type="radio" id="radioAkt" v-model="radioAccAct" :value=" 'акт' ">
+              <label for="radioAkt" class=" before-yellow-lighten-4 brown-text-darken-3 checked-after-brown-darken-3" style="">Акты</label>
+            </div>
           </div>
-          <span class="grey-text padd-0-05"> или </span>
-          <div class="iblock">
-            <input type="radio" id="radioAkt" v-model="radioAccAct" :value=" 'акт' ">
-            <label for="radioAkt" class=" before-yellow-lighten-4 brown-text-darken-3 checked-after-brown-darken-3" style="">Акты</label>
+          <!-- переключатель -->
+          <div class="chip hoverable hoverable shadow-inset-10">
+            <div class="iblock">
+              <input type="radio" id="radioNalBezNal-1" v-model="radioNalBezNal" :value=" 'безнал' ">
+              <label for="radioNaBezNal-1" @click="radioNalBezNal = 'безнал' /*костыль странный*/"  class="before-yellow-lighten-4 brown-text-darken-3 checked-after-brown-darken-3" >Только безнал</label>
+              <!--label for="radioSchet"></label-->
+            </div>
+            <span class="grey-text padd-0-05"> или </span>
+            <div class="iblock">
+              <input type="radio" id="radioNal" v-model="radioNalBezNal" :value=" 'нал и безнал' ">
+              <label for="radioNal" class=" before-yellow-lighten-4 brown-text-darken-3 checked-after-brown-darken-3" style="">Всего c наличкой</label>
+            </div>
           </div>
         </div>
+        
         <!-- крыжик -->
         <div class="input-field chip hoverable shadow-inset-10">
           <input type="checkbox" id="крыжик-нумеровать-счета" v-model="payNums">
           <label for="крыжик-нумеровать-счета" class="hover-shadow3d before-yellow-lighten-4 orange-text chip yellow lighten-4 hoverable" style="padding-left:16px;" ></label><!-- это лабел квадратика крыжика -->
-          <label for="крыжик-нумеровать-счета" class=""><h5 class="hover-shadow3d before-yellow-lighten-4 orange-text text-darken-4 inline">Присвоить номера счетам/актам</h5></label>
+          <label for="крыжик-нумеровать-счета" class=""><h6 class="hover-shadow3d before-yellow-lighten-4 orange-text text-darken-4 inline">Присвоить номера счетам/актам</h6></label>
         </div>
-        <!-- крыжик -->
-        <div class="input-field chip hoverable shadow-inset-10">
-          <input type="checkbox" id="крыжик-pdf" v-model="payPDF">
-          <label for="крыжик-pdf" class="hover-shadow3d before-yellow-lighten-4 red-text-darken-3 chip yellow lighten-4 hoverable" style="padding-left:16px;" ></label><!-- это лабел квадратика крыжика -->
-          <label for="крыжик-pdf" class=""><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 56 56" style="height: 2.7rem;"><use xlink:href="/fonts/icons.svg#pdf-file"></use></svg></label>
+        
+        <div>
+          <!-- крыжик -->
+          <div class="input-field chip hoverable shadow-inset-10">
+            <input type="checkbox" id="крыжик-pdf" v-model="payPDF">
+            <label for="крыжик-pdf" class="hover-shadow3d before-yellow-lighten-4 red-text-darken-3 chip yellow lighten-4 hoverable" style="padding-left:16px;" ></label><!-- это лабел квадратика крыжика -->
+            <label for="крыжик-pdf" class=""><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 56 56" style="height: 2.7rem;"><use xlink:href="/fonts/icons.svg#pdf-file"></use></svg></label>
+          </div>
         </div>
       </div>
       

@@ -237,7 +237,7 @@ PrintPay(month, month2){/// счета и акты
   vm.httpProcess = true;
   //~ console.log("PrintPay", month, ids);
   /// вернет урл для скачивания
-  return $http.post(appRoutes.urlFor('аренда/счет#docx', '-'/*обязательно что-нибудь*/), {"месяц": month, "месяц2":month2, "договоры": ids, "присвоить номера": vm.payNums, "счет или акт": vm.radioAccAct, "pdf формат": vm.payPDF,/*"объекты":obs*/}).then(function(resp){
+  return $http.post(appRoutes.urlFor('аренда/счет#docx', '-'/*обязательно что-нибудь*/), {"месяц": month, "месяц2":month2, "договоры": ids, "присвоить номера": vm.payNums, "счет или акт": vm.radioAccAct,  "безнал или всего": vm.radioNalBezNal, "pdf формат": vm.payPDF,/*"объекты":obs*/}).then(function(resp){
     vm.httpProcess  = false;
     modal.modal('close');
     if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 border fw500  animated zoomInUp');
@@ -308,7 +308,7 @@ SendMail(month, month2, send){/// без send выйдет просмотр та
     vm.checkedItems.map((item)=>{ return item.id; });
   vm.httpProcess = true;
   vm.dataEmail = undefined;
-  return $http.post(appRoutes.urlFor('аренда/емайл'), {"месяц": month, "месяц2":month2, "договоры": ids, "присвоить номера": vm.payNums, "счет или акт": vm.radioAccAct, "pdf формат": vm.payPDF, "отправить":send,}).then(function(resp){
+  return $http.post(appRoutes.urlFor('аренда/емайл'), {"месяц": month, "месяц2":month2, "договоры": ids, "присвоить номера": vm.payNums, "счет или акт": vm.radioAccAct,  "безнал или всего": vm.radioNalBezNal, "pdf формат": vm.payPDF, "отправить":send,}).then(function(resp){
     vm.httpProcess  = false;
     $('#modal-pay', $(vm.$el)).modal('close');
     if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 border fw500  animated zoomInUp');
@@ -460,6 +460,7 @@ const  data = function(){
     "payNums": true, ///крыжик счета с номерами
     "payPDF": false,///крыжик 
     "radioAccAct": 'счет',/// или акт
+    "radioNalBezNal": 'безнал',/// или вместе нал и безнал
     "filters": {"арендодатель": undefined, "арендаторы": '', "объект": {}, "архивные договоры": false,},
     //~ "rentObjects":[],
     "archLen":0, /// кол-во архивных договоров

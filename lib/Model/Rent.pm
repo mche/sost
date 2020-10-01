@@ -314,7 +314,7 @@ sub счет_помещения_docx {# и акты
 #    ' dp."объект/id" ' => \[ ' = any(?) ', $param->{"объекты"} ],
   });
   unshift @bind, $param->{'месяц'}, $param->{'месяц2'} || $param->{'месяц'}, $param->{'счет или акт'} eq 'акт' ? 929979 : 0;# отключить обеспечит предоплата для актов, $param->{'присвоить номера'} ? $param->{"договоры"} : [], $param->{uid};
-  my $data = $self->dbh->selectall_arrayref($self->sth('счета и акты', счет_или_акт=>$param->{'счет или акт'}, select=>$param->{select} || ' jsonb_agg(a) ', where=>$where, group_by=>$param->{group_by}), {Slice=>{}}, @bind);
+  my $data = $self->dbh->selectall_arrayref($self->sth('счета и акты', счет_или_акт=>$param->{'счет или акт'}, безнал_или_всего=>$param->{'безнал или всего'} eq "безнал" ? 0 : 1,  select=>$param->{select} || ' jsonb_agg(a) ', where=>$where, group_by=>$param->{group_by}), {Slice=>{}}, @bind);
   #~ my $r = {};
   #~ $r->{docx} = $param->{docx} || "счет-$param->{uid}.docx";
   #~ $r->{docx_out_file} = "static/tmp/$r->{docx}";
