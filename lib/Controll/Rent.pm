@@ -543,13 +543,13 @@ sub счет_расходы_docx {# сделать docx во врем папке
   my $out_file = "static/tmp/$docx";
   #~ my $err_file = "$data->{docx_out_file}.error";
   my $err_file = "$out_file.error";
-  my $pdf_conv = $param->{'pdf формат'} ? sprintf(" | doc2pdf -M Title='%s' -M Author='%s' -M Subject='%s' -n --stdin --stdout ", $param->{'счет или акт'}, '', '') : '';
+  my $pdf_conv = $param->{'pdf формат'} ? sprintf(" | doc2pdf -M Title='%s' -M Author='%s' -M Subject='%s' -n --stdin --stdout 2>'$err_file' ", $param->{'счет или акт'}, '', '') : '';
   
-  open(PYTHON, "| python  2>'$err_file' $pdf_conv > '$out_file' ")
+  open(my $python, "| python  2>'$err_file' $pdf_conv > '$out_file' ")
     || die "can't fork: $!";
   #~ ##local $SIG{PIPE} = sub { die "spooler pipe broke" };
-  say PYTHON $data->{python};
-  close PYTHON
+  say $python $data->{python};
+  close($python)
     #~ || die "bads: $! $?"
     || return $c->render_file('filepath' => $err_file,  'format'   => 'txt', 'content_disposition' => 'inline', 'cleanup'  => 1,);
   
@@ -644,7 +644,7 @@ sub на_емайл {# счета и акты, создать pdf файлы д�
   $c->log->error($c->dumper($data))
     and return $c->render(json=>{error=>$data})
     unless ref $data;
-  return $c->render(json=>{error=>"Не найдено счетов/актов"})
+  return $c->render(json=>{error=>"Не найдено счетов/актов или адресов почты"})
     unless @$data && $data->[0]{'@документы/json'};
   #~ $param->{docx} = sprintf("%s-%s.docx", $param->{'счет или акт'}, $c->auth_user->{id});
   my $docx_template_file = sprintf("templates/аренда/%s.template.docx", $param->{'счет или акт'},);
@@ -681,7 +681,10 @@ sub на_емайл {# счета и акты, создать pdf файлы д�
     #~ @$r{keys %$data} = values %$data;
     $r->{file} = $file;
     $r->{'статус отправки письма'} = $c->отправить_письмо($param, $r)
+      and unlink $out_file
+      and delete $r->{file}
       if $param->{'отправить'};
+    
   }
   #~ $c->log->error($c->dumper($data));
   $c->render(json=>{data=>$data, });#from=>$c->app->config->{'Email'}
@@ -692,7 +695,7 @@ sub отправить_письмо {
   my $docs = $c->app->json->decode($data->{'@документы/json'});
   #~ $c->log->error($c->dumper($docs->[0]{'$арендодатель/json'}));
   #~ $c->log->error(Mojo::Asset::File->new(path => "static/tmp/$data->{file}")->slurp);
-  my $mailer = $c->email;
+  my $mailer = $c->email;# has
  my $message = Email::MIME->create(
     header_str => [
       From    => $mailer->smtp_user,

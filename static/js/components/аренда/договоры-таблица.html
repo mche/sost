@@ -376,7 +376,7 @@ lock</i><span class="bold">{{ item['$дата расторжения'].day }}</s
                 </div>
               </div>
             </td>
-            <td style="width:1%;"><a @click="ViewIframePDF({src: appRoutes.urlFor('аренда/счет#docx', item.file) + '?inline=1&cleanup=0', content_type:'application/pdf' })" href="javascript:" class="btn-flat padd-05"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 56 56" style="height: 2.7rem;"><use xlink:href="/fonts/icons.svg#pdf-file"></use></svg></a></td>
+            <td style="width:1%;"><a v-if="!!item.file" @click="ViewIframePDF({src: appRoutes.urlFor('аренда/счет#docx', item.file) + '?inline=1&cleanup=0', content_type:'application/pdf' })" href="javascript:" class="btn-flat padd-05"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 56 56" style="height: 2.7rem;"><use xlink:href="/fonts/icons.svg#pdf-file"></use></svg></a></td>
             <td>
               <!-- статус отправки -->
                 <div class="pre-wrap">{{ item['статус отправки письма'] }}</div>

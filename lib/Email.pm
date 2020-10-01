@@ -13,7 +13,7 @@ cpanm Net::SMTP::TLS
 
 use Mojo::Base -base;
 use Email::Sender::Simple qw(sendmail);
-use Email::Sender::Transport::SMTP;#::Persistent qw()
+use Email::Sender::Transport::SMTP::Persistent;# qw()
 use Email::MIME;
 
 has smtp_port => 465;#25;
@@ -22,7 +22,7 @@ has [qw(smtp_host smtp_user smtp_pw)];
 
 has transport => sub {
   my $self = shift;
-  Email::Sender::Transport::SMTP->new({#::Persistent
+  Email::Sender::Transport::SMTP::Persistent->new({#
     ssl => $self->smtp_ssl,
     host => $self->smtp_host,
     port => $self->smtp_port,
@@ -86,7 +86,7 @@ sub send_message {
 
 sub DESTROY {
   my $self = shift;
-  #~ $self->transport->disconnect
+  $self->transport->disconnect;
     #~ if $self->transport;
   #~ delete $self->{transport};
   
