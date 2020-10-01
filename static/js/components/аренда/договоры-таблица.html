@@ -20,7 +20,7 @@
   <div class="iblock" style=" width:20rem;">
     <v-select v-if="projectData" :key=" keys['арендодатель'] " :select=" {} " :param="{'без стрелки раскрытия списка': true, 'без поля поиска': true, ulDropDownClass: 'striped teal lighten-4'}" :items=" projectData " @on-select=" SelectProjectFilter ">
       <template v-slot:selected="{ selected }">
-        <h4 class="  hoverable" :class="{'grey-text':!selected, 'fw500 animated slideInUp': !!selected}">
+        <h4 class=" " :class="{'grey-text':!selected, 'fw500 animated slideInUp': !!selected}">
           <span class="material-icons">filter_list</span>
           <span>{{ selected ? selected.name : 'Выбрать арендодателя' }}</span>
           <!--span v-if="form['$проект']" class="grey-text fs7" style="position:absolute; right:0; bottom:-1rem;">#{{ form['$проект'].id }}</span-->
@@ -48,7 +48,7 @@
     <div class="iblock">
       <input type="radio" id="radioFL" v-model="filters['физ лица']" :value=" true " @change="ChbChange('физ лица')">
       <label @click="LabelFLClick()" for="radioFL"  class="before-yellow-lighten-4 brown-text-darken-3 checked-after-brown-darken-3" >
-          <span class="material-icons">child_care</span>
+          <span class="material-icons fs12">child_care</span>
           <span>Физлица</span><sup v-show="filters['физ лица'] === true" class="material-icons red-text fs10">cancel</sup>
       </label>
       <!--label for="radioSchet"></label-->
@@ -93,7 +93,7 @@
       <div class="input-field chip shadow-inset-10 hoverable nowrap">
         <input type="checkbox" id="все крыжики" v-model="allChbs" @change="AllChbsChange">
         <label for="все крыжики" class="hover-shadow3d chip hoverable                  before-yellow-lighten-4 orange-text yellow lighten-4" style="padding-left: 16px;"></label>
-        <label for="все крыжики"><h6 class="orange-text" :class="{'bold000': allChbs}">  договоров <span class="chip padd-0 bold z-depth-1 ">{{ checkedItems.length }}</span> из {{ filteredData.length }}</h6></label>
+        <label for="все крыжики"><h6 class="orange-text text-darken-4" :class="{'bold000': allChbs}"> отмечено <span class="chip white padd-0-05 bold z-depth-1 ">{{ checkedItems.length }}</span> из <span class="chip white padd-0-05 bold z-depth-1 ">{{ filteredData.length }}</span></h6></label>
       </div>
       <!--div class="chip padd-0-05"><a @click="AllChbsChange(!allChbs)" href="javascript:" class="hover-shadow3d">договоров {{ filteredData.length }}</a></div-->
     </td>
@@ -140,7 +140,7 @@
       <h5 class="truncate line-height-12" :class="{'bold': item._edit}" style="width:10rem; max-width:calc(10vw);" :title="item['$контрагент'].title">
         <a @click=" Edit(item) " href="javascript: void('редактировать договор аренды') " class="hover-shadow3d" :class="{'maroon-text': !!item['архив']}" title="редактировать договор аренды">
           <svg v-if="!(item['$контрагент']['реквизиты'] || {})['физ. лицо']" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class=" " :class=" !!item['архив'] ? 'maroon-fill' : 'teal-fill fill-darken-3' " style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#contragent"></use></svg>
-          <span v-else class="material-icons">child_care</span>
+          <span v-else class="material-icons fs12">child_care</span>
           <span>{{ item['$контрагент'].title }}</span>
         </a>
       </h5>
