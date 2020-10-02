@@ -56,11 +56,11 @@
     </div>
   </div>
   
-    <div class="chip purple lighten-4  input-field nowrap shadow-inset-10 hoverable">
+    <div class="chip   input-field nowrap shadow-inset-10 hoverable">
     <input type="checkbox" id="продление крыжик" v-model="filters['продление']" @change="ChbChange('продление')">
     <label for="продление крыжик" class="hover-shadow3d before-yellow-lighten-5 chip purple-text text-darken-3 yellow lighten-5 hoverable" style="padding-left:16px;" ></label>
     <label for="продление крыжик" class="hover-shadow3d  before-yellow-lighten-4  purple-text text-darken-3" style=""><h6 class="purple-text text-darken-3">
-      <span class="material-icons">alarm_add</span>
+      <span class="material-icons fs12">alarm_add</span>
       <span>С продлением</span>
     </h6></label>
   </div>
@@ -69,11 +69,11 @@
   <div class="input-field nowrap chip maroon lighten-5 hoverable shadow-inset-10 right" style="">
     <input type="checkbox" id="архивные крыжики" v-model="filters['архивные договоры']" @change="ChbChange('архивные договоры')">
     <label for="архивные крыжики" class="hover-shadow3d before-yellow-lighten-5 maroon-text chip yellow lighten-5 hoverable" style="padding-left:16px;" ></label>
-    <label for="архивные крыжики" class="hover-shadow3d before-maroon-lighten-5 maroon-text" style=""><h5 class="maroon-text">
-      <span class="material-icons">lock</span>
+    <label for="архивные крыжики" class="hover-shadow3d before-maroon-lighten-5 maroon-text" style=""><h6 class="maroon-text">
+      <span class="material-icons fs12">lock</span>
       <span>Архив</span>
       <sup class="chip white z-depth-1">{{ archLen }}</sup>
-    </h5></label>
+    </h6></label>
   </div>
 
 </div>
@@ -97,7 +97,7 @@
       <div class="input-field chip shadow-inset-10 hoverable nowrap">
         <input type="checkbox" id="все крыжики" v-model="allChbs" @change="AllChbsChange">
         <label for="все крыжики" class="hover-shadow3d chip hoverable                  before-yellow-lighten-4 orange-text yellow lighten-4" style="padding-left: 16px;"></label>
-        <label for="все крыжики"><h6 class="orange-text text-darken-4" :class="{'bold000': allChbs}"> отмечено <span class="chip white padd-0-05 bold z-depth-1 ">{{ checkedItems.length }}</span> из <span class="chip white padd-0-05 bold z-depth-1 ">{{ filteredData.length }}</span></h6></label>
+        <label for="все крыжики"><h6 class="orange-text text-darken-4" :class="{'bold000': allChbs}"> <span class="chip white padd-0-05 bold z-depth-1 ">{{ checkedItems.length }}</span> из <span class="chip white padd-0-05 bold z-depth-1 ">{{ filteredData.length }}</span></h6></label>
       </div>
       <!--div class="chip padd-0-05"><a @click="AllChbsChange(!allChbs)" href="javascript:" class="hover-shadow3d">договоров {{ filteredData.length }}</a></div-->
     </td>

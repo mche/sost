@@ -114,6 +114,10 @@ form p:last-child {
     /*сусама**border-right: 2px solid $input-disabled-color;
     border-bottom: 2px solid $input-disabled-color;***/
   }
+  
+   ~ label,  ~ label > * {
+    font-weight: 500;
+   }
 }
 
 /* Indeterminate checkbox */
