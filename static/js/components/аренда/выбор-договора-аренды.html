@@ -6,7 +6,7 @@
 <v-select v-else :select=" item " :items=" items " :param=" {placeholder: 'поиск договора арендатора', ulDropDownClass: ['striped teal lighten-4']} " @on-select=" OnSelect ">
   <template v-slot:selected="{ selected }">
     <h3 v-if="selected" class="relative animated slideInRight hover-bottom-shadow-blue-darken-3-000" :class=" {'maroon-text ': selected['архив?'], 'teal-text text-darken-4': !selected['архив?'],} " ><!-- maroon lighten-5 blue lighten-4-->
-      
+      <i v-show="selected['архив?']" class="material-icons ">lock</i>
       <span class="chip000 nowrap padd-0-05 fw500">{{ selected.$контрагент.title }}</span>
       <span v-show="selected.$контрагент['реквизиты'] && selected.$контрагент['реквизиты']['ИНН']" class="chip000 nowrap padd-0-05 fs10"><span class="fs8 grey-text">ИНН:</span> {{ selected.$контрагент['реквизиты']['ИНН'] }}</span>
       <span class="chip000 nowrap padd-0-05" title="номер договора">
@@ -28,6 +28,7 @@
 
   <template v-slot:listItem="{ listItem, selected, highlighted }">
     <h5 class="padd-0-05  relative hover-shadow3d"  :class="{'maroon-text': listItem['архив?'], 'teal-text text-darken-4': !listItem['архив?'], 'bold fs12': listItem === selected, 'fw500': listItem === highlighted, 'nowrap': listItem !== selected}"  style="">
+      <i v-show="listItem['архив?']" class="material-icons fs10">lock</i>
       <span class="chip padd-0-05">{{ listItem.$контрагент.title }}</span>
       <span class="chip padd-0-05 fs8"><span class="fs8 grey-text">ИНН:</span> {{ listItem.$контрагент['реквизиты'] && listItem.$контрагент['реквизиты']['ИНН'] }}</span>
       

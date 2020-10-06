@@ -41,7 +41,7 @@
   <div class="chip hoverable hoverable shadow-inset-10">
     <div class="iblock">
       <input type="radio" id="radioFL" v-model="filters['физ лица']" :value=" true " @change="ChbChange('физ лица')">
-      <label @click="LabelFLClick()" for="radioFL"  class="before-yellow-lighten-4 brown-text-darken-3 checked-after-brown-darken-3" >
+      <label @click="LabelFLClick()" for="radioFL"  class="before-yellow-lighten-4 brown-text-darken-3 checked-after-brown-darken-3 fw100" >
           <span class="material-icons fs12">child_care</span>
           <span> Физлица </span>
           <sup v-show="filters['физ лица'] === true" class="material-icons red-text fs10">cancel</sup>
@@ -51,7 +51,7 @@
     <span class="yellow-text text-lighten-5 padd-0-05"> или </span>
     <div class="iblock">
       <input type="radio" id="radioOrg" v-model="filters['физ лица']" :value=" false " @change="ChbChange('физ лица')">
-      <label @click="LabelFLClick()" for="radioOrg" class=" before-yellow-lighten-4 brown-text-darken-3 checked-after-brown-darken-3" style="">
+      <label @click="LabelFLClick()" for="radioOrg" class=" before-yellow-lighten-4 brown-text-darken-3 checked-after-brown-darken-3 fw100" style="">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="  black-fill fill-darken-3" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#contragent"></use></svg>
         <span> Организации </span>
         <sup v-show="filters['физ лица'] === false" class="material-icons red-text fs10">cancel</sup></label>
@@ -329,7 +329,7 @@
         </div>
 
         
-        <div>
+        <div class="row">
                   <!-- переключатель -->
           <div class="chip hoverable hoverable shadow-inset-10">
             <div class="iblock">
@@ -359,13 +359,13 @@
         </div>
         
         <!-- крыжик -->
-        <div class="input-field chip hoverable shadow-inset-10">
+        <div class="row input-field chip hoverable shadow-inset-10">
           <input type="checkbox" id="крыжик-нумеровать-счета" v-model="payNums">
           <label for="крыжик-нумеровать-счета" class="hover-shadow3d before-yellow-lighten-4 orange-text chip yellow lighten-4 hoverable" style="padding-left:16px;" ></label><!-- это лабел квадратика крыжика -->
           <label for="крыжик-нумеровать-счета" class=""><h6 class="hover-shadow3d before-yellow-lighten-4 orange-text text-darken-4 inline">Присвоить номера счетам/актам</h6></label>
         </div>
         
-        <div>
+        <div class="row">
           <!-- крыжик -->
           <div class="input-field chip hoverable shadow-inset-10">
             <input type="checkbox" id="крыжик-pdf" v-model="payPDF">
@@ -375,15 +375,6 @@
         </div>
       </div>
       
-      <!---ul>
-        <li v-for="(ob, idx) in rentObjects" :key="ob.id">
-          <div class="input-field chip">
-            <input type="checkbox" :id=" `крыжик-объекта-печати-${ ob.id }` " v-model="ob['крыжик печати']">
-            <label :for=" `крыжик-объекта-печати-${ ob.id }` " class="hover-shadow3d chb-yellow-lighten-4 blue-text text-darken-3 chip yellow lighten-4 middle" style="padding-left:16px;" ></label><!-- это лабел квадратика крыжика >
-            <label :for=" `крыжик-объекта-печати-${ ob.id }` " class="middle"><h5 class="hover-shadow3d chb-yellow-lighten-4 blue-text text-darken-3 inline">{{ob['$объект'].name}}</h5></label>
-          </div>
-        </li>
-      </ul--->
     </div><!-- col -->
     <!--div class="clipboard chip">{{ clipBoard }}</div-->
   </div><!-- modal-content -->
@@ -392,7 +383,7 @@
     <a @click=" PrintPay(payMonth, payMonth2) " href="javascript:" class="modal-action waves-effect waves-green btn-flat z-depth-1 green lighten-4 black-text text-darken-4" style="float:none;"><!-- svg ng-hide="$c.cancelerHttp" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="blue-fill " style="height: 1.7rem;"><use xlink:href="/fonts/icons.svg#ms-word" class=""></use></svg --><i class="material-icons">print</i> <span>Получить распечатку</span></a>
     <a @click=" Reestr(payMonth, payMonth2) " href="javascript:" class="modal-action waves-effect waves-green btn-flat z-depth-1 blue lighten-4 blue-text text-darken-4" style="float:none;"><!--svg ng-hide="$c.cancelerHttp" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="blue-fill " style="height: 1.7rem;"><use xlink:href="/fonts/icons.svg#ms-word" class=""></use></svg--><i class="material-icons">receipt</i> <span>Реестр актов</span></a>
     <a @click=" SendMail(payMonth, payMonth2) " href="javascript:" class="modal-action waves-effect waves-green btn-flat z-depth-1 purple lighten-3 purple-text text-darken-3" style="float:none;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0  490 490" class="purple-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/rent.svg?20200929#email"></use></svg><span>Отправить на почту</span></a>
-    <a  href="javascript:" class="modal-action modal-close waves-effect waves-red btn-flat z-depth-1 red lighten-3 red-text text-darken-3"><i class="material-icons">cancel</i><span>Отмена</span></a>
+    <a  href="javascript:" class="modal-action modal-close waves-effect waves-red btn-flat z-depth-1 red lighten-3 red-text text-darken-3" style="float:none;"><i class="material-icons">cancel</i><span>Отмена</span></a>
   </div>
 
 </div>

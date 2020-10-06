@@ -275,6 +275,7 @@ sub map_grep_mode {
       tree-item.html
       js/c/wallet/item.html
       js/c/contragent/item.html
+      js/c/аренда/выбор-договора-аренды.html
       js/c/project/list.html
       js/c/transport/obj+addr.html
       js/c/waltex/money/form.html
@@ -287,6 +288,7 @@ sub map_grep_mode {
       tree-item.js
       js/c/wallet/item.js
       js/c/contragent/data.js
+      js/c/аренда/выбор-договора-аренды.js
       js/c/contragent/item.js
       js/c/project/list.js
       js/c/transport/obj+addr.js

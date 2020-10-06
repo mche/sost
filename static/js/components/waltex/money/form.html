@@ -94,7 +94,7 @@
         <i class="material-icons">business</i><!--all_out-->
         <span>Контрагент</span>
       </h4>
-      <contragent-item ng-if="!$c.param['без сохранения']" ng-init=" param = {textInputClass: 'light-green-text text-darken-4'} " data-item="Contragent" data-param=" param "></contragent-item>
+      <contragent-item ng-if="!$c.param['без сохранения']" ng-init=" param = {textInputClass: 'light-green-text text-darken-4', 'договор аренды':true,} " data-item="Contragent" data-param=" param "></contragent-item>
       <div ng-if="$c.param['без сохранения']" class="input-field" style="border-bottom: 1px solid grey; height:2rem;">
         {{$c.data['контрагент'] || ''}}
       </div>
@@ -108,7 +108,7 @@
         <span>Кошелек перемещения</span>
         <i class="material-icons">swap_horiz</i>
       </h4>
-      <wallet-item ng-if="!$c.param['без сохранения']"  data-data="Wallet2" data-param=" {textInputClass: 'red-text text-darken-2'} "></wallet-item>
+      <wallet-item ng-if="!$c.param['без сохранения']"  data-data="Wallet2" data-param=" {textInputClass: 'red-text text-darken-2', 'disabled???':!!(Contragent && Contragent.title) || !!(Profile && Profile.title)} "></wallet-item>
       <div ng-if="$c.param['без сохранения']" class="input-field" style="border-bottom: 1px solid grey; height:2rem;">
         {{$c.data['кошелек2'] || ''}}
       </div>

@@ -159,7 +159,7 @@
   
   <tbody>
     
-    <tr ng-repeat="it in $c.data " ng-if="!it['обновить']" ng-init="$c.InitRow(it)" ng-attr-id="money{{it.id}}" ng-dblclick="$c.Edit(it)" class="hover-shadow3d" style="cursor:pointer;" ><!--title="{{it | json}}" -->
+    <tr ng-repeat="it in $c.data " ng000-if="!it['обновить']" ng-init="$c.InitRow(it)" ng-attr-id="money{{it.id}}" ng-dblclick="$c.Edit(it)" class="hover-shadow3d" style="cursor:pointer;" ><!--title="{{it | json}}" -->
       <td class="right-align nowrap" title="{{ it['$дата'].year }}">
         <!---->
         <svg ng-show=" it._new " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill-darken-1 left" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#asterisk"></use></svg>
@@ -168,7 +168,20 @@
       
       <td class="right-align green-text text-darken-4" ng-class="{'green lighten-4': !!it['приход']}"><span ng-if="it['приход']"><span>{{ it['приход'][0] }}</span><span class="fs7" ng-class="{'transparent-text': it['приход'][1] == '00'}"> {{ it['приход'][1] }}</span></span></td>
       <td class="right-align orange-text text-darken-4" ng-class="{'orange lighten-4': !!it['расход']}"><span ng-if="it['расход']"><span>{{ it['расход'][0] }}</span><span class="fs7" ng-class="{'transparent-text': it['расход'][1] == '00'}"> {{ it['расход'][1] }}</span></span></td>
-      <td ng-if="$c.param.move.id === 0 || $c.param.move.id == 1" ng-class="{'light-green-lighten-2': !!it['контрагент']}"><div class="light-green-text-darken-4" ng-class="{'nowrap truncate': !$c.param.move.id}" ng-style="!$c.param.move.id && {'width':'12rem'} " title="{{ it['контрагент'] }}">{{ it['контрагент'] }}</div></td>
+      <td ng-if="$c.param.move.id === 0 || $c.param.move.id == 1" ng-class="{'light-green-lighten-2': !!it['контрагент']}" class="light-green-text-darken-4">
+        <div ng-class="{'nowrap truncate': !$c.param.move.id}" ng-style="!$c.param.move.id && {'width':'12rem'} " title="{{ it['контрагент'] }}">
+          {{ it['контрагент'] }}
+        </div>
+        <div ng-if="it['договор аренды']" ng-class="{'red-text':it['договор аренды']['архив?'], }" class="right-align">
+          <i ng-show="it['договор аренды']['архив?']" class="material-icons fs8">lock</i>
+          <span class="middle" title="номер договора">
+            <span class="fs8-000 grey-text middle">дог. № </span>
+            <span class=" middle">{{ it['договор аренды']['номер'].replace('№', '') }}</span>
+            <span class="fs8-000 grey-text middle"> от </span>
+            <span class="middle">{{ it['договор аренды']['дата договора'] ||  it['договор аренды']['дата1'] }}</span>
+          </span>
+        </div>
+      </td>
       <td ng-if="$c.param.move.id === 0 || $c.param.move.id == 2" ng-class="{'red lighten-3': !!it['$кошелек2']}">
         <div ng-hide="!it['$кошелек2']"class="red-text text-darken-3 " ng-class="{'right-align': $c.param.move.id == 2, 'nowrap truncate': !$c.param.move.id}" ng-style="!$c.param.move.id && {'width':'9rem'} " title="{{ it['$кошелек2']['проект'] }}: {{ it['$кошелек2'].title }}"><span ng-hide="it['$кошелек2']['проект/id'] == it['$кошелек']['проект/id']">{{ it['$кошелек2']['проект'] }}: </span><span class="">{{ it['$кошелек2'].title }}</span>
         </div>

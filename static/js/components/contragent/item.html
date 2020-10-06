@@ -3,9 +3,9 @@
 <div ng-hide="$c.ready" ng-include=" 'progress/load' "></div>
 <div ng-if="$c.ready" class="input-field">
 
-  <a ng-show="$c.item.title && $c.item.title.length" ng-show000="!$c.showListBtn"  ng-click="$c.ClearInput($event)" href="javascript:" class="remove-siblings"  style="right: 0.2rem; position: absolute; z-index: 1; top:0.2rem;">
+  <a ng-show="$c.item.title && $c.item.title.length" ng-show000="!$c.showListBtn"  ng-click="$c.ClearInput($event)" href="javascript:" class="remove-siblings circle hoverable"  style="right:-0.3rem; position: absolute; z-index: 1; top:-1rem;">
     <!--i class="material-icons brown-text">cancel</i-->
-    <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
+    <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3-000" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
   </a>
 
   <input name="контрагент" type="text" ng-init="$c.InitInput()"  ng-change="$c.ChangeInput()" ng-paste=" $c.PasteInput($event) "ng-model="$c.item.title" placeholder="{{ $c.param.placeholder }}" style="margin:0;" ng-class="$c.InputClass()"  title="{{ $c.param.placeholder }}">
@@ -17,9 +17,9 @@
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="right teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#chevron-down-round-fill" /></svg>
   </a>
   
-  <span ng-if="!$c.item['без сохранения']" ng-show="!$c.item.id && $c.item.title.length > 1" class="chip red-text text-darken-2 fs8-000">*новый*</span>
+  <span ng-if="!$c.item['без сохранения']" ng-show="!$c.item.id && $c.item.title.length > 1" class="chip red-text text-darken-2 padd-0-05">* новый? убедитесь *</span>
   
-  <span ng-if="!$c.item['без сохранения']" ng-show="$c.item.id" class="grey-text fs7 " style="position: absolute; right:0;">#{{$c.item.id}}</span>
+  <span ng-if="!$c.item['без сохранения']" ng-show="$c.item.id" class="grey-text fs7 " style="position: absolute; right:0; bottom:0;">#{{$c.item.id}}</span>
   
 </div>
 
@@ -28,4 +28,26 @@
 <div ng-if="$c.ready && $c.param['АТИ']">
   <h4>{{ $c.param['АТИ'] }}</h4>
   <input name="АТИ" type="text" ng-model=" $c.item['АТИ'] " placeholder=" АТИ " class="" autocomplete="off">
+</div>
+
+<div ng-if="$c.ready && $c['договоры аренды']" class="padd-05">
+  <h5>По договору аренды</h5>
+  <ul class="marg-0">
+    <li ng-repeat="listItem in $c['договоры аренды']" class="padd-0-05">
+      <h6 class="  relative nowrap "    style="">
+        <a ng-click="$c.SetRentContract(listItem)" href="javascript:" ng-class="{'maroon-text': listItem['архив?'], 'green-text text-darken-4': !listItem['архив?'], 'bold': $c.item['договор аренды/id'] == listItem.id}" class="middle hover-shadow3d">
+          <i ng-show="listItem['архив?']" class="material-icons fs8">lock</i>
+          <span class="chip padd-0-05" title="номер договора"><span class="fs8-000 grey-text">дог.</span> № {{ listItem['номер'].replace('№', '') }} от {{ listItem['дата договора'] || listItem['дата1'] }}</span>
+          <span class="chip padd-0-05 middle blue-text text-darken-3" title="объект и помещения">
+            <i class="material-icons fs8">place</i>
+            <span class="fs8">{{ listItem['@помещения'] && listItem['@помещения'][0] && listItem['@помещения'][0]['$объект'].name  }}</span>
+          </span>
+        </a>
+        <a ng-show="!!$c.item['договор аренды/id'] && $c.item['договор аренды/id'] == listItem.id"  ng-click="$c.SetRentContract()" href="javascript:" class="remove-siblings circle hoverable"  style="">
+          <!--i class="material-icons brown-text">cancel</i-->
+          <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3-000" style="height: 1.2rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
+        </a>
+      </h6>
+    </li>
+  </ul>
 </div>

@@ -117,7 +117,7 @@ select m.*,
   timestamp_to_json(m."дата"::timestamp) as "$дата/json",
   ----to_char(m."дата", 'TMdy, DD TMmon' || (case when date_trunc('year', now())=date_trunc('year', m."дата") then '' else ' YYYY' end)) as "дата формат",
   cat.id as "категория/id", /*"категории/родители узла/title"(c.id, false) as*/ cat.parents_title[2:]||cat.title as "категории",
-  ca.id as "контрагент/id", ca.title as "контрагент",
+  coalesce(ca.id, rent.id) as "контрагент/id", coalesce(ca.title, rent.title) as "контрагент", rent."договор аренды/id",
   ob.id as "объект/id", ob.name as "объект",
   w2.id as "кошелек2/id", w2.title as "кошелек2",
   pp.id as "профиль/id", array_to_string(pp.names, ' ') as "профиль",
@@ -132,13 +132,6 @@ from  "{%= $schema %}"."{%= $tables->{main} %}" m
   --- категории
   join refs rc on m.id=rc.id2
   join "категории/родители"() cat on cat.id=rc.id1
-  /*join (
-    select c.id, array_agg(cat.title order by cat.level desc) as "категории"
-    from 
-      "категории" c, ---on c.id=rc.id1,
-      "категории/родители узла"(c.id, false) cat
-    group by c.id
-  ) cat on cat.id=rc.id1*/
   
   ---кошелек
   join refs rw on m.id=rw.id2
@@ -149,6 +142,7 @@ from  "{%= $schema %}"."{%= $tables->{main} %}" m
   join "roles" p on p.id=rp.id1
   
   left join ({%= $dict->render('контрагент') %}) ca on m.id=ca."движение денег/id"
+  left join ({%= $dict->render('договор аренды') %}) rent on m.id=rent."движение денег/id"
   left join ({%= $dict->render('объект') %}) ob on m.id=ob."движение денег/id"
   left join ({%= $dict->render('кошелек2') %}) w2 on m.id=w2."движение денег/id"
   left join ({%= $dict->render('профиль') %}) pp on m.id=pp."движение денег/id"
@@ -173,6 +167,16 @@ from
   "{%= $schema %}"."{%= $tables->{main} %}" m
   join refs r on m.id=r.id2
   join "контрагенты" c on c.id=r.id1
+
+@@ договор аренды
+select c.*, rent.id as "договор аренды/id", m.id as "движение денег/id"
+from
+  "{%= $schema %}"."{%= $tables->{main} %}" m
+  join refs r on m.id=r.id2
+  join "аренда/договоры" rent on rent.id=r.id1
+  join refs rc on rent.id=rc.id2
+  join "контрагенты" c on c.id=rc.id1
+
 
 @@ объект
 -- подзапрос

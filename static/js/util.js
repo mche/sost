@@ -259,15 +259,20 @@ return function /*конструктор*/(url, $ctrl, $scope, $element){
             LoadStatus = 'success';
             if (resp.data === null || resp.data === undefined) resp.data = [];
             if (resp.data.error) {
+              LoadStatus = resp.data.error;
               Materialize.toast(resp.data.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated zoomInUp slow');
               if ($scope) $scope.error = resp.data.error;
-            }
-            else {
-              //~ 
-              if ($this.OnLoadMap) Data.push(...resp.data.map($this.OnLoadMap));//Array.prototype.push.apply(Data, $this.OnLoadMap(resp.data));
-              else Data.push(...resp.data);///Array.prototype.push.apply(Data, resp.data);
-              //~ conslole.log()
+            }  else {
               if ($this.OnLoad) $this.OnLoad(resp.data);
+              if ($this.OnLoadSort) ///сортировка на месте
+                resp.data.sort($this.OnLoadSort);
+              
+              if ($this.OnLoadMap)
+                Data.push(...resp.data.map($this.OnLoadMap));//Array.prototype.push.apply(Data, $this.OnLoadMap(resp.data));
+              else
+                Data.push(...resp.data);///Array.prototype.push.apply(Data, resp.data);
+              //~ conslole.log()
+              
               return resp.data;
             }
           },

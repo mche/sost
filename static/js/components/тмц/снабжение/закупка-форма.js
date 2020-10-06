@@ -259,10 +259,10 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
           $c['@номенклатура'].length = 0;
           //~ $c.$Номенклатура.Refresh(0).Load(0).then(function(data){  Array.prototype.push.apply($c['@номенклатура'], data); });
           $c.NomenData(true);///обновить
-          $Контрагенты.RefreshData().Load().then(function(){
+          $Контрагенты.Clear().Load().then(function(){
             $rootScope.$broadcast('Сохранено поставка/перемещение ТМЦ', resp.data.success);
             $rootScope.$broadcast('Обновить остатки ТМЦ');
-            $rootScope.$broadcast('Конрагенты/обновить данные');
+            //~ $rootScope.$broadcast('Конрагенты/обновить данные');
           });
           $c.__data = undefined;
         }
@@ -299,10 +299,10 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
           $c.Cancel(!0);//$c.data = undefined;
           Materialize.toast('Удалено успешно', 3000, 'green-text text-darken-4 green lighten-4 fw500 border animated zoomInUp fast');
           $c.NomenData(true);///обновить
-          $Контрагенты.RefreshData().Load().then(function(){
+          $Контрагенты.Clear().Load().then(function(){
             $rootScope.$broadcast('Удалено поставка/перемещение ТМЦ', id);///resp.data.remove
             $rootScope.$broadcast('Обновить остатки ТМЦ');
-            $rootScope.$broadcast('Конрагенты/обновить данные');
+            //~ $rootScope.$broadcast('Конрагенты/обновить данные');
           });
         }
         console.log("Удалено:", resp.data);

@@ -12,8 +12,10 @@
   
 */
 var moduleName = "Аренда::Договоры::Выбор";
-try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Компонент::Выбор в списке',  /*'EventBus', 'Компонент::Поиск в списке',  'Uploader::Файлы',*/ ]);
+try {angular.module(moduleName); return;} catch(e) { }
+try {angular.module('Компонент::Выбор в списке');} catch(e) {  console.log("Заглушка модуля [Компонент::Выбор в списке]", angular.module('Компонент::Выбор в списке', [])/*.factory("$КомпонентВыборВСписке", function(){})*/); }///заглушка!
+
+var module = angular.module(moduleName, ['Компонент::Выбор в списке', 'EventBus',  /*'Компонент::Поиск в списке',  'Uploader::Файлы',*/ ]);
 
 module
 .factory('$КомпонентАрендаДоговорыВыбор', function($templateCache, $КомпонентВыборВСписке, $EventBus, $АрендаДоговорыДанные, /*$templateCache, $http, $q,$timeout,  appRoutes, $КомпонентПоискВСписке, , Util*//*$КомпонентФайлы */) {// factory
@@ -105,9 +107,15 @@ module
 .factory('$АрендаДоговорыДанные', function($Список, appRoutes, $EventBus/*$templateCache, $http, $q,$timeout,  $КомпонентПоискВСписке, , Util*//*$КомпонентФайлы */) {// factory
 
 var contragentContracts = new $Список(appRoutes.url_for('аренда/договоры/список'));
+
+  const re_OOO = /(^|\s)(?:ип|ооо|зао|оао)($|\s)/gi; /// \b не работает
+  //~ const re2 = /[^ \-\w\u0400-\u04FF]/gi;
+  const re_trash = /[^ \.\-\w\u0400-\u04FF]/gi;
+  const re_space2 = / {2,}/g;
   
 contragentContracts.OnLoadMap = function(item){
-  item._match = `${ item['$контрагент']['title']  } ${ item.$контрагент['реквизиты'] && item.$контрагент['реквизиты']['ИНН'] } ${  item['@помещения'] && item['@помещения'][0]['$объект'].name } ${ item['дата1'] } ${ item['номер'] }`.toLowerCase();
+  let title = item.$контрагент.title.toLowerCase().replace(re_trash, '').replace(re_OOO, '').replace(re_space2, ' ').trim();
+  item._match = `${ title  } ${ item.$контрагент['реквизиты'] && item.$контрагент['реквизиты']['ИНН'] } ${  item['@помещения'] && item['@помещения'][0]['$объект'].name } ${ item['дата1'] } ${ item['номер'] }`.toLowerCase();
  /// , /*"адрес": item['адрес'],*/ "$помещение": room, "$объект": item['$объект'],});
   ///${ item['@помещения'].map(p=>{ return p['$помещение']['номер-название']; }).join(':') } 
   return item;

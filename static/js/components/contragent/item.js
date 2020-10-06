@@ -10,19 +10,20 @@ if (!moduleNames.length) return;// все имена заняты
 //~ var module = angular.module(moduleName, ['Контрагенты', 'Util']);//'ngSanitize',, 'dndLists'
 
 
-var Component = function  ($scope, $timeout, $element, $Контрагенты, Util) {
+var Component = function  ($scope, $timeout, $element, $Контрагенты, Util, $АрендаДоговорыДанные) {
   var $c = this;
   //~ $scope.$timeout = $timeout;
-  $scope.$on('Конрагенты/обновить данные', function(event){
-    $c.ready = false;
-    $Контрагенты.Load().then(function(){
-      $c.data= $Контрагенты.Data();
-      $c.Ready();
-    });
+  //~ $scope.$on('Конрагенты/обновить данные', function(event){
+    //~ $c.ready = false;
+    //~ $Контрагенты.Clear().Load().then(function(){
+      //~ $c.data= $Контрагенты.Data();
+      //~ $c.Ready();
+    //~ });
     
-  });
+  //~ });
   
   $c.$onInit = function(){
+    $timeout(function(){
     if (!$c.item) $c.item = {};
     if (!$c.param) $c.param = {};
     //~ if (!$c.param.placeholder) $c.param.placeholder = 'ИП, ООО, ОАО, ПАО, ЗАО лучше писать в конце названия';
@@ -35,6 +36,19 @@ var Component = function  ($scope, $timeout, $element, $Контрагенты, 
         $c.Ready();
       });
     
+    if ($c.param['договор аренды']) {
+      $c.dataRentContracts = {};
+      $АрендаДоговорыДанные.Load().then(function(){
+        $АрендаДоговорыДанные.Data().forEach((item)=>{
+          let kid = item['контрагент/id'] || item.$контрагент.id;
+          if (!$c.dataRentContracts[kid]) $c.dataRentContracts[kid] = [];
+          $c.dataRentContracts[kid].push(item);
+        });
+      });
+      //~ console.log('dataRentContracts, ', $c.dataRentContracts);
+    }
+    
+  });///$timeout
   };
   
   $c.Ready = function(){
@@ -64,24 +78,18 @@ var Component = function  ($scope, $timeout, $element, $Контрагенты, 
     if ($c.param['АТИ'] && !re_ATI.test(value) && item['АТИ']) value = value + '(АТИ '+ item['АТИ'] + ')';
     return {value: value, data: item};
   };
-  //~ const SortData = function (a, b) {
-    //~ if (!!a.data['проект/id'] && !b.data['проект/id']) { return -1; }
-    //~ if (!a.data['проект/id'] && !!b.data['проект/id']) { return 1; }
-    //~ if (a.value.toLowerCase() > b.value.toLowerCase()) { return 1; }
-    //~ if (a.value.toLowerCase() < b.value.toLowerCase()) { return -1; }
-    //~ return 0;
-  //~ };
+
   const CleanString = function(str){
     return str.toLowerCase().replace(re_trash, '').replace(re_OOO, '').replace(re_space2, ' ').trim();
   };
   const LookupFilter = function(suggestion, originalQuery, queryLowerCase, that) {
     /// без пробела по умолчанию
     if (!re_space.test(queryLowerCase)) return $.Autocomplete.defaults.lookupFilter(suggestion, originalQuery, queryLowerCase);
-    var match = CleanString(queryLowerCase);//.replace(re_OOO, '').replace(re_trash, '').replace(re_space2, ' ').trim();
+    var match = CleanString(queryLowerCase);
     //~ console.log(this, "lookupFilter", that.defaults);
     if(!match.length) return false;
     that.hightlight = match;
-    return CleanString(suggestion.value)/*.toLowerCase().replace(re_trash, '').replace(re_space2, ' ').trim()*/.indexOf(match) !== -1;
+    return /*CleanString(suggestion.value)*/(suggestion.data._match || CleanString(suggestion.value)) .indexOf(match) !== -1;
   };
   const FormatAutocomplete = function (suggestion, currentValue) {//arguments[3] объект Комплит
     var html = arguments[3].options.formatResultsSingle(suggestion, currentValue);
@@ -134,30 +142,18 @@ var Component = function  ($scope, $timeout, $element, $Контрагенты, 
     else if ($c.item.id) {
       $c.item.id = undefined;
       $c.item._fromItem = undefined;
-      //~ $c.item['АТИ'] = undefined;
-      //~ $c.showListBtn = true;
-      //~ $c.InitInput();
-      //~ var ac = $c.textField.autocomplete();
-      //~ if (ac) ac.enable();
-      //~ $c.textField.blur().focus();
-      
+      if ($c.param['договор аренды']) {
+        $c.item['договор аренды/id'] = undefined;
+        $c['договоры аренды'] = undefined;
+      }
     }
     //~ if($c.onSelect) $c.onSelect({"item": $c.item});
   };
   $c.InputClass = function(){
     //~ if (!!$c.item.id)
     return $c.param.textInputClass || '';/// 'orange-text text-darken-4';
-    //~ : !!$c.data.id, 'deep-orange-text000': !($c.data.id || !$c.data.title.length || $c.data._suggestCnt)}
-    
   };
-  /*var event_hide_list = function(event){
-    var list = $(event.target).closest('.autocomplete-content').eq(0);
-    if(list.length) return;
-    var ac = $c.textField.autocomplete();
-    if(ac) ac.hide();
-    $timeout(function(){$(document).off('click', event_hide_list);});
-    return false;
-  };*/
+
   $c.ToggleListBtn = function(event){
     //~ event.stopPropagation();
     var ac = $c.textField.autocomplete();
@@ -167,7 +163,7 @@ var Component = function  ($scope, $timeout, $element, $Контрагенты, 
   };
   
   $c.SetItem = function(item, onSelect){
-    //~ console.log("ContragentItem SetItem", item);
+    //~ console.log("ContragentItem SetItem", item, $c.dataRentContracts[item.id]);///$АрендаДоговорыДанные.Data().filter($c.FilterRentContracts, item));
     //~ var title = (!!item['проект/id'] ?  '★' : '') + item.title;
     $c.item.title = item.title;
     $c.item.id=item.id;
@@ -176,6 +172,7 @@ var Component = function  ($scope, $timeout, $element, $Контрагенты, 
     if ($c.param['АТИ'])
       $c.item['АТИ'] = item['АТИ'] || item['АТИ title'];//// || ( $c.item._fromItem && ($c.item._fromItem['АТИ'] || $c.item._fromItem['АТИ title']));
     //~ $c.showListBtn = false;
+     if ($c.param['договор аренды']) $c['договоры аренды'] = $c.dataRentContracts[item.id];
     if(onSelect) onSelect({"item": $c.item});
     //~ var ac = $c.textField.autocomplete();
     //~ if (ac) ac.onBlur();//$timeout(function(){ ac.hide(); }, 100);///ac.dispose();
@@ -188,10 +185,10 @@ var Component = function  ($scope, $timeout, $element, $Контрагенты, 
     $c.item._suggestCnt = 0;
     $c.item['проект/id'] = undefined;
     $c.item['АТИ'] = undefined;
-    //~ $c.showListBtn = true;
-    //~ $c.InitInput();
-    //~ var ac = $c.textField.autocomplete();
-    //~ if (ac) ac.EventsOn();
+    if ($c.param['договор аренды']) {
+      $c.item['договор аренды/id'] = undefined;
+      $c['договоры аренды'] = undefined;
+    }
     
     if(event && $c.onSelect) $c.onSelect({"item": $c.item});
   };
@@ -199,8 +196,13 @@ var Component = function  ($scope, $timeout, $element, $Контрагенты, 
   $c.PasteInput = function(event){
   event.preventDefault();
   return false;
-    
   };
+  
+  $c.SetRentContract = function(item){
+    //~ console.log("SetRentContract", item);
+    $c.item['договор аренды/id'] = $c.item['договор аренды/id'] == item && item.id ? undefined : item && item.id;
+  };
+  
 };
 
 /******************************************************/
@@ -208,26 +210,8 @@ var Component = function  ($scope, $timeout, $element, $Контрагенты, 
 
 /*=============================================================*/
 
-/*var module = angular.module(moduleName, ['Контрагенты', 'Util']);//'ngSanitize',, 'dndLists'
-
-module
-.component('contragentItem', {
-  templateUrl: "contragent/item",
-  //~ scope: {},
-  bindings: {
-    item:'<',
-    data: '<',
-    param:'<',
-    onSelect: '&', // data-on-select="$c.OnSelectContragent(item)"
-
-  },
-  controller: Component
-})
-
-;*/
-
 moduleNames.map(function(name){
-  var module = angular.module(name, ['Контрагенты', 'Util']);
+  var module = angular.module(name, ['Контрагенты', 'Util', 'Аренда::Договоры::Выбор']);
   module.component('contragentItem', {
     controllerAs: '$c',
     templateUrl: "contragent/item",

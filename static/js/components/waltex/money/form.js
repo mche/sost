@@ -140,7 +140,7 @@ const Component = function($scope, $rootScope, $element, $timeout, $http, $q, ap
     $scope.Wallet = Wallet;
     
     if ($c.param['контрагент'] || $c.data["контрагент/id"] || ($c.param.move && ($c.param.move.id == 1 || $c.param.move.id === 0))) {
-      var Contragent = {id: $c.data["контрагент/id"] || $c.param['контрагент/id'] || ($c.param['контрагент'] && $c.param['контрагент'].id) || $c.param['контрагент']};
+      var Contragent = {id: $c.data["контрагент/id"] || $c.param['контрагент/id'] || ($c.param['контрагент'] && $c.param['контрагент'].id) || $c.param['контрагент'], "договор аренды/id":$c.data['договор аренды/id']};
       //~ if ($c.data["контрагент/id"]) Contragent.id= $c.data["контрагент/id"] || ($c.param['контрагент'] && $c.param['контрагент'].id) || $c.param['контрагент'];
       $scope.Contragent = Contragent;
       $c.data["$объект"] = {id: $c.data["объект/id"]};
@@ -243,6 +243,7 @@ const Component = function($scope, $rootScope, $element, $timeout, $http, $q, ap
     $c.data.move = $c.param.move;
     
     //~ console.log($c.data);
+    //~ return;
     
     //~ if ($c.cancelerHttp) $c.cancelerHttp.resolve();
     //~ $c.cancelerHttp = $q.defer();

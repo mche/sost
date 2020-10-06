@@ -4,9 +4,9 @@
 
 var moduleName = "MoneyTable";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Util', 'appRoutes', 'WalletItem', 'DateBetween', 'Категории' /* 'Объект или адрес',*/]);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['Util', 'appRoutes', 'WalletItem', 'DateBetween', 'Категории', 'Аренда::Договоры::Выбор', /* 'Объект или адрес',*/]);//'ngSanitize',, 'dndLists'
 
-const Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, $WalletData,Util, $Категории) {
+const Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, $WalletData, $АрендаДоговорыДанные, Util, $Категории) {
   var $c = this;
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
@@ -42,10 +42,16 @@ const Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, 
   
   $scope.$on('Движение ДС/запись сохранена', function(event, data) {
     var row = $c.data.filter(FilterByID, data).pop();
+    //~ console.log("Движение ДС/запись сохранена", row);
     if (row) {/// редакт
+      let idx = $c.data.indexOf(row);
+      $c.data.splice(idx, 1);
       Object.keys(data).map(function(key){ row[key] = data[key]; });
-      row['обновить'] = true;///передернуть
-      $timeout(function(){ delete row['обновить']; });
+      //~ row['обновить'] = true;///передернуть
+      $c.InitRow(row);
+      $timeout(() => {
+        $c.data.splice(idx, 0, row);
+      });
     } else {///новая
       data._new = true;
       $c.data.unshift(data);
@@ -84,6 +90,9 @@ const Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, 
       async.push($c.LoadData());
       async.push($WalletData.Load().then(function(resp){
         $c['кошельки'] = $WalletData.$Data();///resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});
+      }));
+      async.push($АрендаДоговорыДанные.Load().then(function(){
+        $c['договоры аренды'] = $АрендаДоговорыДанные.$Data();///resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});
       }));
       $q.all(async).then(function(){
         
@@ -145,10 +154,9 @@ const Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, 
     
   };
   
-  $c.FilterData = function(it) {
-    return !it['обновить'];
-    
-  };
+  //~ $c.FilterData = function(it) {
+    //~ return !it['обновить'];
+  //~ };
   
   //~ var SplitKop = function(sum){ 
     //~ return (sum+'').split(/[,.]/);
@@ -166,8 +174,14 @@ const Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, 
     if (it["расход"]) it["расход"] = it["расход"].split(/[,.]/);
     
     if (it['кошелек/id']) it['$кошелек'] = $c['кошельки'][it['кошелек/id']];
+    else it['$кошелек'] = undefined;
+    
     if (it['кошелек2/id']) it['$кошелек2'] = $c['кошельки'][it['кошелек2/id']];
-  };
+    else it['$кошелек2'] = undefined;
+    
+    if (it['договор аренды/id']) it['договор аренды']= $c['договоры аренды'][it['договор аренды/id']];
+    else  it['договор аренды']= undefined;
+   };
   //~ $c.FormatMoney = function(val){
     //~ if(val === undefined || val === null ) return '';
     //~ return (val+'').replace(/\./, ',').replace(/\s*руб/, '') + (/\.|,/.test(val+'') ? '' : ',00');

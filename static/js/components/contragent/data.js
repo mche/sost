@@ -11,10 +11,10 @@
 
 var moduleName = 'Контрагенты';
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['appRoutes',]);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['appRoutes', 'EventBus',]);//'ngSanitize',, 'dndLists'
 
 
-var Data  = function($http, /*$timeout,*/ appRoutes){
+/*var Data1  = function($http,  appRoutes){////*$timeout,
   const SortData = (a, b) => {
     if (!!a['проект/id'] && !b['проект/id']) { return -1; }
     if (!a['проект/id'] && !!b['проект/id']) { return 1; }
@@ -48,6 +48,41 @@ var Data  = function($http, /*$timeout,*/ appRoutes){
   };
   return $this.RefreshData();
   
+};
+*/
+var Data  = function(/*$http, $timeout,*/ appRoutes, $Список, $EventBus){
+  let loader = new $Список(appRoutes.urlFor('список контрагентов'));
+  
+  const re_OOO = /(^|\s)(?:ип|ооо|зао|оао)($|\s)/gi; /// \b не работает
+  //~ const re2 = /[^ \-\w\u0400-\u04FF]/gi;
+  const re_trash = /[^ \.\-\w\u0400-\u04FF]/gi;
+  const re_space2 = / {2,}/g;
+  
+  loader.OnLoadSort = (a, b) => {
+    if (!a._match) a._match = a.title.toLowerCase().replace(re_trash, '').replace(re_OOO, '').replace(re_space2, ' ').trim()+' '+(a['АТИ']||'');
+    if (!b._match) b._match = b.title.toLowerCase().replace(re_trash, '').replace(re_OOO, '').replace(re_space2, ' ').trim()+' '+(b['АТИ']||'');
+    
+    if (!!a['проект/id'] && !b['проект/id']) { return -1; }
+    if (!a['проект/id'] && !!b['проект/id']) { return 1; }
+    if (a._match > b._match) { return 1; }
+    if (a._match < b._match) { return -1; }
+    return 0;
+  };
+  
+  loader.RefreshData = function(){
+    loader.Clear().Load();
+  };
+  loader.Load();
+  
+  $EventBus.$on('Дайте список контрагентов', function(cb){/// этому компоненту эти данные не нужны, но он корневой
+    cb(loader);
+  });
+  
+  $EventBus.$on('Обновите список контрагентов', function(){/// этому компоненту эти данные не нужны, но он корневой
+    loader.Clear().Load();
+  });
+  
+  return loader;
 };
 
 /*=============================================================*/
