@@ -10,6 +10,7 @@ CREATE EXTENSION IF NOT EXISTS intarray;
   join ({%= $dict->render('категория') %}) c on c._ref = m.id
   left join ({%= $dict->render('кошелек2') %}) w2 on w2._ref = m.id --- чтобы отсечь по w2.id is null
   left join ({%= $dict->render('контрагент') %}) k on k._ref = m.id
+  left join ({%= $dict->render('договор аренды') %}) ctr on m.id=ctr."движение денег/id"
   left join ({%= $dict->render('профиль') %}) pp on pp._ref = m.id
   left join ({%= $dict->render('объект') %}) ob on ob._ref = m.id
   
@@ -52,6 +53,15 @@ from
   select k.*, rm.id2 as _ref
   from "контрагенты" k
     join refs rm on k.id=rm.id1 -- к деньгам
+
+@@ договор аренды
+select c.*, rent.id as "договор аренды/id", m.id as "движение денег/id"
+from
+  "{%= $schema %}"."{%= $tables->{main} %}" m
+  join refs r on m.id=r.id2
+  join "аренда/договоры" rent on rent.id=r.id1
+  join refs rc on rent.id=rc.id2
+  join "контрагенты" c on c.id=rc.id1
 
 @@ объект
 -- подзапрос
@@ -897,7 +907,8 @@ select m.id, m.ts, m."дата", m."сумма",
   --"категории/родители узла/id"(c.id, true) as "категории",
   ---"категории/родители узла/title"(c.id, false) as "категория",
   cat.parents_id||cat.id as "категории", cat.parents_title[2:]||cat.title as "категория",
-  k.title as "контрагент", k.id as "контрагент/id",
+  --~ k.title as "контрагент", k.id as "контрагент/id",
+  coalesce(k.title, ctr.title) as "контрагент", coalesce(k.id, ctr.id) as "контрагент/id",  ---rent."договор аренды/id",
   coalesce(row_to_json(ob), row_to_json(rent."@объекты/json"[1])) as "$объект/json",
   coalesce(ob.id, rent."@объекты/id"[1]) as "объект/id",
   coalesce(ob.name, rent."@объекты/name"[1]) as "объект",

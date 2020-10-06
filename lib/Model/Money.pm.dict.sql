@@ -117,7 +117,7 @@ select m.*,
   timestamp_to_json(m."дата"::timestamp) as "$дата/json",
   ----to_char(m."дата", 'TMdy, DD TMmon' || (case when date_trunc('year', now())=date_trunc('year', m."дата") then '' else ' YYYY' end)) as "дата формат",
   cat.id as "категория/id", /*"категории/родители узла/title"(c.id, false) as*/ cat.parents_title[2:]||cat.title as "категории",
-  coalesce(ca.id, rent.id) as "контрагент/id", coalesce(ca.title, rent.title) as "контрагент", rent."договор аренды/id",
+  coalesce(ca.id, ctr.id) as "контрагент/id", coalesce(ca.title, ctr.title) as "контрагент", ctr."договор аренды/id",
   ob.id as "объект/id", ob.name as "объект",
   w2.id as "кошелек2/id", w2.title as "кошелек2",
   pp.id as "профиль/id", array_to_string(pp.names, ' ') as "профиль",
@@ -142,7 +142,7 @@ from  "{%= $schema %}"."{%= $tables->{main} %}" m
   join "roles" p on p.id=rp.id1
   
   left join ({%= $dict->render('контрагент') %}) ca on m.id=ca."движение денег/id"
-  left join ({%= $dict->render('договор аренды') %}) rent on m.id=rent."движение денег/id"
+  left join ({%= $dict->render('договор аренды') %}) ctr on m.id=ctr."движение денег/id"
   left join ({%= $dict->render('объект') %}) ob on m.id=ob."движение денег/id"
   left join ({%= $dict->render('кошелек2') %}) w2 on m.id=w2."движение денег/id"
   left join ({%= $dict->render('профиль') %}) pp on m.id=pp."движение денег/id"
