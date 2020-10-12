@@ -92,14 +92,17 @@ my $headers = {
 
  # Передача файла методом PUT
 my $asset  = Mojo::Asset::File->new(path => $OPT{file});
-my $tx     = $ua->build_tx(PUT => 'https://cloclo17-upload.cloud.mail.ru/upload/?cloud_domain=2&x-email=' . url_escape($auth->{email}) => $headers);
+#https://cld-upload6.cloud.mail.ru/upload-web/?cloud_domain=2&x-email=
+my $tx     = $ua->build_tx(PUT => 'https://cld-upload6.cloud.mail.ru/upload-web/?cloud_domain=2&x-email=' . url_escape($auth->{email}) => $headers);
 $tx->req->content->asset($asset);
 $ua->start($tx);
 
-die "cant upload:\n", dumper($tx->result)
+die "cant PUT:\n", dumper($tx->result)
   unless $tx->result->code =~ /^2/;
 
 my $file_hash = $tx->result->body;
+
+#~ say token=>$auth->{token}, hash=>$file_hash,;
 
 my $post = $ua->post('https://cloud.mail.ru/api/v2/file/add' => $headers, form=>{
   home=>decode('UTF-8', "$OPT{path}$file"),
@@ -111,7 +114,7 @@ my $post = $ua->post('https://cloud.mail.ru/api/v2/file/add' => $headers, form=>
   'x-page-id'=>$auth->{'x-page-id'},
   email=>$auth->{email},
   'x-email'=>$auth->{email},
-  token=>$auth->{token},
+  #~ token=>$auth->{token},
     
 })->res;
 

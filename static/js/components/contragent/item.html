@@ -34,7 +34,12 @@
   <h5>По договору аренды</h5>
   <ul class="marg-0">
     <li ng-repeat="listItem in $c['договоры аренды']" class="padd-0-05">
+      
       <h6 class="  relative nowrap "    style="">
+        <span class="input-field nowrap middle">
+          <input type="checkbox" ng-attr-id="крыжик-{{ listItem.id }}" ng-model=" $c.item['договор аренды/id'] " ng-true-value=" {{ listItem.id }} " ng-false-value="{{undef}}" >
+          <label for="крыжик-{{listItem.id }}" class="hover-shadow3d before-yellow-lighten-4 chip teal-text text-darken-3 yellow lighten-4 hoverable" style="padding-left:16px;" ></label>
+        </span>
         <a ng-click="$c.SetRentContract(listItem)" href="javascript:" ng-class="{'maroon-text': listItem['архив?'], 'green-text text-darken-4': !listItem['архив?'], 'bold': $c.item['договор аренды/id'] == listItem.id}" class="middle hover-shadow3d">
           <i ng-show="listItem['архив?']" class="material-icons fs8">lock</i>
           <span class="chip padd-0-05" title="номер договора"><span class="fs8-000 grey-text">дог.</span> № {{ listItem['номер'].replace('№', '') }} от {{ listItem['дата договора'] || listItem['дата1'] }}</span>
