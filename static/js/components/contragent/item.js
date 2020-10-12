@@ -8,7 +8,7 @@ var moduleNames = moduleAlias.filter(angular.FilterFreeModuleName);/// app.js
 if (!moduleNames.length) return;// все имена заняты
   
 
-try {angular.module('Аренда::Договоры::Выбор');} catch(e) {  console.log("Заглушка [Аренда::Договоры::Выбор]", angular.module('Аренда::Договоры::Выбор', []).factory("$АрендаДоговорыДанные", function(){})); }///заглушка!
+try {angular.module('Аренда::Договоры::Выбор');} catch(e) {  console.log("Заглушка [Аренда::Договоры::Выбор]", angular.module('Аренда::Договоры::Выбор', []).factory("$АрендаДоговорыДанные", function(){ return {}; })); }///заглушка!
   
 //~ var module = angular.module(moduleName, ['Контрагенты', 'Util']);//'ngSanitize',, 'dndLists'
 
