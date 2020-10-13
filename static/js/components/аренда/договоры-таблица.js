@@ -182,7 +182,7 @@ OnSave(data){ ///  из события сохранения формы
       //~ console.log("новый договор", data, f);
     }
     //~ !vm.FilteredData;/// в шине !!!
-    $EventBus.$emit('Прокрути к договору', data.id);
+    //~ $EventBus.$emit('Прокрути к договору', data.id);
   }
 },
 
