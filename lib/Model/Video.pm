@@ -7,7 +7,7 @@ has [qw(app)];
 
 has cam1 => qq(ffmpeg  -i 'rtsp://192.168.128.18:554/user=admin&password=&channel=1&stream=0.sdp?' -f mpegts -codec:v mpeg1video  -b:v 1300k   -bf 0   - 2>/dev/null |); #-s 1280x720 -crf  50 -an 
 has cam11 => qq(ffmpeg  -i 'rtsp://192.168.128.11:554/user=admin&password=&channel=1&stream=0.sdp?' -f mpegts -codec:v mpeg1video  -b:v 1300k   -bf 0   - 2>/dev/null |); #-s 1280x720 -crf  50 -an 
-
+has cam12 => qq(ffmpeg  -i 'rtsp://192.168.128.12:554/user=admin&password=&channel=1&stream=0.sdp?' -f mpegts -codec:v mpeg1video  -b:v 1300k   -bf 0   - 2>/dev/null |); #-s 1280x720 -crf  50 -an 
 
 has feeds => sub {
   my $self = shift;
@@ -18,6 +18,9 @@ has feeds => sub {
   
   my $cam11 = $self->stream($self->cam11);
   $self->start_feed('cam11', $cam11, $feeds);
+  
+  my $cam12 = $self->stream($self->cam12);
+  $self->start_feed('cam12', $cam12, $feeds);
   
   return $feeds;
 };
