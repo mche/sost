@@ -6,6 +6,7 @@ use Mojo::Base 'Model::Base';
 has [qw(app)];
 
 has cam1 => qq(ffmpeg  -i 'rtsp://192.168.128.18:554/user=admin&password=&channel=1&stream=0.sdp?' -f mpegts -codec:v mpeg1video  -b:v 1300k   -bf 0   - 2>/dev/null |); #-s 1280x720 -crf  50 -an 
+has cam11 => qq(ffmpeg  -i 'rtsp://192.168.128.11:554/user=admin&password=&channel=1&stream=0.sdp?' -f mpegts -codec:v mpeg1video  -b:v 1300k   -bf 0   - 2>/dev/null |); #-s 1280x720 -crf  50 -an 
 
 
 has feeds => sub {
@@ -14,6 +15,9 @@ has feeds => sub {
   
   my $cam1 = $self->stream($self->cam1);
   $self->start_feed('cam1', $cam1, $feeds);
+  
+  my $cam11 = $self->stream($self->cam11);
+  $self->start_feed('cam11', $cam11, $feeds);
   
   return $feeds;
 };
@@ -74,7 +78,7 @@ sub start_feed {
   
   $stream->on(close => sub {# перезапустить поток
     #~ my ($stream) = @_;
-    $app->log->info("Feed [$name] $stream close, restarting...");
+    $app->log->info("Feed [$name] $stream closed, and restarting...");
       $self->restart_timeout($self->restart_timeout +1 );
      Mojo::IOLoop->timer($self->restart_timeout => sub {
         my $cam = $self->stream($self->$name);#cam_ip10
