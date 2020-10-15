@@ -194,7 +194,7 @@ window.undef = undefined;
     //~ })
     ;
     /** тупо всегда активировать**/
-    angular.injector(['Console']);///.get('$Console')
+    //~ angular.injector(['Console']);///.get('$Console')
   
     /**
     ** $EventBus.$emit("мое событие", data);
