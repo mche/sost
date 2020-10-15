@@ -19,6 +19,7 @@ const StorageVersion = (test, set)=>{
 };
 
 const ShowUpdate = (msg)=>{
+  if (document.querySelector('.status404') ) return;
   Materialize.Toast($('<a href="javascript:" class="hover-shadow3d red-text text-darken-4">')
     .click(function(){ document.getElementById('toast-container').remove(); window.location.reload(true); })
     .html('Обновите [F5] страницу <i class="material-icons" style="">refresh</i> '+msg), 30000, 'red lighten-4 red-text text-darken-4 border fw500 animated zoomInUp');
@@ -68,11 +69,12 @@ document.addEventListener("DOMContentLoaded", function(event) {
     
   }
   
-  if ( document.querySelector('head meta[name="app:uid"]').getAttribute('content') && !$('.status404').length ) {
+  if ( document.querySelector('head meta[name="app:uid"]').getAttribute('content') && !document.querySelector('.status404') ) {
     var curr = DOMVersion();
     if (!StorageVersion(curr, curr)) {
       //~ console.log("Перезапуск страницы с новой версией: ", ver);
-      Materialize.Toast($('<a href="javascript:" class="hover-shadow3d green-text text-darken-4">').click(function(){ window.location.reload(true); }).html('Обновление <i class="material-icons" style="">refresh</i> '+curr), 5000, 'green lighten-4 green-text text-darken-4 border fw500 animated zoomInUp');
+      //~ Materialize.Toast($('<a href="javascript:" class="hover-shadow3d green-text text-darken-4">').click(function(){ window.location.reload(true); }).html('Обновление <i class="material-icons" style="">refresh</i> '+curr), 5000, 'green lighten-4 green-text text-darken-4 border fw500 animated zoomInUp');
+      ShowUpdate(curr);
       //~ window.localStorage.setItem('app:version ' + window.location.pathname, ver);
       //~ StorageVersion(ver);
       window.location.reload(true); 
