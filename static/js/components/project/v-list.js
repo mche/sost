@@ -13,7 +13,7 @@
 */
 var moduleName = "Проекты::Список";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, []);
+var module = angular.module(moduleName, ['Util']);
 
 module
 .factory('$КомпонентПроектыСписок', function($templateCache, $ПроектыДанные) {// factory

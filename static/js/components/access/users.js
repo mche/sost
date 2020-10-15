@@ -9,7 +9,7 @@
 */
 var moduleName = "Users";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, [ 'Uploader::Файлы',]);//'ngSanitize',appRoutes
+var module = angular.module(moduleName, [ 'Uploader::Файлы','Util']);//'ngSanitize',appRoutes
 
 const Controll = function($scope, $http, $q, $timeout, $element, appRoutes, Util, $Список, $КомпонентФайлы){
   var $c = this;

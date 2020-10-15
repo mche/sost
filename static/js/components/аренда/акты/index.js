@@ -5,7 +5,7 @@
 
 var moduleName = "Аренда::Акты";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['TemplateCache', /*'Util', 'appRoutes',*/ 'Проекты::Список', 'Аренда::Акты::Таблица',]);//
+var module = angular.module(moduleName, ['appRoutes', /*'Util', '',*/ 'Проекты::Список', 'Аренда::Акты::Таблица',]);//
 
 module.controller('Controll', function(/*$scope, $q, $timeout, */$element, /*$http ,*/ appRoutes, TemplateCache, $КомпонентПроектыСписок, $КомпонентАрендаАктыТаблица) {
   var ctrl = this;

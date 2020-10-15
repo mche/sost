@@ -4,7 +4,7 @@
 */
 var moduleName = "Спецодежда";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['TemplateCache', 'Компонент::Сотрудники', 'Спецодежда::Таблица']);//'ngSanitize',
+var module = angular.module(moduleName, ['appRoutes', 'Компонент::Сотрудники', 'Спецодежда::Таблица']);//'ngSanitize',
 
 module
   .controller('Controll', function($scope, $element, $timeout, TemplateCache, appRoutes, $КомпонентСотрудники, $КомпонентСпецодеждаТаблица){

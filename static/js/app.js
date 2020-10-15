@@ -1,8 +1,8 @@
-  /***
+/***
     обновление скриптов работает за счет очистки/пересоздания ассет|пак кэша
     обновление шаблонов через смену ВЕРСИИ (используется в сервисе LoadTemplateCache для добавления к урлам) static/js/controllers/template-cache/script.js
 ***/
-undef = undefined;
+window.undef = undefined;
 //~ Vue.use(Vuex);///необязательно
 (function () {
   'use strict';
@@ -11,7 +11,7 @@ undef = undefined;
   
   angular.module('AppTplCache', [])///(название любое уникальное - этот модуль автоматически вставляется всегда с помощью global-modules.js)
   .run(function($templateCache) {
-    //~ console.log("App config starting...", $templateCache);
+    //~ console.log("AppTplCache...", $templateCache);
     $templateCache.put('progress/load', '<div class="progress z-depth-1 teal-lighten-4" style="height: inherit;"><div class="center teal-text text-darken-2">Загружается...</div><div class="indeterminate teal"></div></div>');
     if (Vue) Vue.component('v-progress-indeterminate', { "props": ['color', 'message'], /*"data": function () { return { }},*/ "template": '<div :class="`progress z-depth-1 ${ color }-lighten-4`" style="height: inherit;"><div :class="`center ${ color }-text text-darken-2`">{{ message }}</div><div :class="`indeterminate ${ color }`"></div></div>',});
     $templateCache.put('progress/save', '<div class="progress z-depth-1 teal-lighten-4" style="height: inherit;"><div class="center teal-text text-darken-2">Сохраняется...</div><div class="indeterminate teal"></div></div>');
@@ -41,84 +41,16 @@ undef = undefined;
   хорошо тут http://www.webdeveasy.com/interceptors-in-angularjs-and-useful-examples/
   *******************************************************************************/
   
-  /***
-    функционал обратного отсчета времени авторизации
-  
-  ***/
-  var AuthExpiration = {
-    "DefaulExpiration$": function(){ return $('#session-default-expiration'); },//el_default_expiration,
-    "SpanExpiration$": function(){
-      var span = $('span.expiration', AuthExpiration.DefaulExpiration$().parent());
-      if (span.length) return span;
-      return $('<span class="expiration chip right" style="padding: 0 0.5rem; margin:0;">').appendTo(AuthExpiration.DefaulExpiration$().parent());
-    },
-    "defaultExpiration": function(){ return parseInt(AuthExpiration.DefaulExpiration$().text() || 10); },///!внимание! defaultExpiration() должен соотв серверной куки просрочке!
-    "expires": 0,///тут счетчик секунд
-    "intervalDelay": 1000,///итервал изменения счетчика
-    "ToastLogin": function(){
-      clearInterval(AuthExpiration.intervalID);
-      AuthExpiration.expires = 0;
-      AuthExpiration.intervalID = undefined;
-      Materialize.Toast($('<a href-000="/profile" target-000="_blank" href="javascript:" class="hover-shadow3d white-text bold">').click(function(){  AuthExpiration.ShowLoginForm(); document.getElementById('toast-container').remove(); }).html('Завершилась авторизация, войти заново <i class="icon-login"></i>'), 30*1000, 'red darken-2');
-    },
-    ///ShowLoginForm: function(){тут не катит $injector}
-    "intervalCallback" : function(){
-      if(AuthExpiration.expires === undefined) return;
-      var c=AuthExpiration.defaultExpiration()-(AuthExpiration.expires++),
-        m=(c/60)>>0,
-        s=(c-m*60)+'';
-      AuthExpiration.SpanExpiration$().text(m+':'+(s.length>1?'':'0')+s);
-      c == 0 && AuthExpiration.ToastLogin();
-    },
-    "nowReqs": 0,///счетчик текущих запросов данных (отложить запрос в /keepalive)
-  };
+
   
   /// копия из Util инъекция в provider не катит
   const IsType = function(data, type) { return Object.prototype.toString.call(data).toLowerCase() == '[object '+type.toLowerCase()+']'; };
-  const MsgUpdate = function(msg){
-    Materialize.Toast($('<a href="javascript:" class="hover-shadow3d red-text text-darken-4">')
-      .click(function(){ $('#toast-container').remove(); location.reload(true); })
-      .html('Обновите [F5] страницу <i class="material-icons" style="">refresh</i> '+msg), 30000, 'red lighten-4 red-text text-darken-4 border fw500 animated zoomInUp');
-  };
+
   const AppOptions = function(){ return JSON.parse($('head meta[name="app:options"]').attr('content') || '{}'); };
-  const VersionChanged = function(ver){///
-  /***
-   вернет:
-   - undefined - если нет прежней версии (соответственно нет обновления)
-   - true(есть обновление)/false(нет обновления) - если передана версия (аргумент) для проверки
-   - строку версии - если есть обновление и не передан аргумент (версия)
-   - undefined - нет обновления и не передан аргумент (версия)
-    
-  ***/
-    var old = localStorage.getItem('app:version '+location.pathname);/// || false;// || localStorage.getItem('app config')
-    if (!old) return;
-    if(!ver) ver = $('head meta[name="app:version"]').attr('content') || 1;
-    var changed = ver != old;
-    if(arguments[0]) return changed; /// модальная авторизация
-    else if (changed) return ver;/// не передан аргумент версии
-  };
+
   
-  angular.module('App', ['Форма авторизации'])
-    //~ .factory('$Version', function(){не катит потом в main.js - angular.injector(['App']).get('$Version').Changed();
-      //~ return {"Changed": VersionChanged};
-    //~ })
-    .provider('Version', function(){// провайдер потому что нужен в конфиге (фактори и сервисы не инъектятся)
-      if ($('head meta[name="app:uid"]').attr('content') && !$('.status404').length) {
-        //~ if (!old || curr != old) {
-        var ver = VersionChanged();
-        if (ver) {
-          //~ console.log("Перезапуск страницы с новой версией: ", curr);
-          Materialize.Toast($('<a href="javascript:" class="hover-shadow3d green-text text-darken-4">').click(function(){ return true; }).html('Обновление <i class="material-icons" style="">refresh</i> '+ver), 5000, 'green lighten-4 green-text text-darken-4 border fw500 animated zoomInUp');
-          localStorage.setItem('app:version ' + location.pathname, ver);
-          location.reload(true); 
-        }
-        //~ console.log("Версия: ", curr, old == curr ? undefined : old);
-      }
-      this.$get = function(){
-        return {"VersionChanged": VersionChanged};///для инъектов
-      };
-      this.VersionChanged = VersionChanged; ///для конфига
-    })
+  angular.module('App', [/*'Форма авторизации'*/])
+
     .provider('AutoJSON', function(){ // провайдер потому что нужен в конфиге (фактори и сервисы не инъектятся)
       var re = /\/json$/i;
       //~ console.log("provider 'AutoJSON' ",  angular.injector(['Util']).get('Util')); не катит
@@ -153,63 +85,15 @@ undef = undefined;
       
     })/// end provider AutoJSON
     
-    .config(function ($httpProvider, $provide,/* $injector,*/ $compileProvider, AutoJSONProvider, VersionProvider) {//, $cookies
+    .config(function ($httpProvider, $provide,/* $injector,*/ $compileProvider, AutoJSONProvider) {//, $cookies
       $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|file|tel|javascript):/);
-      //~ console.log("module('App').config()...", VersionProvider, );
-      //~ var el_default_expiration = $('#session-default-expiration'),
-        
-      if(AuthExpiration.DefaulExpiration$().length) AuthExpiration.intervalID = setInterval(AuthExpiration.intervalCallback, AuthExpiration.intervalDelay);
       
-      $provide.factory('httpAuthTimer', function ($q, $injector, $rootScope, $window, $timeout /*, appRoutes*/) {//$rootScope, $location
+      $provide.factory('httpInterceptor', function ($q /*,$injector, $rootScope, $window, $timeout /*, appRoutes*/) {//$rootScope, $location
+        let jsonTypeRE = /application\/json/;
         
-        AuthExpiration.ShowLoginForm = function(){///в самом Config не идет
-          if($('auth-timer-login').length) $('.modal', $('auth-timer-login')).modal('open');
-          else {
-            var $compile = $injector.get('$compile');
-            $('body').append($compile('<auth-timer-login></auth-timer-login>')($rootScope)[0]);//$scope
-            $timeout(function(){
-              if($('auth-timer-login').length) $('.modal', $('auth-timer-login')).modal('open');
-              else $window.location.href = '/profile';///appRoutes.url_for('вход', undefined, {"from": $window.location.pathname});
-            });
-            //~ $scope.$digest();
-          }
-        };
-        
-        if(AuthExpiration.DefaulExpiration$().length) {//}(function(config){ /*** поддержка сессии по движениям мыши ***/
-          var deferred,
-            reset = function(){
-              deferred = undefined;
-            },
-            deferred = $timeout(reset, 60*1000),
-            done = function(msg, status, xhr ){/// msg - версия (!!!косяки в порядке аргументов при разных ответах)
-              //~ console.log("keepalive done", arguments);
-              if (status.toLowerCase() == 'error' && Object.prototype.toString.call(xhr) == "[object String]"  && xhr.toLowerCase() != 'not found') 
-                console.log("keepalive fail", arguments);
-              else if (status.toLowerCase() != 'success') /*нет return*/ AuthExpiration.ToastLogin();
-              else {/// сессия живая
-                AuthExpiration.expires = 0;///счетчик заново
-                if (msg && Object.prototype.toString.call(msg) == "[object String]" && VersionProvider.VersionChanged(msg))
-                  MsgUpdate(msg);
-                if(!AuthExpiration.intervalID && AuthExpiration.DefaulExpiration$().length)
-                  AuthExpiration.intervalID = setInterval(AuthExpiration.intervalCallback, AuthExpiration.intervalDelay);
-              }
-              $timeout(reset, 60*1000);
-            },
-            eventCallback = function(){
-              if (deferred || AuthExpiration.nowReqs) return;///$timeout.cancel(timeout);
-              //~ timeout = $timeout(mouseMoveCallback, 30*1000);
-              deferred = $.get('/keepalive'/*, success*/).always(done);
-            }
-          ;
-          $(document).on('mousemove', eventCallback);
-          $(document).on('scroll', eventCallback);
-        }//(Config));
-        
-        var lastResTime = new Date();//, stopReqs;
-        var jsonTypeRE = /application\/json/
         return {
           "request": function (config) {
-            AuthExpiration.nowReqs++;
+            //~ AuthExpiration.nowReqs++;
             //~ expires = (new Date() - lastResTime)/1000;
             //~ if(expires > defaultExpiration() && Materialize && Materialize.toast) Materialize.toast("", )
             //~ //var $cookies = $injector.get('$cookies');
@@ -218,17 +102,15 @@ undef = undefined;
             return config || $q.when(config);
           },
           "requestError": function (rejection) {
-            AuthExpiration.nowReqs--;
             return $q.reject(rejection);
           },
           "response": function (resp) {
-            AuthExpiration.nowReqs--;
+            //~ AuthExpiration.nowReqs--;
             //~ var $cookies = $injector.get('$cookies');
             //~ console.log("httpAuthTimer", arguments);
             var cache = resp.config.cache; // тут же $templateCache
             if(!cache || !cache.put) {
-              lastResTime = new Date();
-              AuthExpiration.expires = 0;//(new Date() - lastResTime)/1000;//dateFns.differenceInSeconds(new Date(), lastResTime);
+              //~ lastResTime = new Date();
               var contentType = resp.headers()['content-type'];
               var isJSON = jsonTypeRE.test(contentType);
               if(isJSON) resp.data = /*console.log("AutoJSONProvider",)*/ AutoJSONProvider.parse(resp.data);// провайдер(дописывается к имени!) потому что в конфиге (фактори и сервисы не инъектятся)
@@ -238,59 +120,21 @@ undef = undefined;
           },
           
           "responseError": function (resp) {
-            AuthExpiration.nowReqs--;
             if(!resp.config) return $q.reject(resp);
             var cache = resp.config.cache; // тут же $templateCache
-            if((!cache || !cache.put) && resp.status == 404) {
-              var exp = (new Date() - lastResTime)/1000;//dateFns.differenceInSeconds(new Date(), lastResTime);
-              if(exp > AuthExpiration.defaultExpiration()) $timeout(AuthExpiration.ToastLogin);///ShowLoginForm
-            }
+            //~ if((!cache || !cache.put) && resp.status == 404) {
+              //~ var exp = (new Date() - lastResTime)/1000;//dateFns.differenceInSeconds(new Date(), lastResTime);
+              //~ if(exp > AuthExpiration.defaultExpiration()) $timeout(AuthExpiration.ToastLogin);///ShowLoginForm
+            //~ }
             return $q.reject(resp);
           }
         };
-      });
+      });/// factory 'httpInterceptor'
+      
       //~ console.log("закинул $httpProvider.interceptors.push('httpAuthTimer') ");
-      $httpProvider.interceptors.push('httpAuthTimer');
-      //~ $httpProvider.useApplyAsync(true);
-      //~ $httpProvider.defaults.transformResponse = function(data, headers) {
-        //~ console.log("$httpProvider.defaults.transformResponse", data, headers());
-        //~ return data;
-      //~ };
+      $httpProvider.interceptors.push('httpInterceptor');
+      
     })
-    
-    .component('authTimerLogin', {
-      template: '<div id="modal-AuthTimer" ng-if="$ctrl.ready" class="modal"  data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp"  style="top:10%;"> <div class="modal-content"> <h2 class="red-text center">Истекло время бездействия. Войдите снова.</h2>  <div class="input-field center"><input type="checkbox" ng-model="param.reload"  id="крыжик обновления страницы"><label for="крыжик обновления страницы" class="before-yellow-lighten-4 teal-text text-darken-3 animated slideInRight"><h4>Обновить страницу после входа</h4></label>  </div>    <form-auth data-param="param"></form-auth>   </div>   </div>',/// апостроф не катит!!!
-      //~ bindings: {
-      //~ },
-      controller: function($scope, $element, $timeout, $window, $ФормаАвторизацииШаблон){
-        var $ctrl = this;
-        $ctrl.$onInit = function () {
-          //~ $scope.from = $window.location.pathname;
-          $scope.param = {"reload": true, /*"from": $window.location.pathname,*/ "successCallback": function(resp_data){
-            $('.modal', $($element[0])).modal('close');
-            //~ document.getElementById('toast-container').remove();
-            $('#toast-container').remove();
-            Materialize.Toast('Успешный вход', 3000, 'green lighten-4 green-text text-darken-4 border fw500 animated zoomInUp');
-            if ($scope.param.reload) $window.location.reload();
-            else if (resp_data.version && VersionChanged(resp_data.version))
-              MsgUpdate(resp_data.version)
-            AuthExpiration.expires = 0;
-            if(!AuthExpiration.intervalID && AuthExpiration.DefaulExpiration$().length)
-              AuthExpiration.intervalID = setInterval(AuthExpiration.intervalCallback, AuthExpiration.intervalDelay);
-          }};
-          $ФормаАвторизацииШаблон.Load().then(function (proms) {
-            $ctrl.ready = true;
-            $timeout(function() {
-              var modal = $('.modal', $($element[0]));
-              //~ if (window.innerWidth < 1200) modal.css({'width': '90vw'});
-              modal.modal({"dismissible": false,}).modal('open');
-              
-            });
-          });
-          
-        };
-      }
-    })/*конец component('authTimerLogin'*/
     
     .factory('$AppOptions', function($http, appRoutes){
       var $this = {};
@@ -334,6 +178,7 @@ undef = undefined;
       //~ };
       //~ return newConsole;
     };
+    
     angular.module('Console', [])/*autoinject*/
     .provider('NewConsole', function(){
       //~ const origConsole = window.console;
@@ -361,7 +206,7 @@ undef = undefined;
     });
     
     //~ angular.element(document).ready(function() { angular.bootstrap(document, ["App"]); });
-    angular.GlobalModules('App', 'AppTplCache', 'SVGCache');///, 'Console'
+    angular.GlobalModules('App', 'TemplateCache', 'appRoutes', 'AppTplCache', 'SVGCache');///, 'Console'
 
 
 

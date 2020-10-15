@@ -305,9 +305,26 @@ moduleName.map(function(name){
     //~ mod.run(function ($window) {
       //~ $window['angular.'+name] = factory;
     //~ });
-    moduleNameS.map(function(n){ mod.factory(n, function () {
+    moduleNameS.map(function(n){
+      //~ mod.provider('HTTP', function($provide, $injector){
+        //~ console.log("config", $injector.get('$http'));
+
+        //~ this.$get = function(){
+          //~ console.log("config", $injector.get('$http'));
+                  //~ $provide.value('http', function ($http) {//$rootScope, $location
+          //~ console.log('$provide.factory(http, function ($http)', $http);
+                    //~ return $http;
+        //~ });
+          //~ return $provide;
+        //~ };
+        
+      //~ });
+      mod.factory(n, function () {
+      //~ factory.$http = $http;
       return factory;
-    }); });// все комбинации
+    });
+
+  });// все комбинации
   
 });
 

@@ -7,7 +7,7 @@
   
 var moduleName = "Отчет по кошелькам";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, [/*'Util', 'TemplateCache',*/ 'ProjectList', 'Таблица поступлений/расходов по кошелькам']); ///'TreeItem', 'WalletItem', 'ContragentItem', 'Контрагенты', 'Объект или адрес', 'ProfileItem', 'MoneyTable', 'Категории'
+var module = angular.module(moduleName, ['Util', 'ProjectList', 'Таблица поступлений/расходов по кошелькам']); ///'TreeItem', 'WalletItem', 'ContragentItem', 'Контрагенты', 'Объект или адрес', 'ProfileItem', 'MoneyTable', 'Категории'
 
 const Controll = function($scope, $attrs, $element, $timeout, Util, TemplateCache, appRoutes){
   var ctrl = this;

@@ -5,7 +5,7 @@
 
 var moduleName = "Отпуск";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['TemplateCache', 'Util', 'Компонент::Сотрудники', 'Компонент::Отпуск::Календарь', /*'EventBus', */ ]);
+var module = angular.module(moduleName, ['appRoutes', 'Util', 'Компонент::Сотрудники', 'Компонент::Отпуск::Календарь', /*'EventBus', */ ]);
 
 module.controller('Controll', function  (/*$scope, $q,$timeout, */ $element, appRoutes,  /*$http ,*/ TemplateCache,  Util, $EventBus, $КомпонентСотрудники, $КомпонентОтпускКалендарь /**/) {
   var ctrl = this;

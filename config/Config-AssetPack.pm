@@ -178,7 +178,7 @@ sub map_grep_mode {
       js/c/profile/form-auth.html
       )],
       ['profile/form-auth.js' => grep !/^--/, qw(
-        --"lib/angular-md5/angular-md5.js"
+        --lib/angular-md5/angular-md5.js
         --lib/jquery-md5/jquery.md5.js
         lib/nano-md5/md5.js
         --js/controllers/phone-input/phone-input.js
@@ -205,6 +205,7 @@ sub map_grep_mode {
         --в_конце!!!
         js/global-modules.js
         js/app.js
+        js/dist/auth.js
         ),
       
       ],

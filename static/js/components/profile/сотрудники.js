@@ -9,7 +9,7 @@
 */
 var moduleName = "Компонент::Сотрудники";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['EventBus']);//'ngSanitize',appRoutes
+var module = angular.module(moduleName, ['EventBus', 'Util']);//'ngSanitize',appRoutes
 
 module
 .factory('$КомпонентСотрудники',  function($http, $timeout, $templateCache, /* $rootScope, appRoutes,*/ $СотрудникиДанные, $EventBus){

@@ -5,7 +5,7 @@
 
 var moduleName = "Серификаты ТМЦ";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['TemplateCache', /*'Util', 'appRoutes',*/ 'ТМЦ::Сертификаты::Объекты', 'ТМЦ::Сертификаты::Закупки', 'ТМЦ::Сертификаты::Папки', 'EventBus']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['appRoutes', 'Util', 'ТМЦ::Сертификаты::Объекты', 'ТМЦ::Сертификаты::Закупки', 'ТМЦ::Сертификаты::Папки', 'EventBus']);//'ngSanitize',, 'dndLists'
 
 var Controll = function  ($scope, $q, $timeout, $element, $http, TemplateCache, appRoutes, $КомпонентТМЦСертификатыОбъекты, $КомпонентТМЦСертификатыЗакупки, $КомпонентТМЦСертификатыПапки, $EventBus) {
   var ctrl = this;
