@@ -1,5 +1,5 @@
 <div class="row">
-  <div bind:this={element} class="modal col s12 m6 l4 offset-m3 offset-l4"  data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp"  style="top:10%;">
+  <div bind:this={modal} class="modal col s12 m6 l4 offset-m3 offset-l4"  data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp"  style="top:10%;">
     <div class="modal-content">
       <h2 class="red-text center">Истекло время бездействия. Войдите снова.</h2>
       <div class="input-field center">
@@ -17,13 +17,12 @@
   import AuthForm from './AuthForm.svelte';
   import {onMount} from 'svelte';
   let reload = false;
-  let element;
   let modal;
   
   export let Success;// callback
   
   onMount(() => {
-    modal = jQuery(element).modal({"dismissible": false,});
+    modal = jQuery(modal).modal({"dismissible": false,});
     modal.modal('open');
   });
   
