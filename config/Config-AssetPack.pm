@@ -189,8 +189,6 @@ sub map_grep_mode {
       
       #глобальная подборка собственных скриптов
       ['main.js' => grep !/^--/, qw(
-        --000js/version.js
-        --js/console.js
         js/main.js
         js/util.js
         js/routes.js
@@ -198,8 +196,6 @@ sub map_grep_mode {
         --в_main_js/config.js
         ---profile/form-auth.js
         js/svg.js
-        --js/util/object-watch.js
-        --js/util/watch-object.js
         js/util/array-pushself.js
         js/util/array-removeOf.js
         --в_конце!!!
