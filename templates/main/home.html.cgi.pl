@@ -14,19 +14,19 @@ $c->layout('main', format=>'html', handler=>'ep', 'header-title' => 'Начал�
 
 h1({-class=>'center',}, $uid ? 'Главная страница' : 'Добро пожаловать'),
 
-(!$uid || '') && div({-class=>"row", "ng-app"=>"Форма авторизации", "ng-controller"=>"Controll as ctrl",}, 
+(!$uid || '') && div({-class=>"row", "ng000-app"=>"Форма авторизации", "ng000-controller"=>"Controll as ctrl",}, 
 
   div({-class=>"col s12 m6 l4 offset-m3 offset-l4   "},
         #~ form_auth({'ng-if'=>"ctrl.ready", 'data-param'=> 'param'}, ''),
-        app_auth(), 
+        app_auth(), # подхватит auth.js
   ),
   #~ div({-class=>"row"},
   #~ div({-class=>"col l4 m12 s12"},
     #~ form_oauth({'ng-if'=>"ctrl.ready",}, ''),
-    div({-class=>"col s12 m6 l4 offset-m3 offset-l4 animated slideInDown slow",},
+    #~ div({-class=>"col s12 m6 l4 offset-m3 offset-l4 animated slideInDown slow",},
       #~ img({-src=>"/i/logo/welcome.png", -alt=>"welcome img", -style=>"width:100%;", -class=>"card"}),
-      '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 900 600" class="card"><use xlink:href="/i/img.svg#welcome" /></svg>',
-    ),
+      #~ '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 900 600" class="card"><use xlink:href="/i/img.svg#welcome" /></svg>',
+    #~ ),
   #~ ),
 ),
 

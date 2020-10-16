@@ -18,10 +18,10 @@
   % } else {
     </div>
     <div>Возможно, нужно <a class="" href="<%= url_for('profile') %>">авторизоваться</a></div>
-    <div id="modal-AuthTimer" class="row" ng-app="Форма авторизации" ng-controller="Controll as ctrl">
+    <div id="modal-AuthTimer" class="row" ng000-app="Форма авторизации" ng000-controller="Controll as ctrl">
       <div class="col s12">
 %#        <form-auth ng-if="ctrl.ready" data-param-000=" {'from': '<%= decode 'UTF-8', url_unescape $c->req->url->path %>'} " data-param=" param "></form-auth>
-        <app-auth></app-auth>
+        <app-auth><!-- # подхватит auth.js --></app-auth>
       </div>
         
     </div>

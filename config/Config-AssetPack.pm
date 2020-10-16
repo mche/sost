@@ -174,18 +174,18 @@ sub map_grep_mode {
       js/c/tree/v-tree-list.html
       )],
       
-      ['profile/form-auth.html'=>qw(
-      js/c/profile/form-auth.html
-      )],
-      ['profile/form-auth.js' => grep !/^--/, qw(
-        --lib/angular-md5/angular-md5.js
-        --lib/jquery-md5/jquery.md5.js
-        lib/nano-md5/md5.js
-        --js/controllers/phone-input/phone-input.js
-        --c/profile/lib.js
-        js/c/profile/form-auth.js
+      #~ ['profile/form-auth.html'=>qw(
+      #~ js/c/profile/form-auth.html
+      #~ )],
+      #~ ['profile/form-auth.js' => grep !/^--/, qw(
+        #~ --lib/angular-md5/angular-md5.js
+        #~ --lib/jquery-md5/jquery.md5.js
+        #~ lib/nano-md5/md5.js
+        #~ --js/controllers/phone-input/phone-input.js
+        #~ --c/profile/lib.js
+        #~ js/c/profile/form-auth.js
         
-        )],
+        #~ )],
       
       #глобальная подборка собственных скриптов
       ['main.js' => grep !/^--/, qw(
@@ -196,7 +196,7 @@ sub map_grep_mode {
         js/routes.js
         --js/user.js
         --в_main_js/config.js
-        profile/form-auth.js
+        ---profile/form-auth.js
         js/svg.js
         --js/util/object-watch.js
         --js/util/watch-object.js
