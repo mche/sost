@@ -275,7 +275,7 @@ Copy(){
   init['@помещения/id'] = undefined;
   init['@помещения'].forEach(vm.CopyRoom);
   init['@доп.соглашения'] = [];
-  vm.roomsTableIdx = 0;
+  
 
   vm.form = init;
   
@@ -283,6 +283,9 @@ Copy(){
   vm.ClearDate('дата1', init['дата1']);
   vm.ClearDate('дата2', init['дата2']);
   vm.ClearDate('дата расторжения', init['дата расторжения']);
+  vm.roomsTableIdx = undefined;
+  setTimeout(()=>vm.roomsTableIdx = 0);
+  //~ vm.roomsTableIdx = 0;
 },
 
 CopyRoom(room){

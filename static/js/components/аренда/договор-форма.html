@@ -209,7 +209,7 @@
         <sup v-show=" !validDop " class="chip red white-text" style="position: absolute; z-index: 1; top:0;padding:0.3rem;"></sup>
       </h4>
     
-      <h5 class="helmet tab-shadow z-depth-1 lime lighten-4  " :class="{'fw500 active lime lighten-4': roomsTableIdx == 0, 'hoverable':roomsTableIdx != 0, }">
+      <h5 class="helmet tab-shadow z-depth-1 lime lighten-4  " :class="{'fw500 active lime lighten-4': roomsTableIdx === 0, 'hoverable':roomsTableIdx != 0, }">
         <a @click="roomsTableIdx = 0" href="javascript:" class="hover-shadow3d">
           <!--i class="material-icons">format_list_numbered</i-->
           <span>Осн. договор</span>
@@ -246,12 +246,12 @@
 
       </div>
     
-      <contract-rooms v-if="roomsTableIdx == 0" :key="roomsTableIdx" :помещения="form['@помещения']" :всегоСуммаБезнал=" {'сумма':form['сумма безнал'] || null} " @table-sum="OnTableSum" @rooms-change="OnRoomsChange" class="block animated zoomIn fast"></contract-rooms>
+      <contract-rooms v-if="roomsTableIdx === 0" :key="roomsTableIdx" :помещения="form['@помещения']" :всегоСуммаБезнал=" {'сумма':form['сумма безнал'] || null} " @table-sum="OnTableSum" @rooms-change="OnRoomsChange" class="block animated zoomIn fast"></contract-rooms>
       <contract-rooms v-if=" roomsTableIdx > 0 && form['@доп.соглашения'] && form['@доп.соглашения'][roomsTableIdx-1] && form['@доп.соглашения'][roomsTableIdx-1]['дата1']" :key="roomsTableIdx" :помещения="form['@доп.соглашения'][roomsTableIdx-1]['@помещения']" :param="{'bgClass': !!form['@доп.соглашения'][roomsTableIdx-1].id ? 'teal lighten-5' : 'orange lighten-5'}" :всегоСуммаБезнал="{'сумма':form['@доп.соглашения'][roomsTableIdx-1]['сумма безнал'] || null}" @table-sum="OnTableSum" @rooms-change="OnRoomsChange" class="block animated slideInUp fast"></contract-rooms>
       
     </div><!-- col -->
     </div><!-- row -->
-    <div v-if="roomsTableIdx == 0 || !!form['@доп.соглашения'][roomsTableIdx-1]['дата1']" class="row card marg-05 padd-05 animated zoomIn " :class="{'teal lighten-5': roomsTableIdx > 0 && !!form['@доп.соглашения'][roomsTableIdx-1].id, 'orange lighten-5':roomsTableIdx > 0 && !form['@доп.соглашения'][roomsTableIdx-1].id, 'lime lighten-4':  roomsTableIdx == 0}">
+    <div v-if="roomsTableIdx === 0 || !!(form['@доп.соглашения'] && form['@доп.соглашения'][roomsTableIdx-1] && form['@доп.соглашения'][roomsTableIdx-1]['дата1'])" class="row card marg-05 padd-05 animated zoomIn " :class="{'teal lighten-5': roomsTableIdx > 0 && !!form['@доп.соглашения'][roomsTableIdx-1].id, 'orange lighten-5':roomsTableIdx > 0 && !form['@доп.соглашения'][roomsTableIdx-1].id, 'lime lighten-4':  roomsTableIdx == 0}">
       <div class="col s7  row">
         <div class="col s7 ">
           <h4 class="right-align">

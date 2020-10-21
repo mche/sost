@@ -164,7 +164,7 @@ OnSave(data){ ///  из события сохранения формы
     var f = data.id && vm.data.find(util.IsEqualId, data);
     if (data['удалить']) {
       vm.data.removeOf(f);
-      return vm.FilterData();;///
+      return vm.FilterData();///
     }
     
     if (f) { /// редакт
@@ -181,7 +181,7 @@ OnSave(data){ ///  из события сохранения формы
       vm.data.unshift(data);
       //~ console.log("новый договор", data, f);
     }
-    //~ !vm.FilteredData;/// в шине !!!
+    !vm.FilterData();/// или в шине !!!
     //~ $EventBus.$emit('Прокрути к договору', data.id);
   }
 },
