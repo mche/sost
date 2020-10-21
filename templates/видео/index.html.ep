@@ -1,20 +1,53 @@
 % layout 'main';
+% my @cams = (
+%  {title=>'Вход №1 (левый)', url=>url_for('ws feed', 'feed'=>   'cam1')->to_abs,},
+%  {title=>'Вход №2 (правый)', url=>url_for('ws feed', 'feed'=>   'cam12')->to_abs,},
+%  {title=>'1 этаж у входа №2', url=>url_for('ws feed', 'feed'=>   'cam11')->to_abs,}, 
+%  {title=>'2 этаж центр->влево', url=>url_for('ws feed', 'feed'=>   'cam15')->to_abs,}, 
+%  {title=>'2 этаж центр->вправо', url=>url_for('ws feed', 'feed'=>   'cam14')->to_abs,}, 
+%  {title=>'3 этаж центр->влево', url=>url_for('ws feed', 'feed'=>   'cam16')->to_abs,}, 
+%  {title=>'3 этаж центр->вправо', url=>url_for('ws feed', 'feed'=>   'cam17')->to_abs,}, 
+%#  {title=>'18', url=>url_for('ws feed', 'feed'=>   'cam18')->to_abs,}, 
+%  {title=>'3 этаж правый тупик', url=>url_for('ws feed', 'feed'=>   'cam19')->to_abs,}, 
+%  {title=>'3 этаж роботы', url=>url_for('ws feed', 'feed'=>   'cam20')->to_abs,}, 
+% );
 
-<h1>Вход №1 (левый)</h1>
-<canvas>Загружается...</canvas>
+<div class="row card">
+<div class="col s2 padd-0">
+<ul class="marg-0">
+% for my $cam (@cams) {
+  <li class=""><h4><a class="hover-shadow3d block hoverable padd-0-05" href="javascript:" data-feed="<%= $cam->{url} %>"><%= $cam->{title} %></a></h4></li>
+% }
+</ul>
+</div>
 
-<h1>Вход №2 (правый)</h1>
-<canvas>Загружается...</canvas>
+<div class="cam col s10 padd-0"></div>
 
-<h1>Первый этаж у входа №2</h1>
-<canvas>Загружается...</canvas>
+</div>
 
 <script type="text/javascript" src="/lib/jsmpeg/jsmpeg.min.js"></script>
 <script type="text/javascript">
-  var canvas = document.getElementsByTagName('canvas'); 
+var div = document.querySelector('div.cam');
+var ancs = document.querySelectorAll('a[data-feed]');
+var currentPlay;
+const activeClass = el=>['bold', 'right-align', 'teal', 'white-text', 'padd-05', 'shadow-text','shadow-inset-10'].forEach(c=>el.classList.toggle(c));
+ancs.forEach(item=>{item.onclick=(event)=>{
+  let url = item.getAttribute('data-feed');
+  let canvas = document.createElement('canvas');
+  canvas.style.width='100%';
+  div.appendChild(canvas);
+  if (currentPlay) {
+    activeClass(currentPlay['таб']);
+    currentPlay.destroy();
+  }
+  currentPlay = new JSMpeg.Player(url, {canvas, autoplay: true,});
+  currentPlay['таб'] = item;
+  activeClass(currentPlay['таб']);
+}});
   
-  new JSMpeg.Player('<%= url_for('ws feed', 'feed'=>   'cam1')->to_abs %>', {canvas: canvas[0], autoplay: true,});
-  new JSMpeg.Player('<%= url_for('ws feed', 'feed'=> 'cam12')->to_abs %>', {canvas: canvas[1], autoplay: true,});
-  new JSMpeg.Player('<%= url_for('ws feed', 'feed'=> 'cam11')->to_abs %>', {canvas: canvas[2], autoplay: true,});
+//~   new JSMpeg.Player('<%= url_for('ws feed', 'feed'=>   'cams')->to_abs %>', {canvas: canvas[0], autoplay: true,});
+//~   new JSMpeg.Player('<%= url_for('ws feed', 'feed'=>   'cam1')->to_abs %>', {canvas: canvas[1], autoplay: true,});
+//~   new JSMpeg.Player('<%= url_for('ws feed', 'feed'=> 'cam12')->to_abs %>', {canvas: canvas[2], autoplay: true,});
+//~   new JSMpeg.Player('<%= url_for('ws feed', 'feed'=> 'cam11')->to_abs %>', {canvas: canvas[3], autoplay: true,});
   
 </script>
