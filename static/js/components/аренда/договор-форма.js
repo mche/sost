@@ -283,7 +283,7 @@ Copy(){
   vm.ClearDate('дата1', init['дата1']);
   vm.ClearDate('дата2', init['дата2']);
   vm.ClearDate('дата расторжения', init['дата расторжения']);
-  vm.roomsTableIdx = undefined;
+  vm.roomsTableIdx = undefined;/// передернуть таблицу помещений
   setTimeout(()=>vm.roomsTableIdx = 0);
   //~ vm.roomsTableIdx = 0;
 },

@@ -17,7 +17,8 @@
 <div v-for=" (item, idx) in data " :key=" item.id " :id="`rent-object-${item.id}`" class="relative card padd-05 blue lighten-4 animated slideInUp" :class="{'selected': item === selectedObject}">
       <h4 :class="{'bold': item._edit}" class="fw500 line-height-10 card-title padd-05" style="">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" style="height: 1.2rem;" class="blue-fill-darken-3"><use xlink:href="/fonts/icons.svg#realty-1"></use></svg>
-        <a @click=" Edit(item) " href="javascript:void('редактировать объект аренды') " class="hover-shadow3d blue-text text-darken-3" title="редактировать объект аренды"> {{ (item['$объект'] && item['$объект'].name) || item['адрес'] }} </a>
+        <a @click=" $set(item, '_show', !item._show) " href="javascript:void('редактировать объект аренды') " class="hover-shadow3d blue-text text-darken-3" title="редактировать объект аренды"> {{ (item['$объект'] && item['$объект'].name) || item['адрес'] }} </a>
+        <a v-show="item._show" @click=" Edit(item) " href="javascript:void('редактировать объект аренды') " class="btn-flat green-text text-darken-3 z-depth-1 fs10 green lighten-3" title="редактировать объект аренды">редактировать</a>
       </h4>
       <!--div v-show="item['коммент'] && !!item['коммент'].length " class="chip width100 truncate pre-wrap fs8 grey-text-000 line-height-10" style="height:2rem;" :title=" item['коммент'] ">{{ item['коммент'] }}</div-->
       

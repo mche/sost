@@ -1,6 +1,6 @@
 @@@ аренда/объект/форма
 
-<div v-if="ready" class="card z-depth-5 blue lighten-4 animated zoomIn fast">
+<div v-if="ready" class="card z-depth-5 green lighten-4 animated zoomIn fast">
 
 <!--div class="hide">{{ vm = {"вап": 1} }}</div-->
 
@@ -37,7 +37,7 @@
     <!--div>{{ counter }}</div-->
     
     <div class="row"><div class=" col s12 relative"><!-- -->
-      <div v-for="liter in Liters" v000-for="[liter_id, liter] of Object.entries(Liters)" :key="liter.id" class="relative row" :id=" `liter-${liter.id}` ">
+      <div v-for="liter in Liters" v000-for="[liter_id, liter] of Object.entries(Liters)" :key="liter.id" class="relative row card blue lighten-5 padd-05" :id=" `liter-${liter.id}` ">
         <h4>
           <i class="material-icons">format_list_numbered</i>
           <span> Помещения и кабинеты </span>
@@ -47,7 +47,7 @@
             литер: 
             <span v-if="form.litersEdit.hasOwnProperty(liter.id) || !liter.title" class="input-field iblock white padd-0-05 fs8 animated zoomIn fast" style="border-radius:5px; width:5rem;">
               <sup v-show="!form.litersEdit[liter.id].title" class="chip red" style="position: absolute; z-index: 1; top:0; left:0; padding:0.3rem;"></sup>
-              <input type="text" v-model.lazy="form.litersEdit[liter.id].title" class="bold lime-text text-darken-4" placeholder="Указать литер" />
+              <input type="text" v-model.lazy="form.litersEdit[liter.id].title" class="bold lime-text text-darken-4" placeholder="наименование лит." title="наименование лит."/>
             </span>
             <a v-else class="chip padd-0-05 bold lime-text text-darken-3 hoverable hover-shadow3d hover-white" @click="Edit(liter, $event)" href="javascript:">{{ liter.title }}</a>
           </span>
