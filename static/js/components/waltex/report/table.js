@@ -54,13 +54,20 @@ var Component = function  ($scope, $timeout, $http, $q, $element, appRoutes, Uti
     return $c.data['это вертикальная таблица'];
   };
   
-  $c.TitleFormat = function(tr){
-    if (angular.isArray(tr.title)) {
-      if ($c.param['проект'] && $c.param['проект'].id) return tr.title[0][1];
+  $c.TitleFormat = function(t){
+    if (angular.isArray(t)) {
+      if ($c.param['проект'] && $c.param['проект'].id) return t[0][1];
       //~ console.log("TitleFormat", tr.title[0]);
-      return tr.title[0].join(': ');
+      return t[0].join(': ');
     }
-    return tr.title;
+    return t.replace(/ря(\s+\d+)$/i, 'рь$1')
+      .replace(/ля(\s+\d+)$/i, 'ль$1')
+      .replace(/марта(\s+\d+)$/i, 'март$1')
+      .replace(/мая(\s+\d+)$/i, 'май$1')
+      .replace(/марта(\s+\d+)$/i, 'март$1')
+      .replace(/июня(\s+\d+)$/i, 'июнь$1')
+      .replace(/августа(\s+\d+)$/i, 'август$1')
+  ;/// месяца в месяц
   };
   
   //~ $c.CumOstatok = function(tr){

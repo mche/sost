@@ -97,7 +97,7 @@ var Component = function  ($scope, $timeout, $element) {
       $c.select_interval.material_select();
       $c.select_interval.change($c.ChangeInterval);
       $('input.select-dropdown', $c.select_interval.parent()).val('Месяц');
-      $c.param['интервал'] = 'YYYYmm/TMMon YY';
+      $c.param['интервал'] = 'YYYYmm/TMmonth YYYY';
       //~ $c.select_interval.val('MM').change();
       //~ $('option[value="MM"]', $c.select_interval).prop('selected', true);
       
