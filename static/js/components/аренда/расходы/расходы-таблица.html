@@ -26,17 +26,42 @@
       <div class="flex-col-sm-1-000 padd-05 relative" style="">
         <!-- все крыжики-->
         <div v-show=" FilteredDataLen " class="input-field-000 nowrap" style="">
-          <input type="checkbox" id="все крыжики" v-model="allChbs" @change="AllChbsChange">
+          <input type="checkbox" id="все крыжики" v-model="form['все крыжики']" @change="AllChbsChange">
           <label for="все крыжики" class="hover-shadow3d chb-yellow-lighten-4 orange-text chip yellow lighten-4" style="position:absolute; left:-2rem; padding-left:16px;" ></label>
           <label  for="все крыжики"><h6 class="orange-text text-darken-4 chip">
-            <span>{{ allChbs ? 'снять' : 'отметить' }}</span>
-            <sup class="chip white z-depth-1">{{ FilteredDataLen }}</sup>
+            <span>{{ checkedData.length || form['все крыжики'] ? 'отмечено' : 'отметить' }}</span>
+            <sup class="chip white z-depth-1">{{ checkedData.length }}</sup>
           </h6></label>
-          <a v000-show="checkedData.length" @click="Print()" href="javascript:" :disabled="!checkedData.length" class="btn-flat  z-depth-1 orange lighten-4 black-text">
+          
+          <div class="chip hoverable hoverable shadow-inset-10">
+            <div class="iblock">
+              <input type="radio" id="radioSchet" v-model="form['счет или акт']" :value=" 'счет' ">
+              <label for="radioSchet"  class="before-yellow-lighten-4 brown-text-darken-3 checked-after-brown-darken-3" >Счета</label>
+              <!--label for="radioSchet"></label-->
+            </div>
+            <span class="yellow-text text-lighten-5 padd-0-05"> или </span>
+            <div class="iblock">
+              <input type="radio" id="radioAkt" v-model="form['счет или акт']" :value=" 'акт' ">
+              <label for="radioAkt" class=" before-yellow-lighten-4 brown-text-darken-3 checked-after-brown-darken-3" style="">Акты</label>
+            </div>
+          </div>
+          
+          <div class="input-field chip hoverable shadow-inset-10">
+            <input type="checkbox" id="крыжик-pdf" v-model="form['pdf формат']">
+            <label for="крыжик-pdf" class="hover-shadow3d before-yellow-lighten-4 red-text-darken-3 chip yellow lighten-4 hoverable" style="padding-left:16px;" ></label><!-- это лабел квадратика крыжика -->
+            <label for="крыжик-pdf" class=""><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 56 56" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#pdf-file"></use></svg></label>
+          </div>
+
+          <a  @click="Print()" href="javascript:" :disabled="!checkedData.length || !form['счет или акт']" class="btn-flat  z-depth-1 orange lighten-4 black-text">
             <i class="material-icons">print</i>
             <span class="fs8">Печать</span>
             <sup class="chip white">{{ checkedData.length }}</sup>
           </a>
+          <!--a  @click="Print({'счет или акт':'акт'})" href="javascript:" :disabled="!checkedData.length" class="btn-flat  z-depth-1 orange lighten-4 black-text">
+            <i class="material-icons">print</i>
+            <span class="fs8">Печать актов</span>
+            <sup class="chip white">{{ checkedData.length }}</sup>
+          </a-->
         </div>
         
       </div>

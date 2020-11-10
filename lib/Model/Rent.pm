@@ -335,8 +335,9 @@ sub счет_расходы_docx {
     # ничего
   });
   unshift @bind, $param->{'месяц'}, $param->{'аренда/расходы/id'};
-  my $data = $self->dbh->selectrow_array($self->sth('счета и акты/доп расходы', счет_или_акт=>$param->{'счет или акт'} || 'счет', select=>' jsonb_agg(a) ', where=>$where), undef, @bind);
-  #~ return $data;
+  my $data = $self->dbh->selectall_arrayref($self->sth('счета и акты/доп расходы', счет_или_акт=>$param->{'счет или акт'} || 'счет', select=>' jsonb_agg(a) ', where=>$where), {Slice=>{}}, @bind);
+  return $data;
+=pod
   my $r = {};
   #~ $r->{docx} = $param->{docx} || "счет-$param->{uid}.docx";
   #~ $r->{docx_out_file} = "static/tmp/$r->{docx}";
@@ -351,6 +352,7 @@ sub счет_расходы_docx {
   );
   
   return $r;#для отладки - коммент линию
+=cut
 }
 
 sub реестр_актов {

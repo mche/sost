@@ -670,15 +670,23 @@ WITH param as (
 select {%= $select || '*' %} from (
 select
   pr."проект" as "проект",
-   pr."реквизиты"||to_jsonb(pr) as "$арендодатель/json", ---as "арендодатель/реквизиты", --- item['арендодатель/реквизиты']
+  pr."реквизиты"||to_jsonb(pr) as "$арендодатель/json", ---as "арендодатель/реквизиты", --- item['арендодатель/реквизиты']
+  
+  r.id as "счет/id",
   coalesce(r."номер", '000')/*(random()*1000)::int*/ as "номер счета",
   r."дата" as "дата счета",
   timestamp_to_json(r."дата"::timestamp) as "$дата счета/json",
-  --~ timestamp_to_json(case when coalesce(d."оплата до числа", 5) = 5 then (date_trunc('month', r."дата")+interval '4 days') else (date_trunc('month', r."дата")-interval '1 month'+interval '24 days') end)  as "$дата оплатить счет",
+  --~ timestamp_to_json(case when coalesce(d."оплата до числа", 5) = 5 then (date_trunc('month', dp."дата")+interval '4 days') else (date_trunc('month', dp."дата")-interval '1 month'+interval '24 days') end)  as "$дата оплатить счет",
+  to_json(r) as "$счет/json",
   
   ---coalesce(num2."номер", '000')/*(random()*1000)::int*/ as "номер акта",
   ---coalesce(/*num2.ts*/date_trunc('month', num2."месяц")+interval '1 month'-interval '1 day', /*now()*/null)::date as "дата акта",--- на последнее число мес
   ---timestamp_to_json(coalesce(/*num2.ts*/(date_trunc('month', num2."месяц")+interval '1 month'-interval '1 day')::timestamp, now())) as "$дата акта",--- на последнее число мес
+  r.id as "акт/id",
+  coalesce(r."номер"||'-А', '---')/*(random()*1000)::int*/ as "номер акта",
+  coalesce(/*num2.ts*/date_trunc('month', r."дата")+interval '1 month'-interval '1 day', /*now()*/null)::date as "дата акта",--- на последнее число мес
+  timestamp_to_json(coalesce(/*num2.ts*/(date_trunc('month', r."дата")+interval '1 month'-interval '1 day')::timestamp, now())) as "$дата акта/json",--- на последнее число мес
+  row_to_json(r) as "$акт/json",
   
   ob.name as "объект",
   row_to_json(d) as "$договор/json", 

@@ -109,7 +109,7 @@ Edit(item){
 
 AllChbsChange(val){
   var vm = this;
-  if (typeof val == 'boolean') vm.allChbs = val;
+  if (typeof val == 'boolean') vm.form['все крыжики'] = val;
   
   /*if (val != 'оставить крыжики')*/
   vm.data.map((item)=>{
@@ -117,7 +117,7 @@ AllChbsChange(val){
     
   });
   vm.filteredData.map((item)=>{
-    item['крыжик'] =  !!vm.allChbs;
+    item['крыжик'] =  !!vm.form['все крыжики'];
   });
   this.CheckedData();
 },
@@ -178,6 +178,7 @@ Print(){
   var vm = this;
   //~ var modal = $('#modal-print', $(vm.$el));
   //~ if (!month) return modal.modal('open');
+  //~ if (param) Object.assign(vm.param, param);
   
   vm.param['аренда/расходы/id'] = vm.checkedData.map((item)=>{ return item.id; });
   //~ var obs = vm.rentObjects.filter((ob)=>{ return !!ob['крыжик печати']; }).map((ob)=>{ return ob['$объект'].id; });
@@ -186,7 +187,7 @@ Print(){
   //~ modal.modal('close');
 
   /// вернет урл для скачивания
-  return $http.post(appRoutes.urlFor('аренда/расходы#docx', '-'/*обязательно что-нибудь*/), vm.param).then(function(resp){
+  return $http.post(appRoutes.urlFor('аренда/расходы#docx', '-'/*обязательно что-нибудь*/), Object.assign({}, vm.param, vm.form)).then(function(resp){
     if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 border fw500  animated zoomInUp');
     if (resp.data.docx) window.location.href = appRoutes.urlFor('аренда/расходы#docx', resp.data.docx);
     if (resp.data.data) console.log("счет", resp.data.data);///отладка
@@ -208,8 +209,10 @@ const computed = {
 //~ },
 FilteredDataLen(){
   return this.filteredData.length;
-  
-}
+},
+//~ FilteredDataChbsLen(){
+  //~ return this.filteredData.filter((item)=>{ return !!item['крыжик']; }).length;
+//~ },
   
   /* computed */};
 
@@ -222,11 +225,12 @@ const  data = function(){
     //{/// src
     "ready": false,
     "loading": false,
+    "form": vm.param,
     //~ "data": [],
     "filteredData":[],
     "checkedData":[],/// с крыжиками
     "filters": {"арендаторы": '', "объект": {},},
-    "allChbs": false, /// крыжик выбора всех договоров
+    //~ "allChbs": false, /// крыжик выбора всех договоров
     //~ "payMonth":  vm.param['месяц'] || new Date().toISOString().replace(/T.+/, ''),
     "newForm": undefined,
     "rentObjects":[],
