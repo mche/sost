@@ -1,5 +1,6 @@
 {
   docx => ['application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
+  xlsx=>['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
 };
 
 =pod
