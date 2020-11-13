@@ -73,8 +73,8 @@ select
   null::int as "доп.согл./id", ---null::int as "номер доп.согл.",
   array_agg(distinct ob.id) as "@объекты/id",
   array_agg(p."номер-название" order by p."номер-название") as "@помещения-номера",---для коммента
-  coalesce(d."сумма безнал", sum(coalesce(dp."сумма", dp."ставка"*coalesce(dp."площадь", p."площадь")))) as "сумма безнал", --- без налички
-  coalesce(d."сумма безнал", sum(coalesce(dp."сумма", dp."ставка"*coalesce(dp."площадь", p."площадь"))) /*+ coalesce(dp."сумма нал", 0::money)*/) + coalesce(d."сумма нал", 0::money) as "сумма"
+  coalesce(d."сумма безнал", sum(coalesce(dp."сумма", coalesce(dp."ставка", 0::money)*coalesce(dp."площадь", p."площадь")))) as "сумма безнал", --- без налички
+  coalesce(d."сумма безнал", sum(coalesce(dp."сумма", coalesce(dp."ставка", 0::money)*coalesce(dp."площадь", p."площадь"))) /*+ coalesce(dp."сумма нал", 0::money)*/) + coalesce(d."сумма нал", 0::money) as "сумма"
 
 from
   "аренда/договоры" d
@@ -94,7 +94,7 @@ from
   join refs ro on o.id=ro.id2
   join "roles" ob on ob.id=ro.id1
   
-group by d.id, d."дата1"
+group by d.id--, d."дата1"
 
 --- доп соглашения
 union all
@@ -105,8 +105,8 @@ select
   dop.id  as "доп.согл./id", ----row_number() OVER (ORDER BY dop."дата1") as "номер доп.согл.",
   array_agg(distinct ob.id) as "@объекты/id",
   array_agg(p."номер-название" order by p."номер-название") as "@помещения-номера",---для коммента
-  coalesce(dop."сумма безнал", sum(coalesce(dp."сумма", dp."ставка"*coalesce(dp."площадь", p."площадь")))) as "сумма безнал", --- без налички
-  coalesce(dop."сумма безнал", sum(coalesce(dp."сумма", dp."ставка"*coalesce(dp."площадь", p."площадь"))) /*+ coalesce(dp."сумма нал", 0::money)*/) + coalesce(dop."сумма нал", 0::money) as "сумма"
+  coalesce(dop."сумма безнал", sum(coalesce(dp."сумма", coalesce(dp."ставка", 0::money)*coalesce(dp."площадь", p."площадь")))) as "сумма безнал", --- без налички
+  coalesce(dop."сумма безнал", sum(coalesce(dp."сумма", coalesce(dp."ставка", 0::money)*coalesce(dp."площадь", p."площадь"))) /*+ coalesce(dp."сумма нал", 0::money)*/) + coalesce(dop."сумма нал", 0::money) as "сумма"
 from 
   "аренда/договоры" d
   
@@ -128,7 +128,7 @@ from
   join refs ro on o.id=ro.id2
   join "roles" ob on ob.id=ro.id1
   
-group by d.id, dop."дата1", dop."сумма нал", dop.id
+group by d.id, /*dop."дата1",*/ dop."сумма нал", dop.id
 
 ;--- конец view
 
