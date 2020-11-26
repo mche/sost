@@ -505,7 +505,7 @@ select
   o.id as "аренда/объект/id", row_to_json(o) as "$аренда/объект/json",
   ob.id as "объект/id", row_to_json(ob) as "$объект/json",
   p."площадь" as "площадь помещения",
-  coalesce(dp."сумма", dp."ставка"*p."площадь") as "оплата за помещение",
+  coalesce(dp."сумма", coalesce(dp."ставка", 0::money)*p."площадь") as "оплата за помещение",
   dp.*,
   d.id as "договор/id"
 from 
