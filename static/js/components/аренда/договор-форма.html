@@ -206,7 +206,7 @@
       <h4 class="relative">
         <i class="material-icons">format_list_numbered</i>
         <span>Сданы в аренду помещения/офисы объекта</span>
-        <sup v-show=" !validDop " class="chip red white-text" style="position: absolute; z-index: 1; top:0;padding:0.3rem;"></sup>
+        
       </h4>
     
       <h5 class="helmet tab-shadow z-depth-1 lime lighten-4  " :class="{'fw500 active lime lighten-4': roomsTableIdx === 0, 'hoverable':roomsTableIdx != 0, }">
@@ -214,17 +214,19 @@
           <!--i class="material-icons">format_list_numbered</i-->
           <span>Осн. договор</span>
           <sup class="chip z-depth-1 white">{{ form['@помещения'].length-1 }} поз.</sup>
+          <sup v-show=" !ValidRooms " class="chip red white-text" style="position: absolute; z-index: 1; top:0;padding:0.3rem;"></sup>
         </a>
       </h5>
       
-      <div v-if="!!form.id" v-for="(dop, idx) in form['@доп.соглашения']" class="helmet  tab-shadow z-depth-1 relative" :class="{' marg-0-05 active  ': roomsTableIdx == idx+1, 'teal lighten-5':!!dop.id, 'orange lighten-5':!dop.id, 'hoverable':roomsTableIdx != idx+1,}">
-        <h5 :class="{'fw500': roomsTableIdx == idx + 1}">
-          <a @click="DopTable(dop)" href="javascript:" class="hover-shadow3d" :class="{'orange-text text-darken-3': !dop.id && !!dop['дата1']}">
+      <div v-if="!!form.id" v-for="(dop, idx) in form['@доп.соглашения']" class="  tab-shadow z-depth-1 relative" :class="{' marg-0-05 active  ': roomsTableIdx == idx+1, 'helmet lime lighten-4':!!dop.id || !!dop['дата1'], 'orange lighten-4':!dop.id, 'hoverable':roomsTableIdx != idx+1, 'chip right': !dop['дата1']}">
+        <h5 class="" :class="{'fw500': roomsTableIdx == idx + 1,}">
+          <a @click="DopTable(dop)" href="javascript:" class="hover-shadow3d" :class="{'orange-text text-darken-3': !dop.id}">
             <span v-show="!dop.id && !!dop['дата1']" class="" style="">✱</span>
             <i v-show="!dop['дата1']" class="material-icons">library_add</i>
             <span> Доп. соглашение </span>
             <span v-show="!!dop['дата1']"> №{{idx+1}} </span>
             <sup v-if="roomsTableIdx == idx+1 && !!dop['дата1'] && !!dop['@помещения'] " class="chip z-depth-1 white"> {{ dop['@помещения'].length-1 }} поз. </sup>
+            <!--sup v-show=" !ValidDop(idx) " class="chip red white-text" style="position: absolute; z-index: 1; top:0;padding:0.3rem;"></sup-->
           </a>
         </h5>
         <div v-if=" roomsTableIdx == idx+1" >
@@ -247,11 +249,11 @@
       </div>
     
       <contract-rooms v-if="roomsTableIdx === 0" :key="roomsTableIdx" :помещения="form['@помещения']" :всегоСуммаБезнал=" {'сумма':form['сумма безнал'] || null} " @table-sum="OnTableSum" @rooms-change="OnRoomsChange" class="block animated zoomIn fast"></contract-rooms>
-      <contract-rooms v-if=" roomsTableIdx > 0 && form['@доп.соглашения'] && form['@доп.соглашения'][roomsTableIdx-1] && form['@доп.соглашения'][roomsTableIdx-1]['дата1']" :key="roomsTableIdx" :помещения="form['@доп.соглашения'][roomsTableIdx-1]['@помещения']" :param="{'bgClass': !!form['@доп.соглашения'][roomsTableIdx-1].id ? 'teal lighten-5' : 'orange lighten-5'}" :всегоСуммаБезнал="{'сумма':form['@доп.соглашения'][roomsTableIdx-1]['сумма безнал'] || null}" @table-sum="OnTableSum" @rooms-change="OnRoomsChange" class="block animated slideInUp fast"></contract-rooms>
+      <contract-rooms v-if=" roomsTableIdx > 0 && form['@доп.соглашения'] && form['@доп.соглашения'][roomsTableIdx-1] && form['@доп.соглашения'][roomsTableIdx-1]['дата1']" :key="roomsTableIdx" :помещения="form['@доп.соглашения'][roomsTableIdx-1]['@помещения']" :param="{'bgClass': !!form['@доп.соглашения'][roomsTableIdx-1].id ? 'lime lighten-4' : 'orange lighten-4'}" :всегоСуммаБезнал="{'сумма':form['@доп.соглашения'][roomsTableIdx-1]['сумма безнал'] || null}" @table-sum="OnTableSum" @rooms-change="OnRoomsChange" class="block animated slideInUp fast"></contract-rooms>
       
     </div><!-- col -->
     </div><!-- row -->
-    <div v-if="roomsTableIdx === 0 || !!(form['@доп.соглашения'] && form['@доп.соглашения'][roomsTableIdx-1] && form['@доп.соглашения'][roomsTableIdx-1]['дата1'])" class="row card marg-05 padd-05 animated zoomIn " :class="{'teal lighten-5': roomsTableIdx > 0 && !!form['@доп.соглашения'][roomsTableIdx-1].id, 'orange lighten-5':roomsTableIdx > 0 && !form['@доп.соглашения'][roomsTableIdx-1].id, 'lime lighten-4':  roomsTableIdx == 0}">
+    <div v-if="roomsTableIdx === 0 || !!(form['@доп.соглашения'] && form['@доп.соглашения'][roomsTableIdx-1] && form['@доп.соглашения'][roomsTableIdx-1]['дата1'])" class="row card marg-05 padd-05 animated slideInRight slow" :class="{'lime lighten-4': roomsTableIdx > 0 && !!form['@доп.соглашения'][roomsTableIdx-1].id, 'orange lighten-4': roomsTableIdx > 0 && !form['@доп.соглашения'][roomsTableIdx-1].id}" :class000="{'lime lighten-4': roomsTableIdx > 0 && !!form['@доп.соглашения'][roomsTableIdx-1].id, 'orange lighten-5':roomsTableIdx > 0 && !form['@доп.соглашения'][roomsTableIdx-1].id, 'lime lighten-4':  roomsTableIdx == 0}">
       <div class="col s7  row">
         <div class="col s7 ">
           <h4 class="right-align">
@@ -261,9 +263,9 @@
           </h4>
         </div>
         <div class="col s5 ">
-          <div class="input-field chip z-depth-1" :class="{'teal lighten-4': roomsTableIdx > 0 && !!form['@доп.соглашения'][roomsTableIdx-1].id, 'orange lighten-4':roomsTableIdx > 0 && !form['@доп.соглашения'][roomsTableIdx-1].id, 'lime lighten-3':  roomsTableIdx == 0}">
-            <input  v-if="roomsTableIdx == 0" name="сумма нал" type="text" class="" v-model.trim=" form['сумма нал'] " placeholder="+сумма налички, руб">
-            <input  v-if="roomsTableIdx > 0" name="сумма нал" type="text" class="" v-model.trim=" form['@доп.соглашения'][roomsTableIdx-1]['сумма нал'] " placeholder="+сумма налички доп.согл., руб">
+          <div class="input-field chip z-depth-1 lime lighten-3" :class000="{'lime lighten-4': roomsTableIdx > 0 && !!form['@доп.соглашения'][roomsTableIdx-1].id, 'orange lighten-4':roomsTableIdx > 0 && !form['@доп.соглашения'][roomsTableIdx-1].id, 'lime lighten-3':  roomsTableIdx == 0}">
+            <input  v-if="roomsTableIdx == 0" name="сумма нал" type="text" class="" v-model.trim=" form['сумма нал'] " placeholder="+ сумма налички, руб">
+            <input  v-if="roomsTableIdx > 0" name="сумма нал" type="text" class="" v-model.trim=" form['@доп.соглашения'][roomsTableIdx-1]['сумма нал'] " placeholder="+ сумма налички доп.согл., руб">
           </div>
         </div>
         
@@ -336,7 +338,7 @@
 <div class="card-action center grey lighten-2">
   <v-progress-indeterminate v-show=" cancelerHttp " :color=" 'teal' " :message=" 'Сохраняется...' "></v-progress-indeterminate>
       <div v-show="!cancelerHttp">
-        <a @click=" Save() " href="javascript:" :disabled="!Valid || !validDop" class="btn" >
+        <a @click=" Save() " href="javascript:" :disabled="!Valid" class="btn" >
           <i class="material-icons">save</i>
           <span>Сохранить</span>
         </a>

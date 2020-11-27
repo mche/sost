@@ -105,8 +105,12 @@ Ready(){/// метод
     vm.InitMonthPickerDiscount($('.month-picker-discount', $(vm.$el)));
     
     $('.modal', $(vm.$el)).modal();
-    setTimeout(()=>vm.$el.scrollIntoView({ "block": 'start', "behavior": 'smooth', }), 700);////behavior: 'instant', block: 'center'
+    setTimeout(()=>{
+      vm.$el.scrollIntoView({ "block": 'start', "behavior": 'smooth', });////behavior: 'instant', block: 'center'
+      let t = vm.Valid;
+    }, 700);
     //~ console.log("ТЕСТ", тест);
+    
   });
 
 },
@@ -365,7 +369,8 @@ OnTableSum(sum){/// сумма безнал по таблице
     if (this.roomsTableIdx == 0) this.form['сумма безнал'] = null;
     else  this.form['@доп.соглашения'][this.roomsTableIdx-1]['сумма безнал'] = null;
   }
-  //~ console.log("OnTableSum", sum, this.form['сумма безнал']);
+  //~ let v = vm.Valid;
+  //~ console.log("OnTableSum", sum, v);
   vm.tableSum =  vm.ParseNum(sum['сумма'] == 0 ? sum['сумма'] : sum['сумма'] || sum);///['сумма'];
   
 },
@@ -374,8 +379,8 @@ OnRoomsChange(rooms){/// из компонента таблицы помещен
   //~ console.log("OnRoomsChange", rooms, this.roomsTableIdx-1);
   if (this.roomsTableIdx == 0) this.form['@помещения'] = [...rooms];
   else this.form['@доп.соглашения'][this.roomsTableIdx-1]['@помещения'] = [...rooms];
-  //~ !this.Valid;
-  this.ValidDop();
+  this.valid = undefined;/// передернуть валидацию
+  //~ this.ValidDop();
 },
 
 ParseNum(num){
@@ -428,10 +433,10 @@ MoneyXLS(){/// выписка по арендатору
 },
 
 ValidDop(){
-  this.validDop = !this.form['@доп.соглашения'] || this.form['@доп.соглашения'].every(dop=>{return !dop['дата1'] || !dop['@помещения'] || dop['@помещения'].length > 1; });
-  //~ console.log("ValidDop", test);
-  return this.validDop;
+  //~ if (idx !== undefined) return !this.form['@доп.соглашения'] || (!this.form['@доп.соглашения'][idx]['дата1'] || (!this.form['@доп.соглашения'][idx]['@помещения'] || this.form['@доп.соглашения'][idx]['@помещения'].length > 1));
+  return !this.form['@доп.соглашения'] || this.form['@доп.соглашения'].every(dop=>{return !dop['дата1'] || (!dop['@помещения'] || dop['@помещения'].length > 1 || !!dop['@помещения'][0]['помещение/id']); });
 },
+
 
 }; /// конец methods
 
@@ -448,17 +453,20 @@ Valid(){
     && !!(vm.form['номер'] && vm.form['номер'].length)
     && !!(vm.form['дата1'] && vm.form['дата2'])
     && !!(vm.form['контрагент'] && (vm.form['контрагент'].id || vm.form['контрагент'].title))
-    //~ && vm.form['@помещения'].length > 1
-    && this.ValidDop()
-    //~ && vm.form['@помещения'].slice(0, -1).every(function(room){ return !!room['помещение/id'] && !!(room['ставка'] || room['сумма']); })
+    && vm.form['@помещения'].length > 1
+    && (!this.form['@доп.соглашения'] || this.form['@доп.соглашения'].every(dop=>{return !dop['дата1'] || (!dop['@помещения'] || dop['@помещения'].length > 1 || !!dop['@помещения'][0]['помещение/id']); }))
+    //~ && vm.ValidDop()
+    //~ && this.ValidRooms()
+
   ;
-  //~ console.log("Valid", test);
-  return test;
+    this.valid = this.valid === undefined ? test : test;
+  //~ console.log("Valid", this.form['@доп.соглашения'] );
+  return this.valid;
 },
 
 ValidRooms(){
-  return this.form['@помещения'].length > 1 && this.validDop;
-  
+  return this.form['@помещения'].length > 1 /*&& this.*/;
+  //~ && vm.form['@помещения'].slice(0, -1).every(function(room){ return !!room['помещение/id'] && !!(room['ставка'] || room['сумма']); })
 },
   
 TotalSum(){
@@ -503,7 +511,7 @@ const data = function() {
     "tableSum": 0, /// общая сумма по таблице и наличке
     "projectData": undefined,
     "httpProcess": undefined,
-    "validDop":undefined,
+    "valid":undefined,
     //~ "uploads": [],
   };
   //);
