@@ -49,7 +49,8 @@ create table IF NOT EXISTS "аренда/договоры" (
   "предоплата" boolean, --- ALTER TABLE "аренда/договоры" ADD COLUMN IF NOT EXISTS "предоплата" boolean;
   "сумма нал" money, --- ALTER TABL
   "сумма безнал" money, --- ALTER TABL
-  "продление срока" boolean --- ALTER TABLE
+  "продление срока" boolean, --- ALTER TABLE,
+  "коммуналка" boolean --- ALTER TABLE, 
   ---"оплата наличкой" boolean --- !!!в реквизит контрагента физ. лицо ALTER TABLE ниже
 /* связи:
 id1("контрагенты")->id2("аренда/договоры")
@@ -64,6 +65,7 @@ ALTER TABLE "аренда/договоры" ADD COLUMN IF NOT EXISTS "продл
 ALTER TABLE "аренда/договоры" ADD COLUMN IF NOT EXISTS "дата договора" date;
 ALTER TABLE "аренда/договоры" ADD COLUMN IF NOT EXISTS "дата расторжения" date;
 ALTER TABLE "аренда/договоры" DROP COLUMN IF  EXISTS "оплата наличкой";
+ALTER TABLE "аренда/договоры" ADD COLUMN IF NOT EXISTS "коммуналка" boolean;
 ---ALTER TABLE "аренда/договоры" ADD CONSTRAINT "аренда/договоры/дата2>дата1" check("дата2">="дата1");
 
 create table IF NOT EXISTS "аренда/договоры/доп.согл." (
@@ -73,13 +75,15 @@ create table IF NOT EXISTS "аренда/договоры/доп.согл." (
   "дата1" date not null, -- доп соглашение с этой даты
   "сумма нал" money, --- ALTER TABL
   "сумма безнал" money, --- ALTER TABL
-  "коммент" text
+  "коммент" text,
+  "коммуналка" boolean --- ALTER TABLE, 
 /* связи:
 id1("аренда/договоры")->id2("аренда/договоры/доп.согл.")
 id1("аренда/договоры/доп.согл.")->id2("аренда/договоры-помещения") 
 */
 );
 ALTER TABLE "аренда/договоры/доп.согл." ADD COLUMN IF NOT EXISTS "сумма безнал" money;
+ALTER TABLE "аренда/договоры/доп.согл." ADD COLUMN IF NOT EXISTS "коммуналка" boolean;
 
 create table IF NOT EXISTS "аренда/договоры/скидки" (
   id integer  NOT NULL DEFAULT nextval('{%= $sequence %}'::regclass) primary key,

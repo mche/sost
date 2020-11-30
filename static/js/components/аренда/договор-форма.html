@@ -259,7 +259,7 @@
           <h4 class="right-align">
             <!--i class="material-icons">today</i-->
             <span v-show="roomsTableIdx == 0">Еще наличка к договору, руб</span>
-            <span v-show="roomsTableIdx > 0">Наличка к доп.соглашению, руб</span>
+            <span v-show="roomsTableIdx > 0">Еще наличка к доп.соглашению, руб</span>
           </h4>
         </div>
         <div class="col s5 ">
@@ -283,27 +283,37 @@
         </div>
         
       </div>
-      <div v-show="roomsTableIdx == 0 || form['@доп.соглашения'][roomsTableIdx-1]['дата1']" class="col s5 ">
+      <div v-show="roomsTableIdx == 0 || form['@доп.соглашения'][roomsTableIdx-1]['дата1']" class="col s5 row">
         <h4>Общая сумма по <span v-show="roomsTableIdx == 0">договору</span><span v-show="roomsTableIdx > 0">доп. соглашению</span></h4>
         <h3 class=" chip teal darken-4  white-text">
           <span class="bold">{{ TotalSum.toLocaleString({"currency": 'RUB', "minimumFractionDigits":2,}) }}</span><!--.replace(/[\.,]\d+$/, '') -->
           <span>₽/мес</span>
         </h3>
       </div>
+      <div class="col s5">
+        <div class="input-field chip brown lighten-4 shadow-inset-10 hoverable">
+          <input v-if="roomsTableIdx == 0" :id=" 'крыж-коммуналка-' + form._id " name="" type="checkbox" class="" v-model=" form['коммуналка'] " >
+          <input v-if="roomsTableIdx > 0" :id=" 'крыж-коммуналка-' + form._id " name="" type="checkbox" class="" v-model=" form['@доп.соглашения'][roomsTableIdx-1]['коммуналка'] " >
+          <label :for="'крыж-коммуналка-' + form._id " class="before-yellow before-lighten-4 brown-text text-darken-3 chip yellow lighten-4 hoverable" style="padding-left:16px;"></label>
+          <label :for="'крыж-коммуналка-' + form._id " class=""><h5 class="inline brown-text  text-darken-3" style="">Еще коммуналка по <span v-show="roomsTableIdx == 0">договору</span><span v-show="roomsTableIdx > 0">доп. соглашению</span></h5></label>
+        </div>
+      </div>
     </div><!-- row -->
     
     <!--- скидки --->
-    <div v-if="form['@скидки']" class="row col push-s7 s5 ">
-      <h4>Скидки на месяц, % <a @click=" AddDiscount() " href="javascript:" class="btn-floating center"><span class="material-icons">add_box</span></a></h4>
-      <div class="fs8 grey-text">Допустим, была сумма 21 000 руб, нужно сделать сумму к оплате 11 000 руб, тогда скидка будет 10 000 руб, а процент скидки = 10000/21000*100=47,619047619 %</div>
-      <!--div>{{ form['@скидки'] }}</div-->
-      <ul>
-        <li v-for="(dc, idx) in form['@скидки']" :key="idx" class="nowrap">
-          <h4 class="input-field chip padd-0-05" :class="{'fw500':!!dc['месяц'] }" style="width:10rem;"><input :name=" `месяц скидки ${ idx+1 }` " :data-idx="idx" type="text" class="month-picker-discount"  :data-value=" dc['месяц'] || '' " placeholder="месяц скидки"></h4>
-          <div class="input-field chip padd-0-05" style="width:10rem;"><input type="text" v-model="dc['%']" placeholder="%"></div> <span v-show="dc['%']">%</span>
-        </li>
-      </ul>
-    </div>
+    <div class="row ">
+      <div class="col push-s7 s5">
+        <h4>Скидки на месяц, % <a @click=" AddDiscount() " href="javascript:" class="btn-floating center"><span class="material-icons">add_box</span></a></h4>
+        <div class="fs8 grey-text">Допустим, была сумма 21 000 руб, нужно сделать сумму к оплате 11 000 руб, тогда скидка будет 10 000 руб, а процент скидки = 10000/21000*100=47,619047619 %</div>
+        <!--div>{{ form['@скидки'] }}</div-->
+        <ul>
+          <li v-for="(dc, idx) in form['@скидки']" :key="idx" class="nowrap">
+            <h4 class="input-field chip padd-0-05" :class="{'fw500':!!dc['месяц'] }" style="width:10rem;"><input :name=" `месяц скидки ${ idx+1 }` " :data-idx="idx" type="text" class="month-picker-discount"  :data-value=" dc['месяц'] || '' " placeholder="месяц скидки"></h4>
+            <div class="input-field chip padd-0-05" style="width:10rem;"><input type="text" v-model="dc['%']" placeholder="%"></div> <span v-show="dc['%']">%</span>
+          </li>
+        </ul>
+      </div>
+    </div><!-- row -->
   
    <div class="row">
     <div class="col s12 ">

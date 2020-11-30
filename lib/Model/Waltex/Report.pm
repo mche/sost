@@ -121,7 +121,7 @@ sub unions_bind {
     and push @bind, (@{$param->{'интервал'} || [undef, undef]}, @b) #@{$param->{'даты'}}, ($param->{'проект'}) x 2,  ($param->{'кошелек'}) x 2, $param->{'все профили'}, ($param->{'профиль'}) x 2, ($param->{'все профили'}) x 2, $param->{'профиль'})
     if $param->{'все объекты'} || $param->{'объект'};
     
-=pod
+
     push @union, 'снимок диапазона/union/аренда'
     and (($where{'снимок диапазона/union/аренда'}, @b) = $self->SqlAb->where({
       #~ ' "дата" ' => { -between => \["?::date and ?::date", @{$param->{'даты'}}], },
@@ -131,8 +131,8 @@ sub unions_bind {
       $param->{'контрагенты'} ? (' "контрагент/id" '  => \[ q| = any(?)|, $param->{'контрагенты'} ]) : (),
     }))
     and push @bind, (@{$param->{'интервал'} || [undef, undef]}, @b) #@{$param->{'даты'}}, ($param->{'проект'}) x 2,  ($param->{'кошелек'}) x 2, $param->{'все профили'}, ($param->{'профиль'}) x 2, ($param->{'все профили'}) x 2, $param->{'профиль'})
-      if $param->{'аренда'};
-=cut
+      if $param->{'аренда'} || $param->{'все контрагенты'} || $param->{'контрагенты'} || $param->{'контрагент'};
+
 
    #~ $self->app->log->error($self->app->dumper(\@union));
   

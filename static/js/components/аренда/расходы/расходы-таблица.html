@@ -9,7 +9,7 @@
   <!--div>{{ param }}</div-->
    
   <div><!--  новая форма --->
-    <div style="position: absolute; top:0rem; right:1rem;">
+    <div style="position: absolute; top:0.5rem; right:1rem;">
       <a v-show=" !newForm " @click=" New " href="javascript:" class="btn-flat z-depth-1 green lighten-4 green-text text-darken-4"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="green-fill fill-darken-4" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#form-add" /></svg> Новый счет</a>
       <!--a v-show="checkedData.length" @click="Print()" disabled-000="!IsChbs" href="javascript:" class="btn-flat  z-depth-1 orange lighten-4 black-text">Печать</a-->
       
@@ -20,7 +20,7 @@
   </div>
   
   <h3 v-if="!FilteredDataLen" class="orange-text">Нет счетов</h3>
-  <div v-else class="striped teal lighten-4">
+  <div v-else class="striped teal lighten-4 z-depth-1">
     <!-- типа thead колонки повторяют  -->
     <div class="flex-row white" style="">
       <div class="flex-col-sm-1-000 padd-05 relative" style="">
@@ -97,7 +97,7 @@
       </div-->
     </div><!-- flex-row -->
       <!-- типа tbody --->
-     <div v-for="row in filteredData" :key="row.id" class="relative flex-row flex-end-xs-000" style="">
+     <div v-for="row in filteredData" :key="row.id" class="relative flex-row flex-end-xs-000 " style="">
       <div class="flex-col-sm-1 padd-05 relative-000" style="">
         <span class="chip padd-0-05 nowrap" :title=" row['дата'] "><span class="fs8 grey-text">от </span><span class="bold">{{ row.$дата.day }}</span> <span class="fs8">{{ row.$дата['мес'] }}</span><span v-show="(new Date).getYear()+1900 != row.$дата.year"> {{ row.$дата.year }}</span></span>
         
