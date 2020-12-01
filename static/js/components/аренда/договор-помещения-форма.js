@@ -175,7 +175,7 @@ InputTotalMoney(){
   //~ console.log("InputTotalMoney", this.totalMoney['сумма']);
   if (isNaN(this.totalMoney['сумма'])) this.totalMoney['сумма'] = null;
   this.$emit('table-sum', this.totalMoney['сумма']  === 0 ? this.totalMoney : ( this.totalMoney['сумма'] && this.totalMoney) || this.TotalSum);
-  
+  if (this.totalMoney['сумма']) this.totalMoney['сумма'] = this.ParseNum(this.totalMoney['сумма']).toLocaleString(({"currency": 'RUB'}));
 },
 
 }; /// конец methods
@@ -245,6 +245,13 @@ const mounted = function(){
   //~ console.log("mounted", vm.rooms, vm.dataRooms);
 };/// конец mounted
 
+const  beforeMount = function(){
+  //~ if (vm.extParam.debounce !== 0) {
+    if (typeof debounce !== 'function') return console.error("Нет функции debounce!");
+    this.InputTotalMoney = debounce(this.InputTotalMoney, 700);
+  //~ }
+};
+
 var $Компонент = {
   //~ "template": $templateCache.get('тмц/сертификаты/папки'), //ниже/!!
   props,
@@ -252,6 +259,7 @@ var $Компонент = {
   methods,
   computed,
   //~ "created"() {  },
+  //~ beforeMount,
   mounted,
   "components": { },
 };

@@ -133,7 +133,7 @@ ParseNum(num){
 },*/
 
 RoomPrice(room){
-  return this.ParseNum(room['ставка']) || this.ParseNum(room['сумма'])/this.ParseNum(room['площадь'] || (room['площадь'] === 0 ? room['площадь'] : room.$помещение['площадь']));
+  return this.ParseNum(room['ставка']) || this.ParseNum(room['сумма'])/this.ParseNum(room['площадь'] || (room['площадь'] === 0 ? room['площадь'] : room.$помещение['площадь'])) || '';
 },
 
 RoomSquare(room){

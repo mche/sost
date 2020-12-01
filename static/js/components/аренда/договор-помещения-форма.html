@@ -91,7 +91,7 @@
         </td>
         <td class="right-align padd-05">
           <h4 v-if="totalMoney['сумма'] === null ">
-            <a @click="$set(totalMoney, 'сумма', TotalSum)" href="javascript:" class=" chip lime lighten-3  z-depth-1 nowrap">
+            <a @click=" $set(totalMoney, 'сумма', TotalSum ? TotalSum.toLocaleString({'currency': 'RUB'}) : '') " href="javascript:" class=" chip lime lighten-3  z-depth-1 nowrap">
               <p class="fs8 line-height-8"> Вся сумма безнал в месяц</p>
               <span class="bold">{{ TotalSum.toLocaleString({"currency": 'RUB', "maximumFractionDigits":2,}) }} </span>
               <span class="grey-text "> ₽</span>
@@ -99,7 +99,8 @@
           </h4>
           <h3 v-else class="input-field nowrap chip lime lighten-3 z-depth-1 " :class="{'gfhgfh': !!totalMoney['сумма']}">
             <p class="fs8 line-height-8"> Вся сумма безнал в месяц</p>
-            <input type="text" v-model.trim="totalMoney['сумма']" :placeholder="TotalSum.toLocaleString({'currency': 'RUB', 'minimumFractionDigits':2,})"  title="сумма за месяц" @input=" InputTotalMoney" :disabled="!1" class="bold" style="font-size:inherit;">
+            <div class="grey-text" style="position:absolute; top:1.2rem; right:0.5rem;">₽</div>
+            <input type="text" v-model.trim="totalMoney['сумма']" :placeholder000="TotalSum.toLocaleString({'currency': 'RUB', 'minimumFractionDigits':2,})"  title="сумма за месяц" @blur=" InputTotalMoney" :disabled="!1" class="bold" style="font-size:inherit;">
           </h3>
         </td>
         <td>

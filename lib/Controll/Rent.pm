@@ -155,7 +155,7 @@ sub сохранить_договор {
     if $data->{id};
   
   $data->{$_} = &Util::money($data->{$_}) || undef
-    for grep defined $data->{$_}, qw(), 'сумма нал';
+    for grep defined $data->{$_}, qw(), 'сумма нал', 'сумма безнал';
   
   my $tx_db = $c->model->dbh->begin;
   local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
