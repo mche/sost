@@ -118,7 +118,10 @@ OnRoomSelect(item, propSelect){/// из компонента выбор из с�
     //~ rooms.removeOf(room);
     let idx = rooms.indexOf(room);
     //~ console.log("OnRoomSelect", idx, rooms.length);
-    if (rooms.length > 1 && idx < rooms.length-1) rooms.splice(/*rooms.length-1*/ idx, 1);
+    if (rooms.length > 1 && idx < rooms.length-1) {
+      document.getElementById(`room-row-${ room._id }`).classList.add('slideOutRight');
+      setTimeout(()=>rooms.splice(/*rooms.length-1*/ idx, 1), 700);
+    }
     //~ else {
       room['помещение/id'] = undefined;
       room.$помещение = undefined;

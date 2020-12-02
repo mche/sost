@@ -2,7 +2,7 @@
 
   <table v-if="ready" class="z-depth-1 bordered highlight000">
     <tbody class="striped " :class="extParam['bgClass'] || 'lime lighten-4' ">
-      <tr v-for="(room, idx) in rooms" :key=" room._id ">
+      <tr v-for="(room, idx) in rooms" :key=" room._id " :id=" `room-row-${ room._id }` " class="animated slow">
         <td class="right-align relative padd-05 vtop" style="width:1%;">
           {{idx+1}}
           <span v-if=" !!room.id " class="fs7 grey-text" style="position: absolute; z-index: 1; bottom:0; left:0;">#{{ room.id }}</span>
