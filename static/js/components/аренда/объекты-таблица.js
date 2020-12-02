@@ -38,15 +38,18 @@ const methods = {/*методы*/
 
 Ready(){/// метод
   var vm = this;
-  var loader = vm.LoadData();
+  //~ var loader = vm.LoadData();
   $EventBus.$on('Дайте список объектов аренды', function(cb){
     cb(vm.data);
     //~ cb(vm.$dataList.)
   });
-  loader.then(function(){
-    vm.ready = true;
-    $EventBus.$emit('$КомпонентАрендаОбъектыТаблица - готов');
-  });
+  setTimeout(()=>{
+    vm.LoadData().then(()=>{
+      vm.ready = true;
+      $EventBus.$emit('$КомпонентАрендаОбъектыТаблица - готов');
+    });
+  }, 100);
+  //~ loader
   $EventBus.$on('Прокрути к объекту', function(id/*объекта*/){
     //~ console.log('Прокрути к договору', id, vm.data.find(util.IsEqualId, {id}));
     setTimeout(()=>{
