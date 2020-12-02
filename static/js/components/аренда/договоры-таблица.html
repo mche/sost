@@ -17,7 +17,7 @@
 <!-- фильтры -->
 <div class="nowrap">
   <!-- фильтр арендодателя-->
-  <div class="iblock" style=" width:20rem;">
+  <div class="iblock" style=" width:15rem;">
     <v-select v-if="projectData" :key=" keys['арендодатель'] " :select=" {} " :param="{'без стрелки раскрытия списка': true, 'без поля поиска': true, ulDropDownClass: 'striped teal lighten-4'}" :items=" projectData " @on-select=" SelectProjectFilter ">
       <template v-slot:selected="{ selected }">
         <h4 class=" " :class="{'grey-text':!selected, 'fw500 animated slideInUp': !!selected}">
@@ -44,27 +44,51 @@
       <label @click="LabelFLClick()" for="radioFL"  class="before-yellow-lighten-4 brown-text-darken-3 checked-after-brown-darken-3 fw100" >
           <span class="material-icons fs12">child_care</span>
           <span> Физлица </span>
-          <sup v-show="filters['физ лица'] === true" class="material-icons red-text fs10">cancel</sup>
+          <sup v-show="filters['физ лица'] === true" class="material-icons red-text fs10 absolute">cancel</sup>
       </label>
       <!--label for="radioSchet"></label-->
     </div>
-    <span class="yellow-text text-lighten-5 padd-0-05"> или </span>
+    <div class="center yellow-text text-lighten-5 padd-0-05"> или </div>
     <div class="iblock">
       <input type="radio" id="radioOrg" v-model="filters['физ лица']" :value=" false " @change="ChbChange('физ лица')">
       <label @click="LabelFLClick()" for="radioOrg" class=" before-yellow-lighten-4 brown-text-darken-3 checked-after-brown-darken-3 fw100" style="">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="  black-fill fill-darken-3" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#contragent"></use></svg>
-        <span> Организации </span>
-        <sup v-show="filters['физ лица'] === false" class="material-icons red-text fs10">cancel</sup></label>
+        <span> Конторы </span>
+        <sup v-show="filters['физ лица'] === false" class="material-icons red-text fs10 absolute">cancel</sup></label>
     </div>
   </div>
   
-    <div class="chip   input-field nowrap shadow-inset-10 hoverable">
+    <!--div class="chip   input-field nowrap shadow-inset-10 hoverable">
       <input type="checkbox" id="продление крыжик" v-model="filters['продление']" @change="ChbChange('продление')">
       <label for="продление крыжик" class="hover-shadow3d before-yellow-lighten-4 chip purple-text text-darken-3 yellow lighten-4 hoverable" style="padding-left:16px;" ></label>
       <label for="продление крыжик" class="hover-shadow3d  before-yellow-lighten-4  purple-text text-darken-3" style=""><h6 class="purple-text text-darken-3">
         <span class="material-icons fs12">alarm_add</span>
         <span> С продлением </span>
       </h6></label>
+    </div-->
+    
+    <!-- переключатель -->
+    <div class="chip hoverable hoverable shadow-inset-10">
+      <h6 class="center purple-text text-darken-3">
+        <span class="material-icons fs10">alarm_add</span>
+        <span> С продлением</span>
+      </h6>
+      <div class="iblock">
+        <input type="radio" id="продление-да-радио" v-model="filters['продление']" :value=" true " @change="ChbChange('продление')">
+        <label @click="LabelProlongClick()" for="продление-да-радио" class="hover-shadow3d  before-yellow-lighten-4  purple-text text-darken-3" style=""><!--h6 class="purple-text text-darken-3"-->
+          <span>да</span>
+          <sup v-show="filters['продление'] === true" class="material-icons red-text fs10 absolute">cancel</sup></label>
+        <!--/h6--></label>
+      </div>
+      <span class="yellow-text text-lighten-5 padd-0-05"> или </span>
+      <div class="iblock">
+        <input type="radio" id="продление-нет-радио" v-model="filters['продление']" :value=" false " @change="ChbChange('продление')">
+        <label @click="LabelProlongClick()" for="продление-нет-радио" class="hover-shadow3d  before-yellow-lighten-4  purple-text text-darken-3" style=""><!--h6 class="purple-text text-darken-3"-->
+          <!--span class="material-icons fs12">alarm_add</span-->
+          <span>нет</span>
+          <sup v-show="filters['продление'] === false" class="material-icons red-text fs10 absolute">cancel</sup></label>
+        <!--/h6--></label>
+      </div>
     </div>
   
     <div class="chip   input-field nowrap shadow-inset-10 hoverable">
@@ -96,7 +120,7 @@
     <td class="padd-05 relative" style="width:1%;">
 
         <!-- фильтр арендатора -->
-        <div class="input-field chip padd-0-05" style=" width:9rem; max-width:calc(10vw);"><!-- стили ширины соотв. стилям первой колонки position:absolute; top:-2.3rem; left:0;-->
+        <div class="input-field chip padd-0-05" style000=" width:9rem; max-width:calc(10vw);"><!-- стили ширины соотв. стилям первой колонки position:absolute; top:-2.3rem; left:0;-->
           <a v-show=" filters['арендаторы'] && filters['арендаторы'].length " @click=" ОчиститьФильтр('арендаторы') " href="javascript:" style="position: absolute; z-index: 1; right:0.5rem; top:0.3rem; "><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"  class="red-fill fill-darken-1" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#left-clear-fill"></use></svg></a>
           <input type="text" name="арендаторы"  v-model="filters['арендаторы']" @input=" OnChangeFilter " :placeholder=" 'поиск арендатора' " class="">
           <span class="fs8 grey-text">и по номеру договора</span>
@@ -105,7 +129,7 @@
     <td class="relative vbottom padd-05" style="width:1%;">
 
       <!-- все крыжики-->
-      <div class="input-field chip shadow-inset-10 hoverable nowrap">
+      <div class="input-field chip  hoverable nowrap">
         <input type="checkbox" id="все крыжики" v-model="allChbs" @change="AllChbsChange">
         <label for="все крыжики" class="hover-shadow3d chip hoverable                  before-yellow-lighten-4 orange-text yellow lighten-4" style="padding-left: 16px;"></label>
         <label for="все крыжики"><h6 class="orange-text text-darken-4" :class="{'bold000': allChbs}"> <span class="chip white padd-0-05 bold z-depth-1 ">{{ checkedItems.length }}</span> из <span class="chip white padd-0-05 bold z-depth-1 ">{{ filteredData.length }}</span></h6></label>

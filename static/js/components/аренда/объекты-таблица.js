@@ -43,7 +43,7 @@ Ready(){/// метод
     cb(vm.data);
     //~ cb(vm.$dataList.)
   });
-  setTimeout(()=>{
+  setTimeout(()=>{/// задержать тяжелый запрос на старте
     vm.LoadData().then(()=>{
       vm.ready = true;
       $EventBus.$emit('$КомпонентАрендаОбъектыТаблица - готов');

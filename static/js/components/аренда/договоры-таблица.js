@@ -370,7 +370,7 @@ _FilterData(item){
   const test = (vm.filters['архивные договоры'] ? item['архив'] : !item['архив'])
     && (vm.filters['физ лица'] === undefined  || ((item['$контрагент']['реквизиты'] || {})['физ. лицо'] || false) === vm.filters['физ лица'])
     && (vm.filters['арендодатель'] ? item['проект/id'] == vm.filters['арендодатель'].id : true)
-    && (!vm.filters['продление'] || !!item['продление срока'])
+    && (vm.filters['продление'] === undefined  || !!item['продление срока'] === vm.filters['продление'])
     && (vm.filters['арендаторы'] ? (item['$контрагент'].title + ' ' + item['номер']).toLowerCase().indexOf(vm.filters['арендаторы'].toLowerCase()) >= 0  : true)
     && ( (item['@помещения'] && item['@помещения'][0] && vm.filters['объект'] && vm.filters['объект'].id ) ?  item['@помещения'][0].$объект.id == vm.filters['объект'].id : true)
     && (!vm.filters['завершение в этом месяце'] || vm.ДоговорЗавершенВМесяце(item))
@@ -438,8 +438,18 @@ LabelFLClick(){/// третье состояние радио физ лица
   let val = this.filters['физ лица'];
   if (this.filters['физ лица'] !== undefined) setTimeout(()=>{
     if (val !== this.filters['физ лица']) return;
-    this.filters['физ лица'] = undefined; this.ChbChange('физ лица');
-    
+    this.filters['физ лица'] = undefined; 
+    this.ChbChange('физ лица');
+  });
+  //~ console.log("LClick", this.filters);
+},
+
+LabelProlongClick(){/// третье состояние радио продление
+  let val = this.filters['продление'];
+  if (this.filters['продление'] !== undefined) setTimeout(()=>{
+    if (val !== this.filters['продление']) return;
+    this.filters['продление'] = undefined;
+    this.ChbChange('продление');
   });
   //~ console.log("LClick", this.filters);
 },
@@ -474,7 +484,7 @@ const  data = function(){
   let vm = this;
   vm.data = [];
   vm.appRoutes = appRoutes;
-  vm._cleanFilters = {"арендодатель": undefined, "арендаторы": '', "объект": undefined, "архивные договоры": false, "физ лица": undefined/*радио 3 состояния*/, "продление": false, "завершение в этом месяце":false,};
+  vm._cleanFilters = {"арендодатель": undefined, "арендаторы": '', "объект": undefined, "архивные договоры": false, "физ лица": undefined/*радио 3 состояния*/, "продление": undefined /*радио 3 состояния*/, "завершение в этом месяце":false,};
   
   return {//angular.extend(// return dst
     //data,// dst
