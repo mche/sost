@@ -15,7 +15,7 @@
 </div>
 
 <!-- фильтры -->
-<div>
+<div class="nowrap">
   <!-- фильтр арендодателя-->
   <div class="iblock" style=" width:20rem;">
     <v-select v-if="projectData" :key=" keys['арендодатель'] " :select=" {} " :param="{'без стрелки раскрытия списка': true, 'без поля поиска': true, ulDropDownClass: 'striped teal lighten-4'}" :items=" projectData " @on-select=" SelectProjectFilter ">
@@ -59,16 +59,25 @@
   </div>
   
     <div class="chip   input-field nowrap shadow-inset-10 hoverable">
-    <input type="checkbox" id="продление крыжик" v-model="filters['продление']" @change="ChbChange('продление')">
-    <label for="продление крыжик" class="hover-shadow3d before-yellow-lighten-4 chip purple-text text-darken-3 yellow lighten-4 hoverable" style="padding-left:16px;" ></label>
-    <label for="продление крыжик" class="hover-shadow3d  before-yellow-lighten-4  purple-text text-darken-3" style=""><h6 class="purple-text text-darken-3">
-      <span class="material-icons fs12">alarm_add</span>
-      <span> С продлением </span>
-    </h6></label>
-  </div>
+      <input type="checkbox" id="продление крыжик" v-model="filters['продление']" @change="ChbChange('продление')">
+      <label for="продление крыжик" class="hover-shadow3d before-yellow-lighten-4 chip purple-text text-darken-3 yellow lighten-4 hoverable" style="padding-left:16px;" ></label>
+      <label for="продление крыжик" class="hover-shadow3d  before-yellow-lighten-4  purple-text text-darken-3" style=""><h6 class="purple-text text-darken-3">
+        <span class="material-icons fs12">alarm_add</span>
+        <span> С продлением </span>
+      </h6></label>
+    </div>
+  
+    <div class="chip   input-field nowrap shadow-inset-10 hoverable">
+      <input type="checkbox" id="завершение в этом месяце крыжик" v-model="filters['завершение в этом месяце']" @change="ChbChange('завершение в этом месяце')">
+      <label for="завершение в этом месяце крыжик" class="hover-shadow3d before-yellow-lighten-4 chip red-text text-darken-3 yellow lighten-4 hoverable" style="padding-left:16px;" ></label>
+      <label for="завершение в этом месяце крыжик" class="hover-shadow3d  before-yellow-lighten-4 red-text text-darken-3" style=""><h6 class="red-text text-darken-3">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 252 252" class="red-fill fill-darken-3" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#exit"></use></svg>
+        <span> В этом месяце </span>
+      </h6></label>
+    </div>
   
         <!-- фильтр истекшие договоры -->
-  <div class="input-field nowrap chip maroon lighten-5 hoverable shadow-inset-10 right" style="">
+  <div class="input-field nowrap chip maroon lighten-5 hoverable shadow-inset-10 " style="">
     <input type="checkbox" id="архивные крыжики" v-model="filters['архивные договоры']" @change="ChbChange('архивные договоры')">
     <label for="архивные крыжики" class="hover-shadow3d before-yellow-lighten-4 maroon-text chip yellow lighten-4 hoverable" style="padding-left:16px;" ></label>
     <label for="архивные крыжики" class="hover-shadow3d before-maroon-lighten-5 maroon-text" style=""><h6 class="maroon-text">
@@ -83,14 +92,14 @@
 <table class="striped bordered highlight  lighten-4 z-depth-1 animated slideInUp" :class="{'teal': !filters['архивные договоры'], 'maroon':!!filters['архивные договоры'],}">
 
 <thead>
-  <tr>
+  <tr class="teal lighten-2">
     <td class="padd-05 relative" style="width:1%;">
 
         <!-- фильтр арендатора -->
-        <div class="input-field" style=" width:9rem; max-width:calc(10vw);"><!-- стили ширины соотв. стилям первой колонки position:absolute; top:-2.3rem; left:0;-->
+        <div class="input-field chip padd-0-05" style=" width:9rem; max-width:calc(10vw);"><!-- стили ширины соотв. стилям первой колонки position:absolute; top:-2.3rem; left:0;-->
           <a v-show=" filters['арендаторы'] && filters['арендаторы'].length " @click=" ОчиститьФильтр('арендаторы') " href="javascript:" style="position: absolute; z-index: 1; right:0.5rem; top:0.3rem; "><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"  class="red-fill fill-darken-1" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#left-clear-fill"></use></svg></a>
           <input type="text" name="арендаторы"  v-model="filters['арендаторы']" @input=" OnChangeFilter " :placeholder=" 'поиск арендатора' " class="">
-          <span class="fs8 orange-text text-lighten-5">и по номеру договора</span>
+          <span class="fs8 grey-text">и по номеру договора</span>
         </div>
     </td>
     <td class="relative vbottom padd-05" style="width:1%;">

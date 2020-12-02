@@ -372,13 +372,19 @@ _FilterData(item){
     && (vm.filters['арендодатель'] ? item['проект/id'] == vm.filters['арендодатель'].id : true)
     && (!vm.filters['продление'] || !!item['продление срока'])
     && (vm.filters['арендаторы'] ? (item['$контрагент'].title + ' ' + item['номер']).toLowerCase().indexOf(vm.filters['арендаторы'].toLowerCase()) >= 0  : true)
-    && ( (item['@помещения'] && item['@помещения'][0] && vm.filters['объект'] && vm.filters['объект'].id ) ?  item['@помещения'][0].$объект.id == vm.filters['объект'].id : true);
+    && ( (item['@помещения'] && item['@помещения'][0] && vm.filters['объект'] && vm.filters['объект'].id ) ?  item['@помещения'][0].$объект.id == vm.filters['объект'].id : true)
+    && (!vm.filters['завершение в этом месяце'] || vm.ДоговорЗавершенВМесяце(item))
+    ;
   //~ console.log("filteredData", test);
   return test;
 },
 
 IsArchiveContract(item){
   return !dateFns.isWithinRange(new Date(), new Date(/*item['дата1']*/ '2000-01-01'), new Date(item['дата расторжения'] || (item['продление срока'] ? '2100-01-01' : item['дата2'])));
+},
+
+ДоговорЗавершенВМесяце(item, month){
+  return !item['продление срока'] && dateFns.isSameMonth(month || new Date(), new Date(item['дата расторжения'] || item['дата2']));
 },
 
 FilterData(){
@@ -468,7 +474,7 @@ const  data = function(){
   let vm = this;
   vm.data = [];
   vm.appRoutes = appRoutes;
-  vm._cleanFilters = {"арендодатель": undefined, "арендаторы": '', "объект": undefined, "архивные договоры": false, "физ лица": undefined/*радио 3 состояния*/, "продление": false,};
+  vm._cleanFilters = {"арендодатель": undefined, "арендаторы": '', "объект": undefined, "архивные договоры": false, "физ лица": undefined/*радио 3 состояния*/, "продление": false, "завершение в этом месяце":false,};
   
   return {//angular.extend(// return dst
     //data,// dst
