@@ -100,7 +100,6 @@ Ready(){/// метод
 },
 
 OnRoomSelect(item, propSelect){/// из компонента выбор из списка помещений
-  //~ console.log("OnRoomSelect", item, propSelect);
   var vm = this;
   //~ var rooms = vm.form['@помещения'];
   var rooms = vm.rooms;
@@ -118,7 +117,8 @@ OnRoomSelect(item, propSelect){/// из компонента выбор из с�
   } else {///удалить строку формы
     //~ rooms.removeOf(room);
     let idx = rooms.indexOf(room);
-    if (rooms.length > 1 && idx < rooms.length-1) rooms.splice(rooms.length-1, 1);
+    //~ console.log("OnRoomSelect", idx, rooms.length);
+    if (rooms.length > 1 && idx < rooms.length-1) rooms.splice(/*rooms.length-1*/ idx, 1);
     //~ else {
       room['помещение/id'] = undefined;
       room.$помещение = undefined;

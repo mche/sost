@@ -310,7 +310,7 @@ DopTable(dop){/// доп соглашения
   //~ };
   var idx = vm.form['@доп.соглашения'].indexOf(dop);
   if (!dop['@помещения']) 
-    dop['@помещения'] = angular.copy(vm.form['@помещения']).map(vm.CopyRoom);
+    dop['@помещения'] = angular.copy(idx ? vm.form['@доп.соглашения'][idx-1]['@помещения'] : vm.form['@помещения']).map(vm.CopyRoom);
   if (vm.roomsTableIdx == idx+1) return;
   //~ vm.roomsTableIdx = undefined;
   //~ setTimeout(()=>{
