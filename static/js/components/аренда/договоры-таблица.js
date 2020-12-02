@@ -384,7 +384,7 @@ IsArchiveContract(item){
 },
 
 ДоговорЗавершенВМесяце(item, month){
-  return !item['продление срока'] && dateFns.isSameMonth(month || new Date(), new Date(item['дата расторжения'] || item['дата2']));
+  return (!item['продление срока'] || !!item['дата расторжения']) && dateFns.isSameMonth(month || new Date(), new Date(item['дата расторжения'] || item['дата2']));
 },
 
 FilterData(){
