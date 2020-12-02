@@ -3,7 +3,7 @@
 <div><!-- обязательно один корень Vue -->
 <v-progress-indeterminate v-show=" !ready " :color=" 'teal' " :message=" 'Загружается...' "></v-progress-indeterminate>
 
-<v-select v-if=" ready " :select=" select " :param=" {'без стрелки раскрытия списка':true,} " :items=" list " @on-select=" SelectObject ">
+<v-select v-if=" ready " :select=" select " :param=" {'без стрелки раскрытия списка':true, 'без поля поиска':param['без поля поиска'], ulDropDownClass: param.ulDropDownClass,} " :items=" list " @on-select=" SelectObject ">
   <template v-slot:selected="{ selected }">
     <h4 class=" blue-text text-darken-3  input-hover000 hoverable-000" :class="{'fw500 animated slideInUp': !!selected}">
       <i class="material-icons fs10">place</i>

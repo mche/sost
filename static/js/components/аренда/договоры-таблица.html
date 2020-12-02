@@ -38,7 +38,7 @@
 
 
             <!-- переключатель -->
-  <div class="chip hoverable hoverable shadow-inset-10">
+  <div class="chip light-green lighten-4 hoverable  shadow-inset-10">
     <div class="iblock">
       <input type="radio" id="radioFL" v-model="filters['физ лица']" :value=" true " @change="ChbChange('физ лица')">
       <label @click="LabelFLClick()" for="radioFL"  class="before-yellow-lighten-4 brown-text-darken-3 checked-after-brown-darken-3 fw100" >
@@ -68,7 +68,7 @@
     </div-->
     
     <!-- переключатель -->
-    <div class="chip hoverable hoverable shadow-inset-10">
+    <div class="chip purple lighten-4   hoverable  shadow-inset-10">
       <h6 class="center purple-text text-darken-3">
         <span class="material-icons fs10">alarm_add</span>
         <span> С продлением</span>
@@ -91,7 +91,7 @@
       </div>
     </div>
   
-    <div class="chip   input-field nowrap shadow-inset-10 hoverable">
+    <div class="chip red lighten-3  input-field nowrap shadow-inset-10 hoverable">
       <input type="checkbox" id="завершение в этом месяце крыжик" v-model="filters['завершение в этом месяце']" @change="ChbChange('завершение в этом месяце')">
       <label for="завершение в этом месяце крыжик" class="hover-shadow3d before-yellow-lighten-4 chip red-text text-darken-3 yellow lighten-4 hoverable" style="padding-left:16px;" ></label>
       <label for="завершение в этом месяце крыжик" class="hover-shadow3d  before-yellow-lighten-4 red-text text-darken-3" style=""><h6 class="red-text text-darken-3">
