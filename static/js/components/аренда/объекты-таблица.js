@@ -48,7 +48,7 @@ Ready(){/// метод
       vm.ready = true;
       $EventBus.$emit('$КомпонентАрендаОбъектыТаблица - готов');
     });
-  }, 100);
+  }, 500);
   //~ loader
   $EventBus.$on('Прокрути к объекту', function(id/*объекта*/){
     //~ console.log('Прокрути к договору', id, vm.data.find(util.IsEqualId, {id}));
