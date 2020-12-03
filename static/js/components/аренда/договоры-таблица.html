@@ -17,18 +17,18 @@
 <!-- фильтры -->
 <div class="nowrap">
   <!-- фильтр арендодателя-->
-  <div class="chip" style=" width:15rem;">
+  <div class="chip purple lighten-5 shadow-inset-10" style=" width:15rem;">
     <h6 v-show="!!filters['арендодатель']">Договоры по арендодателю</h6>
-    <v-select v-if="projectData" :key=" keys['арендодатель'] " :select=" {} " :param="{'без стрелки раскрытия списка': true, 'без поля поиска': true, ulDropDownClass: 'striped teal lighten-4'}" :items=" projectData " @on-select=" SelectProjectFilter ">
+    <v-select v-if="projectData" :key=" keys['арендодатель'] " :select=" {} " :param="{'без стрелки раскрытия списка': true, 'без поля поиска': true, ulDropDownClass: 'striped purple lighten-4'}" :items=" projectData " @on-select=" SelectProjectFilter ">
       <template v-slot:selected="{ selected }">
-        <h4 class=" " :class="{'grey-text':!selected, 'fw500 animated slideInUp': !!selected}">
+        <h4 class="purple-text text-darken-3  " :class="{'grey-text':!selected, ' fw500 animated slideInUp': !!selected}">
           <span class="material-icons">filter_list</span>
           <span>{{ selected ? selected.name : 'По арендодателю' }}</span>
           <!--span v-if="form['$проект']" class="grey-text fs7" style="position:absolute; right:0; bottom:-1rem;">#{{ form['$проект'].id }}</span-->
         </h4>
       </template>
       <template v-slot:listItem="{ listItem, selected, highlighted }">
-        <h5 class="padd-0-05 b relative"  :class="{'bold fs14': listItem === selected, 'fw500': listItem === highlighted,}"  style="">
+        <h5 class="purple-text text-darken-3  padd-0-05 b relative"  :class="{'bold fs14': listItem === selected, 'fw500': listItem === highlighted,}"  style="">
             <span>★ {{ listItem.name }}</span>
             <span class="grey-text fs7" style="position:absolute; right:0; bottom:0;">#{{ listItem.id }}</span>
         </h5>
@@ -69,14 +69,14 @@
     </div-->
     
     <!-- переключатель -->
-    <div class="chip purple lighten-4   hoverable  shadow-inset-10">
-      <h6 class="center purple-text text-darken-3">
+    <div class="chip maroon lighten-4   hoverable  shadow-inset-10">
+      <h6 class="center maroon-text text-darken-1">
         <span class="material-icons fs10">alarm_add</span>
         <span> С продлением</span>
       </h6>
       <div class="iblock">
         <input type="radio" id="продление-да-радио" v-model="filters['продление']" :value=" true " @change="ChbChange('продление')">
-        <label @click="LabelProlongClick()" for="продление-да-радио" class="hover-shadow3d  before-yellow-lighten-4  purple-text text-darken-3" style=""><!--h6 class="purple-text text-darken-3"-->
+        <label @click="LabelProlongClick()" for="продление-да-радио" class="hover-shadow3d  before-yellow-lighten-4  maroon-text text-darken-1" style=""><!--h6 class="purple-text text-darken-3"-->
           <span>да</span>
           <sup v-show="filters['продление'] === true" class="material-icons red-text fs10 absolute">cancel</sup></label>
         <!--/h6--></label>
@@ -84,7 +84,7 @@
       <span class="yellow-text text-lighten-5 padd-0-05"> или </span>
       <div class="iblock">
         <input type="radio" id="продление-нет-радио" v-model="filters['продление']" :value=" false " @change="ChbChange('продление')">
-        <label @click="LabelProlongClick()" for="продление-нет-радио" class="hover-shadow3d  before-yellow-lighten-4  purple-text text-darken-3" style=""><!--h6 class="purple-text text-darken-3"-->
+        <label @click="LabelProlongClick()" for="продление-нет-радио" class="hover-shadow3d  before-yellow-lighten-4  maroon-text text-darken-1" style=""><!--h6 class="purple-text text-darken-3"-->
           <!--span class="material-icons fs12">alarm_add</span-->
           <span>нет</span>
           <sup v-show="filters['продление'] === false" class="material-icons red-text fs10 absolute">cancel</sup></label>
@@ -205,7 +205,7 @@
         
         <!--span class="fs8"> от </span-->
         <span class="chip padd-0-05 nowrap" :title=" item['дата1'] "><span class="fs8 grey-text">c </span><span class="bold">{{ item.$дата1.day }}</span> <span class="fs8">{{ item.$дата1['мес'] }}</span><span v-show="(new Date).getYear()+1900 != item.$дата1.year"> {{ item.$дата1.year }}</span></span>
-        <span class="chip padd-0-05 nowrap breadcrumb" :title=" item['дата2'] "><span class="fs8 grey-text"> по </span><span class="bold">{{ item.$дата2.day }}</span> <span class="fs8">{{ item.$дата2['мес'] }}</span><span v-show="(new Date).getYear()+1900 != item.$дата2.year"> {{ item.$дата2.year }}</span> <span v-show="item['продление срока']" class="material-icons circle purple lighten-5  purple-text fs10" style="">alarm_add</span></span>
+        <span class="chip padd-0-05 nowrap breadcrumb" :title=" item['дата2'] "><span class="fs8 grey-text"> по </span><span class="bold">{{ item.$дата2.day }}</span> <span class="fs8">{{ item.$дата2['мес'] }}</span><span v-show="(new Date).getYear()+1900 != item.$дата2.year"> {{ item.$дата2.year }}</span> <span v-show="item['продление срока']" class="material-icons circle   maroon-text fs10" style="">alarm_add</span></span>
         <span v-if="item['дата расторжения']" class="chip padd-0-05 nowrap red-text middle" :title=" JSON.stringify(item['$дата расторжения']) "><!---span class="fs8"> закрыт </span-->
           <i class="material-icons fs10">lock</i>
           <span class="bold">{{ item['$дата расторжения'].day }}</span> <span class="fs8">{{ item['$дата расторжения']['мес'] }}</span><span v-show="(new Date).getYear()+1900 != item['$дата расторжения'].year"> {{ item['$дата расторжения'].year }}</span></span>
@@ -218,51 +218,51 @@
       </div>
       
     </td>
-    <td class="padd-05">
+    <td class="padd-05 vtop">
       <div style-000="item_idx  > 0 ? {'max-height':'10rem', 'overflow':'auto'} : {}">
       <table class="bordered highlight"><!-- striped lime lighten-4 -->
       <tbody>
         <tr v-for="(room, idx) in item.rooms" :key="room.id" class=""> <!--- помещения последнего соглашения или самого договора -->
         <!--td v-if="!room">{{ 'чего?!?'+idx }}</td--->
-          <td class="relative000" style-000="width:calc(30vw);">
-            <h5 class="truncate-000 nowrap blue-text-darken-4 line-height-12" style="width:calc(10vw);" :title=" room.$объект['name'] ">
+          <td class="relative000" style="width:30%;">
+            <h5 class="truncate-000 nowrap blue-text-darken-4 line-height-12" style000="width:calc(10vw);" :title=" room.$объект['name'] ">
               <span><i class="material-icons fs8 padd-0">place</i></span>
-              <span :class="{'transparent-text': idx > 0 && room.$объект.id == item.rooms[idx-1].$объект.id }">{{ room.$объект['name'] }}</span>
+              <span class="" :class="{'transparent-text': idx > 0 && room.$объект.id == item.rooms[idx-1].$объект.id }"> {{ room.$объект['name'] }}</span>
             </h5>
           </td>
-          <td class="relative000">
+          <td class="relative000" style="width:3%;">
             <div class="nowrap line-height-10 lime-text-darken-4">
               <span class="nowrap chip-000 padd-0-05"><span class="fs8 grey-text">лит. </span><span class="">{{ room.$литер.title }}</span></span>
             </div>
           </td>
-          <td style="width:3rem;">
+          <td style="width:3%;">
             <div class="nowrap line-height-10 lime-text-darken-4" style--000="width: calc(1vw);">
               <span class="nowrap chip-000 padd-0-05"><span class="fs8 grey-text">№ </span><span class="">{{ room.$помещение['номер-название'] }}</span></span>
             </div>
             
           </td>
-          <td class="" style="width:3rem;">
+          <td class="" style="width:3%;">
             <div class="nowrap line-height-10 lime-text-darken-4" style---000="width: calc(1vw);">
               <span class="nowrap chip-000 padd-0-05"><span class="">{{ room.$помещение['этаж'].toString().replace(/-1/, 'подв.') }}</span><span class="fs8 grey-text"> эт.</span></span>
             </div>
           </td>
           
-          <td class="right-align" style="width:5rem;">
-            <div class="nowrap line-height-10 lime-text-darken-4" style="width: calc(5vw);">
+          <td class="right-align" style="width:5%;">
+            <div class="nowrap line-height-10 lime-text-darken-4" style000="width: calc(5vw);">
               <span class="nowrap " class-000="{'right': item['@помещения'].length == 1, 'chip padd-0-05': item['@помещения'].length > 1}"><span class="" :class="{'fw500': item['@помещения'].length == 1}">{{ RoomSquare(room).toLocaleString() }}</span><span class="fs8 grey-text"> м²</span></span>
             </div>
           </td>
           
-          <td class="right-align" style="width:5rem;"><!-- ставка за помещение -->
-            <div v-show="!((item['@доп.соглашения'] ? item['@доп.соглашения'][item['@доп.соглашения'].length-1] : item)['сумма безнал'])" class="nowrap line-height-10" style="width: calc(5vw);">
+          <td class="right-align" style="width:5%;"><!-- ставка за помещение -->
+            <div v-show="!((item['@доп.соглашения'] ? item['@доп.соглашения'][item['@доп.соглашения'].length-1] : item)['сумма безнал'])" class="nowrap line-height-10" style000="width: calc(5vw);">
               <span class="" title="руб. за м²/мес. ">{{ RoomPrice(room).toLocaleString(undefined, {"currency": 'RUB', "minimumFractionDigits":0, maximumFractionDigits:1,}) }}</span><!-- .replace(/[.,]\d+/, '')-->
               <span class="fs8 grey-text">₽</span>
             </div>
             
           </td>
           
-          <td class="right-align" style="width:5rem;"><!--- сумма за помещение --->
-            <div v-show="!((item['@доп.соглашения'] ? item['@доп.соглашения'][item['@доп.соглашения'].length-1] : item)['сумма безнал']) && (item['@доп.соглашения'] ? item['@доп.соглашения'][item['@доп.соглашения'].length-1] : item)['@помещения'].length > 1" class="nowrap line-height-10" style="width: calc(5vw);" title="">
+          <td class="right-align" style="width:7%;"><!--- сумма за помещение --->
+            <div v000-show="!!RoomSum(room)" v-show="!((item['@доп.соглашения'] ? item['@доп.соглашения'][item['@доп.соглашения'].length-1] : item)['сумма безнал']) && (item['@доп.соглашения'] ? item['@доп.соглашения'][item['@доп.соглашения'].length-1] : item)['@помещения'].length > 1" class="nowrap line-height-10" style000="width: calc(5vw);" title="">
               <span class="bold " :class000="{'bold': item['@помещения'].length == 1}" title=" руб./мес. ">{{ RoomSum(room).toLocaleString(undefined, {"currency": 'RUB', "minimumFractionDigits":0, maximumFractionDigits:0,}) }}</span><!-- .replace(/[.,]\d+/, '')-->
               <span class="fs8 grey-text"> ₽</span>
             </div>
@@ -272,7 +272,7 @@
             </h5>
           </td>
           
-          <td class="relative" style="width:0.1rem;">
+          <td class="relative" style="width:1%;">
             <div v-show="room['коммент'] && !!room['коммент'].length " class="padd-0-05 truncate pre-wrap fs8 grey-text line-height-10" style="width: 10rem; max-height:2rem; position:absolute; top:0;" :title=" room['коммент'] ">{{ room['коммент'] }}</div>
           </td>
         </tr>
@@ -296,14 +296,9 @@
         </tr>
         <!--- Строка суммы налички -->
         <tr v-if="(item['@доп.соглашения'] ? item['@доп.соглашения'][item['@доп.соглашения'].length-1] : item)['сумма нал']" class="">
-          <td colspan="4" class="right-align-000"></td>
-          <td class="right-align">
-            <h5 class="nowrap lime-text text-darken-4">
-            </h5>
-          </td>
-          <td class="right-align">
-            <h6>Наличкой:</h6>
-          </td>
+          <!--td colspan="4" class="right-align-000"></td>
+          <td class="right-align"></td -->
+          <td colspan="6" class="right-align"><h6>Наличкой:</h6></td>
           <td class="right-align">
             <h5 class="nowrap">
               <span class="bold">{{ ParseNum((item['@доп.соглашения'] ? item['@доп.соглашения'][item['@доп.соглашения'].length-1] : item)['сумма нал']).toLocaleString(undefined, {"currency": 'RUB', "minimumFractionDigits":0, maximumFractionDigits:0,}) }}</span><!--.replace(/[.,]\d+/, '') -->
@@ -333,9 +328,9 @@
       </tbody></table>
       </div>
       <!-- !item['@помещения'] || item['@помещения'].length == 1 &&  -->
-      <div v-show=" item['коммент'] && item['коммент'].length" class="padd-0-05 pre-wrap fs8 grey-text line-height-8 border-bottom grey lighten-2" style="min-height:1rem; max-height:3rem; overflow:auto;" :title=" item['коммент'] ">{{ item['коммент'] }}</div>
+      <div v-show=" item['коммент'] && item['коммент'].length" class="padd-0-05 pre-wrap fs8 grey-text line-height-8 border-bottom-000 grey000 lighten-2" style="min-height:1rem; max-height:3rem; overflow:auto;" :title=" item['коммент'] ">{{ item['коммент'] }}</div>
       
-      <div v-if=" item['@доп.соглашения'] && item['@доп.соглашения'][item['@доп.соглашения'].length-1]['коммент']" class="padd-0-05 pre-wrap fs8 grey-text line-height-8 border-bottom grey lighten-2" style="min-height:1rem; max-height:3rem; overflow:auto;" :title="  item['@доп.соглашения'][item['@доп.соглашения'].length-1]['коммент'] ">{{ item['@доп.соглашения'][item['@доп.соглашения'].length-1]['коммент'] }}</div>
+      <div v-if=" item['@доп.соглашения'] && item['@доп.соглашения'][item['@доп.соглашения'].length-1]['коммент']" class="padd-0-05 pre-wrap fs8 grey-text line-height-8 border-bottom-000 grey000 lighten-2" style="min-height:1rem; max-height:3rem; overflow:auto;" :title="  item['@доп.соглашения'][item['@доп.соглашения'].length-1]['коммент'] ">{{ item['@доп.соглашения'][item['@доп.соглашения'].length-1]['коммент'] }}</div>
 
     </td>
   </tr>

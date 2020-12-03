@@ -67,7 +67,8 @@ sub движение_ДС_xlsx {
   require Excel::Writer::XLSX;
   
   my $data = $c->model_report_rent->движение_арендатора($param);
-  my @names = ('дата', 'категория', 'приход', 'расход', 'примечание');
+  my @names = ('дата', 'категория', 'приход (оплаты)', 'расход (счета/акты)', 'примечание');
+  #~ my %names = (''=> 'приход (оплаты)', 'расход (счета / акты)',)
   #~ my $filename=sprintf("static/tmp/%s-реестр-актов.xlsx", $c->auth_user->{id}, $month);
   
   $xlsx = $c->req->request_id.'.xlsx';# /tmp/pKXYgkWjv3
@@ -91,7 +92,7 @@ sub движение_ДС_xlsx {
   $worksheet->set_column( 2, 4, 15 );
   for (@$data) {
     $worksheet->write_row($n++, 0, [map {ref eq 'ARRAY' ? join(', ', @$_) : $_} $c->_format_date($_->{'$дата'}), @$_{@names[1..1]}]);
-    $worksheet->write_row($n-1, 2, [ @$_{qw(приход/num расход/num)}], $workbook->add_format( num_format=> '# ##0.00 ₽'));
+    $worksheet->write_row($n-1, 2, [ @$_{qw(приход/num расход/num)}], $workbook->add_format( num_format=> '# ##0.00'));
     $worksheet->write_row($n-1, 4, [ @$_{qw(примечание)}], $workbook->add_format( size => 8));
     #~ $worksheet->conditional_formatting( 'A1:A4',
     #~ {
@@ -103,9 +104,9 @@ sub движение_ДС_xlsx {
     $sum[1] += $_->{'расход/num'};
   }
   # подвал
-  $worksheet->write_row($n++, 0, [undef, 'Итого', @sum, undef], $workbook->add_format( bold => 1, size=>12, num_format=> '# ##0.00 ₽', align=>'right', top=>1));
+  $worksheet->write_row($n++, 0, [undef, 'Итого', @sum, undef], $workbook->add_format( bold => 1, size=>12, num_format=> '# ##0.00', align=>'right', top=>1));
   my $s = $sum[0]-$sum[1];
-  $worksheet->write_row($n++, 0, [undef, 'Сальдо',  $s > 0 ? ($s) : (undef, -1*$s)], $workbook->add_format( bold => 1, size=>12, num_format=> '# ##0.00 ₽', align=>'right'));
+  $worksheet->write_row($n++, 0, [undef, 'Сальдо',  $s > 0 ? ($s) : (undef, -1*$s)], $workbook->add_format( bold => 1, size=>12, num_format=> '# ##0.00', align=>'right'));
     
   $workbook->close();
   #~ return $fdata;
