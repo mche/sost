@@ -375,7 +375,11 @@ select o.*,
   ob.id as "объект/id",
   row_to_json(ob) as "$объект/json",
   lit."@литеры/json", lit."@литеры/id", ---lit."@объект:литера/id",
-  p."@кабинеты/json", p."@кабинеты/id", p."@помещение в договоре аренды?", p."@кол-во действующих договоров", "@аренда/договоры/id/json", "@аренда/договоры/json", p."@@литер,помещение/id"
+  p."@кабинеты/json", p."@кабинеты/id",
+  p."@помещение в договоре аренды?", p."@кол-во действующих договоров", p."@аренда/договоры/id/json", p."@аренда/договоры/json",
+  --~ array[]::int[] as "@помещение в договоре аренды?", array[]::int[] as "@кол-во действующих договоров",
+  --~ array[]::int[] as "@аренда/договоры/id", array[]::int[] as "@аренда/договоры",
+  p."@@литер,помещение/id"
 from "аренда/объекты" o
   join refs ro on o.id=ro.id2
   join "roles" ob on ob.id=ro.id1
@@ -393,12 +397,12 @@ from "аренда/объекты" o
     select o.id as "аренда/объекты/id", 
       jsonb_agg(p  {%= $order_by_room || ' order by p.id' %}) as "@кабинеты/json",
       array_agg(p.id  {%= $order_by_room || ' order by p.id' %}) as "@кабинеты/id",
-      array_agg(coalesce(dp.id, 0)::boolean  {%= $order_by_room || ' order by p.id' %}) as "@помещение в договоре аренды?",
-      array_agg(dp."кол-во действующих договоров"  {%= $order_by_room || ' order by p.id' %}) as "@кол-во действующих договоров",
+      array_agg(coalesce(dp."помещение/id", 0)::boolean  {%= $order_by_room || ' order by p."помещение/id" ' %}) as "@помещение в договоре аренды?",
+      array_agg(dp."кол-во действующих договоров"  {%= $order_by_room || ' order by p."помещение/id" ' %}) as "@кол-во действующих договоров",
       --- разная размерность! поэтому в одномерную строку
-      array_agg('['||array_to_string(coalesce(dp."@аренда/договоры/id", array[]::int[]), ',')||']'  {%= $order_by_room || ' order by p.id' %}) as "@аренда/договоры/id/json",
-      array_agg(dp."@аренда/договоры/json"::text  {%= $order_by_room || ' order by p.id' %}) as "@аренда/договоры/json",
-      array_agg(array[p."литер/id", p.id] {%= $order_by_room || ' order by p.id' %}) as "@@литер,помещение/id" --- это для сохранения
+      array_agg('['||array_to_string(coalesce(dp."@аренда/договоры/id", array[]::int[]), ',')||']'  {%= $order_by_room || ' order by p."помещение/id"  ' %}) as "@аренда/договоры/id/json",
+      array_agg(dp."@аренда/договоры/json"::text  {%= $order_by_room || ' order by p."помещение/id"  ' %}) as "@аренда/договоры/json",
+      array_agg(array[p."литер/id", p.id] {%= $order_by_room || ' order by p."помещение/id"  ' %}) as "@@литер,помещение/id" --- это для сохранения
     from "аренда/объекты" o
       join "refs" r on o.id=r.id1
       join (
@@ -407,40 +411,10 @@ from "аренда/объекты" o
           join refs r on p.id=r.id2
           join "аренда/объекты/литеры" lit on lit.id=r.id1---(VALUES ('A', 1)) as lit("title",  "id")
       ) p on p."литер/id"=r.id2
-      left join (--- все договоры/доп согл с этим помещением
-        select p.id, 
-          jsonb_agg(dp order by dp."дата1" desc) as "@аренда/договоры/json",
-          array_agg(dp."договор/id" order by dp."дата1" desc) as "@аренда/договоры/id",
-          array_agg(dp."действующий договор?" order by dp."дата1" desc) as "@действующий договор?",
-          ----array_agg(dp."доп.согл./id" order by dp."дата1" desc) as "@доп.согл./id",
-          sum(coalesce(nullif(0, (not dp."действующий договор?")::int), 1)) as "кол-во действующих договоров"--- по идее 1 должен действовать
-        from
-          "аренда/помещения" p
-          join (--- для проверки удаления строк помещений из объекта
-            select d.*, r2.id1 as "помещение/id",
-            timestamp_to_json(dop."дата1"::timestamp) as "$дата1",
-            timestamp_to_json(dop."дата2"::timestamp) as "$дата2",
-            --~ timestamp_to_json(coalesce(d."дата расторжения", d."дата2")::timestamp) as "$дата2",
-            
-            --~ now() between d."дата1" and 
-              --~ case when d."дата расторжения" is null and not coalesce(d."продление срока", false) then d."дата2"
-                --~ else coalesce(d."дата расторжения", now())
-              --~ end 
-            now() between dop."дата1" and coalesce(dop."дата2", now())  as "действующий договор?",
-            dop."доп.согл./id",
-            k.id as "контрагент/id", k."title" as "контрагент/title",
-            d.id as "договор/id"---, row_to_json(d) as "договор/json"
-            from 
-              "контрагенты" k 
-              join refs rk on k.id=rk.id1
-              join "аренда/договоры" d on d.id=rk.id2
-              join "аренда/договоры/доп.согл/id/даты"() dop on dop."договор/id"=d.id --- мощная развязка договоров с доп. согл. по границам дат действия
-              join refs r on coalesce(dop."доп.согл./id",d.id)=r.id1
-              join "аренда/договоры-помещения" p on p.id=r.id2
-              join "refs" r2 on p.id=r2.id2
-          ) dp on p.id=dp."помещение/id"
-          group by p.id
-    ) dp on p.id=dp.id
+      
+      --- все договоры/доп согл с этим помещением
+      left join (  {%= $dict->render('договоры по помещениям') %}  ) dp on p.id=dp."помещение/id"
+
     group by o.id
   ) p on o.id=p."аренда/объекты/id"
 {%= $where || '' %}
@@ -528,6 +502,42 @@ from
 {%= $order_by || '' %}
 {%= $limit || '' %}
 
+
+@@ договоры по помещениям
+---- все договоры (и доп согл) на каждое помещение
+select p.id as "помещение/id", 
+  jsonb_agg(dp order by dp."дата1" desc) as "@аренда/договоры/json",
+  array_agg(dp."договор/id" order by dp."дата1" desc) as "@аренда/договоры/id",
+  array_agg(dp."действующий договор?" order by dp."дата1" desc) as "@действующий договор?",
+  ----array_agg(dp."доп.согл./id" order by dp."дата1" desc) as "@доп.согл./id",
+  sum(coalesce(nullif(0, (not dp."действующий договор?")::int), 1)) as "кол-во действующих договоров"--- по идее 1 должен действовать
+from
+  "аренда/помещения" p
+  join (--- для проверки удаления строк помещений из объекта
+    select d.*, r2.id1 as "помещение/id",
+    timestamp_to_json(dop."дата1"::timestamp) as "$дата1",
+    timestamp_to_json(dop."дата2"::timestamp) as "$дата2",
+    --~ timestamp_to_json(coalesce(d."дата расторжения", d."дата2")::timestamp) as "$дата2",
+    
+    --~ now() between d."дата1" and 
+      --~ case when d."дата расторжения" is null and not coalesce(d."продление срока", false) then d."дата2"
+        --~ else coalesce(d."дата расторжения", now())
+      --~ end 
+    now() between dop."дата1" and coalesce(dop."дата2", now())  as "действующий договор?",
+    dop."доп.согл./id",
+    k.id as "контрагент/id", k."title" as "контрагент/title",
+    d.id as "договор/id"---, row_to_json(d) as "договор/json"
+    from 
+      "контрагенты" k 
+      join refs rk on k.id=rk.id1
+      join "аренда/договоры" d on d.id=rk.id2
+      join "аренда/договоры/доп.согл/id/даты"() dop on dop."договор/id"=d.id --- мощная развязка договоров с доп. согл. по границам дат действия
+      join refs r on coalesce(dop."доп.согл./id",d.id)=r.id1
+      join "аренда/договоры-помещения" p on p.id=r.id2
+      join "refs" r2 on p.id=r2.id2
+  ) dp on p.id=dp."помещение/id"
+{%= $where || '' %}
+group by p.id
 
 @@ счета и акты
 --- за аренду помещений и предоплату для docx

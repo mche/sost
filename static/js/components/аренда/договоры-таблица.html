@@ -17,12 +17,13 @@
 <!-- фильтры -->
 <div class="nowrap">
   <!-- фильтр арендодателя-->
-  <div class="iblock" style=" width:15rem;">
+  <div class="chip" style=" width:15rem;">
+    <h6 v-show="!!filters['арендодатель']">Договоры по арендодателю</h6>
     <v-select v-if="projectData" :key=" keys['арендодатель'] " :select=" {} " :param="{'без стрелки раскрытия списка': true, 'без поля поиска': true, ulDropDownClass: 'striped teal lighten-4'}" :items=" projectData " @on-select=" SelectProjectFilter ">
       <template v-slot:selected="{ selected }">
         <h4 class=" " :class="{'grey-text':!selected, 'fw500 animated slideInUp': !!selected}">
           <span class="material-icons">filter_list</span>
-          <span>{{ selected ? selected.name : 'Выбрать арендодателя' }}</span>
+          <span>{{ selected ? selected.name : 'По арендодателю' }}</span>
           <!--span v-if="form['$проект']" class="grey-text fs7" style="position:absolute; right:0; bottom:-1rem;">#{{ form['$проект'].id }}</span-->
         </h4>
       </template>
@@ -48,7 +49,7 @@
       </label>
       <!--label for="radioSchet"></label-->
     </div>
-    <div class="center yellow-text text-lighten-5 padd-0-05"> или </div>
+    <!--div class="center yellow-text text-lighten-5 padd-0-05"> или </div--><br>
     <div class="iblock">
       <input type="radio" id="radioOrg" v-model="filters['физ лица']" :value=" false " @change="ChbChange('физ лица')">
       <label @click="LabelFLClick()" for="radioOrg" class=" before-yellow-lighten-4 brown-text-darken-3 checked-after-brown-darken-3 fw100" style="">
@@ -144,8 +145,9 @@
           <tr class="line-height-10-000">
             <th class="vbottom">
               <!-- фильтр по объекту :data-list=" rentObjects "-->
-              <div v0000-if=" rentObjects.length " style-000="width:calc(20vw);">
-                <v-object-select :key="keys['объект']" :select=" {/*не нужен*/} " :param="{'без поля поиска': true, ulDropDownClass: 'striped blue lighten-4'}" @on-select-object=" SelectObjectFilter "></v-object-select>
+              <div v0000-if=" rentObjects.length " class="">
+                <h6 v-show="!!filters['объект']">Договоры по объекту</h6>
+                <v-object-select :key="keys['объект']" :select=" {/*не нужен*/} " :param="{placeholder: 'Договоры по объекту','без поля поиска': true, ulDropDownClass: 'striped blue lighten-4'}" @on-select-object=" SelectObjectFilter "></v-object-select>
                 <!--v-select :select=" filters['объект'] " :items=" rentObjects " :param=" {'без поля поиска': true} " @on-select=" SelectObjectFilter ">
                   <template v-slot:selected="{ selected }">
                     <h5 class="fw500 blue-text text-darken-3 animated fadeIn slow hover-bottom-shadow-blue-darken-3" style="">{{ (selected && selected.$item && selected.$item.name) || 'По объекту' }}</h5>

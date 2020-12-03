@@ -94,7 +94,7 @@
         <h5 class="nowrap" style="position:absolute; top:-1.2rem;">
           <span>номер</span>
           <sup v-show=" !form['номер'] " class="chip red white-text" style="position: absolute; z-index: 1; top:0;padding:0.3rem;"></sup>
-          <span class="grey-text">без символа №</span>
+          <span class="grey-text padd-0-05">без символа №</span>
         </h5>
         <input type="text" v-model=" form['номер'] " placeholder="номер договора">
       </div>
@@ -103,7 +103,7 @@
       <div  :key=" keys['дата договора'] " class="input-field">
         <a v-show="form['дата договора']" @click=" ClearDate('дата договора') " href="javascript:" class="" style="position:absolute; top:0; right:0; z-index:1;"><i class="material-icons red-text">cancel</i></a>
         <h5 class="nowrap" style="position:absolute; top:-1.2rem;">
-          <span>дата</span>
+          <span>дата подписания</span>
           <!--sup v-show=" !Valid('номер') " class="chip red white-text" style="position: absolute; z-index: 1; top:0;padding:0.3rem;"></sup-->
         </h5>
         <input name="дата договора" type="text" class="datepicker"  :data-value=" form['дата договора'] " placeholder="дата договора">
@@ -120,13 +120,16 @@
     </div>
     <div class="col s4 ">
       <div :key=" keys['дата1'] " class="input-field">
-        <h6 class="nowrap" style="position:absolute; top:-0.9rem;">начало срока</h6>
+        <h6 class="nowrap" style="position:absolute; top:-0.9rem;">начало срока (фактическое начало)</h6>
         <input name="дата1" type="text" class="datepicker"  :data-value=" form['дата1'] ">
       </div>
     </div>
     <div :key=" keys['дата2'] " class="col s4 ">
       <div class="input-field">
-        <h6 class=" nowrap" style="position:absolute; top:-0.9rem;">завершение срока</h6>
+        <h6 class=" nowrap" style="position:absolute; top:-0.9rem;">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 252 252" class="red-fill fill-darken-3" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#exit"></use></svg>
+          <span>завершение срока</span>
+        </h6>
         <input name="дата2" type="text" class="datepicker"  :data-value=" form['дата2'] ">
       </div>
     </div>
@@ -151,7 +154,11 @@
     <div class="col s4 ">
       <div  :key=" keys['дата расторжения'] " class="input-field">
         <a v-show="form['дата расторжения']" @click=" ClearDate('дата расторжения') " href="javascript:" class="" style="position:absolute; top:0; right:0; z-index:1;"><i class="material-icons red-text">cancel</i></a>
-        <h6 class="nowrap" style="position:absolute; top:-0.9rem;">дата расторжения</h6>
+        <h6 class="nowrap" style="position:absolute; top:-0.9rem;">
+          <!--svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 252 252" class="red-fill fill-darken-3" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#exit"></use></svg-->
+          <i class="material-icons fs10">lock</i>
+          <span>дата расторжения</span>
+        </h6>
         <input name="дата расторжения" type="text" class="datepicker"  :data-value=" form['дата расторжения'] " placeholder="дата расторжения">
       </div>
     </div>
@@ -179,7 +186,7 @@
       <div class="input-field chip shadow-inset-10 hoverable">
         <input :id=" 'chb-pred-' + form._id " name="" type="checkbox" class="" v-model=" form['предоплата'] " >
         <label :for="'chb-pred-' + form._id " class="before-yellow before-lighten-4 brown-text text-darken-3 chip yellow lighten-4 hoverable" style="padding-left:16px;"></label>
-        <label :for="'chb-pred-' + form._id " class=""><h5 class="inline" style="">Предоплата</h5></label>
+        <label :for="'chb-pred-' + form._id " class=""><h5 class="inline" style="">Обеспечительный платеж</h5></label>
       </div>
       <!--div class="input-field chip">
         <input :id=" 'chb-nal-' + form._id " name="" type="checkbox" class="" v-model=" form['оплата наличкой'] " >
@@ -201,8 +208,8 @@
     <div class="col s8 relative">
       <div class="chip bold padd-0-05 fs8" style="position:absolute; right:0rem; top:-1rem;">{{ form['@помещения'].length }}</div--->
     
-    <div class="row">
-    <div class=" col s12 ">
+    <div class="row marg-0">
+    <div class=" col000s12 ">
       <h4 class="relative">
         <i class="material-icons">format_list_numbered</i>
         <span>Сданы в аренду помещения/офисы объекта</span>
@@ -234,12 +241,11 @@
             <i class="material-icons red-text circle hoverable">cancel</i>
             <span class="hover-parent-show-inline chip padd-0-05 red-text hover-shadow3d nowrap" style="position:absolute;">Удалить доп. соглашение</span>
           </a>
+          <h5><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3 " style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#start-date" class=""></use></svg><span>С даты</span></h5>
           <div key000=" keys[`дата1 доп соглашения ${ idx+1 }`] " class="input-field">
-            <h5><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3 " style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#start-date" class=""></use></svg><span>С даты</span></h5>
             <input :name=" `дата1 доп соглашения ${ idx+1 }` " type="text" class="datepicker"  :data-value=" dop['дата1'] || '' " placeholder="дата доп. соглашения">
-            
           </div>
-          <h5 v-show="!dop['дата1']" class="red-text">Указать дату нового соглашения</h5>
+          <h6 v-show="!dop['дата1']" class="red-text">Указать дату нового соглашения</h6>
         </div>
         <div v-else v-show=" dop['дата1'] ">
           с <span class="chip padd-0-05  shadow-inset-10">{{ dateFns.format(dop['дата1'], 'DD MMMM YYYY', {locale: dateFns.locale_ru})  }}</span>
@@ -249,11 +255,11 @@
       </div>
     
       <contract-rooms v-if="roomsTableIdx === 0" :key="roomsTableIdx" :помещения="form['@помещения']" :всегоСуммаБезнал=" {'сумма':form['сумма безнал'] || null} " @table-sum="OnTableSum" @rooms-change="OnRoomsChange" class="block animated zoomIn fast"></contract-rooms>
-      <contract-rooms v-if=" roomsTableIdx > 0 && form['@доп.соглашения'] && form['@доп.соглашения'][roomsTableIdx-1] && form['@доп.соглашения'][roomsTableIdx-1]['дата1']" :key="roomsTableIdx" :помещения="form['@доп.соглашения'][roomsTableIdx-1]['@помещения']" :param="{'bgClass': !!form['@доп.соглашения'][roomsTableIdx-1].id ? 'lime lighten-4' : 'orange lighten-4'}" :всегоСуммаБезнал="{'сумма':form['@доп.соглашения'][roomsTableIdx-1]['сумма безнал'] || null}" @table-sum="OnTableSum" @rooms-change="OnRoomsChange" class="block animated slideInUp fast"></contract-rooms>
+      <contract-rooms v-if=" roomsTableIdx > 0 && form['@доп.соглашения'] && form['@доп.соглашения'][roomsTableIdx-1] && form['@доп.соглашения'][roomsTableIdx-1]['дата1']" :key="roomsTableIdx" :помещения="form['@доп.соглашения'][roomsTableIdx-1]['@помещения']" :param="{'bgClass': !!form['@доп.соглашения'][roomsTableIdx-1].id ? 'lime lighten-4' : 'orange lighten-4'}" :всегоСуммаБезнал="{'сумма':form['@доп.соглашения'][roomsTableIdx-1]['сумма безнал'] || null}" @table-sum="OnTableSum" @rooms-change="OnRoomsChange" class="block animated zoomIn fast"></contract-rooms>
       
     </div><!-- col -->
     </div><!-- row -->
-    <div v-if="roomsTableIdx === 0 || !!(form['@доп.соглашения'] && form['@доп.соглашения'][roomsTableIdx-1] && form['@доп.соглашения'][roomsTableIdx-1]['дата1'])" class="row card marg-05 padd-05 animated slideInRight slow" :class="{'lime lighten-4': roomsTableIdx > 0 && !!form['@доп.соглашения'][roomsTableIdx-1].id, 'orange lighten-4': roomsTableIdx > 0 && !form['@доп.соглашения'][roomsTableIdx-1].id}" :class000="{'lime lighten-4': roomsTableIdx > 0 && !!form['@доп.соглашения'][roomsTableIdx-1].id, 'orange lighten-5':roomsTableIdx > 0 && !form['@доп.соглашения'][roomsTableIdx-1].id, 'lime lighten-4':  roomsTableIdx == 0}">
+    <div :key="roomsTableIdx" v-if="roomsTableIdx === 0 || !!(form['@доп.соглашения'] && form['@доп.соглашения'][roomsTableIdx-1] && form['@доп.соглашения'][roomsTableIdx-1]['дата1'])" class="row card marg-05-000 padd-05 animated slideInDown" :class="{'lime lighten-4': roomsTableIdx == 0 || (roomsTableIdx > 0 && !!form['@доп.соглашения'][roomsTableIdx-1].id), 'orange lighten-4': roomsTableIdx > 0 && !form['@доп.соглашения'][roomsTableIdx-1].id}" :class000="{'lime lighten-4': roomsTableIdx > 0 && !!form['@доп.соглашения'][roomsTableIdx-1].id, 'orange lighten-5':roomsTableIdx > 0 && !form['@доп.соглашения'][roomsTableIdx-1].id, 'lime lighten-4':  roomsTableIdx == 0}">
       <div class="col s7  row">
         <div class="col s7 ">
           <h4 class="right-align">
@@ -295,7 +301,11 @@
           <input v-if="roomsTableIdx == 0" :id=" 'крыж-коммуналка-' + form._id " name="" type="checkbox" class="" v-model=" form['коммуналка'] " >
           <input v-if="roomsTableIdx > 0" :id=" 'крыж-коммуналка-' + form._id " name="" type="checkbox" class="" v-model=" form['@доп.соглашения'][roomsTableIdx-1]['коммуналка'] " >
           <label :for="'крыж-коммуналка-' + form._id " class="before-yellow before-lighten-4 brown-text text-darken-3 chip yellow lighten-4 hoverable" style="padding-left:16px;"></label>
-          <label :for="'крыж-коммуналка-' + form._id " class=""><h5 class="inline brown-text  text-darken-3" style="">Еще коммуналка по <span v-show="roomsTableIdx == 0">договору</span><span v-show="roomsTableIdx > 0">доп. соглашению</span></h5></label>
+          <label :for="'крыж-коммуналка-' + form._id " class="">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="-32 0 496 496" class="browm-fill fill-darken-3" style="height: 1.5rem;"><use xlink:href="/fonts/rent.svg?2020-12-02#electric-meter"></use></svg>
+            <h5 class="inline brown-text  text-darken-3" style="">Еще коммуналка по <span v-show="roomsTableIdx == 0">договору</span><span v-show="roomsTableIdx > 0">доп. соглашению</span>
+            </h5>
+          </label>
         </div>
       </div>
     </div><!-- row -->

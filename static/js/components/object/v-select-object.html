@@ -5,7 +5,7 @@
 
 <v-select v-if=" ready " :select=" select " :param=" {'без стрелки раскрытия списка':true, 'без поля поиска':param['без поля поиска'], ulDropDownClass: param.ulDropDownClass,} " :items=" list " @on-select=" SelectObject ">
   <template v-slot:selected="{ selected }">
-    <h4 class=" blue-text text-darken-3  input-hover000 hoverable-000" :class="{'fw500 animated slideInUp': !!selected}">
+    <h4 class="chip blue-text text-darken-3  input-hover000 hoverable-000" :class="{'fw500 animated slideInUp': !!selected}">
       <i class="material-icons fs10">place</i>
       <span>{{ (selected && selected.$item && selected.$item.name) || param.placeholder || 'Выбрать объект' }}</span>
     </h4>
