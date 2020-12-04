@@ -130,7 +130,7 @@
               <td class="right-align">
                 <div class="truncate nowrap fs12" style="width:10rem;">
                   <span :class="{'teal-text text-darken-3 bold ': row['@позиции'].length == 1}">{{ ParseNum(pos['сумма'] || pos['сумма2'])  }}</span>
-                  <span class=""> ₽</span>
+                  <span class="grey-text"> ₽</span>
                 </div>
               </td>
               <td><div class="truncate nowrap" style="width:10rem;">{{ pos['коммент'] }}</div></td>
@@ -140,7 +140,7 @@
               <td colspan="4" class="right-align">
                 <h5 class="truncate nowrap" style="width:auto;">
                   <span class="bold">{{ TotalSum(row).toLocaleString({"currency": 'RUB', "maximumFractionDigits":2, "minimumFractionDigits":2,}) }}</span>
-                  <span class=""> ₽</span>
+                  <span class="grey-text"> ₽</span>
                 </h5>
               </td>
               <td></td>
