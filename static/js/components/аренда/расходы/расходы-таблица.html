@@ -131,9 +131,9 @@
               <td><div class="truncate nowrap" style="width:10rem;">{{ pos['коммент'] }}</div></td>
             </tr>
             <tr v-if="row['@позиции'].length > 1">
-              <td colspan="4"></td>
-              <td class="right-align">
-                <h4 class="truncate nowrap" style="width:5rem;">
+              <td></td>
+              <td colspan="4" class="right-align">
+                <h4 class="truncate nowrap" style="width:auto;">
                   <span class="bold">{{ TotalSum(row).toLocaleString({"currency": 'RUB', "maximumFractionDigits":2, "minimumFractionDigits":2,}) }}</span>
                   <span class=""> ₽</span>
                 </h4>
