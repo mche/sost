@@ -376,9 +376,8 @@ select o.*,
   row_to_json(ob) as "$объект/json",
   lit."@литеры/json", lit."@литеры/id", ---lit."@объект:литера/id",
   p."@кабинеты/json", p."@кабинеты/id",
-  p."@помещение в договоре аренды?", p."@кол-во действующих договоров", p."@аренда/договоры/id/json", p."@аренда/договоры/json",
-  --~ array[]::int[] as "@помещение в договоре аренды?", array[]::int[] as "@кол-во действующих договоров",
-  --~ array[]::int[] as "@аренда/договоры/id", array[]::int[] as "@аренда/договоры",
+  --~ p."@помещение в договоре аренды?", p."@кол-во действующих договоров", p."@аренда/договоры/id/json", p."@аренда/договоры/json",
+  ----- array[]::int[] as "@помещение в договоре аренды?", array[]::int[] as "@кол-во действующих договоров", array[]::int[] as "@аренда/договоры/id", array[]::int[] as "@аренда/договоры",
   p."@@литер,помещение/id"
 from "аренда/объекты" o
   join refs ro on o.id=ro.id2
@@ -397,11 +396,11 @@ from "аренда/объекты" o
     select o.id as "аренда/объекты/id", 
       jsonb_agg(p  {%= $order_by_room || ' order by p.id' %}) as "@кабинеты/json",
       array_agg(p.id  {%= $order_by_room || ' order by p.id' %}) as "@кабинеты/id",
-      array_agg(coalesce(dp."помещение/id", 0)::boolean  {%= $order_by_room || ' order by p."помещение/id" ' %}) as "@помещение в договоре аренды?",
-      array_agg(dp."кол-во действующих договоров"  {%= $order_by_room || ' order by p."помещение/id" ' %}) as "@кол-во действующих договоров",
+      --~ array_agg(coalesce(dp."помещение/id", 0)::boolean  {%= $order_by_room || ' order by p."помещение/id" ' %}) as "@помещение в договоре аренды?",
+      --~ array_agg(dp."кол-во действующих договоров"  {%= $order_by_room || ' order by p."помещение/id" ' %}) as "@кол-во действующих договоров",
       --- разная размерность! поэтому в одномерную строку
-      array_agg('['||array_to_string(coalesce(dp."@аренда/договоры/id", array[]::int[]), ',')||']'  {%= $order_by_room || ' order by p."помещение/id"  ' %}) as "@аренда/договоры/id/json",
-      array_agg(dp."@аренда/договоры/json"::text  {%= $order_by_room || ' order by p."помещение/id"  ' %}) as "@аренда/договоры/json",
+      --~ array_agg('['||array_to_string(coalesce(dp."@аренда/договоры/id", array[]::int[]), ',')||']'  {%= $order_by_room || ' order by p."помещение/id"  ' %}) as "@аренда/договоры/id/json",
+      --~ array_agg(dp."@аренда/договоры/json"::text  {%= $order_by_room || ' order by p."помещение/id"  ' %}) as "@аренда/договоры/json",
       array_agg(array[p."литер/id", p.id] {%= $order_by_room || ' order by p."помещение/id"  ' %}) as "@@литер,помещение/id" --- это для сохранения
     from "аренда/объекты" o
       join "refs" r on o.id=r.id1
@@ -413,7 +412,7 @@ from "аренда/объекты" o
       ) p on p."литер/id"=r.id2
       
       --- все договоры/доп согл с этим помещением
-      left join (  {%= $dict->render('договоры по помещениям') %}  ) dp on p.id=dp."помещение/id"
+%#      left join (  {%= $dict->render('договоры по помещениям') %}  ) dp on p.id=dp."помещение/id"
 
     group by o.id
   ) p on o.id=p."аренда/объекты/id"
@@ -477,6 +476,7 @@ from
 {%= $order_by || 'order by d."дата1" desc, d.id desc  ' %}
 
 @@ договоры/помещения
+--- одного помещения
 select
   p.id as "помещение/id", row_to_json(p) as "$помещение/json",
   lit.id as "литер/id", row_to_json(lit) as "$литер/json",
@@ -505,7 +505,8 @@ from
 
 @@ договоры по помещениям
 ---- все договоры (и доп согл) на каждое помещение
-select p.id as "помещение/id", 
+select {%= $select || '*' %} from (
+select p.id as "помещение/id", p.id,
   jsonb_agg(dp order by dp."дата1" desc) as "@аренда/договоры/json",
   array_agg(dp."договор/id" order by dp."дата1" desc) as "@аренда/договоры/id",
   array_agg(dp."действующий договор?" order by dp."дата1" desc) as "@действующий договор?",
@@ -536,8 +537,9 @@ from
       join "аренда/договоры-помещения" p on p.id=r.id2
       join "refs" r2 on p.id=r2.id2
   ) dp on p.id=dp."помещение/id"
-{%= $where || '' %}
 group by p.id
+) a
+{%= $where || '' %}
 
 @@ счета и акты
 --- за аренду помещений и предоплату для docx

@@ -38,15 +38,16 @@ const methods = {/*методы*/
 
 Ready(){/// метод
   var vm = this;
-  //~ var loader = vm.LoadData();
+  //~ var loader = vm.ЗагрузкаОбъектов();
   $EventBus.$on('Дайте список объектов аренды', function(cb){
     cb(vm.data);
     //~ cb(vm.$dataList.)
   });
   setTimeout(()=>{/// задержать тяжелый запрос на старте
-    vm.LoadData().then(()=>{
+    vm.ЗагрузкаОбъектов().then(()=>{
       vm.ready = true;
       $EventBus.$emit('$КомпонентАрендаОбъектыТаблица - готов');
+      vm.ЗагрузкаДоговоровПомещений();
     });
   }, 500);
   //~ loader
@@ -59,7 +60,7 @@ Ready(){/// метод
   });
 },
 
-LoadData(){
+ЗагрузкаОбъектов(){
   var vm = this;
   vm.$dataList = new $Список(appRoutes.urlFor('аренда/объекты/список'));
   return vm.$dataList.Load()///$http.get(appRoutes.urlFor('аренда/объекты/список'))
@@ -68,6 +69,20 @@ LoadData(){
       return vm.data;
     });
 },
+
+ЗагрузкаДоговоровПомещений(){
+  var vm = this;
+  let loader = new $Список(appRoutes.urlFor('аренда/объекты/помещения/договоры'));
+  return loader.Load()///$http.get(appRoutes.urlFor('аренда/объекты/список'))
+    .then(()=>{
+      //~ vm.data.push(.../*resp.data*/vm.$dataList.Data().map(item => { vm.ItemRoomsIndexes(item); item.chbByFloors = true; return item; }));
+      vm.договорыПомещений = loader.$Data();
+      //~ console.log(loader.$Data());
+      return vm.договорыПомещений;
+    });
+  
+},
+
 
 SelectObject(obj){
   this.selectedObject = obj;
@@ -201,7 +216,8 @@ const  data = function(){
     //data,// dst
     //{/// src
     "ready": false,
-    "data": [],
+    "data": [],///список объектов/литер/помещений
+    "договорыПомещений":{},
     "newObject": undefined,
     "selectedObject": undefined,
     //~ "filters": {"литер": undefined,},

@@ -134,6 +134,11 @@ sub помещения_договора {
   
 }
 
+sub договоры_помещений {
+  my ($self, $param)  =  @_;
+  $self->dbh->selectall_arrayref($self->sth('договоры по помещениям',), {Slice=>{}},);# select=>' jsonb_agg(a) '
+}
+
 sub помещения_доп_соглашения {
   my $self  =  shift;
   my $data = ref $_[0] ? shift : {@_};

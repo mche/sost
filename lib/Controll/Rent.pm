@@ -64,6 +64,12 @@ sub договоры_список {
   $c->render(json=>$c->model->список_договоров($param));
 }
 
+sub договоры_помещений {
+  my $c = shift;
+  #~ my $param = $c->req->json;
+  $c->render(json=>$c->model->договоры_помещений());#$param
+}
+
 sub сохранить_объект {
   my $c = shift;
   my $data = $c->req->json;
