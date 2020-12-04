@@ -127,7 +127,7 @@
               <td class="right-align"><div class="truncate nowrap right-align" style="width:5rem;">{{ pos['количество'] }}</div></td>
               <td><div class="truncate nowrap" style="width:3rem;">{{ pos['ед'] }}</div></td>
               <td class="right-align"><div class="truncate nowrap" style="width:5rem;">{{ pos['цена'] }}</div></td>
-              <td class="right-align"><div class="truncate nowrap" :class="{'teal-text text-darken-3 bold fs12': row['@позиции'].length == 1}" style="width:5rem;">{{ pos['сумма'] || pos['сумма2']  }}</div></td>
+              <td class="right-align"><div class="truncate nowrap" :class="{'teal-text text-darken-3 bold fs12': row['@позиции'].length == 1}" style="width:10rem;">{{ pos['сумма'] || pos['сумма2']  }}</div></td>
               <td><div class="truncate nowrap" style="width:10rem;">{{ pos['коммент'] }}</div></td>
             </tr>
             <tr v-if="row['@позиции'].length > 1">
