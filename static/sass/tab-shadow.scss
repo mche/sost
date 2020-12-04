@@ -22,7 +22,7 @@ class="helmet tabs-shadow active z-depth-1 ...цвета "
     ///box-shadow: none;
   }
   &.active.z-depth-1:before {
-    height:5px;///для z-depth-1
+    height:7px;///для z-depth-1
     bottom:-5px;///для z-depth-1
   }
   /*&.active::after {

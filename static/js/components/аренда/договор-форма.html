@@ -32,44 +32,36 @@
   
     <div class="row">
     <div class="col s4 padd-05">
-      <h4 class="right-align relative">
-        <a v-show="form['$проект'] && form['$проект'].id && form['контрагент'] && form['контрагент'].id" @click="MoneyXLS()" href="javascript:" class="left btn-flat z-depth-1 purple white-text hover-childs-show"><i class="icon-balance"></i> <span class="hover-parent-show-inline chip z-depth-1 purple-text" style="position:absolute; text-transform: none; left:0;">сверка расчетов</span></a>
+      <h4 class="relative">
+        <a v-show="form['$проект'] && form['$проект'].id && form['контрагент'] && form['контрагент'].id" @click="MoneyXLS()" href="javascript:" class="btn-flat z-depth-1 purple white-text hover-childs-show right" title="сверка расчетов"><i class="icon-balance"></i> <!---span class="hover-parent-show-inline chip z-depth-1 purple-text" style="position:absolute; text-transform: none;">сверка расчетов</span---></a>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0  512 400" class="teal-fill fill-darken-3" style="height: 2rem;"><use xlink:href="/fonts/rent.svg#renter"></use></svg>
         <span>Арендодатель</span>
         <sup v-show=" !(form['$проект'] && form['$проект'].id) " class="chip red white-text" style="position: absolute; z-index: 1; top:0;padding:0.3rem;"></sup>
       </h4>
-      
+      <div>
+        <v-select v-if=" projectData " :select=" form['$проект'] " :param="{'без стрелки раскрытия списка':true, 'без поля поиска': true, ulDropDownClass: 'striped purple lighten-4'}" :items=" projectData " @on-select=" SelectProject ">
+          <template v-slot:selected="{ selected }">
+            <h4 v-if="!!selected" class="fw500 animated slideInUp card hoverable padd-05 purple lighten-4 purple-text text-darken-3">
+              <span> ★ {{ selected.name }}</span>
+              <span v-if="form['$проект']" class="grey-text fs7" style="position:absolute; right:0; bottom:-1rem;">#{{ form['$проект'].id }}</span>
+            </h4>
+            <h4 v-else class="card hoverable padd-05 purple-text purple lighten-4 ">Выбрать арендодателя</h4>
+          </template>
+          <template v-slot:listItem="{ listItem, selected, highlighted }">
+            <h5 class="padd-0-05 relative purple-text text-darken-3"  :class="{'bold fs14': listItem === selected, 'fw500': listItem === highlighted,}"  style="">
+                <span> ★ {{ listItem.name }}</span>
+                <span class="grey-text fs7" style="position:absolute; right:0; bottom:0;">#{{ listItem.id }}</span>
+            </h5>
+          </template>
+        </v-select>
+      </div>
     </div>
-    <div class="col s8 ">
-      <!--div class="border fs8">{{ form['$проект'] }}</div-->
-      <v-select v-if=" projectData " :select=" form['$проект'] " :param="{'без стрелки раскрытия списка':true, 'без поля поиска': true, ulDropDownClass: 'striped purple lighten-4'}" :items=" projectData " @on-select=" SelectProject ">
-        <template v-slot:selected="{ selected }">
-          <h4 v-if="!!selected" class="fw500 animated slideInUp card hoverable padd-05 purple lighten-4 purple-text text-darken-3">
-            <span> ★ {{ selected.name }}</span>
-            <span v-if="form['$проект']" class="grey-text fs7" style="position:absolute; right:0; bottom:-1rem;">#{{ form['$проект'].id }}</span>
-          </h4>
-          <h4 v-else class="card hoverable padd-05 purple-text purple lighten-4 ">Выбрать арендодателя</h4>
-        </template>
-        <template v-slot:listItem="{ listItem, selected, highlighted }">
-          <h5 class="padd-0-05 relative purple-text text-darken-3"  :class="{'bold fs14': listItem === selected, 'fw500': listItem === highlighted,}"  style="">
-              <span> ★ {{ listItem.name }}</span>
-              <span class="grey-text fs7" style="position:absolute; right:0; bottom:0;">#{{ listItem.id }}</span>
-          </h5>
-        </template>
-      </v-select>
-    </div>
-  </div><!-- row -->
-    
-  <div class="row">
-    <div class="col s4 padd-05">
-      <h4 class="right-align relative">
+    <div class="col s8 padd-05">
+      <h4 class="relative">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#contragent"></use></svg>
         <span>Арендатор</span>
         <sup v-show=" !(form['контрагент'] && (form['контрагент'].id || form['контрагент'].title)) " class="chip red white-text" style="position: absolute; z-index: 1; top:0;padding:0.3rem;"></sup>
       </h4>
-
-    </div>
-    <div class="col s8  row ">
       <div class="card padd-05 light-green lighten-3">
         <v-contragent :item=" form['контрагент'] " :param=" {'редактировать':true, 'реквизиты': {'ИНН':'', 'email':undefined, 'юр. адрес': '', 'физ. лицо': false, 'тел':[''],}, suggest:{ ulDropDownClass: ['striped teal lighten-4'],}} " :data=" contragentData " @on-select=" SelectContragent ">
           <template v-slot:form=" { form } ">
@@ -79,7 +71,17 @@
           </template>
         </v-contragent>
       </div><!-- card -->
-    </div><!-- col -->
+    </div>
+  </div><!-- row -->
+    
+  <!---div class="row">
+    <div class="col s4 padd-05">
+
+
+    </div>
+    <div class="col s8  row padd-05">
+
+    </div><!-- col >
   </div><!-- row -->
 
   <div class="row" style="margin-bottom: 3rem;">
