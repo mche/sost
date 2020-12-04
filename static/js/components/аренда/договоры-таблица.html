@@ -18,10 +18,10 @@
 <div class="nowrap">
   <!-- фильтр арендодателя-->
   <div class="chip purple lighten-5 shadow-inset-10" style=" width:15rem;">
-    <h6 v-show="!!filters['арендодатель']">Договоры по арендодателю</h6>
+    <h6 v-show="!!filters['арендодатель']" class="purple-text text-darken-3">Договоры по арендодателю</h6>
     <v-select v-if="projectData" :key=" keys['арендодатель'] " :select=" {} " :param="{'без стрелки раскрытия списка': true, 'без поля поиска': true, ulDropDownClass: 'striped purple lighten-4'}" :items=" projectData " @on-select=" SelectProjectFilter ">
       <template v-slot:selected="{ selected }">
-        <h4 class="purple-text text-darken-3  " :class="{'grey-text':!selected, ' fw500 animated slideInUp': !!selected}">
+        <h4 class="purple-text text-darken-3  " :class="{'grey-text-000':!selected, ' fw500 animated slideInUp': !!selected}">
           <span class="material-icons">filter_list</span>
           <span>{{ selected ? selected.name : 'По арендодателю' }}</span>
           <!--span v-if="form['$проект']" class="grey-text fs7" style="position:absolute; right:0; bottom:-1rem;">#{{ form['$проект'].id }}</span-->
