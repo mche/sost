@@ -180,6 +180,7 @@ Save(){
       vm.cancelerHttp = undefined;
       if (resp.data.error) return Materialize.toast(resp.data.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
       Materialize.toast('Сохранено успешно', 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
+      resp.data.success['копия/id'] = vm.form['копия/id'];
       vm.$emit('on-save', resp.data.success);
       console.log("Сохранено", resp.data);
       //~ $Контрагенты.RefreshData();
@@ -289,9 +290,10 @@ Copy(){
   let copy = {};
   //~ debugger;
   copy['копия/id'] = vm.form.id;
-  copy.id = undefined;
-  copy.uid = undefined;
-  copy.ts = undefined;
+  //~ copy.id = undefined;
+  //~ copy.uid = undefined;
+  //~ copy.ts = undefined;
+  copy['дата'] = vm.form['дата'];
   copy['договор/id'] = vm.form['договор/id'];
   copy['проект/id'] = vm.form['проект/id'];
   copy['проект/name'] = vm.form['проект/name'];
@@ -307,7 +309,7 @@ CopyPos(pos){
   copy.uid = undefined;
   copy.ts = undefined;
   //~ copy['договор/id'] = undefined;
-  console.log("CopyPos", copy);
+  //~ console.log("CopyPos", copy);
   return copy;
 },
 

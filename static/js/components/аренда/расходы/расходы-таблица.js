@@ -15,7 +15,7 @@ var moduleName = "Аренда::Расходы::Таблица";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['EventBus', 'Аренда::Расходы::Форма', /*'Компонент::Выбор в списке', 'Компонент::Выбор объекта',*/ ]);
 
-module.factory('$КомпонентАрендаРасходыТаблица', function($templateCache, $http, appRoutes,   /*$EventBus,$Список, Util,*/ $КомпонентАрендаРасходыФорма, /*$КомпонентАрендаДоговорыВыбор, $КомпонентВыборОбъекта*/  ) {// 
+module.factory('$КомпонентАрендаРасходыТаблица', function($templateCache, $http, appRoutes, Util,  /*$EventBus,$Список, */ $КомпонентАрендаРасходыФорма, /*$КомпонентАрендаДоговорыВыбор, $КомпонентВыборОбъекта*/  ) {// 
 
 
 
@@ -30,7 +30,7 @@ const props = {
 };
   
 const util = {/*разное*/
-  IsEqualId(id){ return (id.id || id) == this.id; },
+  IsEqualId(id){ return (id.id || id) == this/*.id*/; },
 };/// конец util
 
 const methods = {/*методы*/
@@ -62,6 +62,15 @@ LoadData(){
     });
 },
 
+TotalSum(row){
+  var vm = this;
+  var s = row['@позиции'].reduce(function(a, pos){
+    //~ if (!pos || !pos['сумма'] || !pos['сумма2']) return a;
+    return a + vm.ParseNum(pos['сумма'] || pos['сумма2']);///+vm.ParseNum();
+  }, 0);
+  return s;
+},
+
 /**ContragentContractData(){
   var vm = this;
   return vm.contragentContracts || $http.post(appRoutes.urlFor('аренда/договоры/список'), {"договоры на дату": vm.form['дата'], "order_by": " order by  lower(regexp_replace(k.title, '^\W', '', 'g')) "}).then(function(resp){
@@ -88,7 +97,8 @@ OnSave(data){ ///  из события сохранения формы
   var vm = this;
   if (vm.newForm) vm.newForm = undefined;
   if (data) {
-    var f = vm.data.find(util.IsEqualId, data);
+    data._edit = undefined;
+    var f = vm.data.find(util.IsEqualId, data.id);
     if (data['удалить']) {
       vm.data.removeOf(f);
       return vm.FilterData();
@@ -98,6 +108,12 @@ OnSave(data){ ///  из события сохранения формы
       Object.assign(f, data);
     } else {/// новая
       vm.data.push(data);
+    }
+    
+    //~ if (!data['копия/id']) 
+    if (data['копия/id']) {
+      f = vm.data.find(util.IsEqualId, data['копия/id']);
+      if (f) f._edit = undefined;
     }
     vm.FilterData();
   }

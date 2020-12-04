@@ -99,7 +99,7 @@
       <!-- типа tbody --->
      <div v-for="row in filteredData" :key="row.id" class="relative flex-row flex-end-xs-000 " style="">
       <div class="flex-col-sm-1 padd-05 relative-000" style="">
-        <span class="chip padd-0-05 nowrap" :title=" row['дата'] "><span class="fs8 grey-text">от </span><span class="bold">{{ row.$дата.day }}</span> <span class="fs8">{{ row.$дата['мес'] }}</span><span v-show="(new Date).getYear()+1900 != row.$дата.year"> {{ row.$дата.year }}</span></span>
+        <span class="chip padd-0-05 nowrap" :title=" row['дата'] "><!-- span class="fs8 grey-text">от </span --><span class="bold">{{ row.$дата.day }}</span> <span class="fs8">{{ row.$дата['мес'] }}</span><span v-show="(new Date).getYear()+1900 != row.$дата.year"> {{ row.$дата.year }}</span></span>
         
         <!-- крыжик -->
         <!--div class="input-field"-->
@@ -108,7 +108,7 @@
         
         <div v-if=" !!row._edit " style="position: absolute; width:90%; z-index:1; left:5%;"><v-form :item=" row._edit " :param=" param " @on-save=" OnSave "></v-form></div>
       </div>
-      <div class="flex-col-sm-3" style="">
+      <div class="flex-col-sm-4" style="">
         <h4 :class="{'bold': !!row._edit}">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#contragent"></use></svg>
           <a @click=" Edit(row) " href="javascript: void('редактировать') " class="hover-shadow3d" title="редактировать">{{ row['$контрагент'].title }}</a>
@@ -119,16 +119,26 @@
           <span v-if="row.$объект">{{ row.$объект.name }}</span>
         </h5>
       </div>
-      <div class="flex-col-sm-8 padd-05" style="">
+      <div class="flex-col-sm-7 padd-05" style="">
         <table class="bordered striped-000 lime-000 lighten-4">
           <tbody>
             <tr v-for="pos in  row['@позиции']" :key="pos.id">
-              <td style="width:40%;"><h5>{{ pos['$категория'].title }}</h5></td>
+              <td class="right-align" style="width:40%;"><h5>{{ pos['$категория'].title }}</h5></td>
               <td class="right-align"><div class="truncate nowrap right-align" style="width:5rem;">{{ pos['количество'] }}</div></td>
               <td><div class="truncate nowrap" style="width:3rem;">{{ pos['ед'] }}</div></td>
               <td class="right-align"><div class="truncate nowrap" style="width:5rem;">{{ pos['цена'] }}</div></td>
               <td class="right-align"><div class="truncate nowrap" style="width:5rem;">{{ pos['сумма'] || pos['сумма2']  }}</div></td>
               <td><div class="truncate nowrap" style="width:10rem;">{{ pos['коммент'] }}</div></td>
+            </tr>
+            <tr v-if="row['@позиции'].length > 1">
+              <td colspan="4"></td>
+              <td class="right-align">
+                <h4 class="truncate nowrap" style="width:5rem;">
+                  <span class="bold">{{ TotalSum(row).toLocaleString({"currency": 'RUB', "maximumFractionDigits":2, "minimumFractionDigits":2,}) }}</span>
+                  <span class=""> ₽</span>
+                </h4>
+              </td>
+              <td></td>
             </tr>
           </tbody>
         </table>
