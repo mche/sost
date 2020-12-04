@@ -9,19 +9,26 @@
 
 <div class="card-content">
   <div class="row relative">
-    <a @click=" CancelBtn()" href="javascript:" class="btn-flat z-depth-1 white red-text lighten-2" style="position:absolute; right:0;">
+    <a @click=" CancelBtn()" href="javascript:" class="btn-flat z-depth-1 white red-text lighten-2 right" style000="position:absolute; right:0;">
       <i class="material-icons">cancel</i><span>Отмена</span>
     </a>
+    <a v-show="!!form.id" @click=" Copy() " href="javascript:" class="btn-flat z-depth-1 green lighten-4 green-text right">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" class="green-fill" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#copy" /></svg>
+      <span>Копия</span>
+    </a>
+    
     <h3 class="fw500">
         <i v-show=" !form.id " class="material-icons fs18 ">folder_special</i>
         <span v-show=" !form.id " >Новый счет</span>
         
-        <i v-show=" form.id " class="material-icons ">edit</i>
+        <i v-show=" !!form.id " class="material-icons ">edit</i>
         <span v-show=" form.id " >Редактировать счет</span>
         
         <span> от </span>
         <!--span class="chip bold bold shadow-inset-10 teal white-text">{{ param['проект'].name }}</span-->
         <span v-show="form['проект/name']" class="chip bold bold shadow-inset-10 teal white-text">{{ form['проект/name'] }}</span>
+        
+        <span v-show="!!form['копия/id'] && !form.id" class="red-text chip transparent padd-0-05 animated slideInRight slow"> Копия - внимательно! </span>
         
         <span v-show="form.id" class="grey-text fs8">#{{form.id}}</span>
         
@@ -97,7 +104,7 @@
             </td>
             <td class="padd-05" style="width:7rem;">
               <div class="input-field row" :class="{}">
-                <input type="text" v-model.trim="pos['количество']"  @input="PosSum(pos, 'количество')"placeholder="количество" class="right-align" title="количество" :disabled="!pos['$категория'].title.length || !!pos['сумма']">
+                <input type="text" v-model.trim="pos['количество']"  @input="PosSumDebounced(pos, 'количество')"placeholder="количество" class="right-align" title="количество" :disabled="!pos['$категория'].title.length || !!pos['сумма']">
               </div>
             </td>
             
@@ -109,13 +116,13 @@
             
             <td class="padd-05" style="width:7rem;">
               <div class="input-field row" :class="{}">
-                <input type="text" v-model.trim="pos['цена']" @input="PosSum(pos, 'цена')" class="right-align"  placeholder="цена, ₽"  title="цена, ₽" :disabled="!pos['$категория'].title.length || !!pos['сумма']">
+                <input type="text" v-model.trim="pos['цена']" @input="PosSumDebounced(pos, 'цена')" class="right-align"  placeholder="цена, ₽"  title="цена, ₽" :disabled="!pos['$категория'].title.length || !!pos['сумма']">
               </div>
             </td>
             
             <td class="padd-05" style="width:7rem;">
               <div class="input-field row" :class="{}">
-                <input v-show="!pos['количество']" type="text" v-model.trim=" pos['сумма'] " @input="PosSum(pos, 'сумма')" class="right-align fw500 teal-text text-darken-3" placeholder="сумма, ₽"  title="сумма, ₽">
+                <input v-show="!pos['количество']" type="text" v-model.trim=" pos['сумма'] " @input="PosSumDebounced(pos, 'сумма')" class="right-align fw500 teal-text text-darken-3" placeholder="сумма, ₽"  title="сумма, ₽">
                 <input v-show="!!pos['количество']" type="text" v-model.trim=" pos['сумма2'] " class="right-align fw500 teal-text text-darken-3" placeholder="сумма, ₽"  title="сумма, ₽" :disabled=" !0">
               </div>
             </td>
@@ -185,6 +192,7 @@
           <span class="material-icons">delete_forever</span>
           <span>Удалить</span>
         </a>
+        <span v-show="!!form['копия/id'] && !form.id" class="red-text fs12"> Копия, внимательно!</span>
         <a @click=" CancelBtn() " href="javascript:" class="right btn-flat z-depth-1 red-text white">
           <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
           <span>Отмена</span>

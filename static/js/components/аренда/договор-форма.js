@@ -266,6 +266,7 @@ Copy(){
   copy['дата1'] = undefined;
   copy['дата2'] = undefined;
   copy['дата расторжения'] = undefined;
+  
   var init = vm.InitForm(copy);///vm.form;
   //~ debugger;
   init.id = undefined;

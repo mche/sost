@@ -283,6 +283,34 @@ ClearDate(name){
   });
 },
 
+Copy(){
+  var vm = this;
+  //~ var copy = angular.copy(vm.form);
+  let copy = {};
+  //~ debugger;
+  copy['копия/id'] = vm.form.id;
+  copy.id = undefined;
+  copy.uid = undefined;
+  copy.ts = undefined;
+  copy['договор/id'] = vm.form['договор/id'];
+  copy['проект/id'] = vm.form['проект/id'];
+  copy['проект/name'] = vm.form['проект/name'];
+  //~ var init = vm.InitForm(copy);
+  copy['@позиции'] = vm.form['@позиции'].map(vm.CopyPos);
+  vm.form = copy;
+},
+
+CopyPos(pos){
+  let copy = angular.copy(pos);
+  copy.id = undefined;
+  copy._id=this.idMaker.next().value;
+  copy.uid = undefined;
+  copy.ts = undefined;
+  //~ copy['договор/id'] = undefined;
+  console.log("CopyPos", copy);
+  return copy;
+},
+
 }; /// конец methods
 
 const computed = {
@@ -338,6 +366,11 @@ const mounted = function(){
   });
 };/// конец mounted
 
+const  beforeMount = function(){
+    if (typeof debounce !== 'function') return console.error("Нет функции debounce!");
+    this.PosSumDebounced = debounce(this.PosSum, 700);
+};
+
 
 var $Компонент = {
   //~ "template": $templateCache.get('тмц/сертификаты/папки'), //ниже/!!
@@ -347,6 +380,7 @@ var $Компонент = {
   computed,
   //~ "created"() {  },
   mounted,
+  beforeMount,
   "components": { },
 };
 
