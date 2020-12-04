@@ -240,7 +240,7 @@ from
         
       from (
         select d.*, m."дата", m."@категории/id", m."@категории/title",
-          coalesce(/*d."дней оплаты первого месяца",*/ m."дней оплаты", 
+          coalesce(case when date_trunc('month', m."дата"::date)=date_trunc('month', d."дата1") then d."дней оплаты первого месяца" else null::int end, m."дней оплаты", 
           case 
             when date_trunc('month', m."дата"::date)=date_trunc('month', d."дата1") and date_trunc('month', m."дата"::date)=date_trunc('month',  d."дата2")
               then d."дата2"-d."дата1"
