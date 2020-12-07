@@ -630,16 +630,37 @@ sub реестр_актов_xlsx {
   
   my ($month, $month2) = split /:/, $c->param('month');
   my $data = $c->model->реестр_актов("месяц"=>$month, "месяц2"=>$month2, "счет или акт"=>'акт');
-  my @names = ('номер акта', 'дата акта', 'сумма/num', 'договор/номер','договор/дата начала',  'контрагент/title', 'ИНН', 'объект',);#'договор/дата завершения',
-  #~ my $filename=sprintf("static/tmp/%s-реестр-актов.xlsx", $c->auth_user->{id}, $month);
-  
   open my $xfh, '>', \my $fdata or die "Failed to open filehandle: $!";
   my $workbook  = Excel::Writer::XLSX->new( $xfh );
+  my $date_format = $workbook->add_format( num_format => 'dd.mm.yyyy', align  => 'left', );
+  my $num_format = $workbook->add_format( num_format=> '# ##0.00');
+  # порядок столбца, название, ширина, формат
+  my %names = ('номер счета'=>[1,'Номер счета', 15], 'дата счета'=>[2,'Дата счета', 15, $date_format],  'номер акта'=>[3,'Номер акта', 15], 'дата акта'=>[4, 'Дата акта', 15], 'сумма/num'=>[5, 'Сумма', 10, $num_format], 'договор/номер'=>[6, 'Номер договора', 20], 'контрагент/title'=>[7, 'Арендатор', 50], 'ИНН'=>[8, 'ИНН', 15], 'объект'=>[9, 'Объект', 20],'проект'=>[10, 'Арендодатель', 20]);#'договор/дата завершения','договор/дата начала'=>'l', 
+  #~ my $filename=sprintf("static/tmp/%s-реестр-актов.xlsx", $c->auth_user->{id}, $month);
+  my @cols = sort {$names{$a}[0] <=> $names{$b}[0]} keys %names;
+  
+  
   my $worksheet = $workbook->add_worksheet();
-  my $n = 0;
-  $worksheet->write_row($n++,0, [@names, 'арендодатель']);
-  $worksheet->write_row($n++,0, [@$_{@names}, $_->{'проект'},])#$c->app->json->decode($_->{'$арендодатель'})->{name}
-    for @$data;
+  my $col = 0;
+  $worksheet->set_column( $col++, 0, $names{$_}[2] || 30 )# тут формат не катит
+    for @cols;#, $format
+  $worksheet->set_row(0, 30);
+    
+  my $row = 0;
+  # шапка
+  $worksheet->write_row($row++,0, [map($names{$_}[1], @cols)], $workbook->add_format( bold => 1, bottom=>1, align=>'center', size=>13,bg_color=>'#C8E6C9'));
+  
+  for my $r (@$data) {
+    my $col = 0;
+    $worksheet->write($row, $col++, $r->{$_}, $names{$_}[3])# тут формат не катит 
+      for @cols;#$c->app->json->decode($_->{'$арендодатель'})->{name}
+    $worksheet->write_date_time( $row, 1, $r->{'дата счета'} && $r->{'дата счета'}.'T', $date_format );
+    $worksheet->write_date_time( $row, 3, $r->{'дата акта'} && $r->{'дата акта'}.'T', $date_format );
+    
+    
+    $row++;
+  }
+  
   $workbook->close();
   #~ return $fdata;
   #~ $c->render(data=>$fdata, format=>'xlsx');
