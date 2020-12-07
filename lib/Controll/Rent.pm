@@ -335,6 +335,8 @@ sub сохранить_скидку {
     unless $data->{id};
   
   $data->{'%'} = &Util::numeric($data->{'%'}); #/100;
+  return "Неверная скидка"
+    if $data->{'%'} > 100;
   my $r = eval {$c->model->сохранить_скидку($data, $prev)};
   
   $r ||= $@
