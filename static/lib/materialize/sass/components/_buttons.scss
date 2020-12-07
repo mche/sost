@@ -82,7 +82,7 @@
 // Floating button
 .btn-floating {
   display: inline-block;
-  color: $button-floating-color;
+  ///color: $button-floating-color;
   position: relative;
   overflow: hidden;
   z-index: 1;
@@ -90,7 +90,7 @@
   height: $button-floating-size;
   line-height: $button-floating-size;
   padding: 0;
-  background-color: $button-floating-background;
+  ////background-color: $button-floating-background;
   border-radius: $button-floating-radius;
   @extend .z-depth-1;
   transition: .3s;
