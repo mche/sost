@@ -3,27 +3,43 @@
 <div>
 <v-progress-indeterminate v-show=" !ready " :color=" 'teal' " :message=" 'Загружается...' "></v-progress-indeterminate>
 
-<div v-if="ready" class="padd-05 relative">
+<div v-if="ready" class="padd-05 relative animated slideInUp">
   <div style="position:absolute; top:-1rem; right:0.5rem; z-index:1;">
-    <a @click.stop="expandUploads = !expandUploads" href="javascript:" class="chip blue lighten-3 z-depth-1 hoverable padd-0" title="развернуть/свернуть список файлов"><i class="material-icons" :class="{'rotate180': expandUploads}">arrow_drop_down</i><sup style="position: absolute; top:0.3rem; right:0.5rem;">{{ UploadsLen }}</sup></a>
+    <a @click.stop="expandUploads = !expandUploads" href="javascript:" class="chip blue lighten-3 z-depth-1 hover-white padd-0" title="развернуть/свернуть список файлов"><i class="material-icons" :class="{'rotate180': expandUploads}">arrow_drop_down</i><sup style="position: absolute; top:0.3rem; right:0.5rem;">{{ UploadsLen }}</sup></a>
   </div>
-  <ul v-if=" UploadsLen " class="collection card blue-lighten-5" style="overflow:auto; /*border:none;*/" :style="expandUploads ? {} : {'max-height': 'calc(30vh)'}">
-    <li v-for="file in uploads" :key="file.id" class="collection-item relative hover-childs-show" :class="{'animated slideInRight': !!file._file}">
-      <a @click.stop="ConfirmRemove(file)" href="javascript: void('удалить файл')" class="hover-parent-show-inline remove-siblings" style="position:absolute; top:0.2rem; right:2.2rem; z-index:1;" title="удалить файл"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill fill-lighten-1" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#left-clear-fill"></use></svg></a>
-      <a @click.stop="FileAttachment(file)" href="javascript: void('скачать файл')" class="blue-text hover-parent-show-inline" style="position:absolute; top:0.2rem; right:0.2rem; z-index:1;" title="скачать файл"><i class="material-icons">cloud_download</i></a>
-      <a @click.stop="ViewIframe(file)" href="javascript: void('просмотреть(скачать) файл')" class="hover-shadow3d relative" title="просмотреть(скачать) файл"><h6 v-for="(n, idx) in file.names" :key="idx" class="breadcrumb before-margin-0 inline "><span class="chip padd-0-05 blue-text-darken-3" :class="{'fw500': idx == (file.names.length-1), 'orange lighten-4': !!file._file,}" >{{ n }}</span></h6><span v-show="!!file._file" class="orange-text" style="position: absolute; z-index: 1; top:-0.5rem; right:-0.3rem;"  title=" новый файл ">✱</span></a>
+  <!-- табы папок -->
+  <ul v-if="folders" class="marg-0">
+    <li v-for="f in topFolders" class="tab-shadow helmet z-depth-1 " :class="{'active bold blue lighten-5 marg-0-05': f === topFolder, 'grey lighten-3 hover-white':f !== topFolder, 'animated slideInRight': !f.name}">
+      <h5 class="input-field" :class="{'bold':  f === topFolder}">
+        <a v-if="f.name" @click="TabFolder(f)" href="javascript:" :class000="{'blue-text text-darken-3': f === topFolder, 'grey-text': f !== topFolder,}" class="blue-text text-darken-3 hover-shadow3d">{{ f.name }} <sup v-show=" f === topFolder " class="chip fs8">{{UploadsFilteredLen}}</sup></a>
+        <input v-else type="text" name="folder" v-model="f._edit" class=" blue-text text-darken-3"placeholder="новая папка" @blur="BlurInputFolder(f)">
+        <a v-show="f === topFolder && !!f.name" @click="EditFolder(f)" href="javascript:" class="btn-flat padd-0-05 fs8" title="Переименовать папку"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 -13 445 445" class="orange-fill fill-darken-4" style="height: 1.2rem;" ><use xlink:href="/fonts/icons.svg?2020-12-08-2#edit-folder" /></svg></a>
+      </h5>
+    </li>
+    <li class="right">
+      <a v-show="!topFolders[topFolders.length - 1] || !!topFolders[topFolders.length - 1].name" @click="AddFolder" href="javascript:" class="btn-flat hover-white padd-0-05 fs8" title="Добавить папку"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 -8 394 394" class="blue-fill fill-darken-3" style="height: 1.7rem;" ><use xlink:href="/fonts/icons.svg?2020-12-08-1#add-folder" /></svg></a>
+    </li>
+  </ul>
+  <!-- список файлов -->
+  <ul v-if=" UploadsLen " class="clearfix collection  blue striped lighten-4" style="overflow:auto; /*border:none;*/" :style="expandUploads ? {} : {'max-height': 'calc(30vh)'}">
+    <li v-for="file in UploadsFiltered" :key="file.id" class="collection-item relative hover-childs-show animated" :class="{' slideInRight': !!file._file, 'fadeIn':!file._file}">
+      <a @click.stop="FileAttachment(file)" href="javascript: void('скачать файл')" class="btn-flat padd-0-05 hover-z-depth-1 blue-text hover-parent-show-inline right" style="line-height:normal;" title="скачать файл"><i class="material-icons">cloud_download</i></a>
+      <a v-if="topFolders.length > 1 ||(topFolders.length && file.names.length == 1) " @click.stop="ToggleMove(file)" href="javascript: void('переместить файл')" class="btn-flat padd-0-05 hover-z-depth-1 right" :class="{'hover-parent-show-inline':!file._move}" style="line-height:normal;" title="переместить в папку"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -32 442 442" class="blue-fill fill-darken-3" style="height: 1.4rem;"><use xlink:href="/fonts/icons.svg?2020-12-08-6#into-folder"></use></svg></a>
+      <a @click.stop="ConfirmRemove(file)" href="javascript: void('удалить файл')" class="btn-flat padd-0-05 hover-z-depth-1 hover-parent-show-inline remove-siblings right" style="line-height:normal;" title="удалить файл"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill fill-lighten-1" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#left-clear-fill"></use></svg></a>
+      
+      <a @click.stop="ViewIframe(file)" href="javascript: void('просмотреть(скачать) файл')" class="hover-shadow3d relative" title="просмотреть(скачать) файл"><h6 v-for="(n, idx) in file.names" v-show="!topFolder || file.names.length == 1 || idx > 0" :key="idx" class="breadcrumb before-margin-0 inline "><span class="chip padd-0-05 blue-text-darken-3" :class="{'fw500': idx == (file.names.length-1), 'orange lighten-4': !!file._file,}" >{{ n }}</span></h6><span v-show="!!file._file" class="orange-text" style="position: absolute; z-index: 1; top:-0.5rem; right:-0.3rem;"  title=" новый файл ">✱</span></a>
       <span class="fs8 grey-text" :title="file.content_type"> {{ Size(file) }} </span>
       <span class="chip padd-0-05 grey-text fs8" :title=" JSON.stringify(file.$last_modified) "> <span>{{ file.$last_modified.day }}</span> <span>{{ file.$last_modified['мес'] }}</span> <span v-show="(new Date).getYear()+1900 != file.$last_modified.year">{{ file.$last_modified.year }}</span> <span>{{ file.$last_modified.hour }}:{{ file.$last_modified.minute }}</span></span>
       <span class="chip000 padd-0-05 grey-text fs8" :title=" JSON.stringify(file.$ts) "> <span>{{ file.$ts.day }}</span> <span>{{ file.$ts['мес'] }}</span> <span v-show="(new Date).getYear()+1900 != file.$ts.year">{{ file.$ts.year }}</span> <span>{{ file.$ts.hour }}:{{ file.$ts.minute }}</span></span>
       <span v-show=" $AppUser.ID() != file.uid " class="chip padd-0-05 fs8 truncate nowrap vbottom grey-text" style="max-width:5rem;" :title="file['@автор'].join(' ')">{{ file['@автор'].join(' ') }}</span>
     </li>
   </ul>
-  <v-uploader :options=" uploader.options" :file-status-text=" uploader.statusText " class="" @file-added=" FileAdded " @file-success=" FileSuccess "></v-uploader>
+  <div class="clearfix"><v-uploader :options=" uploader.options" :file-status-text=" uploader.statusText " class="" @file-added=" FileAdded " @file-success=" FileSuccess "></v-uploader></div>
   <!---v-uploader :options="options" :file-status-text="statusText" class="uploader-example" ref="uploader" @file-complete=" FileComplete " @file-success=" FileSuccess " @complete=" Complete "></v-uploader-->
 </div>
   <!-- Modal Structure -->
   <div id="modal-confirm-remove" class="modal bottom-sheet"  data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInUp" data-modal-out="animated slideOutDown fast">
-    <div class="modal-content">
+    <div class="modal-content blue-lighten-4">
       <h3 class="center row">Подтвердите удаление файла</h3>
       <div v-if="!!confirmFile" class="center" >
         <h4 v-for="(n, idx) in confirmFile.names" :key="idx" class="breadcrumb before-margin-0 iblock " :class="{'orange-text-darken-3': !!confirmFile._file, 'blue-text-darken-3': !confirmFile._file}"><span class="chip" :class="{'fw500': idx == (confirmFile.names.length-1)}"  :title=" idx == (confirmFile.names.length-1) ? confirmFile.content_type : '' ">{{ n }}</span></h4>
@@ -33,9 +49,9 @@
         <span v000-show=" $AppUser.ID() != confirmFile.uid " class="chip nowrap" style="">{{ confirmFile['@автор'].join(' ') }}</span>
       </div>
     </div>
-    <div class="modal-footer right-align">
-      <a @click.stop="Remove(confirmFile)" href="javascript:" class="modal-action modal-close btn-flat nofloat green lighten-3 green-text text-darken-4">Да, удалить</a>
-      <a href="javascript:" class="modal-action modal-close btn-flat nofloat red lighten-3 red-text text-darken-3" style="position:absolute; top:1rem; right:2rem;"><i class="material-icons">cancel</i><span>Отмена</span></a>
+    <div class="modal-footer center grey-lighten-2">
+      <a @click.stop="Remove(confirmFile)" href="javascript:" class="modal-action modal-close btn-flat nofloat green lighten-3 green-text text-darken-4 z-depth-1">Да, удалить</a>
+      <a href="javascript:" class="modal-action modal-close btn-flat nofloat red lighten-3 red-text text-darken-3 z-depth-1" style="position:absolute; top:1rem; right:2rem;"><i class="material-icons">cancel</i><span>Отмена</span></a>
     </div>
   </div>
   

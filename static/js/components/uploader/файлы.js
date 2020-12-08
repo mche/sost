@@ -18,12 +18,18 @@ var module = angular.module(moduleName, ['Uploader']);
 module.factory('$КомпонентФайлы', function($http, $templateCache, $window, appRoutes, $AppUser, $Uploader) {// factory
 
 const props = {
-  //~ "uploads": {
-    //~ type: Array,
+  "folders": {///   предустановленные папки
+    type: Array,
     //~ default: [],
-  //~ },
+  },
   "parent": {
     type: Object,
+  },
+  "param": {
+    type: Object,
+    default: function () {
+      return {};
+    },
   },
 };/// конец props
 
@@ -39,6 +45,8 @@ Uploads(){///список сохраненных файлов
     function(resp){
       vm.uploads.splice(0);
       vm.uploads.push(...resp.data);
+      vm['перемещение'].splice(0);
+      vm.TopFolders();
       //~ vm.parent._uploads.splice(0);
       //~ vm.parent._uploads.push(...resp.data);
       vm.ready = true;
@@ -63,8 +71,10 @@ InitUploader(){
         //~ params.identifier
         //~ console.log('processParams', arguments);///, vm._uploader.files.find(function(f){ return f.uniqueIdentifier == params.identifier; })
         //~ params.foo = 'bar';
+        //~ console.log("processParams", file);
         params.lastModified = file.file.lastModified;
         if (vm.parent.id) params.parent_id = vm.parent.id;
+        //~ if (vm.topFolder) /*params.topFolder*/ file.relativePath = vm.topFolder.name+'/'+file.relativePath; тут не катит
         return params;
       },
       "parseTimeRemaining": function (timeRemaining, parsedTimeRemaining) {
@@ -96,9 +106,10 @@ InitUploader(){
 //~ },
 FileAdded(file){
   //~ this._uploader = this._uploader || file.uploader;
-  //~ console.log('file added', file);
+  //~ console.log('FileAdded', file);
+  if (this.topFolder) /*params.topFolder*/ file.relativePath = this.topFolder.name+'/'+file.relativePath;
 },
-FileSuccess (rootFile, file, message, chunk) {
+FileSuccess(rootFile, file, message, chunk) {
 /***
 https://github.com/simple-uploader/Uploader#events
 .fileSuccess(rootFile, file, message, chunk) A specific file was completed. First argument rootFile is the root Uploader.File instance which contains or equal the completed file, second argument file argument is instance of Uploader.File too, it's the current completed file object, third argument message contains server response. Response is always a string. Fourth argument chunk is instance of Uploader.Chunk. You can get response status by accessing xhr object chunk.xhr.status.
@@ -119,8 +130,10 @@ https://github.com/simple-uploader/Uploader#events
     delete resp.success['$last_modified/json'];
     vm.expandUploads = true;
     setTimeout(function(){
-      $('.uploader-drop', $(vm.$el)).get(0).scrollIntoView({ "block": 'start', "behavior": 'smooth', });
+      //~ $('.uploader-drop', $(vm.$el)).get(0).scrollIntoView({ "block": 'start', "behavior": 'smooth', });
       vm.uploads.push(resp.success);///props
+      vm.TopFolders();
+      if (resp.success.names && resp.success.names.length > 1) vm.topFolder = vm.topFolders.find((fd)=>fd.name == resp.success.names[0]);
       //~ vm.parent._uploads.push(resp.success);
       console.log("Save file", resp.success);
     });
@@ -149,7 +162,7 @@ Remove(file){
         else {
           Materialize.toast('Удалено успешно', 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
           vm.uploads.removeOf(file);///props
-          //~ vm.parent._uploads.removeOf(file);
+          //~ vm.TopFolders();
         }
       });
       //~ vm.$emit('on-', resp.data.success);
@@ -220,14 +233,125 @@ ClickStop(){
   /*** ничего @click.stop!!! ***/
 },
 
+TopFolders(){ 
+  if (!this.folders) return;
+  let folders = this.folders.reduce((a, name)=>{
+    a[name] = 0;
+    return a;
+  }, {});
+  this.uploads.reduce((a, file)=>{
+    if (file.names.length == 1) return a;
+    if (!a[file.names[0]]) a[file.names[0]] = 0;
+    a[file.names[0]]++;//.push(file);
+    return a;
+  }, folders);
+  //~ console.log("Folders", folders, Object.keys(folders).sort().map((name)=>{return {name, /*"files":folders[name]*/};}));
+  this.topFolders.splice(0);
+  this.topFolders.push(...Object.keys(folders).sort().map((name)=>{return {name, "файлов": folders[name],};}));
+},
+
+AddFolder(){
+  let f = {};
+  this.topFolders.push(f);
+  this.TabFolder(f);
+  this.FocusInputFolder();
+},
+
+TabFolder(f){
+  if (!!this['перемещение'] && this['перемещение'].length)
+    return this.SaveFolder({"edit":f.name, "@id":this['перемещение'].map(f=>f.id)}).then(function(data){
+      Materialize.toast('Успешно перемещены файл(ы): '+data.length, 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
+      
+    });
+  if (this.topFolder === f) return this.topFolder = undefined;
+  this.topFolder = f;
+},
+
+BlurInputFolder(f){///переименование
+  let vm = this;
+  if (!!f._name && !!f._edit && f._name != f._edit && !!f['файлов']) {///редакт
+    vm.SaveFolder({"name":f._name, "edit":f._edit, "parent_id":vm.parent.id}).then(function(data){
+      //~ console.log("then SaveFolder", data.length);
+      Materialize.toast('Успешно переименована папка', 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
+    });
+  }
+  else if (!!f._edit) vm.$set(f, 'name', f._edit);
+  else /* if (!f._edit || f._edit.length === 0) return*/ {
+    vm.topFolders.removeOf(f);
+    vm.topFolder = undefined;
+  }
+  
+  //~ this.TabFolder(f);
+  
+},
+
+SaveFolder(param){/// переименование папки и перемещение в папку
+  let vm = this;
+  return $http.post(appRoutes.urlFor('файлы/переименовать папку'), param).then(
+    function(resp){
+      if (resp.data.success) {
+        vm.ready = false;
+        vm.Uploads().then(function(){
+          vm.topFolder = vm.topFolders.find((fd)=>fd.name == param.edit);
+        });/// обновить
+        return resp.data.success;
+      }
+    },
+    function(){
+      Materialize.toast('Ошибка сохранения папки', 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
+    }
+  );
+},
+
+EditFolder(f){
+  this.$set(f, '_edit', f.name);
+  f._name = f.name;
+  f.name = undefined;
+  this.FocusInputFolder();
+},
+
+FocusInputFolder(){
+  setTimeout(_=>{
+    this.$el.querySelector('input[type="text"]').focus();
+  });
+},
+
+ToggleMove(file){
+  let idx = this['перемещение'].indexOf(file);
+  if (idx == -1) {///вкл
+    this.$set(file, '_move', true);
+    this['перемещение'].push(file); 
+  }
+  else {///выкл
+    this.$set(file, '_move', false);
+    this['перемещение'].splice(idx, 1);
+  }
+},
+
+SortUploads(a,b){
+  return a.names.join('').localeCompare(b.names.join(''));
+},
+
 }; ///конец методы
 
 const computed = {
 
 UploadsLen(){
   return this.uploads.length;
-  
 },
+
+UploadsFiltered(){
+  if (this.topFolder === undefined) return this.uploads.sort(this.SortUploads);
+  return this.uploads.reduce((a, file)=>{
+    if (file.names.length > 1 && file.names[0] == (this.topFolder.name || this.topFolder._name)) a.push(file);
+    return a;
+  }, []).sort(this.SortUploads);
+},
+
+UploadsFilteredLen(){
+  return this.UploadsFiltered.length;
+},
+
   
 };
 
@@ -238,13 +362,17 @@ const data = function() {
   vm.Uploads();///загрузить
   vm.InitUploader();
   vm.$AppUser = $AppUser;
+  
   return {
     //~ dataUploads: [...vm.uploads],
     ready: /*vm.parent._uploads.length ? true : */false,
+    "topFolders":[],
+    "topFolder": undefined,/// выбрана папка
     uploads: vm.parent._uploads,
     expandUploads: false,
     confirmFile: undefined,
     iframeFile: undefined,
+    "перемещение":[], /// как крыжики иконки свг
   };
 };///  конец data
 

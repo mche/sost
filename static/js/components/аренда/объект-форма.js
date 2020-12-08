@@ -13,10 +13,10 @@
 */
 var moduleName = "Аренда::Объект::Форма";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Компонент::Выбор объекта', 'Компонент::Выбор в списке',]);
+var module = angular.module(moduleName, ['Компонент::Выбор объекта', 'Компонент::Выбор в списке', 'Uploader::Файлы',]);
 
 module
-.factory('$КомпонентАрендаОбъектФорма',  function($templateCache, $http, $timeout, appRoutes, Util, $КомпонентВыборОбъекта, $КомпонентВыборВСписке) {// factory
+.factory('$КомпонентАрендаОбъектФорма',  function($templateCache, $http, $timeout, appRoutes, Util, $КомпонентВыборОбъекта, $КомпонентВыборВСписке, $КомпонентФайлы) {// factory
 
 const props = {
   "item": {
@@ -404,6 +404,7 @@ const $Конструктор = function (/*data, $c, $scope*/){
   $Компонент.components['v-object-select'] = new $КомпонентВыборОбъекта();
   $Компонент.components['v-select-floor'] = new $КомпонентВыборВСписке();
   $Компонент.components['v-select-liter'] = new $КомпонентВыборВСписке();
+  $Компонент.components['v-uploads'] = new $КомпонентФайлы();
   //~ console.log($Компонент);
   return $Компонент;
 };

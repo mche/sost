@@ -45,8 +45,24 @@ sub файлы {
   });
   
   $self->dbh->selectall_arrayref($self->sth('файлы', where=>$where, order_by=>$param->{order_by} || ''), {Slice=>{}}, @bind);
-  
-  
+}
+
+sub переименовать_папку {
+  my $self = shift;
+  my $param = ref $_[0] ? shift : {@_};
+   my ($where, @bind) = $self->SqlAb->where({
+     $param->{'name'} ? (
+       ' array_length("names", 1) ' => { '>' => 1 },
+       '"names"[1]' => $param->{'name'},
+       " r.id1 " => $param->{parent_id},
+       
+      ) : (
+        ' f.id ' => \[ ' = any(?) ', $param->{'@id'} ],
+      ),
+      " f.id" => { '=' => \"r.id2" },
+   });
+  unshift @bind, $param->{'edit'}; # set
+  $self->dbh->selectall_arrayref($self->sth('переименовать папку', where=>$where,), {Slice=>{}}, @bind);
 }
 
 1;

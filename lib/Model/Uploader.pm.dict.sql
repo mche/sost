@@ -34,3 +34,13 @@ select
     join "профили" u on f.uid=u.id
 {%= $where || '' %}
 {%= $order_by || '' %}
+
+@@ переименовать папку
+--- топ папку
+update "{%= $schema %}"."файлы" f
+set "names"= array[?::text]::text[] || names[(case when array_length("names", 1)>1 then 2 else 1 end):]
+from refs r
+{%= $where || '' %}
+returning *
+;
+

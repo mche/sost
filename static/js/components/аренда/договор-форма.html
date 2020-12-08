@@ -336,11 +336,11 @@
       <h4 class="">
         <!-- i class="material-icons">storage</i -->
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="teal-fill fill-darken-3 " style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg?20200929#attach" class=""></use></svg>
-        <span>Файлы документов</span>
+        <span>Прикрепленные файлы</span>
         <!--sup class="chip ">{{ form._uploads.length }}</sup-->
       </h4>
-      <div v-if="form.id" class="card teal lighten-5">
-        <v-uploads :parent="form"></v-uploads>
+      <div v-if="form.id" class="card teal lighten-3">
+        <v-uploads :parent="form" :folders=" ['Договоры', 'Архив'] "></v-uploads>
       </div>
       <div v-else class="grey-text center">Можно загрузить после сохранения договора</div>
     </div>

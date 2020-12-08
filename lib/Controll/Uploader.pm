@@ -117,6 +117,26 @@ sub _файл {
   );
 }
 
+sub переименовать_папку {# и переместить в папку
+  my $c = shift;
+  my $param=$c->req->json;
+  return $c->render(json=>{"error"=>'Нет всех параметров'})
+    unless scalar(grep(!!$_, qw(name edit parent_id))) eq 3# name - старое имя топ-папки, edit - новое имя, parent_id - родитель-объект
+      || scalar(grep(!!$_, qw(edit @id))) eq 2; # или @id - список ид-файлов для перемещения(установки) топ-папки
+  
+  my $tx_db = $c->model->dbh->begin;
+  local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
+  
+  my $r = $c->model->переименовать_папку($param);
+  
+  return $c->render(json=>{"error"=>$r})
+    unless $r || ref $r;
+  
+  $tx_db->commit;
+  
+  $c->render(json=>{"success"=>$r});
+}
+
 
 
 1;
