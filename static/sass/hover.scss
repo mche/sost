@@ -1,3 +1,34 @@
+.hover-shadow3d:hover, .shadow3d {
+  text-shadow: 0 0.15em 0.11em rgba(0,0,0,0.15), 0 0.25em 0.021em rgba(0,0,0,0.1), 0 0.32em 0.32em rgba(0,0,0,0.1);
+}
+.hover-pointer:hover {
+  cursor: pointer;
+}
+
+/// static/js/components/access/roles.html
+.hover-parent-show-inline,
+.hover-parent-show-block,
+.hover-parent-show-iblock  {
+  display: none;
+}
+.hover-childs-show:hover > .hover-parent-show-inline,
+.hover-childs-show:hover > .hover-parent-inline-child {
+  display: inline;
+}
+.hover-childs-show:hover > .hover-parent-show-block {
+  display: block;
+}
+.hover-childs-show:hover > .hover-parent-show-iblock {
+  display: inline-block;
+}
+.hover-childs-show:hover > .hover-parent-hide-child {
+  display: none;
+}
+.hover-z-depth-1:hover {
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+}
+
+
 .hover-bottom-shadow-blue-darken-3:hover {/// как поле формы
   box-shadow: 0 3px 0 0 color("blue", "darken-3");
   border-color: transparent;

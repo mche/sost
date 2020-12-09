@@ -54,6 +54,7 @@ $checkbox-notchecked-background: color("teal", "lighten-5");
 @import "animate";
 @import "tab-shadow";
 @import "modal";
+@import "placeholder";
 ///@import "tooltip";
 
 
@@ -224,6 +225,9 @@ svg + span:before, svg + span:after, svg + span + span:after  {
 .marg-0-05 {
   margin: 0 0.5rem !important;
 }
+.marg-05-0 {
+  margin: 0.5rem 0 !important;
+}
 
 .chip {
   /*height: 31px;// уменьшил на пиксел, ровнее*/
@@ -374,6 +378,10 @@ sup.chip {
   display: none;
 }
 
+.max-height-none {
+  max-height: none !important;
+}
+
 .rounded-05 {
   border-radius: 0.5rem;
 }
@@ -455,35 +463,7 @@ sup.chip {
   background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iNiIgaGVpZ2h0PSI2Ij4KPHJlY3Qgd2lkdGg9IjYiIGhlaWdodD0iNiIgZmlsbD0iI2VmZSI+PC9yZWN0Pgo8ZyBpZD0iYyI+CjwhLS1yZWN0IHdpZHRoPSczJyBoZWlnaHQ9JzMnIGZpbGw9JyNlNmU2ZTYnLy0tPgo8cmVjdCB5PSIxIiB3aWR0aD0iMyIgaGVpZ2h0PSIyIiBmaWxsPSIjZDhkOGQ4Ij48L3JlY3Q+CjwvZz4KPHVzZSB4bGluazpocmVmPSIjYyIgeD0iMyIgeT0iMyI+PC91c2U+Cjwvc3ZnPg==");
 }
 
-.hover-shadow3d:hover, .shadow3d {
-  text-shadow: 0 0.15em 0.11em rgba(0,0,0,0.15), 0 0.25em 0.021em rgba(0,0,0,0.1), 0 0.32em 0.32em rgba(0,0,0,0.1);
-}
-.hover-pointer:hover {
-  cursor: pointer;
-}
 
-/// static/js/components/access/roles.html
-.hover-parent-show-inline,
-.hover-parent-show-block,
-.hover-parent-show-iblock  {
-  display: none;
-}
-.hover-childs-show:hover > .hover-parent-show-inline,
-.hover-childs-show:hover > .hover-parent-inline-child {
-  display: inline;
-}
-.hover-childs-show:hover > .hover-parent-show-block {
-  display: block;
-}
-.hover-childs-show:hover > .hover-parent-show-iblock {
-  display: inline-block;
-}
-.hover-childs-show:hover > .hover-parent-hide-child {
-  display: none;
-}
-.hover-z-depth-1:hover {
-  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
-}
 
 .font-effect-3d-float, .shadow-text {
   text-shadow: 0 0.15em 0.11em rgba(0,0,0,0.15), 0 0.25em 0.021em rgba(0,0,0,0.1), 0 0.32em 0.32em rgba(0,0,0,0.1);

@@ -117,17 +117,20 @@ sub _файл {
   );
 }
 
-sub переименовать_папку {# и переместить в папку
+sub переименовать {# и переместить в папку
   my $c = shift;
   my $param=$c->req->json;
   return $c->render(json=>{"error"=>'Нет всех параметров'})
-    unless scalar(grep(!!$_, qw(name edit parent_id))) eq 3# name - старое имя топ-папки, edit - новое имя, parent_id - родитель-объект
-      || scalar(grep(!!$_, qw(edit @id))) eq 2; # или @id - список ид-файлов для перемещения(установки) топ-папки
+    unless scalar(grep(!!$param->{$_}, qw(name edit parent_id))) eq 3# name - старое имя топ-папки, edit - новое имя, parent_id - родитель-объект
+      || scalar(grep(!!$param->{$_}, qw(@id))) eq 1 # или перемещение в папку edit (если пустая строка - в корень),  @id - обязательно список ид-файлов
+      || scalar(grep(!!$param->{$_}, qw(id names))) eq 2; # или переименовать файл
   
   my $tx_db = $c->model->dbh->begin;
   local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
   
-  my $r = $c->model->переименовать_папку($param);
+  my $r = $param->{'name'} ? $c->model->переименовать_папку($param)
+    : $param->{'names'} ? $c->model->переименовать_файл($param)
+      : $c->model->переместить_в_папку($param);
   
   return $c->render(json=>{"error"=>$r})
     unless $r || ref $r;

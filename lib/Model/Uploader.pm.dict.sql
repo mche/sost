@@ -38,8 +38,16 @@ select
 @@ переименовать папку
 --- топ папку
 update "{%= $schema %}"."файлы" f
-set "names"= array[?::text]::text[] || names[(case when array_length("names", 1)>1 then 2 else 1 end):]
+set "names"= ?::text[] || names[(case when array_length("names", 1)>1 then 2 else 1 end):]
 from refs r
+{%= $where || '' %}
+returning *
+;
+
+@@ переместить в папку
+--- топ папку
+update "{%= $schema %}"."файлы" f
+set "names"= ?::text[] || names[(case when array_length("names", 1)>1 then 2 else 1 end):]
 {%= $where || '' %}
 returning *
 ;

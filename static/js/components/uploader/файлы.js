@@ -18,7 +18,7 @@ var module = angular.module(moduleName, ['Uploader']);
 module.factory('$КомпонентФайлы', function($http, $templateCache, $window, appRoutes, $AppUser, $Uploader) {// factory
 
 const props = {
-  "folders": {///   предустановленные папки
+  "folders": {///   предустановленные папки, если их нет - добавление папок откл, если пустой массив - можно созд, порядок массива сохраняется без пересортировки
     type: Array,
     //~ default: [],
   },
@@ -128,12 +128,12 @@ https://github.com/simple-uploader/Uploader#events
     if (resp.success['$last_modified/json']) resp.success.$last_modified = JSON.parse(resp.success['$last_modified/json']);
     if (resp.success['$ts/json']) resp.success.$ts = JSON.parse(resp.success['$ts/json']);
     delete resp.success['$last_modified/json'];
-    vm.expandUploads = true;
-    setTimeout(function(){
-      //~ $('.uploader-drop', $(vm.$el)).get(0).scrollIntoView({ "block": 'start', "behavior": 'smooth', });
+    //~ vm.expandUploads = true;
+    setTimeout(()=>{
       vm.uploads.push(resp.success);///props
       vm.TopFolders();
       if (resp.success.names && resp.success.names.length > 1) vm.topFolder = vm.topFolders.find((fd)=>fd.name == resp.success.names[0]);
+      //~ vm.$el.querySelector(`#file-${resp.success.id}`).scrollIntoView({ "block": 'start', "behavior": 'smooth', });
       //~ vm.parent._uploads.push(resp.success);
       console.log("Save file", resp.success);
     });
@@ -239,6 +239,7 @@ TopFolders(){
     a[name] = 0;
     return a;
   }, {});
+  
   this.uploads.reduce((a, file)=>{
     if (file.names.length == 1) return a;
     if (!a[file.names[0]]) a[file.names[0]] = 0;
@@ -247,19 +248,20 @@ TopFolders(){
   }, folders);
   //~ console.log("Folders", folders, Object.keys(folders).sort().map((name)=>{return {name, /*"files":folders[name]*/};}));
   this.topFolders.splice(0);
-  this.topFolders.push(...Object.keys(folders).sort().map((name)=>{return {name, "файлов": folders[name],};}));
+  //~ for (let f in folders) console.log("Folders", f);
+  this.topFolders.push(...Object.keys(folders)/*.sort()*/.map((name)=>{return {name, "файлов": folders[name],};}));
 },
 
 AddFolder(){
-  let f = {};
-  this.topFolders.push(f);
+  let f = {'_edit':'', '_new':true};
+  this.topFolders.unshift(f);
   this.TabFolder(f);
-  this.FocusInputFolder();
+  this.FocusEditFolder();
 },
 
 TabFolder(f){
   if (!!this['перемещение'] && this['перемещение'].length)
-    return this.SaveFolder({"edit":f.name, "@id":this['перемещение'].map(f=>f.id)}).then(function(data){
+    return this.SaveFolder({"edit": this.topFolder === f ? '' : f.name, "@id":this['перемещение'].map(f=>f.id)}).then(function(data){
       Materialize.toast('Успешно перемещены файл(ы): '+data.length, 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
       
     });
@@ -267,7 +269,7 @@ TabFolder(f){
   this.topFolder = f;
 },
 
-BlurInputFolder(f){///переименование
+BlurEditFolder(f){///переименование
   let vm = this;
   if (!!f._name && !!f._edit && f._name != f._edit && !!f['файлов']) {///редакт
     vm.SaveFolder({"name":f._name, "edit":f._edit, "parent_id":vm.parent.id}).then(function(data){
@@ -276,18 +278,20 @@ BlurInputFolder(f){///переименование
     });
   }
   else if (!!f._edit) vm.$set(f, 'name', f._edit);
-  else /* if (!f._edit || f._edit.length === 0) return*/ {
+  else if (!f._name) /* if (!f._edit || f._edit.length === 0) return*/ {
     vm.topFolders.removeOf(f);
     vm.topFolder = undefined;
   }
-  
+  else vm.$set(f, 'name', f._name);
+  Vue.delete(f, '_edit');
+  Vue.delete(f, '_name');
   //~ this.TabFolder(f);
   
 },
 
 SaveFolder(param){/// переименование папки и перемещение в папку
   let vm = this;
-  return $http.post(appRoutes.urlFor('файлы/переименовать папку'), param).then(
+  return $http.post(appRoutes.urlFor('файлы/переименовать'), param).then(
     function(resp){
       if (resp.data.success) {
         vm.ready = false;
@@ -307,12 +311,12 @@ EditFolder(f){
   this.$set(f, '_edit', f.name);
   f._name = f.name;
   f.name = undefined;
-  this.FocusInputFolder();
+  this.FocusEditFolder();
 },
 
-FocusInputFolder(){
+FocusEditFolder(){
   setTimeout(_=>{
-    this.$el.querySelector('input[type="text"]').focus();
+    this.$el.querySelector('input[name="edit-folder"]').focus();
   });
 },
 
@@ -330,6 +334,46 @@ ToggleMove(file){
 
 SortUploads(a,b){
   return a.names.join('').localeCompare(b.names.join(''));
+},
+
+EditFile(file){
+  let name = file.names[file.names.length-1].split(/\./);
+  this.$set(file, '_edit', name.slice(0, name.length-1).join('.'));
+  this.$set(file, '_ext', name[name.length-1]);
+  this.FocusEditFile(file);
+},
+
+BlurEditFile(file){
+  let edit = file._edit+'.'+file._ext;
+  if (file.names[file.names.length-1] != edit) {
+    file.names[file.names.length-1] = edit;
+    this.SaveFile(file);
+  }
+  Vue.delete(file, '_edit');
+  Vue.delete(file, '_ext');
+  
+},
+
+FocusEditFile(file){
+  setTimeout(_=>{
+    this.$el.querySelector(`#file-${file.id} input[type=text]`).focus();
+  });
+},
+
+SaveFile(file){/// переименование папки и перемещение в папку
+  let vm = this;
+  return $http.post(appRoutes.urlFor('файлы/переименовать'), {"id":file.id, "names":file.names}).then(
+    function(resp){
+      if (resp.data.success) {
+        Materialize.toast('Успешно переименован файл', 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
+        //~ });/// обновить
+        //~ return resp.data.success;
+      }
+    },
+    function(){
+      Materialize.toast('Ошибка сохранения папки', 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
+    }
+  );
 },
 
 }; ///конец методы
