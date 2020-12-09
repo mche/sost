@@ -8,17 +8,20 @@
     <a v-show="!topFolder && UploadsLen" @click.stop="expandUploads = !expandUploads" href="javascript:" class="chip blue lighten-3 z-depth-1 hover-white padd-0" title="развернуть/свернуть список файлов"><i class="material-icons" :class="{'rotate180': expandUploads}">arrow_drop_down</i><sup style="position: absolute; top:0.3rem; right:0.5rem;">{{ UploadsLen }}</sup></a>
   </div>
   <!-- табы папок -->
-  <ul v-if="folders" class="col m3 marg-0 padd-0  blue  lighten-4  striped nowrap" >
-    <li class="right-align">
-      <a v-show="!topFolders[0] || !!topFolders[0].name" @click="AddFolder" href="javascript:" class="btn-flat hover-white padd-0-05 fs8" title="Добавить папку"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 -8 394 394" class="blue-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg?2020-12-08-1#add-folder" /></svg></a>
-    </li>
-    <li v-for="f in topFolders" v-show="f !== topFolder" class1="tab-shadow helmet z-depth-1 " class="nowrap padd-0-05" style="overflow: auto;" :class000="{'active bold blue lighten-5': f === topFolder, '':f !== topFolder, 'animated slideInRight': !f.name}">
-      <h5 class="" :class="{'bold':  f === topFolder}">
-        <a v-if="f.name" @click="TabFolder(f)" href="javascript:"  class="blue-text text-darken-3 hover-shadow3d">{{ f.name }} <sup v-show=" !!f['файлов'] " class="chip fs8">{{ f['файлов'] }}</sup><sup v-show="f._new" class="chip orange-text fs8">*новая*</sup><!-- UploadsFilteredLen --></a>
-      </h5>
-    </li>
+  
+  <div v-if="folders" class="col m3">
+  <h4 v-show="!topFolders[0] || !!topFolders[0].name" class="right-align">
+    <a @click="AddFolder" href="javascript:" class="btn-flat hover-white padd-05" style=" line-height: normal;" title="Добавить папку"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 -8 394 394" class="blue-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg?2020-12-08-1#add-folder" /></svg></a>
+  </h4>
+    <ul class="collection marg-0 padd-0  blue  lighten-4  striped nowrap" >
+      <li v-for="f in topFolders" v-show="f !== topFolder" class1="tab-shadow helmet z-depth-1 " class="collection-item nowrap padd-0-05" style="overflow: auto;" :class000="{'active bold blue lighten-5': f === topFolder, '':f !== topFolder, 'animated slideInRight': !f.name}">
+        <h5 class="" :class="{'bold':  f === topFolder}">
+          <a v-if="f.name" @click="TabFolder(f)" href="javascript:"  class="blue-text text-darken-3 hover-shadow3d">{{ f.name }} <sup v-show=" !!f['файлов'] " class="chip fs8">{{ f['файлов'] }}</sup><sup v-show="f._new" class="chip orange-text fs8">*новая*</sup><!-- UploadsFilteredLen --></a>
+        </h5>
+      </li>
 
-  </ul>
+    </ul>
+  </div>
   <!-- список файлов -->
   <div class=" " :class="{'col m9':!!folders}">
     <h4 v-if="!!topFolder" class="helmet z-depth-1 blue lighten-5 fw500 width-100 animated slideInLeft">
@@ -30,7 +33,7 @@
       </div>
       
     </h4>
-    <h4 v-else v-show="folders" class="helmet z-depth-1 blue  lighten-5 blue-text text-darken-3  animated slideInLeft ">Все папки</h4>
+    <h4 v-else v-show="folders" class="helmet z-depth-1 blue  lighten-5 blue-text text-darken-3  animated slideInLeft ">Все файлы</h4>
     
     <ul v-if=" UploadsLen " class="collection  blue striped lighten-4 marg-0 padd-0" :class="{'max-height-none':!!topFolder}" style="overflow:auto;" :style="expandUploads ? {} : {'max-height': 'calc(30vh)'}">
       <li v-for="file in UploadsFiltered" :key="file.id" :id=" `file-${file.id}` " class="collection-item relative hover-childs-show  animated" :class="{' slideInRight': !!file._file, 'fadeIn':!file._file}" style="/*overflow:auto; border:none;*/">
