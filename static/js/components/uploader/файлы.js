@@ -132,7 +132,7 @@ https://github.com/simple-uploader/Uploader#events
     setTimeout(()=>{
       vm.uploads.push(resp.success);///props
       vm.TopFolders();
-      if (resp.success.names && resp.success.names.length > 1) vm.topFolder = vm.topFolders.find((fd)=>fd.name == resp.success.names[0]);
+      if (resp.success.names && resp.success.names.length > 1) vm.topFolder = vm.FindTopFolder(resp.success.names[0]);
       //~ vm.$el.querySelector(`#file-${resp.success.id}`).scrollIntoView({ "block": 'start', "behavior": 'smooth', });
       //~ vm.parent._uploads.push(resp.success);
       console.log("Save file", resp.success);
@@ -162,7 +162,8 @@ Remove(file){
         else {
           Materialize.toast('Удалено успешно', 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
           vm.uploads.removeOf(file);///props
-          //~ vm.TopFolders();
+          vm.TopFolders();
+          if (file.names.length > 1) vm.topFolder = vm.FindTopFolder(file.names[0]);
         }
       });
       //~ vm.$emit('on-', resp.data.success);
@@ -233,23 +234,28 @@ ClickStop(){
   /*** ничего @click.stop!!! ***/
 },
 
-TopFolders(){ 
-  if (!this.folders) return;
-  let folders = this.folders.reduce((a, name)=>{
+TopFolders(){
+  let vm = this;
+  if (!vm.folders) return;
+  let folders = vm.folders.reduce((a, name)=>{
     a[name] = 0;
     return a;
   }, {});
   
-  this.uploads.reduce((a, file)=>{
+  vm.uploads.reduce((a, file)=>{
     if (file.names.length == 1) return a;
     if (!a[file.names[0]]) a[file.names[0]] = 0;
     a[file.names[0]]++;//.push(file);
     return a;
   }, folders);
   //~ console.log("Folders", folders, Object.keys(folders).sort().map((name)=>{return {name, /*"files":folders[name]*/};}));
-  this.topFolders.splice(0);
+  vm.topFolders.splice(0);
   //~ for (let f in folders) console.log("Folders", f);
-  this.topFolders.push(...Object.keys(folders)/*.sort()*/.map((name)=>{return {name, "файлов": folders[name],};}));
+  vm.topFolders.push(...Object.keys(folders)/*.sort()*/.map((name)=>{return {name, "файлов": folders[name], "_id": Math.random(),/*vm.idMaker.next().value*/};}));
+},
+
+FindTopFolder(top){///по имени
+  return  this.topFolders.find((fd)=>fd.name == top);
 },
 
 AddFolder(){
@@ -296,7 +302,7 @@ SaveFolder(param){/// переименование папки и перемещ�
       if (resp.data.success) {
         vm.ready = false;
         vm.Uploads().then(function(){
-          vm.topFolder = vm.topFolders.find((fd)=>fd.name == param.edit);
+          vm.topFolder = vm.FindTopFolder(param.edit);
         });/// обновить
         return resp.data.success;
       }
@@ -376,6 +382,16 @@ SaveFile(file){/// переименование папки и перемещен
   );
 },
 
+UploadsReduceByTopFolder(a, file){
+  if (file.names.length > 1 && file.names[0] == (this.topFolder.name || this.topFolder._name)) a.push(file);
+  return a;
+},
+
+UploadsReduceByEmptyFolder(a, file){/// файлы без папок
+  if (file.names.length == 1) a.push(file);
+  return a;
+},
+
 }; ///конец методы
 
 const computed = {
@@ -385,11 +401,10 @@ UploadsLen(){
 },
 
 UploadsFiltered(){
+  this.uploadsFilteredKey = Math.random();
+  if (this.hasEmptyFolder) return this.uploads.reduce(this.UploadsReduceByEmptyFolder, []).sort(this.SortUploads);
   if (this.topFolder === undefined) return this.uploads.sort(this.SortUploads);
-  return this.uploads.reduce((a, file)=>{
-    if (file.names.length > 1 && file.names[0] == (this.topFolder.name || this.topFolder._name)) a.push(file);
-    return a;
-  }, []).sort(this.SortUploads);
+  return this.uploads.reduce(this.UploadsReduceByTopFolder, []).sort(this.SortUploads);
 },
 
 UploadsFilteredLen(){
@@ -399,6 +414,8 @@ UploadsFilteredLen(){
   
 };
 
+//~ const idMaker = IdMaker();/// глобал util/IdMaker.js
+
 const data = function() {
   let vm = this;
   if (!vm.parent._uploads) vm.parent._uploads = [];
@@ -406,6 +423,7 @@ const data = function() {
   vm.Uploads();///загрузить
   vm.InitUploader();
   vm.$AppUser = $AppUser;
+  //~ vm.IdMaker = idMaker;
   
   return {
     //~ dataUploads: [...vm.uploads],
@@ -417,6 +435,8 @@ const data = function() {
     confirmFile: undefined,
     iframeFile: undefined,
     "перемещение":[], /// как крыжики иконки свг
+    "uploadsFilteredKey": undefined,
+    "hasEmptyFolder": false, /// файлы без папки
   };
 };///  конец data
 
