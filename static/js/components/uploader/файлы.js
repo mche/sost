@@ -266,6 +266,7 @@ AddFolder(){
 },
 
 TabFolder(f){
+  this.filterEmptyFolder = false;
   if (!!this['перемещение'] && this['перемещение'].length)
     return this.SaveFolder({"edit": this.topFolder === f ? '' : f.name, "@id":this['перемещение'].map(f=>f.id)}).then(function(data){
       Materialize.toast('Успешно перемещены файл(ы): '+data.length, 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
@@ -344,13 +345,14 @@ SortUploads(a,b){
 
 EditFile(file){
   let name = file.names[file.names.length-1].split(/\./);
-  this.$set(file, '_edit', name.slice(0, name.length-1).join('.'));
-  this.$set(file, '_ext', name[name.length-1]);
+  let e = name.length > 1 ? 1 : 0;
+  this.$set(file, '_edit', name.slice(0, name.length-e).join('.'));
+  this.$set(file, '_ext', name[name.length-e]);
   this.FocusEditFile(file);
 },
 
 BlurEditFile(file){
-  let edit = file._edit+'.'+file._ext;
+  let edit = file._edit+(file._ext ? '.'+file._ext : '');
   if (file.names[file.names.length-1] != edit) {
     file.names[file.names.length-1] = edit;
     this.SaveFile(file);
@@ -402,7 +404,7 @@ UploadsLen(){
 
 UploadsFiltered(){
   this.uploadsFilteredKey = Math.random();
-  if (this.hasEmptyFolder) return this.uploads.reduce(this.UploadsReduceByEmptyFolder, []).sort(this.SortUploads);
+  if (this.filterEmptyFolder) return this.uploads.reduce(this.UploadsReduceByEmptyFolder, []).sort(this.SortUploads);
   if (this.topFolder === undefined) return this.uploads.sort(this.SortUploads);
   return this.uploads.reduce(this.UploadsReduceByTopFolder, []).sort(this.SortUploads);
 },
@@ -436,7 +438,7 @@ const data = function() {
     iframeFile: undefined,
     "перемещение":[], /// как крыжики иконки свг
     "uploadsFilteredKey": undefined,
-    "hasEmptyFolder": false, /// файлы без папки
+    "filterEmptyFolder": false, /// файлы без папки
   };
 };///  конец data
 

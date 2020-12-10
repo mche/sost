@@ -10,7 +10,7 @@
   <!-- табы папок -->
   
   <div v-if="folders" class="col m3 padd-0">
-    <ul class="collection marg-0 padd-0  blue  lighten-4  striped nowrap" >
+    <ul v-if="topFolders.length" class="collection marg-0 padd-0  blue  lighten-4  striped nowrap" >
       <li v-for="f in topFolders" v-show="f !== topFolder" class1="tab-shadow helmet z-depth-1 " class="collection-item nowrap padd-0-05" style="overflow: auto;" :class000="{'active bold blue lighten-5': f === topFolder, '':f !== topFolder, 'animated slideInRight': !f.name}">
         <h5 class="" :class="{'bold':  f === topFolder}">
           <a v-if="f.name" @click="TabFolder(f)" href="javascript:"  class="blue-text text-darken-3 hover-shadow3d">{{ f.name }} <sup v-show=" !!f['файлов'] " class="chip fs8">{{ f['файлов'] }}</sup><sup v-show="f._new" class="chip orange-text fs8">*новая*</sup><!-- UploadsFilteredLen --></a>
@@ -39,29 +39,29 @@
       
     </h4>
     <div v-else v-show="folders && UploadsLen" class=" animated slideInLeft fast">
-      <h4 class="helmet z-depth-1  lighten-5  " :class="{'blue fw500':!hasEmptyFolder}">
-            <a @click="hasEmptyFolder = false" href="javascript:" class="hover-shadow3d blue-text text-darken-3">Все файлы</a>
+      <h4 class="helmet z-depth-1  lighten-5  " :class="{'blue fw500':!filterEmptyFolder}">
+            <a @click="filterEmptyFolder = false" href="javascript:" class="hover-shadow3d blue-text text-darken-3">Все файлы</a>
             <sup class="chip fs8">{{ UploadsLen }}</sup>
       </h4>
-      <h4 class="helmet z-depth-1   lighten-5 " :class="{'blue fw500':hasEmptyFolder}">
-            <a @click="hasEmptyFolder = true" href="javascript:" class="hover-shadow3d blue-text text-darken-3">Без папки</a>
-            <sup v-show="hasEmptyFolder" class="chip fs8">{{ UploadsFilteredLen }}</sup>
+      <h4 class="helmet z-depth-1   lighten-5 " :class="{'blue fw500':filterEmptyFolder}">
+            <a @click="filterEmptyFolder = true" href="javascript:" class="hover-shadow3d blue-text text-darken-3">Без папки</a>
+            <sup v-show="filterEmptyFolder" class="chip fs8">{{ UploadsFilteredLen }}</sup>
       </h4>
     </div>
       
     
-    <ul v-if=" UploadsLen " :key="uploadsFilteredKey" class="collection  blue striped lighten-4 marg-0 padd-0 animated slideInUp" :class="{'max-height-none':!!topFolder}" style="overflow:auto;" :style="expandUploads ? {} : {'max-height': 'calc(30vh)'}">
+    <ul v-if=" UploadsLen " :key000="uploadsFilteredKey" class="collection  blue striped lighten-4 marg-0 padd-0 animated slideInUp" :class="{'max-height-none':!!topFolder}" style="overflow:auto;" :style="expandUploads ? {} : {'max-height': 'calc(30vh)'}">
       <li v-for="file in UploadsFiltered" :key="file.id" :id=" `file-${file.id}` " class="collection-item relative hover-childs-show  animated" :class="{' slideInRight': !!file._file, 'fadeIn000':!file._file, 'marg-05-0':file.hasOwnProperty('_edit')}" style="/*overflow:auto; border:none;*/">
         <a @click.stop="ViewIframe(file)" href="javascript: void('просмотреть(скачать) файл')" class="hover-shadow3d input-field" title="просмотреть(скачать) файл">
           <h6 v-for="(n, idx) in file.names" v-show="!topFolder || file.names.length == 1 || idx > 0" :key="idx" class="breadcrumb before-margin-0 inline ">
-            <span class="chip padd-0-05 blue-text-darken-3" :class="{'fw500 white': idx+1 == file.names.length || file.names.length == 1 , 'transparent': !idx && file.names.length > 1, 'orange lighten-4': !!file._file,}" >{{ n }}</span>
+            <span class="chip padd-0-05 blue-text-darken-3" :class="{'fw500 white': idx+1 == file.names.length || file.names.length == 1 , 'transparent': file.names.length > 1 && idx+1 != file.names.length, 'orange lighten-4': !!file._file,}" >{{ n }}</span>
           </h6>
           <span v-show="!!file._file" class="orange-text" style="position: absolute; z-index: 1; top:-0.5rem; right:-0.3rem;"  title=" новый файл ">✱</span>
         </a>
-        <span class="fs8 grey-text" :title="file.content_type"> {{ Size(file) }} </span>
-        <span class="chip padd-0-05 grey-text fs8" :title=" JSON.stringify(file.$last_modified) "> <span>{{ file.$last_modified.day }}</span> <span>{{ file.$last_modified['мес'] }}</span> <span v-show="(new Date).getYear()+1900 != file.$last_modified.year">{{ file.$last_modified.year }}</span> <span>{{ file.$last_modified.hour }}:{{ file.$last_modified.minute }}</span></span>
+        <span class="padd-0-05 fs8 grey-text" :title="file.content_type"> {{ Size(file) }} </span>
+        <span class="padd-0-05 grey-text fs8" :title=" JSON.stringify(file.$last_modified) "> <span>{{ file.$last_modified.day }}</span> <span>{{ file.$last_modified['мес'] }}</span> <span v-show="(new Date).getYear()+1900 != file.$last_modified.year">{{ file.$last_modified.year }}</span> <span>{{ file.$last_modified.hour }}:{{ file.$last_modified.minute }}</span></span>
         <span class="chip000 padd-0-05 grey-text fs8" :title=" JSON.stringify(file.$ts) "> <span>{{ file.$ts.day }}</span> <span>{{ file.$ts['мес'] }}</span> <span v-show="(new Date).getYear()+1900 != file.$ts.year">{{ file.$ts.year }}</span> <span>{{ file.$ts.hour }}:{{ file.$ts.minute }}</span></span>
-        <span v-show=" $AppUser.ID() != file.uid " class="chip padd-0-05 fs8 truncate nowrap vbottom grey-text" style="max-width:5rem;" :title="file['@автор'].join(' ')">{{ file['@автор'].join(' ') }}</span>
+        <span v-show=" $AppUser.ID() != file.uid " class="chip transparent padd-0-05 fs8 truncate nowrap vbottom grey-text" style="max-width:5rem;" :title="file['@автор'].join(' ')">{{ file['@автор'].join(' ') }}</span>
         
         <!-- блок кнопок -->
         <a @click.stop="ConfirmRemove(file)" href="javascript: void('удалить файл')" class="btn-flat  hover-z-depth-1 hover-parent-show-iblock hover-white remove-siblings" title="удалить файл"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill fill-lighten-1" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#left-clear-fill"></use></svg></a>

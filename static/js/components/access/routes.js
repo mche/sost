@@ -306,8 +306,8 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
      if (s.length == 1) s.unshift('route');
      return "[{0}=>'{1}', {2}{3} to=>'{4}', name=>'{5}'{6}],".format(
         s[0].toLocaleLowerCase(), s[1],
-      (route.auth || '') && " over=>{access=>{auth=>q|{0}|}}, ".format(route.auth),
-      (route.host_re || '') && " over=>{host => {0}}, ".format(route.host_re),
+      (route.auth || '') && " requires=>{access=>{auth=>q|{0}|}}, ".format(route.auth),
+      (route.host_re || '') && " requires=>{host => {0}}, ".format(route.host_re),
       route.to, route.name,
       (route.descr || '') && ", descr=>q|{0}|, ".format(route.descr),
      

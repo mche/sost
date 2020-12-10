@@ -67,7 +67,7 @@ sub движение_ДС_xlsx {
   require Excel::Writer::XLSX;
   
   my $data = $c->model_report_rent->движение_арендатора($param);
-  my @names = ('дата', 'категория', 'приход (оплаты)', 'расход (счета/акты)', 'примечание');
+  my @names = ('дата', 'оплата (приход)', 'счета/акты',  'категория', 'примечание');
   #~ my %names = (''=> 'приход (оплаты)', 'расход (счета / акты)',)
   #~ my $filename=sprintf("static/tmp/%s-реестр-актов.xlsx", $c->auth_user->{id}, $month);
   
@@ -77,23 +77,29 @@ sub движение_ДС_xlsx {
   my $worksheet = $workbook->add_worksheet();
   
   if (@$data) {# шапка
+    $worksheet->set_row(0, 20);
     $worksheet->write_row(0, 0, ['Расчеты с арендатором',]);
-    $worksheet->write_row(0, 1, [$data->[0]{"контрагент"}], $workbook->add_format( bold => 1, color => 'red', size=>14 ));
+    $worksheet->write_row(0, 3, [$data->[0]{"контрагент"}], $workbook->add_format( bold => 1, color => 'green', bg_color=>'#C8E6C9', size=>14 ));
     #~ $worksheet->write_row(2, 0, [$data->[0]{"контрагент"}], $bold);
+    $worksheet->set_row(1, 20);
     $worksheet->write_row(1, 0, ['Арендодатель',]);
-    $worksheet->write_row(1, 1, [$data->[0]{"кошельки"}[0]], $workbook->add_format( bold => 1, color => 'green', size=>14 ));
+    $worksheet->write_row(1, 3, [$data->[0]{"кошельки"}[0]], $workbook->add_format( bold => 1, color => 'purple', bg_color=>'#E1BEE7', size=>14 ));
   }
 
   my $n = 5;
-  $worksheet->write_row($n++, 0, \@names, $workbook->add_format( bold => 1, bottom=>1, align=>'center'));
+  $worksheet->set_row($n, 20);
+  $worksheet->write_row($n++, 0, \@names, $workbook->add_format( bold => 1, bottom=>1, align=>'center', bg_color=>'#C8E6C9',));
   my @sum  = (0, 0);
-  $worksheet->set_column( 0, 0, 20 );
-  $worksheet->set_column( 1, 1, 50 );
-  $worksheet->set_column( 2, 4, 15 );
+  $worksheet->set_column( 0, 0, 15 );
+  $worksheet->set_column( 1, 2, 15 );
+  #~ $worksheet->set_column( 2, 3, 20 );
+  $worksheet->set_column( 3, 4, 50 );
   for (@$data) {
-    $worksheet->write_row($n++, 0, [map {ref eq 'ARRAY' ? join(', ', @$_) : $_} $c->_format_date($_->{'$дата'}), @$_{@names[1..1]}]);
-    $worksheet->write_row($n-1, 2, [ @$_{qw(приход/num расход/num)}], $workbook->add_format( num_format=> '# ##0.00'));
-    $worksheet->write_row($n-1, 4, [ @$_{qw(примечание)}], $workbook->add_format( size => 8));
+    $worksheet->write_row($n, 0, [$c->_format_date($_->{'$дата'})]);
+    $worksheet->write_row($n, 1, [ @$_{qw(приход/num расход/num)}], $workbook->add_format( num_format=> '# ##0.00', size=>13,));
+    $worksheet->write_row($n, 3, [join(', ', @{$_->{'категория'}})]);
+    $worksheet->write_row($n, 4, [ @$_{qw(примечание)}] );#$workbook->add_format( size => 8)
+    $n++;
     #~ $worksheet->conditional_formatting( 'A1:A4',
     #~ {
         #~ type     => 'no_blanks',
@@ -104,9 +110,11 @@ sub движение_ДС_xlsx {
     $sum[1] += $_->{'расход/num'};
   }
   # подвал
-  $worksheet->write_row($n++, 0, [undef, 'Итого', @sum, undef], $workbook->add_format( bold => 1, size=>12, num_format=> '# ##0.00', align=>'right', top=>1));
+  $worksheet->write_row($n, 0, [ 'Итого', @sum, undef,undef], $workbook->add_format( bold => 1, size=>12, num_format=> '# ##0.00', align=>'right', top=>1, size=>14,));
+  $worksheet->set_row($n++, 20);
   my $s = $sum[0]-$sum[1];
-  $worksheet->write_row($n++, 0, [undef, 'Сальдо',  $s > 0 ? ($s) : (undef, -1*$s)], $workbook->add_format( bold => 1, size=>12, num_format=> '# ##0.00', align=>'right'));
+  $worksheet->write_row($n, 0, ['Сальдо',  $s > 0 ? ($s) : (undef, -1*$s), undef, ], $workbook->add_format( bold => 1, size=>12, num_format=> '# ##0.00', align=>'right', size=>14,));
+  $worksheet->set_row($n++, 20);
     
   $workbook->close();
   #~ return $fdata;
