@@ -82,11 +82,11 @@ sub движение_ДС_xlsx {
   
   if (@$data) {# шапка
     $worksheet->set_row(0, 20);
-    $worksheet->write_row(0, 0, [undef, undef,'Расчеты с арендатором',], $workbook->add_format(align=>'right', bg_color=>$color{плюс}{bg_color}));
+    $worksheet->write_row(0, 0, [undef, undef,'Расчеты с арендатором', undef, undef,], $workbook->add_format(align=>'right', bg_color=>$color{плюс}{bg_color}));
     $worksheet->write_row(0, 3, [$data->[0]{"контрагент"}], $workbook->add_format( bold => 1,  size=>14, %{$color{плюс}} ));
     #~ $worksheet->write_row(2, 0, [$data->[0]{"контрагент"}], $bold);
     $worksheet->set_row(1, 20);
-    $worksheet->write_row(1, 0, [undef, undef,'Арендодатель', ], $workbook->add_format(align=>'right', bg_color=>$color{минус}{bg_color}));
+    $worksheet->write_row(1, 0, [undef, undef,'Арендодатель', undef, undef], $workbook->add_format(align=>'right', bg_color=>$color{минус}{bg_color}));
     $worksheet->write_row(1, 3, [$data->[0]{"кошельки"}[0][0]], $workbook->add_format( bold => 1, size=>14, %{$color{минус}} ));
   }
 

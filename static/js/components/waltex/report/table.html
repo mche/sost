@@ -101,8 +101,8 @@
         <!-- финальная позиция -->
         <div ng-if=" tr['колонки'][td.key || td.title].id" ng-init=" m = $c.MoneySplit(tr['колонки'][td.key || td.title].sum) " class="card white right-000 animated zoomIn"  style="padding: 0rem 0.3rem; margin:0; /*width:100%;*/">
           <div class="right bold nowrap" style="padding-left:1rem;" ng-class="{'orange-text text-darken-4': parseInt(tr.sign) < 0, 'green-text text-darken-4': parseInt(tr.sign) > 0}">
-            <i ng-show="parseInt(tr.sign) > 0" class="material-icons ">add_circle_outline</i>
-            <i ng-show="parseInt(tr.sign) < 0" class="material-icons ">remove_circle_outline</i>
+            <i ng-show="parseInt(tr.sign) > 0" class="material-icons fs8 ">add_circle_outline</i>
+            <i ng-show="parseInt(tr.sign) < 0" class="material-icons fs8 ">remove_circle_outline</i>
             <!--span>{{ Util.money( }}</span-->
             <span>{{ m[0] }}</span>
             <span class="fs7 fw100" ng-class-000="{'transparent-text-000': m[1] == '00'}"> {{ m[1] }}</span>
@@ -117,20 +117,24 @@
                   <span>{{tr['контрагент'] || '(пусто)'}}</span>
                 </div>
                 
-                <span class="red-text text-darken-4" ng-if="tr['кошельки'][1] && tr['кошельки'][1][0]">{{tr['кошельки'][1][0]}}: {{tr['кошельки'][1][1]}}</span>
+                <span class="chip padd-0-05 teal darken-3 white-text nowrap" ng-if="tr['кошельки'][1] && tr['кошельки'][1][0]">{{tr['кошельки'][1][0]}}</span>
+                <span class="chip padd-0-05 red-text text-darken-3 nowrap" ng-if="tr['кошельки'][1] && tr['кошельки'][1][1]"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="red-fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg?2020-12-11#wallet"></use></svg> {{tr['кошельки'][1][1]}}</span>
               </div>
               <!--i class="material-icons" ng-if="tr['кошельки'][1] && tr['кошельки'][1][0]">swap_horiz</i-->
               <!--span> → </span-->
               <div class="nowrap">
                 <i class="icon-left before-rotate180"></i>
                 <span ng-if="tr['кошельки'][0] && tr['кошельки'][0][0]">
-                  <span class="chip padd-0-05 ">{{tr['кошельки'][0][0]}}: {{tr['кошельки'][0][1]}}</span>
-                  <span ng-if="tr['$объект']" class="maroon-text chip padd-0-05" title="приход на объект">
+                <span class="chip nowrap teal darken-3 white-text padd-0-05">{{ tr['кошельки'][0][0] }}</span>
+                <span class="chip nowrap padd-0-05">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="teal-fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg?2020-12-11#wallet"></use></svg> {{ tr['кошельки'][0][1] }}
+                </span>
+                  <span ng-if="tr['$объект']" class="maroon-text chip nowrap padd-0-05" title="приход на объект">
                     <i class="icon-location"></i>
                     <span>{{tr['$объект'].name}}</span><!-- приход на объект -->
                   </span>
                 </span>
-                <span class="" ng-class="{'leaf-05 padd-0-05 light-green-darken-4 white-text': tr['контрагент'], 'indigo-text-darken-4': !tr['контрагент']}" ng-if="!(tr['кошельки'][0] && tr['кошельки'][0][0])">
+                <span class="" ng-class="{'leaf-05 padd-0-05 light-green-darken-4 white-text': tr['контрагент'], 'chip padd-0-05 indigo lighten-4 indigo-text-darken-4 nowrap': !tr['контрагент']}" ng-if="!(tr['кошельки'][0] && tr['кошельки'][0][0])">
                   <i ng-show="tr['профиль']" class="material-icons fs10">person</i>
                   <i ng-show=" tr['контрагент']" class="material-icons fs8">business</i>
                   <span>{{tr['контрагент'] || tr['профиль'] || '(пусто)'}}</span>
@@ -143,9 +147,12 @@
             <div ng-if="parseInt(td.sign || tr.sign) < 0" class="clearfix" style="vertical-align: top;">
               
                 
-              <div class="breadcrumb000 " ng-if="tr['кошельки'][0] && tr['кошельки'][0][0]">
-                <span class="chip padd-0-05">{{tr['кошельки'][0][0]}}: {{tr['кошельки'][0][1]}}</span>
-                <span ng-if="tr['$объект']" class="chip padd-0-05 maroon-text" title="расход с объекта">
+              <div class=" " ng-if="tr['кошельки'][0] && tr['кошельки'][0][0]">
+                <span class="chip nowrap teal darken-3 white-text padd-0-05">{{ tr['кошельки'][0][0] }}</span>
+                <span class="chip nowrap padd-0-05">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="teal-fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg?2020-12-11#wallet"></use></svg> {{ tr['кошельки'][0][1] }}
+                </span>
+                <span ng-if="tr['$объект']" class="chip nowrap padd-0-05 maroon-text" title="расход с объекта">
                   <i class="icon-location"></i>
                   <span>{{tr['$объект'].name}}</span><!-- расход с объекта -->
                 </span>
@@ -155,8 +162,10 @@
               <div class="nowrap">
                 <i class="icon-left before-rotate180"></i>
                 
-                <span ng-if="tr['кошельки'][1] && tr['кошельки'][1][0]">{{tr['кошельки'][1][0]}}: {{tr['кошельки'][1][1]}}</span>
-                <span class="" ng-class="{'leaf-05 padd-0-05 light-green-darken-4 white-text': tr['контрагент'], 'indigo-text-darken-4': !tr['контрагент']}" ng-if="!(tr['кошельки'][1] && tr['кошельки'][1][0])">
+                <span ng-if="tr['кошельки'][1] && tr['кошельки'][1][0]" class="chip teal darken-3 white-text padd-0-05 nowrap">{{tr['кошельки'][1][0]}}</span>
+                <span ng-if="tr['кошельки'][1] && tr['кошельки'][1][1]" class="chip red-text text-darken-3 padd-0-05 nowrap"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="red-fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg?2020-12-11#wallet"></use></svg> {{tr['кошельки'][1][1]}}</span>
+                
+                <span ng-if="!(tr['кошельки'][1] && tr['кошельки'][1][0])" class="" ng-class="{'leaf-05 padd-0-05 light-green-darken-4 white-text': tr['контрагент'], 'chip padd-0-05 indigo lighten-4 indigo-text-darken-4 nowrap': !tr['контрагент']}">
                   <i ng-show="tr['профиль']" class="material-icons fs10">person</i>
                   <i ng-show=" tr['контрагент']" class="material-icons fs8">business</i>
                   <span>{{tr['контрагент'] || tr['профиль'] || '(пусто)'}}</span>
@@ -171,7 +180,7 @@
               <div class="breadcrumb000 red-text text-darken-4">Начислено по табелю</div>
               <div class="breadcrumb000 teal-text text-darken-4">{{ tr['кошельки'][0][1] }}</div>
               <i class="icon-left before-rotate180"></i>
-              <div class="indigo-text-darken-4">
+              <div class="chip padd-0-05 indigo lighten-4 indigo-text-darken-4 nowrap">
                 
                 <i ng-show="tr['профиль']" class="material-icons fs10">person</i>
                 <span>{{tr['профиль'] || '(пусто)'}}</span>

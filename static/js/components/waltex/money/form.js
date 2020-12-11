@@ -230,7 +230,8 @@ const Component = function($scope, $rootScope, $element, $timeout, $http, $q, ap
       );
   };
   
-  $c.SaveBtn = function(){///
+  $c.SaveBtn = function(param){///
+    param = param || {};
     
     delete $c.error;
     $c.data["категория"] = $scope.Category;
@@ -271,14 +272,16 @@ const Component = function($scope, $rootScope, $element, $timeout, $http, $q, ap
             
           }*/
           $c.RefreshData();
-          $c.CancelBtn();
+          if (!param['сразу копировать']) $c.CancelBtn();
+          else $c.Copy(resp.data.success);
+          
           if($c.onSave) $c.onSave({"data": $c.data});
         }
         if (resp.data['пакет']) {
           $c.data['@пакет'] = resp.data['пакет'];
           $('#bulk-confirm', $element[0]).modal('open');///на проверку пакет
         }
-        console.log("Редактирование сохранено: ", resp.data);
+        console.log("Сохранено: ", resp.data);
         
       });
     
@@ -365,8 +368,8 @@ const Component = function($scope, $rootScope, $element, $timeout, $http, $q, ap
     
   };
   
-  $c.Copy = function(){
-    $c.data['копия/id'] = $c.data.id;
+  $c.Copy = function(data){
+    $c.data['копия/id'] = (data && data.id) || $c.data.id;
     $c.data.id = undefined;
     $c.data.uid = undefined;
     

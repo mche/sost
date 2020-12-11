@@ -43,7 +43,7 @@
     <span ng-if="!$c.param['без сохранения']" ng-show="$c.data.id"> Редактировать </span>
     <span ng-if="!$c.param['без сохранения']" ng-hide="$c.data.id"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill-darken-3" style="height: 2rem;"><use xlink:href="/fonts/icons.svg#asterisk"></use></svg> Новая </span>
     <span> запись движения ДС </span>
-    <span ng-show="($c.data['проект'] && $c.data['проект'].id) || ($c.param['проект'] && $c.param['проект'].id)"> в проекте <span class="chip padd-0-05 bold"> {{$c.data['проект'] || $c.param['проект'].name}} </span></span>
+    <span ng-show="($c.data['проект'] && $c.data['проект'].id) || ($c.param['проект'] && $c.param['проект'].id)"> в проекте <span class="chip teal shadow-inset-10 white-text bold"> {{$c.data['проект'] || $c.param['проект'].name}} </span></span>
     <span ng-show="!!$c.data['копия/id']  && !c.data.id" class="red-text chip transparent padd-0-05 animated slideInRight slow" style=""> Копия - внимательно! </span>
   </h3>
 
@@ -104,9 +104,10 @@
     
     <div ng-if="Wallet2" ng-hide="(Contragent && Contragent.title) || (Profile && Profile.title)" class="card padd-05 red lighten-3" ng-class-000="{'col s3': $c.param.move.id !== 0}">
       <h4 class="red-text text-darken-2 fw500">
-        <i class="material-icons">account_balance</i>
+        <!--i class="material-icons">account_balance</i-->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="red-fill-darken-3" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg?2020-12-11#wallet"></use></svg>
         <span>Кошелек перемещения</span>
-        <i class="material-icons">swap_horiz</i>
+        <i class="material-icons right  chip red darken-3 white-text  padd-0-05 fs20  ">swap_horiz</i>
       </h4>
       <wallet-item ng-if="!$c.param['без сохранения']"  data-data="Wallet2" data-param=" {textInputClass: 'red-text text-darken-2', 'disabled???':!!(Contragent && Contragent.title) || !!(Profile && Profile.title)} "></wallet-item>
       <div ng-if="$c.param['без сохранения']" class="input-field" style="border-bottom: 1px solid grey; height:2rem;">
@@ -145,8 +146,11 @@
   <div class="col s3" ng-class="{'s4': !!$c.data['пакетная закачка'] || ($c.data['приход'] || $c.data['расход'])}">
     <div class="card padd-05 teal lighten-5">
       <h4 class="fw500">
-        <i class="material-icons blue-text000">account_balance</i><span>Кошелек</span><!--span>{{ $c.param['проект'] | json }}</span-->
-        <span ng-if="$c.data['проект'] || $c.param['проект']" class="chip padd-0-05 bold">{{$c.data['проект'] ||  $c.param['проект'].name}}</span>
+        <!--i class="material-icons blue-text000">account_balance</i-->
+        <i class="icon-left  chip teal darken-4   white-text  padd-0-02" ng-show="$c.data['приход'] || $c.data['расход']" ng-class="{'before-rotate180': !$c.data['расход']}"></i>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="teal-fill-darken-3" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg?2020-12-11#wallet"></use></svg>
+        <span>Кошелек</span><!--span>{{ $c.param['проект'] | json }}</span-->
+        <span ng-if="$c.data['проект'] || $c.param['проект']" class="chip teal shadow-inset-10  white-text  bold">{{$c.data['проект'] ||  $c.param['проект'].name}}</span>
       </h4>
       <wallet-item ng-if="!$c.param['без сохранения']" data-data="Wallet" data-param=" {textInputClass: 'teal-text text-darken-3'} "></wallet-item>
       <div ng-if="$c.param['без сохранения']" class="input-field" style="border-bottom: 1px solid grey; height:2rem;">
@@ -192,6 +196,12 @@
           <i class="material-icons">save</i>
           <span>Сохранить</span>
         </a>
+        
+        <a class="btn orange accent-4 " href="javascript:" ng-click="$c.SaveBtn({'сразу копировать': true})" ng-disabled="!$c.Validate()">
+          <i class="material-icons">save</i>
+          <span>Сохранить и копировать</span>
+        </a>
+        
         <a ng-if="$c.data.id" class="btn red lighten-2" href="javascript:" data-target="delete-confirm" >
           <i class="material-icons">delete</i>
           <span>Удалить</span>
