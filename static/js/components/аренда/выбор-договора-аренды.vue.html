@@ -1,0 +1,48 @@
+@@@ выбор договора аренды
+
+<div><!--обязательно один корень Vue -->
+<v-progress-indeterminate v-if=" !ready " :color=" 'teal' " :message=" 'Загружается...' "></v-progress-indeterminate>
+
+<v-select v-else :select=" item " :items=" items " :param=" {placeholder: 'поиск договора арендатора', ulDropDownClass: ['striped teal lighten-4']} " @on-select=" OnSelect ">
+  <template v-slot:selected="{ selected }">
+    <h3 v-if="selected" class="relative animated slideInRight hover-bottom-shadow-blue-darken-3-000" :class=" {'maroon-text ': selected['архив?'], 'teal-text text-darken-4': !selected['архив?'],} " ><!-- maroon lighten-5 blue lighten-4-->
+      <i v-show="selected['архив?']" class="material-icons ">lock</i>
+      <span class="chip000 nowrap padd-0-05 fw500">{{ selected.$контрагент.title }}</span>
+      <span v-show="selected.$контрагент['реквизиты'] && selected.$контрагент['реквизиты']['ИНН']" class="chip000 nowrap padd-0-05 fs10"><span class="fs8 grey-text">ИНН:</span> {{ selected.$контрагент['реквизиты']['ИНН'] }}</span>
+      <span class="chip000 nowrap padd-0-05" title="номер договора">
+        <!--svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32" class="blue-fill-darken-3" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#handshake"></use></svg-->
+        <span class="fs8-000 grey-text">дог. №</span> {{ selected['номер'].replace('№', '') }} <span class="fs8-000 grey-text">от</span> {{ selected['дата договора'] || selected['дата1'] }}
+      </span>
+      <span class="chip000 nowrap padd-0-05 fs10-000" title="объект и помещения">
+        <span><i class="material-icons fs10">place</i></span>
+        <span>{{ selected['@помещения'] && selected['@помещения'][0] && selected['@помещения'][0].$объект.name  }}</span>
+        <!--span class="fs10 padd-0-05">
+          <span class="fs8 grey-text">к./оф.: </span>
+          <span v-for="room in selected['@помещения']" :key="room.id"> {{ room.$помещение['номер-название'] }},</span>
+        </span-->
+      </span>
+      <!--span class="grey-text fs7" style="position:absolute; right:0; bottom:0;">#{{ selected.id }}</span-->
+    </h3>
+    <h4 v-else class="grey-text">Выбрать договор арендатора</h4>
+  </template>
+
+  <template v-slot:listItem="{ listItem, selected, highlighted }">
+    <h5 class="padd-0-05  relative hover-shadow3d"  :class="{'maroon-text': listItem['архив?'], 'teal-text text-darken-4': !listItem['архив?'], 'bold fs12': listItem === selected, 'fw500': listItem === highlighted, 'nowrap': listItem !== selected}"  style="">
+      <i v-show="listItem['архив?']" class="material-icons fs10">lock</i>
+      <span class="chip padd-0-05">{{ listItem.$контрагент.title }}</span>
+      <span class="chip padd-0-05 fs8"><span class="fs8 grey-text">ИНН:</span> {{ listItem.$контрагент['реквизиты'] && listItem.$контрагент['реквизиты']['ИНН'] }}</span>
+      
+      <span class="chip padd-0-05" title="номер договора"><span class="fs8-000 grey-text">дог.</span> № {{ listItem['номер'].replace('№', '') }} от {{ listItem['дата договора'] || listItem['дата1'] }}</span>
+      <span class="chip padd-0-05" title="объект и помещения">
+        <span><i class="material-icons fs10">place</i></span>
+        <span class="fs8">{{ listItem['@помещения'] && listItem['@помещения'][0] && listItem['@помещения'][0].$объект.name  }}</span>
+        <!---span class="fs10 padd-0-05">
+          <span>к./оф.: </span>
+          <span v-for="room in listItem['@помещения']" :key="room.id"> {{ room.$помещение['номер-название'] }},</span>
+        </span-->
+      </span>
+      <!--span class="grey-text fs7" style="position:absolute; right:0; bottom:0;">#{{ selected.id }}</span-->
+    </h5>
+  </template>
+</v-select>
+</div>
