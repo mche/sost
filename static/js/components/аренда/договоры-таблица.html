@@ -423,16 +423,16 @@
   <div id="modal-view-in-iframe" class="modal" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInUp" data-modal-out="animated  slideOutDown fast"  style="max-height:90%; width:100%; bottom:0;">
     <div class="modal-content0000">
       <iframe 
-        v-if="iframePDF && iframePDF.src"
-        :src="iframePDF.src"
-        :height="iframePDF.height"
-        :width="iframePDF.width"
-        :type="iframePDF.content_type"
+        v-if="iframeFile && iframeFile.src"
+        :src="iframeFile.src"
+        :height="iframeFile.height"
+        :width="iframeFile.width"
+        :type="iframeFile.content_type"
         frameborder="0"
         class="PDF-inline"
       ></iframe>
     </div>
-      <a click.stop=" ClickStop " href="javascript:" class="modal-action modal-close waves-effect waves-green btn-flat red lighten-3 red-text text-darken-3" style="position:absolute;bottom:0; right:0;"><i class="material-icons">cancel</i><span>Закрыть просмотр</span></a>
+      <a click.stop=" ViewIframeClose " href="javascript:" class="modal-action modal-close waves-effect waves-green btn-flat red lighten-3 red-text text-darken-3" style="position:absolute;bottom:0; right:0;"><i class="material-icons">cancel</i><span>Закрыть просмотр</span></a>
   </div>
   
   <!-- Modal Structure -->
@@ -460,7 +460,7 @@
                 </div>
               </div>
             </td>
-            <td style="width:1%;"><a v-if="!!item.file" @click="ViewIframePDF({src: appRoutes.urlFor('аренда/счет#docx', item.file) + '?inline=1&cleanup=0', content_type:'application/pdf' })" href="javascript:" class="btn-flat padd-05"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 56 56" style="height: 2.7rem;"><use xlink:href="/fonts/icons.svg#pdf-file"></use></svg></a></td>
+            <td style="width:1%;"><a v-if="!!item.file" @click="ViewIframe({src: appRoutes.urlFor('аренда/счет#docx', item.file) + '?inline=1&cleanup=0', content_type:'application/pdf' })" href="javascript:" class="btn-flat padd-05"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 56 56" style="height: 2.7rem;"><use xlink:href="/fonts/icons.svg#pdf-file"></use></svg></a></td>
             <td>
               <!-- статус отправки -->
                 <div class="pre-wrap">{{ item['статус отправки письма'] }}</div>

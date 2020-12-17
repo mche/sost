@@ -52,6 +52,11 @@ module.controller('Controll', function  (/*$scope, $q,*/ $timeout, $element, /*$
   };
   
 const methods = {/*методы*/
+Vue(){
+  new Vue(Object.assign(new $КомпонентАрендаОбъектыТаблица(), {"el": document.getElementById('тут компонент объекты'),}));
+  new Vue(Object.assign(new $КомпонентАрендаДоговорыТаблица(), {"el": document.getElementById('тут компонент договоры'),}));
+},
+  
 /***
 три режима двух колонок:
 1 - только левая
@@ -108,34 +113,6 @@ RefreshReport(){
 };/* конец methods*/
   
   Object.assign(ctrl, methods);
-  
-  //~ const data = function() {
-    //~ return {
-      //~ "ready": {},
-      //~ "selectedObject": undefined,
-      //~ "param":{
-        //~ "col1": 'объекты',/// отображение колонок
-        //~ "col2": 'договоры',/// отображение колонок
-      //~ },
-    //~ };
-  //~ };
-  
-  ctrl.Vue = function(){
-    //~ ctrl.vue = new Vue({
-      //~ "el":  $element[0],
-      //~ data,
-      //~ methods,
-      //~ mounted,
-      //~ "components": {
-        //~ 'v-left-object-table': new $КомпонентАрендаОбъектыТаблица(),/// {/*"param": $c.param*/}, $c
-        //~ 'v-right-contract-table': new $КомпонентАрендаДоговорыТаблица(),
-      //~ },
-    //~ });
-    new Vue(Object.assign(new $КомпонентАрендаОбъектыТаблица(), {"el": document.getElementById('тут компонент объекты'),}));
-    new Vue(Object.assign(new $КомпонентАрендаДоговорыТаблица(), {"el": document.getElementById('тут компонент договоры'),}));
-  };
-  
-
   
 }
 

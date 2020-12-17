@@ -10,6 +10,7 @@ sub map_grep_mode {
   @_;
   #~ grep !/^--/, @_;
 }
+#~ warn "Config AssetPack";
 [ # cpanm JavaScript::Minifier::XS CSS::Sass CSS::Minifier::XS
   'AssetPack::Che' => {
     default_headers => {'X-AssetPacker'=>'Che', "Cache-Control" => "max-age=2592000, must-revalidate"},# Mojolicious::Plugin::AssetPack has store->default_headers()
@@ -17,7 +18,7 @@ sub map_grep_mode {
     CombineFile => {
       gzip => {min_size => 1000},
     },
-    HTML => {minify_opts=>{remove_newlines => 1,}},# чета при удалении переводов строк  проблемы
+    #~ HTML => {minify_opts=>{remove_newlines => 1,}},# чета при удалении переводов строк  проблемы
     process => [# хэшреф убрал для последовательности
       
       ['materialize.js'=>grep !/^--/, qw(
@@ -199,8 +200,10 @@ sub map_grep_mode {
         js/util/array-removeOf.js
         --в_конце!!!
         js/global-modules.js
+        js/parcel-require.js
         js/app.js
         js/dist/auth.js
+        ---js/dist/main.js
         ),
       
       ],
@@ -271,7 +274,7 @@ sub map_grep_mode {
       tree-item.html
       js/c/wallet/item.html
       js/c/contragent/item.html
-      js/c/аренда/выбор-договора-аренды.html
+      js/c/аренда/выбор-договора-аренды.vue.html
       js/c/project/list.html
       js/c/transport/obj+addr.html
       js/c/waltex/money/form.html
@@ -809,6 +812,7 @@ sub map_grep_mode {
         js/c/autocomplete/v-select.js
         js/c/object/v-select-object.js
         js/c/аренда/выбор-договора-аренды.js
+        js/c/uploader/common.js
         )],
         ['аренда-расходы.html' => grep !/^--/, qw(
         js/c/project/v-list.html
@@ -819,7 +823,7 @@ sub map_grep_mode {
         ---v-uploader.html
         js/c/autocomplete/v-select.html
         js/c/object/v-select-object.html
-        js/c/аренда/выбор-договора-аренды.html
+        js/c/аренда/выбор-договора-аренды.vue.html
         )],
         
         ['аренда-акты.js' => grep !/^--/, qw(

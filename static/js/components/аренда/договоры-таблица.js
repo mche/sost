@@ -1,5 +1,5 @@
 //~ import тест from '../тест2.js';
-(function () {'use strict';
+!(function () {'use strict';
 /*
   Компонент Vue
   USAGE:
@@ -14,9 +14,9 @@
 */
 let moduleName = "Аренда::Договоры::Таблица";
 try {angular.module(moduleName); return;} catch(e) { } 
-let module = angular.module(moduleName, [ 'Аренда::Договор::Форма', 'Компонент::Выбор объекта', 'Компонент::Выбор в списке',]);
+let module = angular.module(moduleName, [ 'Аренда::Договор::Форма', 'Компонент::Выбор объекта', 'Компонент::Выбор в списке', 'UploaderCommon']);
 
-module.factory('$КомпонентАрендаДоговорыТаблица', function($templateCache, $http, appRoutes, /*$timeout, $rootScope, /**$compile, , */ $EventBus, Util, $Список, $КомпонентАрендаДоговорФорма, $КомпонентВыборОбъекта, $КомпонентВыборВСписке ) {// 
+module.factory('$КомпонентАрендаДоговорыТаблица', function($templateCache, $http, appRoutes, /*$timeout, $rootScope, /**$compile, , */ $EventBus, Util, $Список, $КомпонентАрендаДоговорФорма, $КомпонентВыборОбъекта, $КомпонентВыборВСписке, $UploaderViewIframeMixins ) {// 
 
 var projectList = new $Список(appRoutes.url_for('список проектов'));
 projectList.Load();
@@ -245,8 +245,7 @@ PrintPay(month, month2){/// счета и акты
     if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 border fw500  animated zoomInUp');
     if (resp.data.docx) {
       let url = appRoutes.urlFor('аренда/счет#docx', resp.data.docx);
-      console.log("PrintPay", vm.payPDF, url);
-      if (vm.payPDF) return vm.ViewIframePDF({"src": url+'?inline=1', "content_type":'application/pdf' });
+      if (vm.payPDF) return vm.ViewIframe({"src": url+'?inline=1', "content_type":'application/pdf' });
       window.location.href = url;/// а это get-запрос
     }
     if (resp.data.data) console.log("счет", resp.data.data);///отладка
@@ -254,24 +253,25 @@ PrintPay(month, month2){/// счета и акты
   });
 },
 
-ViewIframePDF(file){/// из uploader/файлы.js
-  var vm = this;
-  var iframe = {"src": file.src, "height": parseInt(window.innerHeight*0.8)/*modal max-height:90%;*/, "width": window.innerWidth, "content_type": file.content_type, "timeouts":[]};
-  if (vm.iframePDF) {
-    vm.iframePDF = undefined;
-    setTimeout(function(){ vm.iframePDF = iframe; });
-  } else 
-  vm.iframePDF = iframe;
-  iframe.timeouts.push(setTimeout(vm.CallbackWaitIframePDFLoad, 100));
-},
-CallbackWaitIframePDFLoad(){/// из uploader/файлы.js
-  var vm = this;
-  var iframe = vm.$el.getElementsByTagName('iframe')[0];
-  if (!iframe) return console.log("CallbackWaitIframePDFLoad просмотр закрыт");
-  if (vm.iframePDF.timeouts.length > 30 /* 30*100 мсек = 300 сек общее ожидание вызова просмотра*/) return console.log("CallbackWaitIframePDFLoad: нет просмотра по timeouts");
-  if (!iframe.contentDocument || iframe.contentDocument.URL/*contentWindow.document.URL*/ != 'about:blank') return $('#modal-view-in-iframe', $(vm.$el)).modal('open');
-  vm.iframePDF.timeouts.push(setTimeout(vm.CallbackWaitIframePDFLoad, 100));
-},
+///унес в миксин uploader/common.js
+//~ ViewIframePDF(file){/// из uploader/файлы.js
+  //~ var vm = this;
+  //~ var iframe = {"src": file.src, "height": parseInt(window.innerHeight*0.8)/*modal max-height:90%;*/, "width": window.innerWidth, "content_type": file.content_type, "timeouts":[]};
+  //~ if (vm.iframePDF) {
+    //~ vm.iframePDF = undefined;
+    //~ setTimeout(function(){ vm.iframePDF = iframe; });
+  //~ } else 
+  //~ vm.iframePDF = iframe;
+  //~ iframe.timeouts.push(setTimeout(vm.CallbackWaitIframePDFLoad, 100));
+//~ },
+//~ CallbackWaitIframePDFLoad(){/// из uploader/файлы.js
+  //~ var vm = this;
+  //~ var iframe = vm.$el.getElementsByTagName('iframe')[0];
+  //~ if (!iframe) return console.log("CallbackWaitIframePDFLoad просмотр закрыт");
+  //~ if (vm.iframePDF.timeouts.length > 30 /* 30*100 мсек = 300 сек общее ожидание вызова просмотра*/) return console.log("CallbackWaitIframePDFLoad: нет просмотра по timeouts");
+  //~ if (!iframe.contentDocument || iframe.contentDocument.URL/*contentWindow.document.URL*/ != 'about:blank') return $('#modal-view-in-iframe', $(vm.$el)).modal('open');
+  //~ vm.iframePDF.timeouts.push(setTimeout(vm.CallbackWaitIframePDFLoad, 100));
+//~ },
 
 Reestr(month, month2){
   var vm = this;
@@ -511,7 +511,7 @@ const  data = function(){
     "keys":{'payMonth2':Math.random(), "объект":Math.random(), "арендодатель":Math.random(), },
     "httpProcess": undefined,
     "elWidth": undefined,/// будет при resizeObserver
-     "iframePDF": undefined,/// 
+     "iframeFile": undefined,/// 
     "dataEmail": undefined, /// модальная таблица рассылки на почту
     };
   //);
@@ -539,6 +539,7 @@ const beforeDestroy = function(){
 var $Компонент = {
   props,
   data,
+  mixins:[$UploaderViewIframeMixins],
   methods,
   computed,
   //~ "created"() {  },
@@ -549,7 +550,6 @@ var $Компонент = {
 
 const $Конструктор = function (/*data, $c, $scope*/){
   let $this = this;
-  //~ data = data || {};
   $Компонент.template = $templateCache.get('аренда/договоры/таблица');
   $Компонент.components['v-rent-contract-form'] =  new $КомпонентАрендаДоговорФорма();
   $Компонент.components['v-object-select'] = new $КомпонентВыборОбъекта();

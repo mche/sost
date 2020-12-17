@@ -339,7 +339,7 @@
         <span>Прикрепленные файлы</span>
         <!--sup class="chip ">{{ form._uploads.length }}</sup-->
       </h4>
-      <div v-if="form.id" class="card teal lighten-3">
+      <div v-if="form.id" class="card grey lighten-1">
         <v-uploads :parent="form" :folders=" ['Договоры',  'Согласования', 'Акты', 'Переписка', 'Архив'] "></v-uploads>
       </div>
       <div v-else class="grey-text center">Можно загрузить после сохранения договора</div>

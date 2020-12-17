@@ -13,9 +13,9 @@
 */
 var moduleName = "Аренда::Расходы::Таблица";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['EventBus', 'Аренда::Расходы::Форма', /*'Компонент::Выбор в списке', 'Компонент::Выбор объекта',*/ ]);
+var module = angular.module(moduleName, ['EventBus', 'Аренда::Расходы::Форма', 'UploaderCommon', /*'Компонент::Выбор в списке', 'Компонент::Выбор объекта',*/ ]);
 
-module.factory('$КомпонентАрендаРасходыТаблица', function($templateCache, $http, appRoutes, Util,  /*$EventBus,$Список, */ $КомпонентАрендаРасходыФорма, /*$КомпонентАрендаДоговорыВыбор, $КомпонентВыборОбъекта*/  ) {// 
+module.factory('$КомпонентАрендаРасходыТаблица', function($templateCache, $http, appRoutes, Util,  /*$EventBus,$Список, */ $КомпонентАрендаРасходыФорма, /*$КомпонентАрендаДоговорыВыбор, $КомпонентВыборОбъекта*/  $UploaderViewIframeMixins ) {// 
 
 
 
@@ -205,15 +205,17 @@ Print(){
   /// вернет урл для скачивания
   return $http.post(appRoutes.urlFor('аренда/расходы#docx', '-'/*обязательно что-нибудь*/), Object.assign({}, vm.param, vm.form)).then(function(resp){
     if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 border fw500  animated zoomInUp');
-    if (resp.data.docx) window.location.href = appRoutes.urlFor('аренда/расходы#docx', resp.data.docx);
+    if (resp.data.docx) {
+      let url = appRoutes.urlFor('аренда/расходы#docx', resp.data.docx);
+      //~ console.log("Print", vm.form['pdf формат'], url);
+      if (vm.form['pdf формат']) return vm.ViewIframe({"src": url+'?inline=1', "content_type":'application/pdf' });
+      window.location.href = url;
+    }
     if (resp.data.data) console.log("счет", resp.data.data);///отладка
     //~ window.location.href = appRoutes.urlFor('тмц/накладная.docx', $c.data.id);
   });
 },
 
-//~ Test(param){
-  //~ console.log("Test", this.param, param);
-//~ },
 
 }; ///конец methods
 
@@ -250,6 +252,7 @@ const  data = function(){
     //~ "payMonth":  vm.param['месяц'] || new Date().toISOString().replace(/T.+/, ''),
     "newForm": undefined,
     "rentObjects":[],
+    "iframeFile": undefined,
     };
   //);
 };///конец data
@@ -271,6 +274,7 @@ var $Компонент = {
   props,
   data,
   methods,
+  mixins: [$UploaderViewIframeMixins,],
   computed,
   //~ "created"() {  },
   mounted,

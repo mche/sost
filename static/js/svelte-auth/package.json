@@ -1,5 +1,5 @@
 {
-  "name": "sveltecomponent",
+  "name": "SvelteComponent",
   "svelte": "src/index.js",
   "module": "dist/index.mjs",
   "main": "dist/index.js",
@@ -19,12 +19,5 @@
   "files": [
     "src",
     "dist"
-  ],
-  "description": "*Psst — looking for an app template? Go here --> [sveltejs/template](https://github.com/sveltejs/template)*",
-  "version": "1.0.0",
-  "dependencies": {
-    "nano-md5": "^1.0.5"
-  },
-  "author": "",
-  "license": "ISC"
+  ]
 }

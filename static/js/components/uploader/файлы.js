@@ -13,10 +13,12 @@
 */
 var moduleName = "Uploader::Файлы";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Uploader']);
+var module = angular.module(moduleName, ['Uploader', 'UploaderCommon', ]);
 
-module.factory('$КомпонентФайлы', function($http, $templateCache, $window, appRoutes, $AppUser, $Uploader) {// factory
+module.factory('$КомпонентФайлы', function($http, $templateCache, $window, appRoutes, $AppUser, $Uploader, $UploaderViewIframeMixins) {// factory
 
+
+  
 const props = {
   "folders": {///   предустановленные папки, если их нет - добавление папок откл, если пустой массив - можно созд, порядок массива сохраняется без пересортировки
     type: Array,
@@ -183,45 +185,8 @@ FileAttachment(file){///скачивание файла
   $window.location.href = appRoutes.url_for('файл-прикрепление', file.sha1);
 },
 
-ViewIframe(file){///посмотр тут
-  var vm = this;
-  var iframe = {"src": appRoutes.urlFor('файл-инлайн', [file.sha1]), "height": parseInt(window.innerHeight*0.8)/*modal max-height:90%;*/, "width": window.innerWidth, "content_type": file.content_type, "timeouts":[]};
-  if (vm.iframeFile) {
-    vm.iframeFile = undefined;
-    setTimeout(function(){ vm.iframeFile = iframe; });
-  } else 
-    vm.iframeFile = iframe;
 
-  iframe.timeouts.push(setTimeout(vm.CallbackWaitIframeLoad, 100));
-    
-    //~ setTimeout(function(){
-      //~ var iframe = vm.$el.getElementsByTagName('iframe')[0];
-      //~ iframe.onload = function() {
-        //~ console.log( "iframe onload", iframe.contentWindow.document.URL );
-      //~ };
-      //~ iframe.contentWindow.onload = function() {
-        //~ console.log( "iframe contentWindow onload", iframe.contentWindow.document.URL );
-      //~ };
-    //~ });
-    
-  //~ });
-},
 
-CallbackWaitIframeLoad(){
-  var vm = this;
-  var iframe = vm.$el.getElementsByTagName('iframe')[0];
-  if (!iframe) return console.log("CallbackWaitIframeLoad просмотр закрыт");
-  if (vm.iframeFile.timeouts.length > 30 /* 30*100 мсек = 300 сек общее ожидание вызова просмотра*/) return console.log("CallbackWaitIframeLoad нет просмотра по timeouts");
-  if (!iframe.contentDocument || iframe.contentDocument.URL/*contentWindow.document.URL*/ != 'about:blank') return $('#modal-view-in-iframe', $(vm.$el)).modal('open');
-  //~ console.log("CallbackWaitIframeLoad следующий timeout", 
-  vm.iframeFile.timeouts.push(setTimeout(vm.CallbackWaitIframeLoad, 100));
-  //~ console.log("CallbackWaitIframeLoad", iframe.contentDocument.URL == 'about:blank', iframe.contentWindow.document);
-  //~ $('#modal-view-in-iframe', $(vm.$el)).modal('open');
-},
-
-//~ IframeLoad(){
-  //~ console.log('IframeLoad');
-//~ },
 
 ModalComplete(){
   //~ console.log("ModalClose", this);
@@ -230,9 +195,7 @@ ModalComplete(){
   
 },
 
-ClickStop(){
-  /*** ничего @click.stop!!! ***/
-},
+
 
 TopFolders(){
   let vm = this;
@@ -426,6 +389,7 @@ const data = function() {
   vm.InitUploader();
   vm.$AppUser = $AppUser;
   //~ vm.IdMaker = idMaker;
+  vm.appRoutes = appRoutes;
   
   return {
     //~ dataUploads: [...vm.uploads],
@@ -453,11 +417,13 @@ const mounted = function(){
 var $Компонент = {
   props,
   data,
+  mixins: [$UploaderViewIframeMixins,],
   methods,
   computed,
   //~ created,
   mounted,
   components: {},
+  
 };
 
 const $Конструктор = function (ext/*data, $c, $scope*/){

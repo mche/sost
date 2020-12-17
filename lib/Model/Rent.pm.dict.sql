@@ -124,7 +124,7 @@ create table IF NOT EXISTS "аренда/расходы" (---- кроме сам
   ts  timestamp without time zone NOT NULL DEFAULT now(),
   uid int, --- автор записи
   "дата" date not null,
-  "номер" text not null DEFAULT nextval('счета'::regclass)::text, --
+  "номер" text not null,--- DEFAULT nextval('счета'::regclass)::text, --
   "коммент" text
 /* связи:
 id1("аренда/договоры")->id2("аренда/расходы")
@@ -132,6 +132,8 @@ id1("аренда/расходы")->id2("аренда/расходы/позиц�
 */
 );
 ALTER TABLE "аренда/расходы" ADD COLUMN IF NOT EXISTS  "номер" text not null DEFAULT nextval('счета'::regclass)::text;
+---Bad statement: DBD::Pg::st execute failed: ОШИБКА:  в выражении DEFAULT (по умолчанию) нельзя ссылаться на столбцы 
+---ALTER TABLE "аренда/расходы" ALTER COLUMN  "номер" SET DEFAULT "новый номер акта/аренда помещений"("дата");
 
 
 create table IF NOT EXISTS "аренда/расходы/позиции" (---- кроме самой аренды --- возмещения доп расходов
@@ -183,6 +185,17 @@ id1("аренда/договоры")->id2("счета/аренда/помеще�
 );
 ALTER TABLE "акты/аренда/помещения" ADD COLUMN IF NOT EXISTS  "подписан" timestamp without time zone;
 CREATE INDEX  IF NOT EXISTS "акты/аренда/помещения/idx/месяц" ON "акты/аренда/помещения" ("месяц");---date_trunc('month', "месяц")--- ERROR:  functions in index expression must be marked IMMUTABLE
+
+CREATE OR REPLACE FUNCTION "новый номер счета/аренда помещений"(date/* по месяцу выч год и годовая последовательность*/)
+RETURNS text
+AS $func$
+DECLARE
+  seq text := 'счета'||coalesce(nullif(to_char($1, 'YY'), '20'), '');
+BEGIN
+  EXECUTE 'CREATE SEQUENCE IF NOT EXISTS ' || seq;
+  RETURN nextval(seq::regclass)::text;
+END;
+$func$ LANGUAGE plpgsql;
 
 DROP FUNCTION IF EXISTS "номера счетов/аренда помещений"(date,integer[],integer);
 CREATE OR REPLACE FUNCTION "номера счетов/аренда помещений"(date/*месяц*/, int[]/*договоры*/,int/* uid */)
@@ -247,6 +260,17 @@ BEGIN
     ---and d.id=any($2)--- НЕТ! 
   ;
   ***/
+END;
+$func$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION "новый номер акта/аренда помещений"(date/* по месяцу выч год и годовая последовательность*/)
+RETURNS text
+AS $func$
+DECLARE
+  seq text := 'акты'||coalesce(nullif(to_char($1, 'YY'), '20'), '');
+BEGIN
+  EXECUTE 'CREATE SEQUENCE IF NOT EXISTS ' || seq;
+  RETURN nextval(seq::regclass)::text;
 END;
 $func$ LANGUAGE plpgsql;
 

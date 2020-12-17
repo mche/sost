@@ -450,7 +450,7 @@ sub счет_оплата_docx {# сделать docx во врем папке �
   #~ $c->app->log->error($docx);
   return $c->render_file(
     'filepath' => "static/tmp/$docx",
-    'format'   => $docx =~ /pdf/ ? 'pdf' : 'docx',
+    'format'   => ($c->param('format') || $docx =~ /pdf/) ? 'pdf' : 'docx',
     #~ 'format'   => 'pdf',                 # will change Content-Type "application/x-download" to "application/pdf"
     #~ 'content_disposition' => 'inline',   # will change Content-Disposition from "attachment" to "inline"
     $c->param('inline') ? ('content_disposition' => 'inline') : (),
@@ -518,7 +518,8 @@ sub счет_расходы_docx {# сделать docx во врем папке
   #~ $c->app->log->error($docx);
   return $c->render_file(
     'filepath' => "static/tmp/$docx",
-    'format'   => $docx =~ /pdf/ ? 'pdf' : 'docx',
+    'format'   => ($c->param('format') || $docx) =~ /pdf/ ? 'pdf' : 'docx',
+    $c->param('inline') ? ('content_disposition' => 'inline') : (),
     #~ 'format'   => 'pdf',                 # will change Content-Type "application/x-download" to "application/pdf"
     #~ 'content_disposition' => 'inline',   # will change Content-Disposition from "attachment" to "inline"
     'cleanup'  => 1,                     # delete file after completed
