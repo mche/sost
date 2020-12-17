@@ -61,8 +61,7 @@ function buildFormatLocale () {
       if (dateFns.isToday(date)) return 'сегодня, ';
       if (dateFns.isTomorrow(date)) return 'завтра, ';
       if (dateFns.isYesterday(date)) return 'вчера, ';
-      return ''
-
+      return '';
     },
     // Month: янв., фев., ..., дек.
     'MMM': function (date) {

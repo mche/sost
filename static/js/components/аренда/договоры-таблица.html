@@ -99,6 +99,16 @@
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 252 252" class="red-fill fill-darken-3" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#exit"></use></svg>
         <span> В этом месяце </span>
       </h6></label>
+      
+      <br>
+      
+      <input type="checkbox" id="завершение в след месяце крыжик" v-model="filters['завершение в след месяце']" @change="ChbChange('завершение в след месяце')">
+      <label for="завершение в след месяце крыжик" class="hover-shadow3d before-yellow-lighten-4 chip red-text text-darken-3 yellow lighten-4 hoverable" style="padding-left:16px;" ></label>
+      <label for="завершение в след месяце крыжик" class="hover-shadow3d  before-yellow-lighten-4 red-text text-darken-3" style=""><h6 class="red-text text-darken-3">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 252 252" class="red-fill fill-darken-3" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#exit"></use></svg>
+        <span>в {{ nextMonth }} </span>
+      </h6></label>
+      
     </div>
   
         <!-- фильтр истекшие договоры -->

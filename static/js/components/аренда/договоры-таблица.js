@@ -373,7 +373,10 @@ _FilterData(item){
     && (vm.filters['продление'] === undefined  || !!item['продление срока'] === vm.filters['продление'])
     && (vm.filters['арендаторы'] ? (item['$контрагент'].title + ' ' + item['номер']).toLowerCase().indexOf(vm.filters['арендаторы'].toLowerCase()) >= 0  : true)
     && ( (item['@помещения'] && item['@помещения'][0] && vm.filters['объект'] && vm.filters['объект'].id ) ?  item['@помещения'][0].$объект.id == vm.filters['объект'].id : true)
-    && (!vm.filters['завершение в этом месяце'] || vm.ДоговорЗавершенВМесяце(item))
+    && (
+      (!!vm.filters['завершение в этом месяце'] && vm.ДоговорЗавершенВМесяце(item))
+     || (!!vm.filters['завершение в след месяце'] && vm.ДоговорЗавершенВМесяце(item, dateFns.addMonths(new Date(), 1)))
+    )
     ;
   //~ console.log("filteredData", test);
   return test;
@@ -484,7 +487,7 @@ const  data = function(){
   let vm = this;
   vm.data = [];
   vm.appRoutes = appRoutes;
-  vm._cleanFilters = {"арендодатель": undefined, "арендаторы": '', "объект": undefined, "архивные договоры": false, "физ лица": undefined/*радио 3 состояния*/, "продление": undefined /*радио 3 состояния*/, "завершение в этом месяце":false,};
+  vm._cleanFilters = {"арендодатель": undefined, "арендаторы": '', "объект": undefined, "архивные договоры": false, "физ лица": undefined/*радио 3 состояния*/, "продление": undefined /*радио 3 состояния*/, "завершение в этом месяце":false, "завершение в след месяце":false,};
   
   return {//angular.extend(// return dst
     //data,// dst
@@ -498,6 +501,7 @@ const  data = function(){
     //~ "editItems":[],
     "allChbs": false, /// крыжик выбора всех договоров
     "payMonth":  new Date().toISOString().replace(/T.+/, ''),
+    "nextMonth": dateFns.format(dateFns.addMonths(new Date(), 1/*один мес*/), 'DD MMMM YYYY', {locale: dateFns.locale_ru}).replace(/\d+\s*(.+?).{1}\s*(\d+)$/, (m, m1, m2)=>`${m1}е ${m2}`),
     "payMonth2": undefined,
     "payNums": true, ///крыжик счета с номерами
     "payPDF": false,///крыжик 

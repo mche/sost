@@ -64,7 +64,7 @@ return {
 
 /**************************************************/
 module.factory('$UploaderViewIframeMixins', function() {// factory
-  
+/*сделать компонент!**/
 return {
   "methods": {
     ViewIframe(file){/// из uploader/файлы.js
