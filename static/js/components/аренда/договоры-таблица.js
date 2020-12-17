@@ -374,7 +374,8 @@ _FilterData(item){
     && (vm.filters['арендаторы'] ? (item['$контрагент'].title + ' ' + item['номер']).toLowerCase().indexOf(vm.filters['арендаторы'].toLowerCase()) >= 0  : true)
     && ( (item['@помещения'] && item['@помещения'][0] && vm.filters['объект'] && vm.filters['объект'].id ) ?  item['@помещения'][0].$объект.id == vm.filters['объект'].id : true)
     && (
-      (!!vm.filters['завершение в этом месяце'] && vm.ДоговорЗавершенВМесяце(item))
+      (!vm.filters['завершение в этом месяце'] && !vm.filters['завершение в след месяце'])
+     || (!!vm.filters['завершение в этом месяце'] && vm.ДоговорЗавершенВМесяце(item))
      || (!!vm.filters['завершение в след месяце'] && vm.ДоговорЗавершенВМесяце(item, dateFns.addMonths(new Date(), 1)))
     )
     ;
