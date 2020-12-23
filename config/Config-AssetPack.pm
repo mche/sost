@@ -14,7 +14,7 @@ sub map_grep_mode {
 [ # cpanm JavaScript::Minifier::XS CSS::Sass CSS::Minifier::XS
   'AssetPack::Che' => {
     default_headers => {'X-AssetPacker'=>'Che', "Cache-Control" => "max-age=2592000, must-revalidate"},# Mojolicious::Plugin::AssetPack has store->default_headers()
-    pipes => [qw(Sass Css JavaScript VueTemplateCompiler CombineFile)],#JavaScriptPacker
+    pipes => [qw(Sass Css JavaScript  CombineFile)],#JavaScriptPacker VueTemplateCompiler
     CombineFile => {
       gzip => {min_size => 1000},
     },
