@@ -91,7 +91,7 @@ sub map_grep_mode {
         js/c/tree/list.html
       )],
       
-      ['js/dist/templates/uploader/v-uploader.js' => grep !/^--/, qw(
+      ['js/dist/templates/uploader.js' => grep !/^--/, qw(
       js/c/uploader/btn.vue.html
       js/c/uploader/drop.vue.html
       js/c/uploader/file.vue.html
@@ -111,7 +111,7 @@ sub map_grep_mode {
       #~ warn "@assets";
       my $files = join(' ', map("static/js/c/uploader/$_", @uploader_files));
         `cat $files  | perl script/jsPacker.pl -e0 -q > static/cache/v-uploader.min.js`;
-        &map_grep_mode(qw(js/dist/templates/uploader/v-uploader.js), @assets);
+        &map_grep_mode(qw(js/dist/templates/uploader.js), @assets);
         
       }],
 
