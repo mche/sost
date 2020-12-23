@@ -14,7 +14,7 @@ sub map_grep_mode {
 [ # cpanm JavaScript::Minifier::XS CSS::Sass CSS::Minifier::XS
   'AssetPack::Che' => {
     default_headers => {'X-AssetPacker'=>'Che', "Cache-Control" => "max-age=2592000, must-revalidate"},# Mojolicious::Plugin::AssetPack has store->default_headers()
-    pipes => [qw(Sass Css JavaScript HTML CombineFile)],#JavaScriptPacker
+    pipes => [qw(Sass Css JavaScript VueTemplateCompiler CombineFile)],#JavaScriptPacker
     CombineFile => {
       gzip => {min_size => 1000},
     },
@@ -115,6 +115,15 @@ sub map_grep_mode {
       #~ js/c/uploader/uploader.js
       #~ ---js/c/uploader/пример.js
       #~ )],
+      ['js/dist/uploader/v-uploader.js' => grep !/^--/, qw(
+      js/c/uploader/btn.vue.html
+      js/c/uploader/drop.vue.html
+      js/c/uploader/file.vue.html
+      js/c/uploader/files.vue.html
+      js/c/uploader/list.vue.html
+      js/c/uploader/uploader.vue.html
+      js/c/uploader/файлы.vue.html
+      )],
       ['v-uploader.html' => grep !/^--/, qw(
       js/c/uploader/btn.html
       js/c/uploader/drop.html
@@ -274,7 +283,7 @@ sub map_grep_mode {
       tree-item.html
       js/c/wallet/item.html
       js/c/contragent/item.html
-      js/c/аренда/выбор-договора-аренды.vue.html
+      js/c/аренда/выбор-договора-аренды.html
       js/c/project/list.html
       js/c/transport/obj+addr.html
       js/c/waltex/money/form.html
@@ -780,7 +789,7 @@ sub map_grep_mode {
         ---js/util/copy-clipboard.js
         ---js/util/array-splice.js
         )],
-        ['аренда.html' => grep !/^--/, qw(
+        ['аренда.html?wew' => grep !/^--/, qw(
         js/c/аренда/договоры-таблица.html
         js/c/аренда/договор-форма.html
         js/c/аренда/договор-помещения-форма.html
@@ -823,7 +832,7 @@ sub map_grep_mode {
         ---v-uploader.html
         js/c/autocomplete/v-select.html
         js/c/object/v-select-object.html
-        js/c/аренда/выбор-договора-аренды.vue.html
+        js/c/аренда/выбор-договора-аренды.html
         )],
         
         ['аренда-акты.js' => grep !/^--/, qw(
