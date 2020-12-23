@@ -414,6 +414,8 @@ const mounted = function(){
   });
 };/// конец mounted
 
+let template = parcelRequire('js/c/uploader/файлы.vue.html');
+
 var $Компонент = {
   props,
   data,
@@ -423,12 +425,13 @@ var $Компонент = {
   //~ created,
   mounted,
   components: {},
-  
+  render:template.render,
+  staticRenderFns: template.staticRenderFns,
 };
 
 const $Конструктор = function (ext/*data, $c, $scope*/){
   let $this = this;
-  if (!$Компонент.template) $Компонент.template = $templateCache.get('uploader/файлы');
+  //~ if (!$Компонент.template) $Компонент.template = $templateCache.get('uploader/файлы');
   $Компонент.components['v-uploader'] = new $Uploader();
   if (ext) return jQuery.extend(true, {}, $Компонент, ext);/// глубокое наложение
   return $Компонент;

@@ -134,6 +134,8 @@ const mounted = function(){
 
 };/// конец mounted
 
+let template = parcelRequire('js/c/uploader/uploader.vue.html');
+
 var $Компонент = {
   provide,
   props,
@@ -145,11 +147,13 @@ var $Компонент = {
   //~ created,
   mounted,
   components: {},
+  render:template.render,
+  staticRenderFns: template.staticRenderFns,
 };
 
 const $Конструктор = function (/*data, $c, $scope*/){
   let $this = this;
-  $Компонент.template = $templateCache.get('uploader');
+  //~ $Компонент.template = $templateCache.get('uploader');
   $Компонент.components['uploader-btn'] = new $UploaderBtn();
   $Компонент.components['uploader-drop'] = new $UploaderDrop();
   $Компонент.components['uploader-list'] = new $UploaderList();

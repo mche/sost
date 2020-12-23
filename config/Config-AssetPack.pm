@@ -14,7 +14,7 @@ sub map_grep_mode {
 [ # cpanm JavaScript::Minifier::XS CSS::Sass CSS::Minifier::XS
   'AssetPack::Che' => {
     default_headers => {'X-AssetPacker'=>'Che', "Cache-Control" => "max-age=2592000, must-revalidate"},# Mojolicious::Plugin::AssetPack has store->default_headers()
-    pipes => [qw(Sass Css JavaScript  CombineFile)],#JavaScriptPacker VueTemplateCompiler
+    pipes => [qw(Sass Css JavaScript VueTemplateCompiler CombineFile)],#JavaScriptPacker
     CombineFile => {
       gzip => {min_size => 1000},
     },
@@ -91,6 +91,16 @@ sub map_grep_mode {
         js/c/tree/list.html
       )],
       
+      ['js/dist/templates/uploader/v-uploader.js' => grep !/^--/, qw(
+      js/c/uploader/btn.vue.html
+      js/c/uploader/drop.vue.html
+      js/c/uploader/file.vue.html
+      js/c/uploader/files.vue.html
+      js/c/uploader/list.vue.html
+      js/c/uploader/uploader.vue.html
+      js/c/uploader/файлы.vue.html
+      )],
+      
       ['v-uploader.js' => do {
         my @uploader_files = qw(common.js btn.js drop.js file.js files.js list.js uploader.js файлы.js);
         my @assets = &map_grep_mode(qw(
@@ -101,39 +111,19 @@ sub map_grep_mode {
       #~ warn "@assets";
       my $files = join(' ', map("static/js/c/uploader/$_", @uploader_files));
         `cat $files  | perl script/jsPacker.pl -e0 -q > static/cache/v-uploader.min.js`;
-        &map_grep_mode(@assets);
+        &map_grep_mode(qw(js/dist/templates/uploader/v-uploader.js), @assets);
         
       }],
-      #~ ['uploader.js' => grep !/^--/, qw(
-      #~ lib/simple-uploader.js/dist/uploader.min.js
-      #~ js/c/uploader/common.js
-      #~ js/c/uploader/btn.js
-      #~ js/c/uploader/drop.js
-      #~ js/c/uploader/file.js
-      #~ js/c/uploader/files.js
-      #~ js/c/uploader/list.js
-      #~ js/c/uploader/uploader.js
-      #~ ---js/c/uploader/пример.js
+
+      #~ ['v-uploader.html' => grep !/^--/, qw(
+      #~ js/c/uploader/btn.html
+      #~ js/c/uploader/drop.html
+      #~ js/c/uploader/file.html
+      #~ js/c/uploader/files.html
+      #~ js/c/uploader/list.html
+      #~ js/c/uploader/uploader.html
+      #~ js/c/uploader/файлы.html
       #~ )],
-      
-      #~ ['js/dist/uploader/v-uploader.js' => grep !/^--/, qw(
-      #~ js/c/uploader/btn.vue.html
-      #~ js/c/uploader/drop.vue.html
-      #~ js/c/uploader/file.vue.html
-      #~ js/c/uploader/files.vue.html
-      #~ js/c/uploader/list.vue.html
-      #~ js/c/uploader/uploader.vue.html
-      #~ js/c/uploader/файлы.vue.html
-      #~ )],
-      ['v-uploader.html' => grep !/^--/, qw(
-      js/c/uploader/btn.html
-      js/c/uploader/drop.html
-      js/c/uploader/file.html
-      js/c/uploader/files.html
-      js/c/uploader/list.html
-      js/c/uploader/uploader.html
-      js/c/uploader/файлы.html
-      )],
       ['uploader.css' => grep !/^--/, qw(
       js/c/uploader/uploader.scss
       ---js/c/uploader/пример.scss
@@ -366,7 +356,7 @@ sub map_grep_mode {
       )],
         
         ['admin/access.html' => grep !/^--/, qw(
-        v-uploader.html
+        ---v-uploader.html
         js/c/access/users.html
         js/c/access/roles.html
         js/c/access/routes.html
@@ -391,7 +381,7 @@ sub map_grep_mode {
         js/c/staff/сотрудники.js
         )],
         ['staff/сотрудники.html' => grep !/^--/, qw(
-        v-uploader.html
+        ---v-uploader.html
         js/c/access/users.html
         js/c/access/roles.html
         
@@ -697,7 +687,7 @@ sub map_grep_mode {
         js/c/тмц/сертификаты/закупки.html
         js/c/тмц/сертификаты/папки.html
         js/c/tree/v-tree-list.html
-        v-uploader.html
+        ---v-uploader.html
         js/c/тмц/сертификаты/форма-папки.html
         )],
         
@@ -799,7 +789,7 @@ sub map_grep_mode {
         js/c/аренда/объект-форма.html
         js/c/contragent/v-item.html
         js/c/autocomplete/v-suggestions.html
-        v-uploader.html
+        ---v-uploader.html
         js/c/object/v-select-object.html
         js/c/autocomplete/v-select.html
         js/c/waltex/report/аренда/форма.html
@@ -887,7 +877,7 @@ sub map_grep_mode {
         js/c/autocomplete/v-select.html
         js/c/химия/сырье/сырье-таблица.html
         js/c/химия/сырье/сырье-форма.html
-        v-uploader.html
+        ---v-uploader.html
         js/c/химия/продукция/продукция-таблица.html
         js/c/химия/продукция/продукция-форма.html
         js/c/химия/отгрузка/отгрузка-таблица.html

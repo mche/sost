@@ -40,6 +40,8 @@ const computed = {
   }
 };/// конец computed
 
+let template = parcelRequire('js/c/uploader/list.vue.html');
+
 var $Компонент = {
   //~ props,
   //~ data,
@@ -49,11 +51,13 @@ var $Компонент = {
   //~ created,
   //~ mounted,
   components: {},
+  render:template.render,
+  staticRenderFns: template.staticRenderFns,
 };
 
 const $Конструктор = function (/*data, $c, $scope*/){
   let $this = this;
-  $Компонент.template = $templateCache.get('uploader/list');
+  //~ $Компонент.template = $templateCache.get('uploader/list');
   $Компонент.components['uploader-file'] = new $UploaderFile();
   return $Компонент;
 };

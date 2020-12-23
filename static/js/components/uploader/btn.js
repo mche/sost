@@ -55,6 +55,8 @@ const mounted = function(){
   });
 };/// конец mounted
 
+let template = parcelRequire('js/c/uploader/btn.vue.html');
+
 var $Компонент = {
   props,
   //~ data,
@@ -64,12 +66,15 @@ var $Компонент = {
   //~ created,
   mounted,
   //~ components,
+  render:template.render,
+  staticRenderFns: template.staticRenderFns,
 };
 
 const $Конструктор = function (/*data, $c, $scope*/){
   let $this = this;
   //~ data = data || {};
-  $Компонент.template = $templateCache.get('uploader/btn');
+  //~ $Компонент.template = $templateCache.get('uploader/btn');
+  
   //~ console.log($Компонент);
   return $Компонент;
 };

@@ -63,6 +63,8 @@ const beforeDestroy = function() {
   uploader.unAssignDrop(dropEle);
 };
 
+let template = parcelRequire('js/c/uploader/drop.vue.html');
+
 var $Компонент = {
   //~ "template": $templateCache.get('тмц/сертификаты/папки'), //ниже/!!
   props,
@@ -78,12 +80,14 @@ var $Компонент = {
   mounted,
   beforeDestroy,
   //~ "components": {},
+  render:template.render,
+  staticRenderFns: template.staticRenderFns,
 };
 
 const $Конструктор = function (/*data, $c, $scope*/){
   let $this = this;
   //~ data = data || {};
-  $Компонент.template = $templateCache.get('uploader/drop');
+  //~ $Компонент.template = $templateCache.get('uploader/drop');
   //~ console.log($Компонент);
   return $Компонент;
 };

@@ -274,6 +274,8 @@ const destroyed = function() {
   this._handlers = null;
 };
 
+let template = parcelRequire('js/c/uploader/file.vue.html');
+
 var $Компонент = {
   props,
   data,
@@ -284,12 +286,14 @@ var $Компонент = {
   mounted,
   destroyed,
   //~ components,
+  render:template.render,
+  staticRenderFns: template.staticRenderFns,
 };
 
 const $Конструктор = function (/*data, $c, $scope*/){
   let $this = this;
   //~ data = data || {};
-  $Компонент.template = $templateCache.get('uploader/file');
+  //~ $Компонент.template = $templateCache.get('uploader/file');
   //~ console.log($Компонент);
   return $Компонент;
 };
