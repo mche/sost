@@ -1,0 +1,224 @@
+<!-- @@@ аренда/расходы/форма -->
+
+<template>
+
+<div><!-- обязательно один корень Vue -->
+<v-progress-indeterminate v-show=" !ready " :color=" 'teal' " :message=" 'Загружается...' "></v-progress-indeterminate>
+
+<div v-if="ready" class="card z-depth-5 teal lighten-4 animated slideInUp fast">
+
+<!--div>{{ param }}</div-->
+
+<div class="card-content">
+  <div class="row relative">
+    <a @click=" CancelBtn()" href="javascript:" class="btn-flat z-depth-1 white red-text lighten-2 right" style000="position:absolute; right:0;">
+      <i class="material-icons">cancel</i><span>Отмена</span>
+    </a>
+    <a v-show="!!form.id" @click=" Copy() " href="javascript:" class="btn-flat z-depth-1 green lighten-4 green-text right">
+      <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 30 30" class="green-fill" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#copy" /></svg>
+      <span>Копия</span>
+    </a>
+    
+    <h3 class="fw500">
+        <i v-show=" !form.id " class="material-icons fs18 ">folder_special</i>
+        <span v-show=" !form.id " >Новый счет</span>
+        
+        <i v-show=" !!form.id " class="material-icons ">edit</i>
+        <span v-show=" form.id " >Редактировать счет № <span class="chip fw500 shadow-inset-10">{{ form['номер'] }}</span></span>
+        
+        <span> от </span>
+        <!--span class="chip bold bold shadow-inset-10 teal white-text">{{ param['проект'].name }}</span-->
+        <span v-show="form['проект/name']" class="chip bold bold shadow-inset-10 teal white-text">{{ form['проект/name'] }}</span>
+        
+        <span v-show="!!form['копия/id'] && !form.id" class="red-text chip transparent padd-0-05 animated slideInRight slow"> Копия - внимательно! </span>
+        
+        <span v-show="form.id" class="grey-text fs8">#{{form.id}}</span>
+        
+      </h3>
+      <div class="divider teal darken-4" style="margin-bottom: 1rem;"></div>
+  
+  </div>
+
+  <div class="row" style="">
+    <div class="col s2 ">
+      <h4 class="right-align relative">
+        <!--svg xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32" class="teal-fill-darken-3" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#handshake"></use></svg-->
+        <span>Дата счета</span>
+      </h4>
+    </div>
+    <div class="col s4 m2 ">
+      <div  key-000=" keys['дата'] "class="input-field">
+        <!--a v-show="form['дата']" @click=" ClearDate('дата') " href="javascript:" class="" style="position:absolute; top:0; right:0; z-index:1;"><i class="material-icons red-text">cancel</i></a-->
+        <!--h5 class="nowrap" style="position:absolute; top:-1.2rem;">
+          <span>дата</span>
+        </h5-->
+        <input name="дата" type="text" class="datepicker"  :data-value=" form['дата'] " placeholder="дата счета">
+      </div>
+    </div>
+  </div><!-- row -->
+    
+  <div class="row">
+    <div class="col s2 ">
+      <h4 class="right-align relative padd-05">
+        <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#contragent"></use></svg>
+        <span>Арендатор и договор</span>
+        <sup v-show=" !Valid('договор/id') " class="chip red white-text" style="position: absolute; z-index: 1; top:0;padding:0.3rem;"></sup>
+      </h4>
+    </div>
+    <div class="col s10  row card teal lighten-3">
+      <!--div class="border fs8">{{ form['контрагент'] }}</div-->
+        <!--v-runtime-template :template=" templateCache.get('выбор договора аренды') "></v-runtime-template--->
+        <v-contract-select :item=" {'id': form['договор/id'],} " :param=" { 'фильтр договоров000': ContragentContractsFilter } " @on-select=" OnContragentSelect " ></v-contract-select>
+
+    </div>
+  </div><!-- row -->
+
+    
+    <div class="row"><div class=" col s12 ">
+      <h4 class="fw500 helmet tab-shadow active z-depth-1  lime lighten-4">
+        <i class="material-icons">format_list_numbered</i>
+        <span>Позиции счета</span>
+        <sup class="chip ">{{ form['@позиции'].length-1 }}</sup>
+      </h4>
+    
+      <table class="z-depth-1 bordered ">
+        <tbody class="striped lime lighten-4">
+          <tr v-for="(pos, idx) in form['@позиции']" :key=" pos._id ">
+            <td class="right-align relative padd-05 vtop" style="width:1%;">
+              {{idx+1}}
+              <span v-if=" !!pos.id " class="fs7 grey-text" style="position: absolute; z-index: 1; bottom:0; left:0;">#{{ pos.id }}</span>
+              <span v-else class="" :class="[ ValidPos(pos) ? 'lime-text-darken-4' : 'red-text-darken-3' ,]" style="position: absolute; z-index: 1; bottom:0; left:0;">✱</span>
+              
+            </td>
+            <td class="relative padd-05 vtop">
+              <!-- категория-->
+              <v-suggest v-model.trim="pos['$категория'].title" :item="pos" :items=" categoryData " :param="{placeholder: 'выбрать наименование или ввести новое', ulDropDownClass: ['striped teal lighten-4'],}" :onInputChange="OnCategoryInput" :onItemSelect="OnCategorySelect">
+                <template v-slot:item="{ item, idx, activeItem }">
+                  <h5 class="relative hover-shadow3d"  :class="{'bold fs12': item.title == form.title, 'fw500': item === activeItem}"  style="">
+                    <span>{{  item.title }}</span>
+                    <span v-if="!!item['$позиция']" class="chip padd-0-05"><span class="fs8 grey-text">цена</span> <span class="">{{ item['$позиция']['цена'] }}</span></span>
+                    <span v-if="!!item['$позиция']" class="chip padd-0-05"><span class="fs8 grey-text">за 1</span> {{ item['$позиция']['ед'] }}</span>
+                  </h5>
+                </template>
+              </v-suggest>
+              <span  v-show="!pos['$категория'].id && pos['$категория'].title.length > 0" class="chip red-text text-darken-3 fs8"  style="position: absolute;">* новое наименование *</span>
+              <span  v-show="pos['$категория'].id" class="grey-text fs7 " style="position: absolute; right:0.5rem;">#{{ pos['$категория'].id }}</span>
+            </td>
+            <td class="padd-05" style="width:7rem;">
+              <div class="input-field row" :class="{}">
+                <input type="text" v-model.trim="pos['количество']"  @input="PosSumDebounced(pos, 'количество')"placeholder="количество" class="right-align" title="количество" :disabled="!pos['$категория'].title.length || !!pos['сумма']">
+              </div>
+            </td>
+            
+            <td class="padd-05" style="width:5rem;">
+              <div class="input-field row" :class="{}">
+                <input type="text" v-model.trim="pos['ед']" placeholder="ед. изм."  title="единицы измерения" :disabled="!pos['$категория'].title.length || !!pos['сумма']">
+              </div>
+            </td>
+            
+            <td class="padd-05" style="width:7rem;">
+              <div class="input-field row" :class="{}">
+                <input type="text" v-model.trim="pos['цена']" @input="PosSumDebounced(pos, 'цена')" class="right-align"  placeholder="цена, ₽"  title="цена, ₽" :disabled="!pos['$категория'].title.length || !!pos['сумма']">
+              </div>
+            </td>
+            
+            <td class="padd-05" style="width:7rem;">
+              <div class="input-field row" :class="{}">
+                <input v-show="!pos['количество']" type="text" v-model.trim=" pos['сумма'] " @input="PosSumDebounced(pos, 'сумма')" class="right-align fw500 teal-text text-darken-3" placeholder="сумма, ₽"  title="сумма, ₽">
+                <input v-show="!!pos['количество']" type="text" v-model.trim=" pos['сумма2'] " class="right-align fw500 teal-text text-darken-3" placeholder="сумма, ₽"  title="сумма, ₽" :disabled=" !0">
+              </div>
+            </td>
+            
+            <td class="vtop padd-05" style="width:20%;">
+              <div class="card-000 padd-0-05 grey-lighten-3-000 hoverable">
+                <div class="input-field">
+                  <textarea v-model.trim="pos['коммент']" class="materialize-textarea padd-0" style="min-height: 3rem; font-size:0.8rem;" placeholder="примечание"></textarea>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <!-- итогововая строка .replace(/[\.,]\d+$/, '')--->
+          <tr>
+            <td colspan=5></td>
+            <td class="right-align">
+              <h4 class="nowrap">
+                <span class="bold">{{ TotalSum.toLocaleString({"currency": 'RUB'}) }}</span>
+                <span class=""> ₽</span>
+              
+              </h4>
+            </td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div><!-- col -->
+  </div><!-- row -->
+  
+   <!--div class="row">
+    <div class="col s12 ">
+      <h4 class="">
+        <i class="material-icons">storage</i>
+        <span>Файлы документов</span>
+        <!--sup class="chip ">{{ form._uploads.length }}</sup>
+      </h4>
+      <div v-if="form.id" class="card teal lighten-5">
+        <v-uploads :parent="form"></v-uploads>
+      </div>
+      <div v-else class="grey-text center">Можно загрузить после сохранения договора</div>
+    </div>
+   </div><!-- row -->
+  
+  <div class="row">
+    <div class="col s12 ">
+      <h4 class="">Примечание</h4>
+    </div>
+    <div class="col s12 ">
+      <div class="card padd-05 grey-lighten-3 input-field">
+        <textarea v-model.trim="form['коммент']" class="materialize-textarea padd-0 fs8" style="min-height: 4rem;"></textarea>
+      </div>
+    </div>
+  </div><!-- row -->
+  
+</div><!-- card-content -->
+
+<!--div class="pre-wrap">{{ form }}</div--->
+
+<div class="card-action center grey lighten-2">
+  <v-progress-indeterminate v-show=" cancelerHttp " :color=" 'teal' " :message=" 'Сохраняется...' "></v-progress-indeterminate>
+      <div v-show="!cancelerHttp">
+        <a @click=" Save() " href="javascript:" :disabled="!Valid()" class="btn" >
+          <i class="material-icons">save</i>
+          <span>Сохранить</span>
+        </a>
+        <a v-show="form.id" @click=" RemoveBtn() " href="javascript:" class="left btn-flat z-depth-1 red white-text">
+          <span class="material-icons">delete_forever</span>
+          <span>Удалить</span>
+        </a>
+        <span v-show="!!form['копия/id'] && !form.id" class="red-text fs12"> Копия, внимательно!</span>
+        <a @click=" CancelBtn() " href="javascript:" class="right btn-flat z-depth-1 red-text white">
+          <svg  xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" class="red-fill" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
+          <span>Отмена</span>
+        </a>
+    </div>
+</div>
+
+</div>
+
+<!-- Modal Structure -->
+<div id="modal-remove" class="modal" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp-000  slideOutUp fast"  style="max-height:90%; width:100%; top:0;">
+  <div class="modal-content row">
+    <h2 class="center">Подтвердить удаление расхода</h2>
+  </div><!-- modal-content -->
+  <div class="modal-footer center">
+    <a @click=" RemoveBtn(true) " href="javascript:" class="modal-action modal-close waves-effect waves-red btn-flat z-depth-1 red lighten-3 red-text text-darken-3 btn-flat z-depth-1 red white-text" style="float:none;">
+          <span class="material-icons">delete_forever</span>
+          <span>Да</span>
+        </a>
+    <a  href="javascript:" class="modal-action modal-close btn-flat z-depth-1 orange-text "><i class="material-icons">cancel</i><span>Нет</span></a>
+  </div>
+
+</div>
+
+</div>
+
+</template>
