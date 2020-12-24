@@ -18,6 +18,7 @@ sub map_grep_mode {
     CombineFile => {
       gzip => {min_size => 1000},
     },
+    VueTemplateCompiler=>{enabled=>$ENV{MOJO_ASSETPACK_VueTemplateCompiler} || 0},
     #~ HTML => {minify_opts=>{remove_newlines => 1,}},# чета при удалении переводов строк  проблемы
     process => [# хэшреф убрал для последовательности
       
@@ -100,9 +101,17 @@ sub map_grep_mode {
       js/c/uploader/uploader.vue.html
       js/c/uploader/файлы.vue.html
       )],
+      ['js/dist/templates/view-file-iframe.js' => grep !/^--/, qw(
+      js/c/uploader/view-file-iframe.vue.html
+      )],
+      # если не нужен полный v-uploader
+      ['view-file-iframe.js'=>grep !/^--/, qw(
+      js/dist/templates/view-file-iframe.js
+      js/c/uploader/view-file-iframe.js
+      )],
       
-      ['v-uploader.js' => do {
-        my @uploader_files = qw(common.js btn.js drop.js file.js files.js list.js uploader.js файлы.js);
+      ['файлы.js' => do {
+        my @uploader_files = qw(common.js btn.js drop.js file.js files.js list.js uploader.js файлы.js );
         my @assets = &map_grep_mode(qw(
       lib/simple-uploader.js/dist/uploader.min.js::production
       lib/simple-uploader.js/dist/uploader.js::development
@@ -111,7 +120,7 @@ sub map_grep_mode {
       #~ warn "@assets";
       my $files = join(' ', map("static/js/c/uploader/$_", @uploader_files));
         `cat $files  | perl script/jsPacker.pl -e0 -q > static/cache/v-uploader.min.js`;
-        &map_grep_mode(qw(js/dist/templates/uploader.js), @assets);
+        &map_grep_mode(qw(js/dist/templates/uploader.js view-file-iframe.js), @assets);
         
       }],
 
@@ -283,10 +292,12 @@ sub map_grep_mode {
       js/c/profile/item.html
       
       )],
+      ['js/dist/templates/выбор-договора-аренды.js'=>qw(js/c/аренда/выбор-договора-аренды.vue.html)],
       ['waltex/money.js'=> grep !/^--/, qw(
       tree-item.js
       js/c/wallet/item.js
       js/c/contragent/data.js
+      js/dist/templates/выбор-договора-аренды.js
       js/c/аренда/выбор-договора-аренды.js
       js/c/contragent/item.js
       js/c/project/list.js
@@ -366,7 +377,7 @@ sub map_grep_mode {
         --lib/fileupload.js_в_контроллере
         --lib/angular-fallback-src/fallback-src.js
         js/util/sprintf.js
-        v-uploader.js
+        файлы.js
         js/c/access/users.js
         js/c/access/roles.js
         js/c/access/routes.js
@@ -375,7 +386,7 @@ sub map_grep_mode {
         ['staff/сотрудники.js' => grep !/^--/, qw(
         --lib/fileupload.js_в_контроллере
         --lib/angular-fallback-src/fallback-src.js
-        v-uploader.js
+        файлы.js
         js/c/access/users.js
         js/c/access/roles.js
         js/c/staff/сотрудники.js
@@ -679,7 +690,7 @@ sub map_grep_mode {
         js/c/тмц/сертификаты/закупки.js
         js/c/тмц/сертификаты/папки.js
         js/c/tree/v-tree-list.js
-        v-uploader.js
+        файлы.js
         js/c/тмц/сертификаты/форма-папки.js
         )],
         ['тмц/сертификаты.html' => grep !/^--/, qw(
@@ -756,7 +767,17 @@ sub map_grep_mode {
         
         )],
         
+        ['js/dist/templates/аренда.js'=>grep !/^--/, qw(
+        js/c/аренда/договоры-таблица.vue.html
+        js/c/аренда/договор-форма.vue.html
+        js/c/аренда/договор-помещения-форма.vue.html
+        js/c/аренда/объекты-таблица.vue.html
+        js/c/аренда/объект-форма.vue.html
+        js/c/аренда/объекты-таблица-помещений-договоры.vue.html
+        )],
+        
         ['аренда.js' => grep !/^--/, qw(
+        js/dist/templates/аренда.js
         js/c/аренда/index.js
         js/c/аренда/договоры-таблица.js
         ---js/dist/аренда/договоры-таблица.js
@@ -770,7 +791,7 @@ sub map_grep_mode {
         js/util/IdMaker.js
         js/util/debounce.js
         js/c/autocomplete/v-suggestions.js
-        v-uploader.js
+        файлы.js
         js/c/object/v-select-object.js
         js/c/autocomplete/v-select.js
         js/c/project/list.js
@@ -781,12 +802,12 @@ sub map_grep_mode {
         ---js/util/array-splice.js
         )],
         ['аренда.html?wew' => grep !/^--/, qw(
-        js/c/аренда/договоры-таблица.html
-        js/c/аренда/договор-форма.html
-        js/c/аренда/договор-помещения-форма.html
-        js/c/аренда/объекты-таблица.html
-        js/c/аренда/объекты-таблица-помещений-договоры.html
-        js/c/аренда/объект-форма.html
+        ---js/c/аренда/договоры-таблица.html
+        ---js/c/аренда/договор-форма.html
+        ---js/c/аренда/договор-помещения-форма.html
+        ---js/c/аренда/объекты-таблица.html
+        ---js/c/аренда/объекты-таблица-помещений-договоры.html
+        ---js/c/аренда/объект-форма.html
         js/c/contragent/v-item.html
         js/c/autocomplete/v-suggestions.html
         ---v-uploader.html
@@ -798,7 +819,15 @@ sub map_grep_mode {
         js/c/waltex/report/table.html
         )],
         
+        ['js/dist/templates/аренда-расходы.js'=>grep !/^--/, qw(
+          js/c/аренда/расходы/расходы-таблица.vue.html
+          js/c/аренда/расходы/расходы-форма.vue.html
+        )],
+        
+        
         ['аренда-расходы.js' => grep !/^--/, qw(
+        js/dist/templates/аренда-расходы.js
+        view-file-iframe.js
         js/c/аренда/расходы/index.js
         js/c/project/v-list.js
         js/c/аренда/расходы/расходы-таблица.js
@@ -808,16 +837,17 @@ sub map_grep_mode {
         js/util/IdMaker.js
         js/util/debounce.js
         js/c/autocomplete/v-suggestions.js
-        ----v-uploader.js
+        ----файлы.js
         js/c/autocomplete/v-select.js
         js/c/object/v-select-object.js
+        js/dist/templates/выбор-договора-аренды.js
         js/c/аренда/выбор-договора-аренды.js
-        js/c/uploader/common.js
+        ---js/c/uploader/common.js
         )],
         ['аренда-расходы.html' => grep !/^--/, qw(
         js/c/project/v-list.html
-        js/c/аренда/расходы/расходы-таблица.html
-        js/c/аренда/расходы/расходы-форма.html
+        ---js/c/аренда/расходы/расходы-таблица.html
+        ---js/c/аренда/расходы/расходы-форма.html
         ---js/c/contragent/v-item.html
         js/c/autocomplete/v-suggestions.html
         ---v-uploader.html
@@ -826,7 +856,11 @@ sub map_grep_mode {
         ---js/c/аренда/выбор-договора-аренды.html
         )],
         
+        ['js/dist/templates/аренда-акты-таблица.js'=>grep !/^--/, qw(
+        js/c/аренда/акты/акты-таблица.vue.html
+        )],
         ['аренда-акты.js' => grep !/^--/, qw(
+        js/dist/templates/аренда-акты-таблица.js
         js/c/аренда/акты/index.js
         js/c/project/v-list.js
         js/c/аренда/акты/акты-таблица.js
@@ -834,7 +868,7 @@ sub map_grep_mode {
         )],
         ['аренда-акты.html' => grep !/^--/, qw(
         js/c/project/v-list.html
-        js/c/аренда/акты/акты-таблица.html
+        ---js/c/аренда/акты/акты-таблица.html
         )],
         
         ['контрагенты/замена.js' => grep !/^--/, qw(
@@ -859,7 +893,7 @@ sub map_grep_mode {
         js/c/химия/сырье/сырье-таблица.js
         ---lib/vue-numeric/dist/vue-numeric.min.js
         js/c/химия/сырье/сырье-форма.js
-        v-uploader.js
+        файлы.js
         js/c/химия/продукция/продукция-таблица.js
         js/c/химия/продукция/продукция-форма.js
         js/c/химия/сырье/сырье-остатки.js

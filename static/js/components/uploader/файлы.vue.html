@@ -52,7 +52,7 @@
     
     <ul v-if=" UploadsLen " :key000="uploadsFilteredKey" class="collection  blue striped lighten-4 marg-0 padd-0 animated slideInUp" :class="{'max-height-none':!!topFolder}" style="overflow:auto;" :style="expandUploads ? {} : {'max-height': 'calc(30vh)'}">
       <li v-for="file in UploadsFiltered" :key="file.id" :id=" `file-${file.id}` " class="collection-item relative hover-childs-show  animated" :class="{' slideInRight': !!file._file, 'fadeIn000':!file._file, 'marg-05-0':file.hasOwnProperty('_edit')}" style="/*overflow:auto; border:none;*/">
-        <a @click.stop="ViewIframe(Object.assign(file, {'src': appRoutes.urlFor('файл-инлайн', [file.sha1])}))" href="javascript: void('просмотреть(скачать) файл')" class="hover-shadow3d input-field" title="просмотреть(скачать) файл">
+        <a @click.stop="ViewIframe(file)" href="javascript: void('просмотреть(скачать) файл')" class="hover-shadow3d input-field" title="просмотреть(скачать) файл">
           <h6 v-for="(n, idx) in file.names" v-show="!topFolder || file.names.length == 1 || idx > 0" :key="idx" class="breadcrumb before-margin-0 inline ">
             <span class="chip padd-0-05 blue-text-darken-3" :class="{'fw500 white': idx+1 == file.names.length || file.names.length == 1 , 'transparent': file.names.length > 1 && idx+1 != file.names.length, 'orange lighten-4': !!file._file,}" >{{ n }}</span>
           </h6>
@@ -104,8 +104,9 @@
     </div>
   </div>
   
+  <v-view-file-iframe v-if="iframeFile" :key="iframeFile.id" :файл="iframeFile" @on-complete="ModalComplete"></v-view-file-iframe>
   <!-- Modal Structure -->
-  <div id="modal-view-in-iframe" class="modal" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInUp" data-modal-out="animated   slideOutDown fast"  style="max-height:90%; width:100%; bottom:0;">
+  <!--div id="modal-view-in-iframe" class="modal" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInUp" data-modal-out="animated   slideOutDown fast"  style="max-height:90%; width:100%; bottom:0;">
     <div class="modal-content0000">
       <iframe 
         v-if="iframeFile && iframeFile.src"
@@ -119,6 +120,6 @@
       <a click.stop=" ViewIframeClose " href="javascript:" class="modal-action modal-close waves-effect waves-green btn-flat red lighten-3 red-text text-darken-3" style="position:absolute;bottom:0; right:0;"><i class="material-icons">cancel</i><span>Закрыть просмотр</span></a>
   </div>
   
-</div>
+</div-->
 
 </template>

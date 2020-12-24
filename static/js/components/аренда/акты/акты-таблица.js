@@ -15,7 +15,7 @@ var moduleName = "Аренда::Акты::Таблица";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, [  /*'Аренда::Акты::Форма','Компонент::Выбор в списке','Компонент::Выбор объекта',*/ ]);
 
-module.factory('$КомпонентАрендаАктыТаблица', function($templateCache, $http, appRoutes,  /*$EventBus, Util,*//*$КомпонентВыборВСписке,$КомпонентВыборОбъекта*/  ) {// 
+module.factory('$КомпонентАрендаАктыТаблица', function(/*$templateCache,*/ $http, appRoutes,  /*$EventBus, Util,*//*$КомпонентВыборВСписке,$КомпонентВыборОбъекта*/  ) {// 
 
 const props = {
   "param": {
@@ -160,6 +160,8 @@ const mounted = function(){
   });
 };
 
+let template = parcelRequire('js/c/аренда/акты/акты-таблица.vue.html');
+
 var $Компонент = {
   props,
   data,
@@ -168,11 +170,13 @@ var $Компонент = {
   //~ "created"() {  },
   mounted,
   components:{},
+  render:template.render,
+  staticRenderFns: template.staticRenderFns,
 };
 
 const $Конструктор = function (){
   //~ let $this = this;
-  $Компонент.template = $Компонент.template || $templateCache.get('аренда/акты/таблица');
+  //~ $Компонент.template = $Компонент.template || $templateCache.get('аренда/акты/таблица');
   //~ $Компонент.components['v-form'] =  new $КомпонентАрендаРасходыФорма();
   //~ $Компонент.components['v-object-select'] = new $КомпонентВыборОбъекта();
 

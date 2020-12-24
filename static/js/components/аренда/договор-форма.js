@@ -66,7 +66,7 @@ var module = angular.module(moduleName, ['Компонент::Контраген
 //~ });
 
 module
-.factory('$КомпонентАрендаДоговорФорма', function($templateCache, $http, $q, $timeout, appRoutes, $КомпонентКонтрагент, $Контрагенты, $EventBus, /*$КомпонентПоискВСписке,*/ $КомпонентВыборВСписке, Util, $Список, $КомпонентАрендаДоговорПомещенияФорма, $КомпонентФайлы /*$Uploader*/) {// factory
+.factory('$КомпонентАрендаДоговорФорма', function(/*$templateCache,$timeout,*/ $http, $q,  appRoutes, $КомпонентКонтрагент, $Контрагенты, $EventBus, /*$КомпонентПоискВСписке,*/ $КомпонентВыборВСписке, Util, $Список, $КомпонентАрендаДоговорПомещенияФорма, $КомпонентФайлы /*$Uploader*/) {// factory
 
 //~ var rentRoomsData;///синглетон для данных объектов аренды
 $Контрагенты.Load();
@@ -98,7 +98,7 @@ Ready(){/// метод
   //~ vm.rentRooms = rentRoomsData;
 
   vm.ready = true;
-  $timeout(function(){
+  setTimeout(function(){
     //~ $('input[type="text"]', $(vm.$el)).first().focus();
     
     vm.InitDatePicker($('.datepicker', $(vm.$el)));
@@ -532,7 +532,7 @@ const mounted = function(){
 
 };/// конец mounted
 
-
+let template = parcelRequire('js/c/аренда/договор-форма.vue.html');
 
 var $Компонент = {
   //~ "template": $templateCache.get('тмц/сертификаты/папки'), //ниже/!!
@@ -544,11 +544,13 @@ var $Компонент = {
   //~ "created"() {  },
   mounted,
   "components": { },
+  render:template.render,
+  staticRenderFns: template.staticRenderFns,
 };
 
 const $Конструктор = function (/*data, $c, $scope*/){
   let $this = this;
-  $Компонент.template = $templateCache.get('аренда/договор/форма');
+  //~ $Компонент.template = $templateCache.get('аренда/договор/форма');
   $Компонент.components['v-contragent'] =  new $КомпонентКонтрагент();
   //~ $Компонент.components['v-suggest'] = new $КомпонентПоискВСписке();
   $Компонент.components['v-select'] = new $КомпонентВыборВСписке();

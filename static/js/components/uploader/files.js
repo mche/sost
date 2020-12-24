@@ -15,7 +15,7 @@ var moduleName = "UploaderFiles";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['UploaderFile', 'UploaderCommon']);
 
-module.factory('$UploaderFiles', function($templateCache, $UploaderFile, $UploaderMixins) {// factory
+module.factory('$UploaderFiles', function(/*$templateCache,*/ $UploaderFile, $UploaderMixins) {// factory
 
 const props = {
 

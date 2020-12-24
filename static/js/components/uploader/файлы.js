@@ -13,9 +13,9 @@
 */
 var moduleName = "Uploader::Файлы";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Uploader', 'UploaderCommon', ]);
+var module = angular.module(moduleName, ['Uploader',  'Файлы::Просмотр']); // 'UploaderCommon', $UploaderViewIframeMixins
 
-module.factory('$КомпонентФайлы', function($http, $templateCache, $window, appRoutes, $AppUser, $Uploader, $UploaderViewIframeMixins) {// factory
+module.factory('$КомпонентФайлы', function($http, /*$templateCache,*/ $window, appRoutes, $AppUser, $Uploader, $КомпонентПросмотрФайла) {// factory
 
 
   
@@ -357,6 +357,11 @@ UploadsReduceByEmptyFolder(a, file){/// файлы без папок
   return a;
 },
 
+ViewIframe(file){
+  //~ this.iframeFile = Object.assign({}, file, {'src': appRoutes.urlFor('файл-инлайн', [file.sha1])});
+  this.iframeFile = file;
+}
+
 }; ///конец методы
 
 const computed = {
@@ -419,7 +424,7 @@ let template = parcelRequire('js/c/uploader/файлы.vue.html');
 var $Компонент = {
   props,
   data,
-  mixins: [$UploaderViewIframeMixins,],
+  //~ mixins: [$UploaderViewIframeMixins,],
   methods,
   computed,
   //~ created,
@@ -433,6 +438,7 @@ const $Конструктор = function (ext/*data, $c, $scope*/){
   let $this = this;
   //~ if (!$Компонент.template) $Компонент.template = $templateCache.get('uploader/файлы');
   $Компонент.components['v-uploader'] = new $Uploader();
+  $Компонент.components['v-view-file-iframe'] = new $КомпонентПросмотрФайла();
   if (ext) return jQuery.extend(true, {}, $Компонент, ext);/// глубокое наложение
   return $Компонент;
 };

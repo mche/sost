@@ -14,9 +14,9 @@
 */
 let moduleName = "Аренда::Договоры::Таблица";
 try {angular.module(moduleName); return;} catch(e) { } 
-let module = angular.module(moduleName, [ 'Аренда::Договор::Форма', 'Компонент::Выбор объекта', 'Компонент::Выбор в списке', 'UploaderCommon']);
+let module = angular.module(moduleName, [ 'Аренда::Договор::Форма', 'Компонент::Выбор объекта', 'Компонент::Выбор в списке', 'Файлы::Просмотр']);//'UploaderCommon'
 
-module.factory('$КомпонентАрендаДоговорыТаблица', function($templateCache, $http, appRoutes, /*$timeout, $rootScope, /**$compile, , */ $EventBus, Util, $Список, $КомпонентАрендаДоговорФорма, $КомпонентВыборОбъекта, $КомпонентВыборВСписке, $UploaderViewIframeMixins ) {// 
+module.factory('$КомпонентАрендаДоговорыТаблица', function(/*$templateCache,*/ $http, appRoutes, /*$timeout, $rootScope, /**$compile, , */ $EventBus, Util, $Список, $КомпонентАрендаДоговорФорма, $КомпонентВыборОбъекта, $КомпонентВыборВСписке, $КомпонентПросмотрФайла) {// $UploaderViewIframeMixins
 
 var projectList = new $Список(appRoutes.url_for('список проектов'));
 projectList.Load();
@@ -245,7 +245,7 @@ PrintPay(month, month2){/// счета и акты
     if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 border fw500  animated zoomInUp');
     if (resp.data.docx) {
       let url = appRoutes.urlFor('аренда/счет#docx', resp.data.docx);
-      if (vm.payPDF) return vm.ViewIframe({"src": url+'?inline=1', "content_type":'application/pdf' });
+      if (vm.payPDF) return vm.iframeFile = {"src": url+'?inline=1', "content_type":'application/pdf' };
       window.location.href = url;/// а это get-запрос
     }
     if (resp.data.data) console.log("счет", resp.data.data);///отладка
@@ -458,6 +458,10 @@ LabelProlongClick(){/// третье состояние радио продле�
   //~ console.log("LClick", this.filters);
 },
 
+ModalComplete(){
+  this.iframeFile=undefined;
+},
+
 }; ///конец methods
 
 const computed = {
@@ -541,24 +545,29 @@ const beforeDestroy = function(){
   //~ console.log("beforeDestroy");
 };
 
+let template = parcelRequire('js/c/аренда/договоры-таблица.vue.html');
+
 var $Компонент = {
   props,
   data,
-  mixins:[$UploaderViewIframeMixins],
+  //~ mixins:[$UploaderViewIframeMixins],
   methods,
   computed,
   //~ "created"() {  },
   mounted,
   beforeDestroy,
   components:{},
+  render:template.render,
+  staticRenderFns: template.staticRenderFns,
 };
 
 const $Конструктор = function (/*data, $c, $scope*/){
   let $this = this;
-  $Компонент.template = $templateCache.get('аренда/договоры/таблица');
+  //~ $Компонент.template = $templateCache.get('аренда/договоры/таблица');
   $Компонент.components['v-rent-contract-form'] =  new $КомпонентАрендаДоговорФорма();
   $Компонент.components['v-object-select'] = new $КомпонентВыборОбъекта();
   $Компонент.components['v-select'] = new $КомпонентВыборВСписке();
+  $Компонент.components['v-view-file-iframe'] = new $КомпонентПросмотрФайла();
   //~ $Компонент.components['v-test'] = new Vue(тест);
 
   return $Компонент;

@@ -16,7 +16,7 @@ try {angular.module(moduleName); return;} catch(e) { }
 var module = angular.module(moduleName, [ 'EventBus', 'Компонент::Поиск в списке', 'Аренда::Договоры::Выбор', /* 'Uploader::Файлы',*/ ]);
 
 module
-.factory('$КомпонентАрендаРасходыФорма', function($templateCache, $http, /*$q,$timeout,*/  appRoutes, $EventBus, $КомпонентПоискВСписке, $КомпонентАрендаДоговорыВыбор, Util/*$КомпонентФайлы */) {// factory
+.factory('$КомпонентАрендаРасходыФорма', function(/*$templateCache,*/ $http, /*$q,$timeout,*/  appRoutes, $EventBus, $КомпонентПоискВСписке, $КомпонентАрендаДоговорыВыбор, Util/*$КомпонентФайлы */) {// factory
 
 //~ var rentRoomsData;///синглетон для данных объектов аренды
 //~ $Контрагенты.Load();
@@ -373,6 +373,7 @@ const  beforeMount = function(){
     this.PosSumDebounced = debounce(this.PosSum, 700);
 };
 
+let template = parcelRequire('js/c/аренда/расходы/расходы-форма.vue.html');
 
 var $Компонент = {
   //~ "template": $templateCache.get('тмц/сертификаты/папки'), //ниже/!!
@@ -384,11 +385,13 @@ var $Компонент = {
   mounted,
   beforeMount,
   "components": { },
+  render:template.render,
+  staticRenderFns: template.staticRenderFns,
 };
 
 const $Конструктор = function (/*data, $c, $scope*/){
   let $this = this;
-  $Компонент.template = $templateCache.get('аренда/расходы/форма');
+  //~ $Компонент.template = $templateCache.get('аренда/расходы/форма');
   $Компонент.components['v-suggest'] = new $КомпонентПоискВСписке();
   $Компонент.components['v-contract-select'] = new $КомпонентАрендаДоговорыВыбор();
   //~ $Компонент.components['v-uploads'] = new $КомпонентФайлы();

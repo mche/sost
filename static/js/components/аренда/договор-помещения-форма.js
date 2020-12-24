@@ -255,6 +255,8 @@ const  beforeMount = function(){
   //~ }
 };
 
+let template = parcelRequire('js/c/аренда/договор-помещения-форма.vue.html');
+
 var $Компонент = {
   //~ "template": $templateCache.get('тмц/сертификаты/папки'), //ниже/!!
   props,
@@ -265,11 +267,13 @@ var $Компонент = {
   //~ beforeMount,
   mounted,
   "components": { },
+  render:template.render,
+  staticRenderFns: template.staticRenderFns,
 };
 
 const $Конструктор = function (/*data, $c, $scope*/){
   let $this = this;
-  $Компонент.template = $templateCache.get('аренда/договор/помещения/форма');
+  //~ $Компонент.template = $templateCache.get('аренда/договор/помещения/форма');
   $Компонент.components['v-select'] = new $КомпонентВыборВСписке();
   return $Компонент;
 };

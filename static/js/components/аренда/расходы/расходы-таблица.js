@@ -13,9 +13,9 @@
 */
 var moduleName = "Аренда::Расходы::Таблица";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['EventBus', 'Аренда::Расходы::Форма', 'UploaderCommon', /*'Компонент::Выбор в списке', 'Компонент::Выбор объекта',*/ ]);
+var module = angular.module(moduleName, ['EventBus', 'Аренда::Расходы::Форма', 'Файлы::Просмотр', /*'Компонент::Выбор в списке', 'Компонент::Выбор объекта',*/ ]);
 
-module.factory('$КомпонентАрендаРасходыТаблица', function($templateCache, $http, appRoutes, Util,  /*$EventBus,$Список, */ $КомпонентАрендаРасходыФорма, /*$КомпонентАрендаДоговорыВыбор, $КомпонентВыборОбъекта*/  $UploaderViewIframeMixins ) {// 
+module.factory('$КомпонентАрендаРасходыТаблица', function(/*$templateCache*/ $http, appRoutes, Util,  /*$EventBus,$Список, */ $КомпонентАрендаРасходыФорма, /*$КомпонентАрендаДоговорыВыбор, $КомпонентВыборОбъекта*/  $КомпонентПросмотрФайла ) {// 
 
 
 
@@ -208,7 +208,7 @@ Print(){
     if (resp.data.docx) {
       let url = appRoutes.urlFor('аренда/расходы#docx', resp.data.docx);
       //~ console.log("Print", vm.form['pdf формат'], url);
-      if (vm.form['pdf формат']) return vm.ViewIframe({"src": url+'?inline=1', "content_type":'application/pdf' });
+      if (vm.form['pdf формат']) return vm.iframeFile = {"src": url+'?inline=1', "content_type":'application/pdf' };
       window.location.href = url;
     }
     if (resp.data.data) console.log("счет", resp.data.data);///отладка
@@ -216,6 +216,9 @@ Print(){
   });
 },
 
+ModalComplete(){
+  this.iframeFile=undefined;
+},
 
 }; ///конец methods
 
@@ -270,22 +273,27 @@ const mounted = function(){
   });
 };
 
+let template = parcelRequire('js/c/аренда/расходы/расходы-таблица.vue.html');
+
 var $Компонент = {
   props,
   data,
   methods,
-  mixins: [$UploaderViewIframeMixins,],
+  //~ mixins: [$UploaderViewIframeMixins,],
   computed,
   //~ "created"() {  },
   mounted,
   components:{},
+  render:template.render,
+  staticRenderFns: template.staticRenderFns,
 };
 
 const $Конструктор = function (/*data, $c, $scope*/){
   let $this = this;
   //~ data = data || {};
-  $Компонент.template = $templateCache.get('аренда/расходы/таблица');
+  //~ $Компонент.template = $templateCache.get('аренда/расходы/таблица');
   $Компонент.components['v-form'] =  new $КомпонентАрендаРасходыФорма();
+  $Компонент.components['v-view-file'] = new $КомпонентПросмотрФайла();
   //~ $Компонент.components['v-object-select'] = new $КомпонентВыборОбъекта();
   //~ $Компонент.components['v-contract-select'] = new $КомпонентАрендаДоговорыВыбор();
 

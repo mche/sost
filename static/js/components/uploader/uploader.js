@@ -15,7 +15,7 @@ var moduleName = "Uploader";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['UploaderCommon', 'UploaderBtn', 'UploaderDrop', 'UploaderList', 'UploaderFiles', 'UploaderFile',]);
 
-module.factory('$Uploader', function($templateCache, $UploaderUtil, $UploaderBtn, $UploaderDrop, $UploaderList, $UploaderFiles, $UploaderFile) {// factory
+module.factory('$Uploader', function(/*$templateCache,*/ $UploaderUtil, $UploaderBtn, $UploaderDrop, $UploaderList, $UploaderFiles, $UploaderFile) {// factory
 
 const FILE_ADDED_EVENT = 'fileAdded';
 const FILES_ADDED_EVENT = 'filesAdded';

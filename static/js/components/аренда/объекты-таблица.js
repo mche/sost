@@ -16,8 +16,7 @@ try {angular.module(moduleName); return;} catch(e) { }
 var module = angular.module(moduleName, [ 'Аренда::Объект::Форма', 'EventBus' ]);
 
 
-module.factory('$КомпонентАрендаОбъектыТаблица',
-function($templateCache, $http, appRoutes, Util, $Список, /*$timeout, $rootScope, /**$compile, */$КомпонентАрендаОбъектФорма, $EventBus ) {// factory
+module.factory('$КомпонентАрендаОбъектыТаблица',function(/*$templateCache,*/ $http, appRoutes, Util, $Список, /*$timeout, $rootScope, /**$compile, */$КомпонентАрендаОбъектФорма, $EventBus ) {// factory
 
 const props = {
   "param": {
@@ -231,6 +230,7 @@ const computed = {
 
 /* computed */};
 
+let template = parcelRequire('js/c/аренда/объекты-таблица.vue.html');
 
 var $Компонент = {
   props,
@@ -242,18 +242,25 @@ var $Компонент = {
     //~ console.log('mounted', this);
     this.Ready();
   },
+  render:template.render,
+  staticRenderFns: template.staticRenderFns,
 };
 
 const $Конструктор = function (/*data, $c, $scope*/){
   let $this = this;
   //~ data = data || {};
-  $Компонент.template = $templateCache.get('аренда/объекты/таблица');
+  //~ $Компонент.template = $templateCache.get('аренда/объекты/таблица');
+  
+  let template = parcelRequire('js/c/аренда/объекты-таблица-помещений-договоры.vue.html');
+  
   $Компонент.components = $Компонент.components || {
     'v-rent-object-form': new $КомпонентАрендаОбъектФорма(),
     'v-contracts': {
       "props":['contracts', 'room'],
-      "template":  $templateCache.get('аренда/объекты/таблица помещений/договоры'),
+      //~ "template":  $templateCache.get('аренда/объекты/таблица помещений/договоры'),
       methods,
+      render:template.render,
+      staticRenderFns: template.staticRenderFns,
     },
   };
 

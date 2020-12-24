@@ -16,7 +16,7 @@ try {angular.module(moduleName); return;} catch(e) { }
 var module = angular.module(moduleName, ['Компонент::Выбор объекта', 'Компонент::Выбор в списке', 'Uploader::Файлы',]);
 
 module
-.factory('$КомпонентАрендаОбъектФорма',  function($templateCache, $http, $timeout, appRoutes, Util, $КомпонентВыборОбъекта, $КомпонентВыборВСписке, $КомпонентФайлы) {// factory
+.factory('$КомпонентАрендаОбъектФорма',  function(/*$templateCache,*/ $http, $timeout, appRoutes, Util, $КомпонентВыборОбъекта, $КомпонентВыборВСписке, $КомпонентФайлы) {// factory
 
 const props = {
   "item": {
@@ -381,6 +381,8 @@ const data = function() {
   //);
 };///  конец data
 
+let template = parcelRequire('js/c/аренда/объект-форма.vue.html');
+
 var $Компонент = {
   //~ "template": $templateCache.get('тмц/сертификаты/папки'), //ниже/!!
   props,
@@ -395,12 +397,14 @@ var $Компонент = {
   "components": {
     //~ 'v-tree': new $КомпонентДеревоСписок(),
   },
+  render:template.render,
+  staticRenderFns: template.staticRenderFns,
 };
 
 const $Конструктор = function (/*data, $c, $scope*/){
   let $this = this;
   //~ data = data || {};
-  $Компонент.template = $templateCache.get('аренда/объект/форма');
+  //~ $Компонент.template = $templateCache.get('аренда/объект/форма');
   $Компонент.components['v-object-select'] = new $КомпонентВыборОбъекта();
   $Компонент.components['v-select-floor'] = new $КомпонентВыборВСписке();
   $Компонент.components['v-select-liter'] = new $КомпонентВыборВСписке();
