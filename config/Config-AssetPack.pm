@@ -115,11 +115,11 @@ sub map_grep_mode {
         my @assets = &map_grep_mode(qw(
       lib/simple-uploader.js/dist/uploader.min.js::production
       lib/simple-uploader.js/dist/uploader.js::development
-      cache/v-uploader.min.js::production
+      js/dist/v-uploader.min.js::production
       ), map("js/c/uploader/$_\::development", @uploader_files));
       #~ warn "@assets";
       my $files = join(' ', map("static/js/c/uploader/$_", @uploader_files));
-        `cat $files  | perl script/jsPacker.pl -e0 -q > static/cache/v-uploader.min.js`;
+        `cat $files  | perl script/jsPacker.pl -e0 -q > static/js/dist/v-uploader.min.js`;
         &map_grep_mode(qw(js/dist/templates/uploader.js view-file-iframe.js), @assets);
         
       }],
