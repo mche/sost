@@ -509,7 +509,7 @@ const  data = function(){
     "nextMonth": dateFns.format(dateFns.addMonths(new Date(), 1/*один мес*/), 'DD MMMM YYYY', {locale: dateFns.locale_ru}).replace(/\d+\s*(.+?).{1}\s*(\d+)$/, (m, m1, m2)=>`${m1}е ${m2}`),
     "payMonth2": undefined,
     "payNums": true, ///крыжик счета с номерами
-    "payPDF": false,///крыжик 
+    "payPDF": true,///крыжик 
     "radioAccAct": 'счет',/// или акт
     "radioNalBezNal": 'безнал',/// или вместе нал и безнал
     "filters": {...vm._cleanFilters},

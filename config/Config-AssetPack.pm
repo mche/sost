@@ -18,7 +18,7 @@ sub map_grep_mode {
     CombineFile => {
       gzip => {min_size => 1000},
     },
-    VueTemplateCompiler=>{enabled=>$ENV{MOJO_ASSETPACK_VueTemplateCompiler} || 0},
+    VueTemplateCompiler=>{enabled=>$ENV{MOJO_ASSETPACK_VUE_TEMPLATE_COMPILER} || 0},
     #~ HTML => {minify_opts=>{remove_newlines => 1,}},# чета при удалении переводов строк  проблемы
     process => [# хэшреф убрал для последовательности
       
