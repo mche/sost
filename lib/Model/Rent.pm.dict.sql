@@ -171,6 +171,7 @@ id1("аренда/договоры")->id2("счета/аренда/помеще�
 */
 );
 CREATE INDEX  IF NOT EXISTS "счета/аренда/помещения/idx/месяц" ON "счета/аренда/помещения" ("месяц");---date_trunc('month', "месяц")--- ERROR:  functions in index expression must be marked IMMUTABLE
+ALTER TABLE "счета/аренда/помещения" ALTER  COLUMN "номер" DROP DEFAULT;
 
 create table IF NOT EXISTS "акты/аренда/помещения" ( ---- акты вып за аренду помещений (без других платежей)
   id integer  NOT NULL DEFAULT nextval('{%= $sequence %}'::regclass) primary key,
@@ -185,6 +186,7 @@ id1("аренда/договоры")->id2("счета/аренда/помеще�
 );
 ALTER TABLE "акты/аренда/помещения" ADD COLUMN IF NOT EXISTS  "подписан" timestamp without time zone;
 CREATE INDEX  IF NOT EXISTS "акты/аренда/помещения/idx/месяц" ON "акты/аренда/помещения" ("месяц");---date_trunc('month', "месяц")--- ERROR:  functions in index expression must be marked IMMUTABLE
+ALTER TABLE "акты/аренда/помещения" ALTER  COLUMN "номер" DROP DEFAULT;
 
 CREATE OR REPLACE FUNCTION "новый номер счета/аренда помещений"(date/* по месяцу выч год и годовая последовательность*/)
 RETURNS text
@@ -244,7 +246,7 @@ BEGIN
       and  s.id1 is null
     order by d."дата1" desc, d.id desc
   LOOP
-    insert into "счета/аренда/помещения" ("месяц", uid) values (date_trunc('month', $1), $3) returning * into ins;
+    insert into "счета/аренда/помещения" ("номер", "месяц", uid) values ("новый номер счета/аренда помещений"($1::date), date_trunc('month', $1), $3) returning * into ins;
     insert into "refs" (id1,id2) values (drec.id, ins.id);
     ---RAISE NOTICE 'New id: %', ins.id;
     ---RETURN NEXT ins;
@@ -334,7 +336,7 @@ BEGIN
       and  s.id1 is null
     order by d."дата1" desc, d.id desc
   LOOP
-    insert into "акты/аренда/помещения" ("месяц", uid) values (date_trunc('month', $1), $3) returning * into ins;
+    insert into "акты/аренда/помещения" ("номер", "месяц", uid) values ("новый номер акта/аренда помещений"($1::date), date_trunc('month', $1), $3) returning * into ins;
     insert into "refs" (id1,id2) values (drec.id, ins.id);
     RAISE NOTICE 'New id: %', ins.id;
     ---RETURN NEXT ins;
