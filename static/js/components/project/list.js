@@ -9,14 +9,27 @@ var module = angular.module(moduleName, ['appRoutes']);//'ngSanitize',, 'dndList
 var Component = function  ($scope, $timeout, $http, $element, $window, appRoutes, ProjectData) {
   var $c = this;
   
+  $scope.$on('Переключить проект/id', function(event, id) {
+    //~ ctrl.ready = false;
+    //~ console.log('Переключить проект/id', ProjectData.$Data()[id]);
+    let p = ProjectData.$Data()[id];
+    $c.param["проект"] = p;
+    $c.InitTabs(p);
+    setTimeout(()=>{
+      $c.SelectProject(p);
+    });
+    
+  });
+  
   $c.$onInit = function(){
     
     if(!$c.param) $c.param={};
     
     //~ $http.get(appRoutes.url_for('список проектов'))
-    ProjectData.Load().then(function(resp){
-      if(resp.data.error) $scope.error = resp.data.error;
-      else $c.data= resp.data;
+    ProjectData.Load().then(function(){
+      //~ if(resp.data.error) $scope.error = resp.data.error;
+      //~ else 
+      $c.data= ProjectData.Data();
       //~ $c.data.push({id:1, title:'Проект-тест'});
       //~ console.log($c.data);
       $c.InitTabs(($c.param["проект"] && $c.param["проект"].id) || 0);
@@ -90,11 +103,14 @@ var Component = function  ($scope, $timeout, $http, $element, $window, appRoutes
 };
 
 /******************************************************/
-var Data  = function($http, appRoutes){
-  var data = $http.get(appRoutes.url_for('список проектов'));
-  return {
-    Load: function() {return data;}
-  };
+var Data  = function(appRoutes, $Список){
+  //~ var data = $http.get(appRoutes.url_for('список проектов'));
+  //~ return {
+    //~ Load: function() {return data;}
+  //~ };
+  var data = new $Список(appRoutes.url_for('список проектов'));
+  data.Load();
+  return data;
   //~ f.get = function (){
   //~ };
   

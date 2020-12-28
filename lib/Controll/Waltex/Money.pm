@@ -145,7 +145,7 @@ sub save {
   $data->{uid} = $c->auth_user->{id}
       unless $data->{id};
 
-  $rc = eval {$c->model->сохранить((map {($_=>$data->{$_})} grep {defined $data->{$_}} qw(id uid сумма дата примечание)),
+  $rc = eval {$c->model->сохранить((map {($_=>$data->{$_})} grep {defined $data->{$_}} qw(id uid сумма дата примечание @id1 @id2)),
     "кошелек"=>$data->{"кошелек"}{id} || $data->{"кошелек"}{new}{id},
     "кошелек2"=>$data->{"кошелек2"}{id} || $data->{"кошелек2"}{new}{id},
     $data->{"контрагент"} && $data->{"контрагент"}{'договор аренды/id'}

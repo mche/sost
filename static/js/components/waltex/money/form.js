@@ -9,7 +9,7 @@ var moduleName = "WaltexMoney";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, [/*'Util', 'TemplateCache',*/ 'ProjectList', 'TreeItem', 'WalletItem', 'ContragentItem', 'Контрагенты', 'Объект или адрес', 'ProfileItem', 'MoneyTable', 'Категории']);//'MoneyWork' 
 
-const Controll = function($scope, $attrs, $element, $timeout, TemplateCache, appRoutes){
+const Controll = function($scope,  $attrs, $element, $timeout, TemplateCache, appRoutes){
   var ctrl = this;
   
   ctrl.$onInit = function() {
@@ -75,9 +75,10 @@ const Component = function($scope, $rootScope, $element, $timeout, $http, $q, ap
   
   $scope.$on('Движение ДС/редактировать запись', function(event, data) {
     $c.data = undefined;
-          
+    $c.param.id = data.id;
     $timeout(function() {
-      $c.InitData(data);
+      //~ $c.InitData(data);
+      $c.$onInit();
 
     });
   });
@@ -89,12 +90,12 @@ const Component = function($scope, $rootScope, $element, $timeout, $http, $q, ap
     //~ if(!$c.data) $c.data = {}; не тут
     
     if(!$c.data && $c.param.id) $c.LoadData().then(function(){
-      //~ $c.InitData();
+      $c.InitData($c.data);
       $c.ready = true;
       
     });
     else $timeout(function(){
-      ///$c.InitData();
+      //~ $c.InitData($c.data);
       $c.ready = true;
       
     });
@@ -107,6 +108,7 @@ const Component = function($scope, $rootScope, $element, $timeout, $http, $q, ap
     return $http.post(appRoutes.url_for('строка движения ДС', $c.param.id || 0), $c.param)//, {"params": param}
       .then(function(resp){
         $c.data= resp.data;
+        delete $c.param.id;
       }
       );
     
@@ -125,10 +127,6 @@ const Component = function($scope, $rootScope, $element, $timeout, $http, $q, ap
     delete $scope.sum;
     //~ delete $c.ready;
     
-    
-    //~ console.log("WaltexMoney InitData", $c.data, $c.param);
-    //~ var Category = ;
-    //~ if ($c.data["категория/id"]) Category. = ;// "finalItem":{},"selectedIdx":[]
     $scope.Category = {topParent: {id:3}, selectedItem: {"id": $c.data["категория/id"] || $c.param['категория/id'] || ($c.param['категория'] && $c.param['категория'].id) || $c.param['категория']}};
     $scope.CategoryData = $Категории;//$http.get(appRoutes.url_for('категории/список', 3));
     
@@ -271,11 +269,13 @@ const Component = function($scope, $rootScope, $element, $timeout, $http, $q, ap
             $c.param.newX = resp.data.success;
             
           }*/
-          $c.RefreshData();
+          $c.RefreshData().then(function(){
+            if($c.onSave) $c.onSave({"data": $c.data});
+          });
           if (!param['сразу копировать']) $c.CancelBtn();
           else $c.Copy(resp.data.success);
           
-          if($c.onSave) $c.onSave({"data": $c.data});
+          
         }
         if (resp.data['пакет']) {
           $c.data['@пакет'] = resp.data['пакет'];
@@ -321,9 +321,11 @@ const Component = function($scope, $rootScope, $element, $timeout, $http, $q, ap
   };
   
   $c.RefreshData = function(){
-    $Контрагенты.RefreshData();
-    $WalletData.Refresh();
-    $Категории.Clear(3).Data(3).Load();
+    return $q.all([
+      $Контрагенты.RefreshData(),
+      $WalletData.Refresh(),
+      $Категории.Clear(3).Data(3).Load(),
+    ])
   };
   
   /*$c.Edit = function(){
@@ -392,11 +394,11 @@ const Component = function($scope, $rootScope, $element, $timeout, $http, $q, ap
           //~ $c.param.delete = $c.param.edit;
           //~ $c.param.delete._delete = true;
           delete $c.param.edit;
-          $c.RefreshData();
-          //~ $c.$onInit();
-          if($c.onSave) $c.onSave({"data": $c.data});
+          $c.RefreshData().then(function(){
+            if($c.onSave) $c.onSave({"data": $c.data});
+            $rootScope.$broadcast('Движение ДС/удалено', $c.data);
+          });
           $c.CancelBtn();
-          $rootScope.$broadcast('Движение ДС/удалено', $c.data);
         }
         console.log("Удалено: ", resp.data);
         
@@ -407,6 +409,45 @@ const Component = function($scope, $rootScope, $element, $timeout, $http, $q, ap
     delete $c.data['приход'];
     delete $c.data['расход'];
     
+  };
+  
+  $c.ToWallet = function(){/// дублировать запись в общую кассу
+    let data = angular.copy($c.data);
+    data['@id1'] = [data.id];
+    data.id = undefined;
+    data.uid = undefined;
+    data["кошелек/id"] = 1043540;
+    data["кошелек"] = undefined;
+    data["проект/id"] = 1043537;
+    data["кошелек2/id"] = $c.data["кошелек/id"];
+    data["контрагент/id"] = undefined;
+    if (data["контрагент"]) data['примечание'] = (data['примечание'] || '')+'\nот ['+data["контрагент"]+']';
+    if (data['объект']) data['примечание'] = (data['примечание'] || '')+'\n★ ['+data["объект"]+']';
+    data["контрагент"] = undefined;
+    data["объект/id"] = undefined;
+    data["объект"] = undefined;
+    data["профиль/id"] = undefined;
+    delete data["$кошелек"];
+    delete data["$кошелек2"];
+    delete data["$объект"];
+    delete data["$создатель"];
+    delete data["$дата"];
+    
+    
+    data["сумма"] = data["сумма"].replace(/^-/, '');
+    $c.parseSum(data);
+    
+    $rootScope.$broadcast('Переключить проект/id', 1043537);/// общая касса
+    
+    $c.data = undefined;
+    $c.ready = false;
+    $timeout(function() {
+      data["проект"] = $c.param['проект'].name;
+      $c.InitData(data);
+      console.log('ToWallet', $c.data);
+      $c.ready = true;
+
+    }, 100);
   };
   
 };

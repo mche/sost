@@ -124,7 +124,8 @@ select m.*,
   w.id as "кошелек/id", w.title as "кошелек",
   ---w."проект", w."проект/id" -- надо
   p.id as "проект/id", p."name" as "проект",
-  row_to_json(u)::jsonb || timestamp_to_json(m.ts)::jsonb as "$создатель/json"
+  row_to_json(u)::jsonb || timestamp_to_json(m.ts)::jsonb as "$создатель/json",
+  m1."@id1", m2."@id2"
   ---timestamp_to_json(m.ts) as "$ts/json"
 
 from  "{%= $schema %}"."{%= $tables->{main} %}" m
@@ -147,6 +148,18 @@ from  "{%= $schema %}"."{%= $tables->{main} %}" m
   left join ({%= $dict->render('кошелек2') %}) w2 on m.id=w2."движение денег/id"
   left join ({%= $dict->render('профиль') %}) pp on m.id=pp."движение денег/id"
   left join "профили" u on m.uid=u.id
+  left join (--- связи с другими записями ДС
+    select r.id2, array_agg(m.id) as "@id1"
+    from "{%= $schema %}"."{%= $tables->{main} %}" m
+      join refs r on m.id=r.id1
+    group by r.id2
+  ) m1 on m.id=m1.id2
+  left join (--- связи с другими записями ДС
+    select r.id1, array_agg(m.id) as "@id2"
+    from "{%= $schema %}"."{%= $tables->{main} %}" m
+      join refs r on m.id=r.id2
+    group by r.id1
+  ) m2 on m.id=m2.id1
 
 {%= $where || '' %}
 {%= $order_by || '' %}
