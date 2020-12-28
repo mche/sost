@@ -72,7 +72,8 @@ const Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, 
   $c.$onInit = function(){
     //~ $timeout(function(){
       //~ if(!$c.param) $c.param={};
-      //~ if(!$c.param.table) 
+    if(!$c.param.table) $c.param.table = {};
+    $c.param.table['кошелек'] = {};
     var d1 = dateFns.startOfMonth(new Date());
     var d2 = dateFns.endOfMonth(new Date());
     if ( ((new Date())-d1)/1000/3600/24 < 12 ) d1 = dateFns.subMonths(d1, 1);
