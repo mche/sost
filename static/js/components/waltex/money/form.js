@@ -414,11 +414,12 @@ const Component = function($scope, $rootScope, $element, $timeout, $http, $q, ap
   $c.ToWallet = function(){/// дублировать запись в общую кассу
     let data = angular.copy($c.data);
     data['@id1'] = [data.id];
+    delete data['@id2'];
     data.id = undefined;
     data.uid = undefined;
-    data["кошелек/id"] = 1043540;
+    data["кошелек/id"] = 1043540; /// касса
     data["кошелек"] = undefined;
-    data["проект/id"] = 1043537;
+    data["проект/id"] = 1043537;/// общая касса
     data["кошелек2/id"] = $c.data["кошелек/id"];
     data["контрагент/id"] = undefined;
     if (data["контрагент"]) data['примечание'] = (data['примечание'] || '')+'\nот ['+data["контрагент"]+']';
@@ -427,6 +428,7 @@ const Component = function($scope, $rootScope, $element, $timeout, $http, $q, ap
     data["объект/id"] = undefined;
     data["объект"] = undefined;
     data["профиль/id"] = undefined;
+    data["договор аренды/id"] = undefined;
     delete data["$кошелек"];
     delete data["$кошелек2"];
     delete data["$объект"];
