@@ -40,8 +40,9 @@
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="right" ng-class="{'grey-fill': !$c.data.length, 'teal-fill fill-darken-3':$c.data.length}" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#chevron-down-round-fill" /></svg>
     </a>
 
-      <a ng-show="$c.item.selectedItem && $c.item.selectedItem.id && !$c.param.disabled" ng-click="$c.SelectedItemClear()" class="remove-siblings  circle hover-white hoverable " href="javascript:" style-000="top:0; right: 1.7rem; position: absolute; z-index: 1; " ng-style=" $c.StyleFor('отменить выбранную позицию') " title="отменить выбранную позицию #{{ $c.item.selectedItem.id }}">
-        <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
+      <a ng-show="$c.item.selectedItem && $c.item.selectedItem.id && !$c.param.disabled" ng-click="$c.SelectedItemClear()" class="remove-siblings line-height-10 circle hover-white hoverable " href="javascript:" style-000="top:0; right: 1.7rem; position: absolute; z-index: 1; " ng-style=" $c.StyleFor('отменить выбранную позицию') " title="отменить выбранную позицию #{{ $c.item.selectedItem.id }}">
+        <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg-->
+        <i class="material-icons red-text text-lighten-3">cancel</i>
       </a>
   
   <span ng-show="$c.item.selectedItem && $c.item.selectedItem.parents_title && $c.item.selectedItem.parents_title[0]" ng-repeat="t in $c.item.selectedItem.parents_title | filter:$c.FilterTopParent track by $index" class="breadcrumb before-margin-0 fw500 " style="">
