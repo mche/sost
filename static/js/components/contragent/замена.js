@@ -12,11 +12,11 @@ module.controller('Controll', function  (/*$scope, $q,*/ $timeout, $element, $ht
   $Контрагенты.Load();
   
   ctrl.$onInit = function(){
-    TemplateCache.split(appRoutes.urlFor('assets', 'контрагенты/замена.html'), 1)
-      .then(function(proms){
+    //~ TemplateCache.split(appRoutes.urlFor('assets', 'контрагенты/замена.html'), 1)
+      //~ .then(function(proms){
         //~ $timeout(function(){ ctrl.Vue(); });
         ctrl.Vue(); 
-      });
+      //~ });
   };
   
 const methods = {
