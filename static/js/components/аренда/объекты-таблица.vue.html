@@ -69,7 +69,7 @@
                   <svg  xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 252 252" class="red-fill fill-darken-3" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#exit"></use></svg>
                 </span>
                 <span v-else class="chip padd-0 border green-text-darken-3">
-                  <svg v-for=" i in Array(parseInt(договорыПомещений[item['@кабинеты'][idx].id]['кол-во действующих договоров'])).fill() " xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 90 90" class="green-fill fill-darken-3 " style="height: 1rem;"><use xlink:href="/fonts/icons.svg#seat" /></svg>
+                  <svg v-for=" i in Array(parseInt(договорыПомещений[item['@кабинеты'][idx].id]['кол-во действующих договоров'])).fill() " xmlns:xlink="http://www.w3.org/1999/xlink"  viewBox="0 0 90 90" class="green-fill fill-darken-3 " style="height: 1rem;"><use xlink:href="/fonts/icons.svg#seat" /></svg>
                 </span>
                 <div class="hover-parent-show-block card padd-05 teal-lighten-4 animated fadeIn fast" style="position:absolute; top:-0.3rem; left:1rem; z-index:1;">
                   <v-contracts  :room=" item['@кабинеты'][idx] " :contracts="договорыПомещений[item['@кабинеты'][idx].id]['@аренда/договоры']"></v-contracts>
@@ -119,7 +119,7 @@
                         <svg  xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 252 252" class="red-fill fill-darken-3" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#exit"></use></svg>
                       </span>
                       <span v-else class="chip padd-0 border green-text-darken-3">
-                        <svg v-for=" i in Array(parseInt(договорыПомещений[item['@кабинеты'][idx].id]['кол-во действующих договоров'])).fill() " xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 90 90" class="green-fill fill-darken-3 " style="height: 1rem;"><use xlink:href="/fonts/icons.svg#seat" /></svg>
+                        <svg v-for=" i in Array(parseInt(договорыПомещений[item['@кабинеты'][idx].id]['кол-во действующих договоров'])).fill() " xmlns:xlink="http://www.w3.org/1999/xlink"  viewBox="0 0 90 90" class="green-fill fill-darken-3 " style="height: 1rem;"><use xlink:href="/fonts/icons.svg#seat" /></svg>
                       </span>
                       <div class="hover-parent-show-block card padd-05 teal-lighten-4 animated fadeIn fast" style="position:absolute; top:-0.3rem; left:1rem; z-index:1;">
                         <v-contracts  :room=" item['@кабинеты'][idx] " :contracts="договорыПомещений[item['@кабинеты'][idx].id]['@аренда/договоры']"></v-contracts>

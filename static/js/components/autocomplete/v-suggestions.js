@@ -31,7 +31,7 @@ try {angular.module(moduleName); return;} catch(e) { }
 var module = angular.module(moduleName, [  ]);
 
 module
-.factory('$КомпонентПоискВСписке', function($templateCache,  /*$timeout,$http, $rootScope, /**$compile, appRoutes, Util $EventBus*/) {// factory
+.factory('$КомпонентПоискВСписке', function(  /*$templateCache,$timeout,$http, $rootScope, /**$compile, appRoutes, Util $EventBus*/) {// factory
 
 const defaultParam = {
   debounce: 500,///задержка мс
@@ -368,6 +368,8 @@ const  beforeMount = function(){
   } ///else vm.debounceKeyDown = vm.onKeyDown;
 };
 
+let template = parcelRequire('js/c/autocomplete/v-suggestions.vue.html');
+
 var $Компонент = {
   "inheritAttributes": true,
   props,
@@ -376,12 +378,14 @@ var $Компонент = {
   data,
   methods,
   computed,
+  render:template.render,
+  staticRenderFns: template.staticRenderFns,
 };
 
 
 const $Конструктор = function (compForm/*компонент формы если добавлять/изменять/удалять*/){
   let $this = this;
-  $Компонент.template = $templateCache.get('компонент/поиск в списке');/// только в конструкторе
+  //~ $Компонент.template = $templateCache.get('компонент/поиск в списке');/// только в конструкторе
   return $Компонент;
 };
 

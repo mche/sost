@@ -50,7 +50,7 @@
           <div class="input-field chip hoverable shadow-inset-10">
             <input type="checkbox" id="крыжик-pdf" v-model="form['pdf формат']">
             <label for="крыжик-pdf" class="hover-shadow3d before-yellow-lighten-4 red-text-darken-3 chip yellow lighten-4 hoverable" style="padding-left:16px;" ></label><!-- это лабел квадратика крыжика -->
-            <label for="крыжик-pdf" class=""><svg xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 56 56" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#pdf-file"></use></svg></label>
+            <label for="крыжик-pdf" class=""><svg xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 56 56" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#pdf-file"></use></svg></label>
           </div>
 
           <a  @click="Print()" href="javascript:" :disabled="!checkedData.length || !form['счет или акт']" class="btn-flat  z-depth-1 orange lighten-4 black-text">

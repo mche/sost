@@ -16,7 +16,7 @@ var moduleName = "Компонент::Выбор в списке";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, []);
 
-module.factory('$КомпонентВыборВСписке', function(/*$timeout,*/ $templateCache) {// factory
+module.factory('$КомпонентВыборВСписке', function(/*$timeout,templateCache*/) {// factory
 
 const defaultParam = {
   debounce: 500,///задержка мс
@@ -252,6 +252,8 @@ const  beforeMount = function(){
   }
 };
 
+let template = parcelRequire('js/c/autocomplete/v-select.vue.html');
+
 var $Компонент = {
   props,
   data,
@@ -261,11 +263,13 @@ var $Компонент = {
   beforeMount,
   mounted,
   components: {},
+  render:template.render,
+  staticRenderFns: template.staticRenderFns,
 };
 
 const $Конструктор = function (/*data, $c, $scope*/){
   let $this = this;
-  $Компонент.template = $templateCache.get('компонент выбор из списка');
+  //~ $Компонент.template = $templateCache.get('компонент выбор из списка');
   return $Компонент;
 };
 

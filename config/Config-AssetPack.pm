@@ -776,8 +776,27 @@ sub map_grep_mode {
         js/c/аренда/объекты-таблица-помещений-договоры.vue.html
         )],
         
+         ['js/dist/templates/v-select.js'=>grep !/^--/, qw(
+        js/c/autocomplete/v-select.vue.html
+         )],
+         
+         ['js/dist/templates/v-suggestions.js'=>grep !/^--/, qw(
+        js/c/autocomplete/v-suggestions.vue.html
+         )],
+         
+         ['js/dist/templates/v-select-object.js'=>grep !/^--/, qw(
+          js/c/object/v-select-object.vue.html
+         )],
+         
+         ['js/dist/templates/contragent/v-item.js'=>grep !/^--/, qw(
+          js/c/contragent/v-item.vue.html
+         )],
+        
         ['аренда.js' => grep !/^--/, qw(
         js/dist/templates/аренда.js
+        js/dist/templates/v-select.js
+        js/dist/templates/v-suggestions.js
+        js/dist/templates/v-select-object.js
         js/c/аренда/index.js
         js/c/аренда/договоры-таблица.js
         ---js/dist/аренда/договоры-таблица.js
@@ -787,6 +806,7 @@ sub map_grep_mode {
         js/c/аренда/объекты-таблица.js
         js/c/аренда/объект-форма.js
         js/c/contragent/data.js
+        js/dist/templates/contragent/v-item.js
         js/c/contragent/v-item.js
         js/util/IdMaker.js
         js/util/debounce.js
@@ -808,11 +828,11 @@ sub map_grep_mode {
         ---js/c/аренда/объекты-таблица.html
         ---js/c/аренда/объекты-таблица-помещений-договоры.html
         ---js/c/аренда/объект-форма.html
-        js/c/contragent/v-item.html
-        js/c/autocomplete/v-suggestions.html
+        ---js/c/contragent/v-item.html
+        ---js/c/autocomplete/v-suggestions.html
         ---v-uploader.html
-        js/c/object/v-select-object.html
-        js/c/autocomplete/v-select.html
+        ---js/c/object/v-select-object.html
+        ---js/c/autocomplete/v-select.html
         js/c/waltex/report/аренда/форма.html
         js/c/project/list.html
         js/c/date/between.html
@@ -827,6 +847,9 @@ sub map_grep_mode {
         
         ['аренда-расходы.js' => grep !/^--/, qw(
         js/dist/templates/аренда-расходы.js
+        js/dist/templates/v-select.js
+        js/dist/templates/v-suggestions.js
+        js/dist/templates/v-select-object.js
         view-file-iframe.js
         js/c/аренда/расходы/index.js
         js/c/project/v-list.js
@@ -849,10 +872,10 @@ sub map_grep_mode {
         ---js/c/аренда/расходы/расходы-таблица.html
         ---js/c/аренда/расходы/расходы-форма.html
         ---js/c/contragent/v-item.html
-        js/c/autocomplete/v-suggestions.html
+        ---js/c/autocomplete/v-suggestions.html
         ---v-uploader.html
-        js/c/autocomplete/v-select.html
-        js/c/object/v-select-object.html
+        ---js/c/autocomplete/v-select.html
+        ---js/c/object/v-select-object.html
         ---js/c/аренда/выбор-договора-аренды.html
         )],
         
@@ -872,18 +895,22 @@ sub map_grep_mode {
         )],
         
         ['контрагенты/замена.js' => grep !/^--/, qw(
+        js/dist/templates/v-suggestions.js
         js/c/contragent/data.js
+        js/dist/templates/contragent/v-item.js
         js/c/contragent/v-item.js
         js/util/debounce.js
         js/c/autocomplete/v-suggestions.js
         js/c/contragent/замена.js
         )],
-        ['контрагенты/замена.html' => grep !/^--/, qw(
-        js/c/contragent/v-item.html
-        js/c/autocomplete/v-suggestions.html
-        )],
+        #~ ['контрагенты/замена.html' => grep !/^--/, qw(
+        #~ ---js/c/contragent/v-item.html
+        #~ ---js/c/autocomplete/v-suggestions.html
+        #~ )],
         
         ['химия.js' => grep !/^--/, qw(
+        js/dist/templates/v-select.js
+        js/dist/templates/v-suggestions.js
         js/c/химия/index.js
         datetime.picker.js
         js/util/debounce.js
@@ -899,6 +926,7 @@ sub map_grep_mode {
         js/c/химия/сырье/сырье-остатки.js
         js/c/химия/отгрузка/отгрузка-таблица.js
         js/c/химия/отгрузка/отгрузка-форма.js
+        js/dist/templates/contragent/v-item.js
         js/c/contragent/v-item.js
         js/c/химия/продукция/продукция-остатки.js
         js/c/химия/контрагенты.js
@@ -907,8 +935,8 @@ sub map_grep_mode {
         js/c/химия/продукция/продукция-движение.js
         )],
         ['химия.html' => grep !/^--/, qw(
-        js/c/autocomplete/v-suggestions.html
-        js/c/autocomplete/v-select.html
+        ---js/c/autocomplete/v-suggestions.html
+        ---js/c/autocomplete/v-select.html
         js/c/химия/сырье/сырье-таблица.html
         js/c/химия/сырье/сырье-форма.html
         ---v-uploader.html
@@ -916,7 +944,7 @@ sub map_grep_mode {
         js/c/химия/продукция/продукция-форма.html
         js/c/химия/отгрузка/отгрузка-таблица.html
         js/c/химия/отгрузка/отгрузка-форма.html
-        js/c/contragent/v-item.html
+        ---js/c/contragent/v-item.html
         js/c/химия/сырье/сырье-движение.html
         js/c/химия/продукция/продукция-движение.html
         )],

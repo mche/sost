@@ -16,7 +16,7 @@ try {angular.module(moduleName); return;} catch(e) { }
 var module = angular.module(moduleName, [ 'Util', 'Компонент::Поиск в списке', /*'Компонент::Выбор в списке',*//*'EventBus'*/ ]);
 
 module
-.factory('$КомпонентКонтрагент', function($templateCache, $timeout, Util, $КомпонентПоискВСписке, /*$КомпонентВыборВСписке,*/ /*$http, $rootScope, /**$compile, appRoutes, Util $EventBus*/) {// factory
+.factory('$КомпонентКонтрагент', function(/*$templateCache,*/ $timeout, Util, $КомпонентПоискВСписке, /*$КомпонентВыборВСписке,*/ /*$http, $rootScope, /**$compile, appRoutes, Util $EventBus*/) {// factory
 
 const  props  = {
 "item": Object,
@@ -230,6 +230,8 @@ const mounted = function(){
   
 };
 
+let template = parcelRequire('js/c/contragent/v-item.vue.html');
+
 var $Компонент = {
   //~ "template": ! в конструкторе
   props,
@@ -239,13 +241,15 @@ var $Компонент = {
   //~ "created"() { //~ },
   mounted,
   "components": { /*в конструкторе*/ },
+  render:template.render,
+  staticRenderFns: template.staticRenderFns,
 };
 
 
 const $Конструктор = function (compForm/*компонент формы если добавлять/изменять/удалять*/){
   let $this = this;
   //~ data = data || {};
-  $Компонент.template = $templateCache.get('компонент/контрагент');/// только в кострукторе
+  //~ $Компонент.template = $templateCache.get('компонент/контрагент');/// только в кострукторе
   $Компонент.components['v-suggest'] = new $КомпонентПоискВСписке();
   //~ $Компонент.components['v-select'] = new $КомпонентВыборВСписке();
   //~ console.log($Компонент);

@@ -1,14 +1,14 @@
 <!-- @@@ аренда/объекты/таблица помещений/договоры -->
-
+<template>
 <!-- жс этого компонента в объекты-таблица.js -->
-<template><!-- обязательно один корень Vue -->
+<div><!-- обязательно один корень Vue -->
   <h5 class="card-title-000"><!--i class="icon-left fs8 " style="position:absolute; top:1rem; left:-0.5rem;"></i-->Договоры по помещению <span class="bold">{{ room['номер-название'] }}</span></h5>
   <ul class="card-content padd-0 fs8">
     <li v-for="d in contracts" class="nowrap teal-text text-darken-3">
     {{  }}
       <a @click="GoToContract(d.id)" href="javascript:" :href000=" `#contract-${ d.id }`" class="hover-shadow3d">
       <svg  v-show="!d['действующий договор?']"  xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 252 252" class="red-fill fill-darken-3" style="height:1.5rem;"><use xlink:href="/fonts/icons.svg#exit"></use></svg>
-      <svg v-show="!!d['действующий договор?']" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 90 90" class="green-fill fill-darken-3 circle white border" style="height:1.5rem;"><use xlink:href="/fonts/icons.svg#seat" /></svg>
+      <svg v-show="!!d['действующий договор?']" xmlns:xlink="http://www.w3.org/1999/xlink"  viewBox="0 0 90 90" class="green-fill fill-darken-3 circle white border" style="height:1.5rem;"><use xlink:href="/fonts/icons.svg#seat" /></svg>
         <span class="chip"><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 50 50" class="  teal-fill fill-darken-3" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#contragent"></use></svg> {{ d['контрагент/title'] }}</span>
         <span class="chip ">№ {{ d['номер'] }}</span>
         <span v-show="!!d['доп.согл./id']" :title="d['доп.согл./id']">(доп.согл.)</span>
@@ -29,4 +29,5 @@
       </a>
     </li>
   </ul>
+</div>
 </template><!--- конец списка договоров -->

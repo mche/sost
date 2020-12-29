@@ -15,7 +15,7 @@ var moduleName = "Компонент::Выбор объекта";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['Util', 'Компонент::Выбор в списке']);
 
-module.factory('$КомпонентВыборОбъекта', function($timeout, $templateCache, $Список, appRoutes, $ЗапросОбъектыУК, $КомпонентВыборВСписке) {// factory
+module.factory('$КомпонентВыборОбъекта', function($timeout, /*$templateCache,*/ $Список, appRoutes, $ЗапросОбъектыУК, $КомпонентВыборВСписке) {// factory
 
 const props = {
   "param": {
@@ -97,6 +97,9 @@ const mounted = function(){
   var vm = this;
 };/// конец mounted
 
+
+let template = parcelRequire('js/c/object/v-select-object.vue.html');
+
 var $Компонент = {
   props,
   data,
@@ -105,11 +108,13 @@ var $Компонент = {
   //~ created,
   mounted,
   components: {},
+  render:template.render,
+  staticRenderFns: template.staticRenderFns,
 };
 
 const $Конструктор = function (/*data, $c, $scope*/){
   let $this = this;
-  $Компонент.template = $templateCache.get('компонент выбор объекта');
+  //~ $Компонент.template = $templateCache.get('компонент выбор объекта');
   $Компонент.components['v-select'] = new $КомпонентВыборВСписке();
   return $Компонент;
 };
