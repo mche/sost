@@ -1,0 +1,70 @@
+<!-- @@@ компонент/контрагент -->
+
+<template>
+
+<div><!-- обязательно один корень Vue -->
+<v-progress-indeterminate v-show=" !ready " :color=" 'teal' " :message=" 'Загружается...' "></v-progress-indeterminate>
+<!--div class="fs8">{{ form }}</div-->
+
+<div v-if=" ready" class="relative">
+  <v-suggest v-model="form.title"  :items=" autocomplete " :param=" param.suggest " :onInputChange="OnSuggestInputChange" :onItemSelect="OnSuggestSelect">
+    <template v-slot:item="{ item, idx, activeItem }">
+      <h5 class="relative"  :class="{'bold fs12': item.title == form.title, 'fw500': item===activeItem, 'orange-text text-darken-4': !!item.data['проект/id']}"  style="">
+        <span>{{  item.title }}</span>
+        <!--span class="grey-text fs7" style="position:absolute; right:0; bottom:0;">#{{ item.id }}</span-->
+      </h5>
+    </template>
+  </v-suggest>
+  <slot name="form" :form=" form ">
+    <span  v-show="!form.id && form.title.length > 1" class="chip padd-0-05 red-text text-darken-2 fs8"  style="position: absolute; /*right:0;*/">* новый контрагент? проверьте *</span>
+    <span  v-show="form.id" class="grey-text fs7 " style="position: absolute; right:0;">#{{form.id}}</span>
+  </slot>
+  <div v-show="param['редактировать'] && form.id" style="position:absolute; right:2rem;">
+    <!--input type="checkbox" id="крыжик-редактировать" v-model="chbEdit">
+    <label for="крыжик-редактировать" class="hover-shadow3d chb-yellow-lighten-4 brown-text chip yellow lighten-4" style="position:absolute; left:-2rem; bottom: 0; padding-left:16px;"  title="редактировать наименование"></label-->
+    <a @click="ChbEdit" href="javascript:" class="circle  hoverable" :class="{'green darken-3 white-text':!!chbEdit}" style="position:absolute; left:-2rem; bottom: 0; padding:0.2rem;" title="редактировать наименование"><span class="material-icons">edit</span></a>
+  </div>
+  
+  <div v-if="param['реквизиты']" class="row">
+    <div class="col s5 ">
+      <div v-show="param['реквизиты'].hasOwnProperty('ИНН')" class="input-field right-align">
+        <h5  class="iblock">ИНН</h5>
+        <input  type="text" name="ИНН" v-model=" form['реквизиты']['ИНН'] "  placeholder="ИНН" title="ИНН" style="width:12rem;">
+      </div>
+      <div v-show="param['реквизиты'].hasOwnProperty('email')" class="input-field right-align">
+        <h5  class="iblock">@почта</h5>
+        <input type="text" name="email" v-model=" form['реквизиты']['email'] "  placeholder="@email" title=" эл.почта " style="width:12rem;">
+      </div>
+      <div v-if="param['реквизиты'].hasOwnProperty('тел')" class000="chip transparent shadow-inset-10">
+        <div v-for="(tel, idx) in form['реквизиты']['тел']" :key="idx" class="input-field right-align">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 363.84 363.84" class="teal-fill fill-darken-3" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#agenda"></use></svg>
+          <input  type="text" name="phone" v-model=" form['реквизиты']['тел'][idx] " @input="InputPhone(tel, idx, $event)" placeholder="телефоны (1 в строке)" title=" телефоны "  style="width:12rem;">
+        </div>
+      </div>
+    </div>
+    <div class="col s7 ">
+      <div v-show="param['реквизиты'].hasOwnProperty('юр. адрес')" class="input-field">
+        <textarea name="юр. адрес" v-if=" form['реквизиты']" v-model.trim="form['реквизиты']['юр. адрес']"  placeholder="юр. адрес" class="materialize-textarea padd-0 fs8" style="min-height: 3rem;" title="юр. адрес"></textarea>
+      </div>
+      
+      <div v-show="param['реквизиты'].hasOwnProperty('физ. лицо')" class="input-field chip transparent">
+        <input :id=" 'chb-fl-' + form._id " name="" type="checkbox" class="" v-model="  form['реквизиты']['физ. лицо'] " >
+        <label :for="'chb-fl-' + form._id " class="before-yellow before-lighten-4 brown-text text-darken-3 chip yellow lighten-4 hoverable" style="padding-left:16px;"></label>
+        <label :for="'chb-fl-' + form._id " class=""><h6 class="inline" style=""><span class="material-icons fs12">child_care</span> Физ. лицо</h6></label>
+      </div>
+    </div>
+    
+  </div>
+
+  
+</div>
+
+
+<!--div v-show=" ready && param['АТИ'] ">
+  <h4>{{ param['АТИ'] }}</h4>
+  <input name="АТИ" type="text" v-model=" form['АТИ'] " placeholder=" АТИ " class="" autocomplete="off">
+</div-->
+
+</div>
+
+</template>

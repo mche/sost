@@ -1,0 +1,65 @@
+<!--@@@ компонент выбор из списка-->
+
+<template>
+
+<div><!-- обязательно один корень Vue -->
+<v-progress-indeterminate v-show=" !ready " :color=" 'teal' " :message=" 'Загружается...' "></v-progress-indeterminate>
+
+<div v-if=" ready " class="relative"  style000="border-bottom:1px solid grey;">
+  <!--i class="material-icons" style="position: absolute; z-index: 1; right:0rem; top:0rem;">arrow_drop_down</i-->
+  <a v-show="!param['без стрелки раскрытия списка']" @click=" DropDownShow " href="javascript:" class=""  style="position: absolute; z-index: 1; right:0; top:0.3rem;">
+    <sup class="chip000 fs7 right">{{ itemsLen }}</sup>
+    <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="right teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#chevron-down-round-fill" /></svg>
+  </a>
+  
+  
+  
+  <a @click=" DropDownShow " href="javascript:" class="hover-shadow3d" >
+    <slot name="selected" :selected="selected">
+      <h3 class="blue-text text-darken-3">{{ (selected && selected.name) ||  'Выбрать или наити в списке' }}</h3>
+    </slot>
+  </a>
+  
+  <div  v-show=" dropDownShow " class="z-depth-1" style="position:absolute; width:100%;  z-index:2; top:0;">
+    <div v-show="!param['без поля поиска']" class="input-field padd-0-05 grey lighten-4 ">
+      <a v-show=" inputQuery " @click=" ClearInput " href="javascript:" style="position: absolute; z-index: 1; right:0.5rem; top:0.3rem; "><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"  class="red-fill fill-darken-1" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#left-clear-fill"></use></svg></a>
+      <input type="text" v-model=" inputQuery "  @keydown=" OnKeyDown " :placeholder=" param.placeholder || 'поиск объекта' " class="" >
+    </div>
+    
+    <a v-show=" !param['без удаления'] && selected" @click=" Select() " href="javascript:" class="circle hoverable" style="position: absolute; z-index: 1001; right:-0.7rem; top:-0.7rem;" title="очистить выбор"><!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"  class="middle red-fill fill-darken-1" style="height: 1.5rem; "><use xlink:href="/fonts/icons.svg#left-clear-fill" /></svg--><i class="material-icons red-text fs18">cancel</i></a>
+    
+  
+    <ul class=" dropdown-content select-dropdown z-depth-3 animated fadeIn  fast " :class="extParam.ulDropDownClass" style="opacity: 1; display:block; width:100%; ">
+      
+      <!--li><h4 class="input-field relative">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" v-show=" inputQuery " @click=" inputQuery = ''; ChangeInput(); " class="middle red-fill fill-darken-1" style="height: 1.5rem; position: absolute; z-index: 1; right:1rem; top:1rem; cursor:pointer;"><use xlink:href="/fonts/icons.svg#left-clear-fill"></use></svg>
+        <input type="text" v-model=" inputQuery "  @keydown=" ChangeInput " placeholder=" поиск объекта " class="padd-05 blue lighten-4 blue-text text-darken-4" >
+      </li-->
+
+      <li v-for="item in itemsPage" :key="item.id" class000="animated slideInRight" :class=" {'active selected': item === selected || item === highlighted} ">
+        <a @click=" Select(item) " href="javascript:">
+          <slot name="listItem" :listItem="item" :selected="selected" :highlighted="highlighted"><h3 class000=" ItemClass(item) " class="blue-text text-darken-3">{{ item }}</h3></slot>
+        </a>
+      </li>
+       <!-- пагинация -->
+      <li v-show="extParam.limit" class="nowrap center">
+          <!--div class="divider"></div-->
+        <a v-show="(page+1)*extParam.limit < itemsFilteredLen" @click=" ItemsPage(page+1) " href="javascript:" class="btn-flat green lighten-3 white green-text text-darken-3  z-depth-3 fs10 nowrap"><i class="material-icons">keyboard_arrow_down</i>показать еще<i class="material-icons">keyboard_arrow_down</i></a>
+        <a v-show="page > 0" @click=" ItemsPage(0) " href="javascript:" class="btn-flat orange lighten-3 white orange-text text-darken-3  z-depth-3 fs10 nowrap">в начало</a>
+        <a v-show="page > 0" @click=" ItemsPage(page-1) " href="javascript:" class="btn-flat green lighten-3 white green-text text-darken-3  z-depth-3 fs10 nowrap"><i class="material-icons">keyboard_arrow_up</i>выше<i class="material-icons">keyboard_arrow_up</i></a>
+      </li>
+      
+      <!--- новая позиция -->
+      <!--li v-show="inputQuery && inputQuery.length">
+        <a @click="NewItem" href="javascript:" class="btn-flat z-depth-1 red-text">Новая запись</a>
+      </li-->
+      
+    </ul>
+
+
+
+  </div>
+
+</div>
+</div>
+</template>

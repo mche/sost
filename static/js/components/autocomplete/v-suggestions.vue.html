@@ -1,0 +1,45 @@
+<!-- @@@ компонент/поиск в списке -->
+<template>
+<div :class="extParam.topClass">
+    <a v-show="inputQuery.length"  @click=" ClearInput " href="javascript:" class="remove-siblings hoverable circle"  style="right: 0; position: absolute; z-index: 1; top:0; padding:0.2rem;" title="очистить">
+    <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill fill-lighten-1" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#left-clear-fill" /></svg>
+  </a>
+  <input type="text"
+    :class="extParam.inputClass"
+     v-bind="$attrs"
+     v-on:keydown="onKeyDown"
+     v-on:dblclick="onInputDblClick"
+     v-on:blur="onBlur"
+     v-on:focus="onFocus"
+     v-on:paste="onPaste"
+     v-model.trim="inputQuery"
+     :autocomplete="Math.random()"
+     :placeholder="extParam.placeholder">
+  <a v-show="!inputQuery.length"  @click=" ToggleAll " href="javascript:" class=""  style="right: 0; position: absolute; z-index: 1; top:0.4rem;">
+    <sup v-show="AllLen" class="chip000 fs7 right">{{ AllLen }}</sup>
+    <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="right teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#chevron-down-round-fill" /></svg>
+  </a>
+
+  <div v-show=" QueryItemsLen > 0 " class="autocomplete-content z-depth-3 dropdown-content truncate animated zoomInDown0000 fadeIn  fast" :style=" SuggestionsStyle ">
+    <ul class="marg-0" :class="extParam.ulDropDownClass">
+      <li class="autocomplete-suggestion padd-0-05"
+        :key="index"
+        v-for="(item, index) in pageItems"
+        @click.prevent="Select(index)"
+        :class="SuggestionClass(item, index)"
+        :title=" item ">
+        <slot name="item" :item="item" :idx=" page*extParam.limit + index " :activeItem=" activeItem ">
+          {{item}}
+        </slot>
+      </li>
+    </ul>
+    <!-- пагинация -->
+    <div v-show="extParam.limit" class="nowrap center">
+      <div class="divider"></div>
+      <a v-show="(page+1)*extParam.limit < QueryItemsLen" @click=" PageItems(page+1) " href="javascript:" class="btn-flat green lighten-3 white green-text text-darken-3  z-depth-3 fs10 nowrap"><i class="material-icons">keyboard_arrow_down</i>показать еще<i class="material-icons">keyboard_arrow_down</i></a>
+      <a v-show="page > 0" @click=" PageItems(0) " href="javascript:" class="btn-flat orange lighten-3 white orange-text text-darken-3  z-depth-3 fs10 nowrap">в начало</a>
+      <a v-show="page > 0" @click=" PageItems(page-1) " href="javascript:" class="btn-flat green lighten-3 white green-text text-darken-3  z-depth-3 fs10 nowrap"><i class="material-icons">keyboard_arrow_up</i>выше<i class="material-icons">keyboard_arrow_up</i></a>
+    </div>
+  </div>
+</div>
+</template>
