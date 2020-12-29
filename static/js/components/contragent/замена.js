@@ -5,9 +5,9 @@
 
 var moduleName = "Контрагенты::Замена";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['TemplateCache', /*'Util', 'appRoutes',*/  'Контрагенты', 'Компонент::Контрагент',]);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, [ /*'TemplateCache','Util', 'appRoutes',*/  'Контрагенты', 'Компонент::Контрагент',]);//'ngSanitize',, 'dndLists'
 
-module.controller('Controll', function  (/*$scope, $q,*/ $timeout, $element, $http , appRoutes, TemplateCache, $Контрагенты, $КомпонентКонтрагент ) {
+module.controller('Controll', function  (/*$scope, $q,*/ $timeout, $element, $http , appRoutes, /*TemplateCache,*/ $Контрагенты, $КомпонентКонтрагент ) {
   var ctrl = this;
   $Контрагенты.Load();
   

@@ -7,12 +7,12 @@ var moduleName = "Аренда::Расходы";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['appRoutes', /*'Util', '','ProjectList'*/ 'Проекты::Список', 'Аренда::Договоры::Выбор', 'Компонент::Выбор объекта', 'Аренда::Расходы::Таблица', /*'EventBus',*/]);//'ngSanitize',, 'dndLists'
 
-module.controller('Controll', function  (/*$scope, $q,*/ $timeout, $element, /*$http ,*/ appRoutes, TemplateCache, $КомпонентПроектыСписок, $КомпонентАрендаДоговорыВыбор, $КомпонентВыборОбъекта, $КомпонентАрендаРасходыТаблица/*,$EventBus*/) {
+module.controller('Controll', function  (/*$scope, $q,*/ $timeout, $element, /*$http ,*/ appRoutes, /*TemplateCache,*/ $КомпонентПроектыСписок, $КомпонентАрендаДоговорыВыбор, $КомпонентВыборОбъекта, $КомпонентАрендаРасходыТаблица/*,$EventBus*/) {
   var ctrl = this;
-  var tCache = TemplateCache.split(appRoutes.urlFor('assets', 'аренда-расходы.html'), 1);
+  //~ var tCache = TemplateCache.split(appRoutes.urlFor('assets', 'аренда-расходы.html'), 1);
 
 //~ ctrl.$onInit = function(){
-  tCache.then((proms)=>{
+  //~ tCache.then((proms)=>{
   //~ setTimeout(()=>{
     //~ });
     new Vue({
@@ -86,7 +86,7 @@ module.controller('Controll', function  (/*$scope, $q,*/ $timeout, $element, /*$
         //~ ContractId() { return this.contract.id; },
       },
     });
-  });
+  //~ });
   
 //~ };
 }

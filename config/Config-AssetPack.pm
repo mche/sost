@@ -844,6 +844,9 @@ sub map_grep_mode {
           js/c/аренда/расходы/расходы-форма.vue.html
         )],
         
+        ['js/dist/templates/project/v-list.js'=>grep !/^--/, qw(
+          js/c/project/v-list.vue.html
+         )],
         
         ['аренда-расходы.js' => grep !/^--/, qw(
         js/dist/templates/аренда-расходы.js
@@ -852,6 +855,7 @@ sub map_grep_mode {
         js/dist/templates/v-select-object.js
         view-file-iframe.js
         js/c/аренда/расходы/index.js
+        js/dist/templates/project/v-list.js
         js/c/project/v-list.js
         js/c/аренда/расходы/расходы-таблица.js
         js/c/аренда/расходы/расходы-форма.js
@@ -867,17 +871,17 @@ sub map_grep_mode {
         js/c/аренда/выбор-договора-аренды.js
         ---js/c/uploader/common.js
         )],
-        ['аренда-расходы.html' => grep !/^--/, qw(
-        js/c/project/v-list.html
-        ---js/c/аренда/расходы/расходы-таблица.html
-        ---js/c/аренда/расходы/расходы-форма.html
-        ---js/c/contragent/v-item.html
-        ---js/c/autocomplete/v-suggestions.html
-        ---v-uploader.html
-        ---js/c/autocomplete/v-select.html
-        ---js/c/object/v-select-object.html
-        ---js/c/аренда/выбор-договора-аренды.html
-        )],
+        #~ ['аренда-расходы.html' => grep !/^--/, qw(
+        #~ --js/c/project/v-list.html
+        #~ ---js/c/аренда/расходы/расходы-таблица.html
+        #~ ---js/c/аренда/расходы/расходы-форма.html
+        #~ ---js/c/contragent/v-item.html
+        #~ ---js/c/autocomplete/v-suggestions.html
+        #~ ---v-uploader.html
+        #~ ---js/c/autocomplete/v-select.html
+        #~ ---js/c/object/v-select-object.html
+        #~ ---js/c/аренда/выбор-договора-аренды.html
+        #~ )],
         
         ['js/dist/templates/аренда-акты-таблица.js'=>grep !/^--/, qw(
         js/c/аренда/акты/акты-таблица.vue.html
@@ -885,14 +889,15 @@ sub map_grep_mode {
         ['аренда-акты.js' => grep !/^--/, qw(
         js/dist/templates/аренда-акты-таблица.js
         js/c/аренда/акты/index.js
+        js/dist/templates/project/v-list.js
         js/c/project/v-list.js
         js/c/аренда/акты/акты-таблица.js
         js/util/IdMaker.js
         )],
-        ['аренда-акты.html' => grep !/^--/, qw(
-        js/c/project/v-list.html
-        ---js/c/аренда/акты/акты-таблица.html
-        )],
+        #~ ['аренда-акты.html' => grep !/^--/, qw(
+        #~ --js/c/project/v-list.html
+        #~ ---js/c/аренда/акты/акты-таблица.html
+        #~ )],
         
         ['контрагенты/замена.js' => grep !/^--/, qw(
         js/dist/templates/v-suggestions.js

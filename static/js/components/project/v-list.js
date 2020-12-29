@@ -16,7 +16,7 @@ try {angular.module(moduleName); return;} catch(e) { }
 var module = angular.module(moduleName, ['Util']);
 
 module
-.factory('$КомпонентПроектыСписок', function($templateCache, $ПроектыДанные) {// factory
+.factory('$КомпонентПроектыСписок', function(/*$templateCache,*/ $ПроектыДанные) {// factory
 
 const props = {
   "проект":Object,
@@ -58,8 +58,9 @@ const  data = function(){
     };
 };///конец data
 
+let template = parcelRequire('js/c/project/v-list.vue.html');
+
 var $Компонент = {
-  //~ "template": $templateCache.get('тмц/сертификаты/папки'), //ниже/!!
   props,
   data,
   //~ store,
@@ -68,11 +69,13 @@ var $Компонент = {
   //~ "created"() {  },
   //~ mounted,
   "components": { },
+  render:template.render,
+  staticRenderFns: template.staticRenderFns,
 };
 
 const $Конструктор = function (/*data, $c, $scope*/){
   let $this = this;
-  $Компонент.template = $templateCache.get('проекты/список');
+  //~ $Компонент.template = $templateCache.get('проекты/список');
   //~ $Компонент.components['v-contragent'] =  new $КомпонентКонтрагент();
   //~ console.log($Компонент);
   return $Компонент;
