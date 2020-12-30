@@ -199,9 +199,10 @@ sub map_grep_mode {
       
       #глобальная подборка собственных скриптов
       ['main.js' => grep !/^--/, qw(
+        js/parcel-require.js
+        js/routes.js
         js/main.js
         js/util.js
-        js/routes.js
         --js/user.js
         ---profile/form-auth.js
         js/svg.js
@@ -209,7 +210,6 @@ sub map_grep_mode {
         js/util/array-removeOf.js
         --в_конце!!!
         js/global-modules.js
-        js/parcel-require.js
         js/app.js
         js/dist/auth.js
         ---js/dist/main.js

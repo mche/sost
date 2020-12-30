@@ -32,7 +32,7 @@ window.undef = undefined;
   
   Глобальный модуль App (название любое уникальное - этот модуль автоматически вставляется всегда с помощью global-modules.js)
   две его задачи:
-  1. Отслеживать и продлевать сессию (если задан элемент $('#session-default-expiration') с текстом количества секунд жизни куков сессии)
+  1. (Перенес в Cвелт-модуль auth.js) Отслеживать и продлевать сессию (если задан элемент $('#session-default-expiration') с текстом количества секунд жизни куков сессии)
   2. AutoJSON - автоматически парсинг полей данных JSON-запросов с суффиксом `/json` (см re)
   
   доступа к кукам не будет https://stackoverflow.com/a/27863299
@@ -49,8 +49,13 @@ window.undef = undefined;
   const AppOptions = function(){ return JSON.parse($('head meta[name="app:options"]').attr('content') || '{}'); };
 
   
-  angular.module('App', [/*'Форма авторизации'*/])
-
+  angular.module('App', [/*'Форма авторизации'*/])///
+    //~ .run(function($http) {
+      //~ if (Vue) Vue/*.prototype*/.$http = $http;
+      //~ if (parcelRequire) parcelRequire.register('$http', $http);
+      
+    //~ })
+    
     .provider('AutoJSON', function(){ // провайдер потому что нужен в конфиге (фактори и сервисы не инъектятся)
       var re = /\/json$/i;
       //~ console.log("provider 'AutoJSON' ",  angular.injector(['Util']).get('Util')); не катит
@@ -85,8 +90,10 @@ window.undef = undefined;
       
     })/// end provider AutoJSON
     
-    .config(function ($httpProvider, $provide,/* $injector,*/ $compileProvider, AutoJSONProvider) {//, $cookies
+    .config(function ($httpProvider, $provide, /*$injector,*/ $compileProvider, AutoJSONProvider) {//, $cookies
       $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|file|tel|javascript):/);
+      
+      //~ Vue.$injector = $injector;///.get('$http');
       
       $provide.factory('httpInterceptor', function ($q /*,$injector, $rootScope, $window, $timeout /*, appRoutes*/) {//$rootScope, $location
         let jsonTypeRE = /application\/json/;
@@ -133,6 +140,9 @@ window.undef = undefined;
       
       //~ console.log("закинул $httpProvider.interceptors.push('httpAuthTimer') ");
       $httpProvider.interceptors.push('httpInterceptor');
+      //~ $httpProvider.interceptors.push(function($injector) {
+        //~ console.log("app config $http", $injector.get('$http'));
+      //~ });
       
     })
     

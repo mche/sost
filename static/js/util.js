@@ -1,5 +1,7 @@
 (function () { 'use strict';
   
+  //~ console.log('Util', Vue.appRoutes, Vue.$http);
+  
 const IsType = function(data, type) {
   return Object.prototype.toString.call(data).toLowerCase() == '[object '+type.toLowerCase()+']';
 };

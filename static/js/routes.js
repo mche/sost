@@ -301,6 +301,9 @@ var factory = {
   UrlFor: url_for,
 };
 
+if (Vue) Vue.appRoutes = factory;
+//~ if (parcelRequire) parcelRequire.register('appRoutes', factory);
+
 
 moduleName.map(function(name){
     var mod = angular.module(name, []);

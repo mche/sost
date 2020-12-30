@@ -1,11 +1,23 @@
 (function () {'use strict';
+  //~ document.addEventListener("DOMContentLoaded", function(event) {
+    /** тупо активировать**/
+    //~ angular.injector(['App']);///.get('$Console')
+    //~ console.log('Аренда::Акты', Vue.appRoutes, Vue.$http);///parcelRequire('$http')
+  //~ });
+  //~ return;
+
+  
 /*
   Модуль аренды отметки актов
 */
 
 var moduleName = "Аренда::Акты";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['appRoutes', /*'Util', '',*/ 'Проекты::Список', 'Аренда::Акты::Таблица',]);//
+var module = angular.module(moduleName, [ /*'appRoutes','Util', '',*/ 'Проекты::Список', 'Аренда::Акты::Таблица',]);//
+
+//~ module.run(function(){
+   //~ console.log('Аренда::Акты', Vue.appRoutes, Vue.$http);///parcelRequire('$http')
+//~ });
 
 module.controller('Controll', function(/*$scope, $q, $timeout, */$element, /*$http ,*/ appRoutes,/* TemplateCache,*/ $КомпонентПроектыСписок, $КомпонентАрендаАктыТаблица) {
   var ctrl = this;
