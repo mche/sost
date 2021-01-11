@@ -505,7 +505,7 @@ sub счет_оплата_docx {# сделать docx во врем папке �
     #~ || die "bads: $! $?"
       or return $c->render_file('filepath' => $err_file,  'format'   => 'txt', 'content_disposition' => 'inline', 'cleanup'  => 1,);
   
-  unlink $err_file;
+  #~ unlink $err_file;
   
   #~ $c->render(json=>{data=>$data});
   $c->render(json=>{docx=>$file});# $c->render(json=>{docx=>$data->{docx}})
