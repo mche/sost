@@ -28,7 +28,7 @@ sub сохранить {
   my $self = shift;
   my $prev = ref $_[-1] eq 'HASH' && pop;
   my $data = ref $_[0] ? shift : {@_};
-  #~ $self->app->log->error($self->app->dumper($data, $prev));
+  $self->app->log->error($self->app->dumper($data));
   
   $prev ||= $self->позиция($data->{id})
     if $data->{id};#$self->позиция($r->{id}, defined($data->{'кошелек2'}))
