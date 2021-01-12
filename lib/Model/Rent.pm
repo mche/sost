@@ -71,7 +71,11 @@ sub сохранить_объект {
     my $id = $prev->{'@кабинеты/id'}[$_];
     my $lit_id = $prev->{'@@литер,помещение/id'}[$_][0];
     
-    return "Нельзя удалять помещение @{[ %{ @{ $self->app->json->decode($prev->{'@кабинеты/json'}) }[$_] } ]}, уже в договоре";
+    my ($where, @bind) = $self->SqlAb->where({' "помещение/id" ' => $id});
+    my $s = $self->договоры_помещений({where=>$where}, @bind)->[0];
+    #~ $self->app->log->error($self->app->dumper(@{$self->app->json->decode($s->{'@аренда/договоры/json'})}));#$self->app->dumper($s )
+    return qq|Нельзя удалять помещение @{[ %{ @{ $self->app->json->decode($prev->{'@кабинеты/json'}) }[$_] } ]}, \n в договоре @{[ map {$_->{'контрагент/title'}, ", № $_->{'номер'}"} @{ $self->app->json->decode($s->{'@аренда/договоры/json'}) } ]}|#
+      if !$ref{$id} && $s;
       #!!!! проверку переделать ~ if !$ref{$id} && $prev->{'@помещение в договоре аренды?'} && $prev->{'@помещение в договоре аренды?'}[$_];
     
     $self->связь_удалить(id1=>$lit_id, id2=>$id)
@@ -135,8 +139,8 @@ sub помещения_договора {
 }
 
 sub договоры_помещений {
-  my ($self, $param)  =  @_;
-  $self->dbh->selectall_arrayref($self->sth('договоры по помещениям',), {Slice=>{}},);# select=>' jsonb_agg(a) '
+  my ($self, $param, @bind)  =  @_;
+  $self->dbh->selectall_arrayref($self->sth('договоры по помещениям', ref $param eq 'HASH' ? %$param : ()), {Slice=>{}}, @bind);# select=>' jsonb_agg(a) '
 }
 
 sub помещения_доп_соглашения {

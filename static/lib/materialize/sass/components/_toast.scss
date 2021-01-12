@@ -39,9 +39,12 @@
   font-size: 1.1rem;
   font-weight: 300;
   color: $toast-text-color;
+  white-space: pre-wrap;
+  overflow: auto;
+  max-height: 50vh;
 
   display: flex;
-  align-items: center;
+  ///align-items: center;
   justify-content: space-between;
 
   .btn, .btn-flat {

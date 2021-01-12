@@ -168,8 +168,8 @@ Save(){
   vm.cancelerHttp =  $http.post(appRoutes.urlFor('аренда/сохранить объект'), vm.form)
     .then(function(resp){
       vm.cancelerHttp = undefined;
-      if (resp.data.error) return Materialize.toast(resp.data.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
-      Materialize.toast('Сохранено успешно', 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
+      if (resp.data.error) return Materialize.toast(resp.data.error, 7000, 'float-none red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
+      Materialize.toast('Сохранено успешно', 3000, 'fs14 green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
       vm.$emit('on-save', resp.data.success);
     },
     function(resp){

@@ -199,7 +199,7 @@ sub map_grep_mode {
       
       #глобальная подборка собственных скриптов
       ['main.js' => grep !/^--/, qw(
-        
+        ---js/parcel-require.js
         js/routes.js
         js/main.js
         js/util.js
