@@ -201,8 +201,8 @@ var Component = function  ($scope, $timeout, $element, $Контрагенты, 
   return false;
   };
   
-  $c.SetRentContract = function(item){
-    //~ console.log("SetRentContract", item);
+  $c.SelectContract = function(item){
+    //~ console.log("SelectContract", item);
     $c.item['договор аренды/id'] = $c.item['договор аренды/id'] == item && item.id ? undefined : item && item.id;
     if ($c.onSelectContract) $c.onSelectContract({"item": item});
   };

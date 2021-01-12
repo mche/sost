@@ -40,7 +40,7 @@
           <input type="checkbox" ng-attr-id="крыжик-{{ listItem.id }}" ng-model=" $c.item['договор аренды/id'] " ng-true-value=" {{ listItem.id }} " ng-false-value="{{undefined}}" >
           <label for="крыжик-{{listItem.id }}" ng-click="$c.onSelectContract({'item': listItem})" class="hover-shadow3d before-yellow-lighten-4 chip teal-text text-darken-3 yellow lighten-4 hoverable" style="padding-left:16px;" ></label>
         </span>
-        <a ng-click="$c.SetRentContract(listItem)" href="javascript:" ng-class="{'maroon-text': listItem['архив?'], 'green-text text-darken-4': !listItem['архив?'], 'bold': $c.item['договор аренды/id'] == listItem.id}" class="middle hover-shadow3d">
+        <a ng-click="$c.SelectContract(listItem)" href="javascript:" ng-class="{'maroon-text': listItem['архив?'], 'green-text text-darken-4': !listItem['архив?'], 'bold': $c.item['договор аренды/id'] == listItem.id}" class="middle hover-shadow3d">
           <i ng-show="listItem['архив?']" class="material-icons fs8">lock</i>
           <span class="chip padd-0-05" title="номер договора"><span class="fs8-000 grey-text">дог.</span> № {{ listItem['номер'].replace('№', '') }} от {{ listItem['дата договора'] || listItem['дата1'] }}</span>
           <span class="chip padd-0-05 middle blue-text text-darken-3" title="объект и помещения">
@@ -48,7 +48,7 @@
             <span class="fs8">{{ listItem['@помещения'] && listItem['@помещения'][0] && listItem['@помещения'][0]['$объект'].name  }}</span>
           </span>
         </a>
-        <a ng-show="!!$c.item['договор аренды/id'] && $c.item['договор аренды/id'] == listItem.id"  ng-click="$c.SetRentContract()" href="javascript:" class="remove-siblings circle hoverable"  style="">
+        <a ng-show="!!$c.item['договор аренды/id'] && $c.item['договор аренды/id'] == listItem.id"  ng-click="$c.SelectContract()" href="javascript:" class="remove-siblings circle hoverable"  style="">
           <!--i class="material-icons brown-text">cancel</i-->
           <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3-000" style="height: 1.2rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
         </a>
