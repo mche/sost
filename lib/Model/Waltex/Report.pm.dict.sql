@@ -67,7 +67,7 @@ from
   join refs rk on d.id=rk.id2
   join "контрагенты" k on k.id=rk.id1
   
-  join (--- много строк помещений по объектам
+  left join (--- много строк помещений по объектам
     select d.id as "договор/id",
       array_agg(ob.id) "@объекты/id",
       array_agg(ob.name) "@объекты/name",

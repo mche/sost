@@ -451,7 +451,17 @@ const Component = function($scope, $rootScope, $element, $timeout, $http, $q, ap
 
     }, 100);
   };
-  
+
+  $c.OnSelectContract = function(item){
+    //~ console.log('OnSelectContract', item);
+    if (item &&  item['@объекты/id'] && item['@объекты/id'][0]) {
+      $c.data["$объект"] = undefined;
+      $timeout(function(){
+        $c.data["$объект"] = {id: item['@объекты/id'][0]};
+      });
+      //~ $c.data["$объект"].id =  item['@объекты/id'][0];
+    }
+  };
 };
 
 module

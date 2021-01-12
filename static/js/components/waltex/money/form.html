@@ -100,7 +100,7 @@
         <i class="material-icons">business</i><!--all_out-->
         <span>Контрагент</span>
       </h4>
-      <contragent-item ng-if="!$c.param['без сохранения']" ng-init=" param = {textInputClass: 'light-green-text text-darken-4', 'договор аренды':true,} " data-item="Contragent" data-param=" param "></contragent-item>
+      <contragent-item ng-if="!$c.param['без сохранения']" ng-init=" param = {textInputClass: 'light-green-text text-darken-4', 'договор аренды':true,} " data-item="Contragent" data-param=" param " data-on-select-contract="$c.OnSelectContract(item)"></contragent-item>
       <div ng-if="$c.param['без сохранения']" class="input-field" style="border-bottom: 1px solid grey; height:2rem;">
         {{$c.data['контрагент'] || ''}}
       </div>
@@ -182,13 +182,13 @@
   <!---div class="col s2"></div-->
   
   <div class="col s4">
-    <div ng-show="(Contragent && Contragent.title) || $c.param.move.id == 1 || $c.data['пакетная закачка']" class="card maroon lighten-5 padd-05" style="">
+    <div ng-if="(Contragent && Contragent.title) || $c.param.move.id == 1 || $c.data['пакетная закачка']" class="card maroon lighten-5 padd-05" style="">
       <h4 class="maroon-text text-darken-2-000 fw500">
         <i class="icon-location"></i><span>Объект</span>
         <!---span ng-if="$c.data['проект'] || $c.param['проект']" class="chip padd-0-05 bold"> {{$c.data['проект'] ||  $c.param['проект'].name}}</span-->
       </h4>
       <div>
-        <object-address ng-if-000="$c.data['$объект']" ng-init=" param = {'проект': $c.param['проект'], 'фильтр объектов': $c.FilterObj,'только объекты': true, 'без проекта': true, placeholder:'объект', 'inputClass4Object': 'maroon-text text-darken-4-000', 'autocompleteClass4Object': 'maroon-text', 'не изменять-000': !(Contragent && Contragent.title) } " data-data=" $c.data['$объект'] " data-param=" param " data-on-focus="" class=""></object-address>
+        <object-address ng-if="$c.data['$объект']" ng-init=" param = {'проект': $c.param['проект'], 'фильтр объектов': $c.FilterObj,'только объекты': true, 'без проекта': true, placeholder:'объект', 'inputClass4Object': 'maroon-text text-darken-4-000', 'autocompleteClass4Object': 'maroon-text', 'не изменять-000': !(Contragent && Contragent.title) } " data-data=" $c.data['$объект'] " data-param=" param " data-on-focus="" class=""></object-address>
       </div>
     </div>
     

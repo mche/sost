@@ -176,7 +176,7 @@ var Component = function  ($scope, $timeout, $element, $Контрагенты, 
       $c.item['АТИ'] = item['АТИ'] || item['АТИ title'];//// || ( $c.item._fromItem && ($c.item._fromItem['АТИ'] || $c.item._fromItem['АТИ title']));
     //~ $c.showListBtn = false;
      if ($c.param['договор аренды']) $c['договоры аренды'] = $c.dataRentContracts[item.id];
-    if(onSelect) onSelect({"item": $c.item});
+    if (onSelect) onSelect({"item": $c.item});
     //~ var ac = $c.textField.autocomplete();
     //~ if (ac) ac.onBlur();//$timeout(function(){ ac.hide(); }, 100);///ac.dispose();
   };
@@ -204,6 +204,7 @@ var Component = function  ($scope, $timeout, $element, $Контрагенты, 
   $c.SetRentContract = function(item){
     //~ console.log("SetRentContract", item);
     $c.item['договор аренды/id'] = $c.item['договор аренды/id'] == item && item.id ? undefined : item && item.id;
+    if ($c.onSelectContract) $c.onSelectContract({"item": item});
   };
   
 };
@@ -224,6 +225,7 @@ moduleNames.map(function(name){
       data: '<',
       param:'<',
       onSelect: '&', // data-on-select="$c.OnSelectContragent(item)"
+      onSelectContract: '&',
 
     },
     controller: Component
