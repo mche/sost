@@ -633,11 +633,11 @@ sub реестр_актов_xlsx {
   my $data = $c->model->реестр_актов("месяц"=>$month, "месяц2"=>$month2, "проект/id"=>$project, "счет или акт"=>'акт', "uid"=>$c->auth_user->{id});
   open my $xfh, '>', \my $fdata or die "Failed to open filehandle: $!";
   my $workbook  = Excel::Writer::XLSX->new( $xfh );
-  my $date_format = $workbook->add_format( num_format => 'dd.mm.yyyy', align  => 'left', bottom=>4, right=>1,);
+  my $date_format = $workbook->add_format( num_format => 'D MMM, YYYY', align  => 'left', bottom=>4, right=>1,);
   my $num_format = $workbook->add_format( num_format=> '# ##0.00 [$₽-419];[RED]-# ##0.00 [$₽-419]', bottom=>4, right=>1,);# # ##0,00 [$₽-419]
   my $text_format = $workbook->add_format( num_format => '@', align  => 'left', bottom=>4, right=>1,);
   # порядок столбца, название, ширина, формат
-  my %names = ('№'=>[1,'№', 3], 'номер счета'=>[2,"Номер\nсчета", 7], 'дата счета'=>[3,"Дата\nсчета", 10, $date_format],  'номер акта'=>[4,"Номер\nакта", 7], 'дата акта'=>[5, "Дата\nакта", 10], 'сумма/num'=>[6, 'Сумма', 12, $num_format], 'договор/номер'=>[7, "Номер\nдоговора", 10], 'контрагент/title'=>[8, 'Арендатор', 50, $text_format], 'ИНН'=>[9, 'ИНН', 15, $text_format], 'объект'=>[10, 'Объект', 20, $text_format],'проект'=>[11, 'Арендодатель', 20, $text_format]);#'договор/дата завершения','договор/дата начала'=>'l', 
+  my %names = ('№'=>[1,'№', 3], 'номер счета'=>[2,"Номер\nсчета", 7], 'дата счета'=>[3,"Дата\nсчета", 10, $date_format],  'номер акта'=>[4,"Номер\nакта", 7], 'дата акта'=>[5, "Дата\nакта", 10, $date_format], 'сумма/num'=>[6, 'Сумма', 12, $num_format], 'договор/номер'=>[7, "Номер\nдоговора", 10], 'контрагент/title'=>[8, 'Арендатор', 50, $text_format], 'ИНН'=>[9, 'ИНН', 15, $text_format], 'объект'=>[10, 'Объект', 20, $text_format],'проект'=>[11, 'Арендодатель', 20, $text_format]);#'договор/дата завершения','договор/дата начала'=>'l', 
   #~ my $filename=sprintf("static/tmp/%s-реестр-актов.xlsx", $c->auth_user->{id}, $month);
   my @cols = sort {$names{$a}[0] <=> $names{$b}[0]} keys %names;
   
@@ -657,6 +657,8 @@ sub реестр_актов_xlsx {
   my $format = $workbook->add_format( bottom=>4, right=>1);
   for my $r (@$data) {
     my $col = 0;
+    #~ $r->{'дата счета'} .= 'T';
+    #~ $r->{'дата акта'} .= 'T';
     $r->{'№'}=$n++;
     $s += $r->{'сумма/num'};
     $worksheet->write($row, $col++, $r->{$_}, $names{$_}[3] || $format)
