@@ -633,10 +633,10 @@ sub реестр_актов_xlsx {
   my $data = $c->model->реестр_актов("месяц"=>$month, "месяц2"=>$month2, "проект/id"=>$project, "счет или акт"=>'акт', "uid"=>$c->auth_user->{id});
   open my $xfh, '>', \my $fdata or die "Failed to open filehandle: $!";
   my $workbook  = Excel::Writer::XLSX->new( $xfh );
-  my $date_format = $workbook->add_format( num_format => 'dd.mm.yyyy', align  => 'left', );
-  my $num_format = $workbook->add_format( num_format=> '# ##0.00');
+  my $date_format = $workbook->add_format( num_format => 'dd.mm.yyyy', align  => 'left', bottom=>4, right=>1,);
+  my $num_format = $workbook->add_format( num_format=> '# ##0.00 [$₽-419];[RED]-# ##0.00 [$₽-419]', bottom=>4, right=>1,);# # ##0,00 [$₽-419]
   # порядок столбца, название, ширина, формат
-  my %names = ('номер счета'=>[1,'Номер счета', 15], 'дата счета'=>[2,'Дата счета', 15, $date_format],  'номер акта'=>[3,'Номер акта', 15], 'дата акта'=>[4, 'Дата акта', 15], 'сумма/num'=>[5, 'Сумма', 10, $num_format], 'договор/номер'=>[6, 'Номер договора', 20], 'контрагент/title'=>[7, 'Арендатор', 50], 'ИНН'=>[8, 'ИНН', 15], 'объект'=>[9, 'Объект', 20],'проект'=>[10, 'Арендодатель', 20]);#'договор/дата завершения','договор/дата начала'=>'l', 
+  my %names = ('№'=>[1,'№', 3], 'номер счета'=>[2,"Номер\nсчета", 7], 'дата счета'=>[3,"Дата\nсчета", 10, $date_format],  'номер акта'=>[4,"Номер\nакта", 7], 'дата акта'=>[5, "Дата\nакта", 10], 'сумма/num'=>[6, 'Сумма', 10, $num_format], 'договор/номер'=>[7, "Номер\nдоговора", 10], 'контрагент/title'=>[8, 'Арендатор', 50], 'ИНН'=>[9, 'ИНН', 15], 'объект'=>[10, 'Объект', 20],'проект'=>[11, 'Арендодатель', 20]);#'договор/дата завершения','договор/дата начала'=>'l', 
   #~ my $filename=sprintf("static/tmp/%s-реестр-актов.xlsx", $c->auth_user->{id}, $month);
   my @cols = sort {$names{$a}[0] <=> $names{$b}[0]} keys %names;
   
@@ -651,16 +651,22 @@ sub реестр_актов_xlsx {
   # шапка
   $worksheet->write_row($row++,0, [map($names{$_}[1], @cols)], $workbook->add_format( bold => 1, bottom=>1, align=>'center', size=>13,bg_color=>'#C8E6C9'));
   
+  my $n=1;
+  my $s = 0;
+  my $format = $workbook->add_format( bottom=>4, right=>1);
   for my $r (@$data) {
     my $col = 0;
-    $worksheet->write($row, $col++, $r->{$_}, $names{$_}[3])# тут формат не катит 
+    $r->{'№'}=$n++;
+    $s += $r->{'сумма/num'};
+    $worksheet->write($row, $col++, $r->{$_}, $names{$_}[3] || $format)
       for @cols;#$c->app->json->decode($_->{'$арендодатель'})->{name}
-    $worksheet->write_date_time( $row, 1, $r->{'дата счета'} && $r->{'дата счета'}.'T', $date_format );
-    $worksheet->write_date_time( $row, 3, $r->{'дата акта'} && $r->{'дата акта'}.'T', $date_format );
+    $worksheet->write_date_time( $row, 2, $r->{'дата счета'} && $r->{'дата счета'}.'T', $date_format );
+    $worksheet->write_date_time( $row, 4, $r->{'дата акта'} && $r->{'дата акта'}.'T', $date_format );
     
     
     $row++;
   }
+  $worksheet->write_formula($row, $names{'сумма/num'}[0]-1, "=SUM(F2:F$row)", $names{'сумма/num'}[3], $s);
   
   $workbook->close();
   #~ return $fdata;
