@@ -635,8 +635,9 @@ sub реестр_актов_xlsx {
   my $workbook  = Excel::Writer::XLSX->new( $xfh );
   my $date_format = $workbook->add_format( num_format => 'dd.mm.yyyy', align  => 'left', bottom=>4, right=>1,);
   my $num_format = $workbook->add_format( num_format=> '# ##0.00 [$₽-419];[RED]-# ##0.00 [$₽-419]', bottom=>4, right=>1,);# # ##0,00 [$₽-419]
+  my $text_format = $workbook->add_format( num_format => '@', align  => 'left', bottom=>4, right=>1,);
   # порядок столбца, название, ширина, формат
-  my %names = ('№'=>[1,'№', 3], 'номер счета'=>[2,"Номер\nсчета", 7], 'дата счета'=>[3,"Дата\nсчета", 10, $date_format],  'номер акта'=>[4,"Номер\nакта", 7], 'дата акта'=>[5, "Дата\nакта", 10], 'сумма/num'=>[6, 'Сумма', 10, $num_format], 'договор/номер'=>[7, "Номер\nдоговора", 10], 'контрагент/title'=>[8, 'Арендатор', 50], 'ИНН'=>[9, 'ИНН', 15], 'объект'=>[10, 'Объект', 20],'проект'=>[11, 'Арендодатель', 20]);#'договор/дата завершения','договор/дата начала'=>'l', 
+  my %names = ('№'=>[1,'№', 3], 'номер счета'=>[2,"Номер\nсчета", 7], 'дата счета'=>[3,"Дата\nсчета", 10, $date_format],  'номер акта'=>[4,"Номер\nакта", 7], 'дата акта'=>[5, "Дата\nакта", 10], 'сумма/num'=>[6, 'Сумма', 12, $num_format], 'договор/номер'=>[7, "Номер\nдоговора", 10], 'контрагент/title'=>[8, 'Арендатор', 50, $text_format], 'ИНН'=>[9, 'ИНН', 15, $text_format], 'объект'=>[10, 'Объект', 20, $text_format],'проект'=>[11, 'Арендодатель', 20, $text_format]);#'договор/дата завершения','договор/дата начала'=>'l', 
   #~ my $filename=sprintf("static/tmp/%s-реестр-актов.xlsx", $c->auth_user->{id}, $month);
   my @cols = sort {$names{$a}[0] <=> $names{$b}[0]} keys %names;
   
@@ -666,7 +667,7 @@ sub реестр_актов_xlsx {
     
     $row++;
   }
-  $worksheet->write_formula($row, $names{'сумма/num'}[0]-1, "=SUM(F2:F$row)", $names{'сумма/num'}[3], $s);
+  $worksheet->write_formula($row, $names{'сумма/num'}[0]-1, "=SUM(F2:F$row)", $workbook->add_format( num_format=> '# ##0.00 [$₽-419];[RED]-# ##0.00 [$₽-419]', bottom=>4, right=>1, bold=>1), $s);
   
   $workbook->close();
   #~ return $fdata;
