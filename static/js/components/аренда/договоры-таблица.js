@@ -296,7 +296,7 @@ Reestr(month, month2){
     //~ });
   //~ });
   vm.httpProcess  = true;
-  window.location.href = appRoutes.url_for('аренда/реестр актов.xlsx', month+(month2 ? ':'+month2 : ''));
+  window.location.href = appRoutes.url_for('аренда/реестр актов.xlsx', month+ ':'+(month2 || '')+':'+(vm.filters['арендодатель'] ? vm.filters['арендодатель'].id : ''));
   setTimeout(()=>{
     vm.httpProcess  = false;
     modal.modal('close');

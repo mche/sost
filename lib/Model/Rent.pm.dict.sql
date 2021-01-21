@@ -338,7 +338,7 @@ BEGIN
   LOOP
     insert into "акты/аренда/помещения" ("номер", "месяц", uid) values ("новый номер акта/аренда помещений"($1::date), date_trunc('month', $1), $3) returning * into ins;
     insert into "refs" (id1,id2) values (drec.id, ins.id);
-    RAISE NOTICE 'New id: %', ins.id;
+    ---RAISE NOTICE 'New id: %', ins.id;
     ---RETURN NEXT ins;
   END LOOP;
 

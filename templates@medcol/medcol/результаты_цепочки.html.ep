@@ -97,7 +97,7 @@
 %#  <td class="right-align padd-05"><table class="highlight bordered" style="margin:0;"><tbody>
 <tr class="orange lighten-4"><td class="vtop padd-05 relative" colspan="6">
   % if ($профиль->{'id'}) {
-    <h3 class="chip padd-0-05 z-depth-1 hoverable"><a href="<%=  url_for('медкол вход', login=>$профиль->{'логин'}, pw=>$пароль)  %>" class="" style="" title="сессия <%=  $профиль->{'сессия/id'}  %>"><i class="icon-login grey-text">профиль №</i> <span><%=  $профиль->{'логин'}  %></span>:<span><%=  $пароль  %></span></a></h3>
+    <h3 class="chip padd-0-05 z-depth-1 hoverable"><a href="<%=  url_for('медкол вход', login=>$профиль->{'логин'}, pw=>$пароль)  %>" class="" style="" title="сессия <%=  $профиль->{'сессия/id'}  %>"><i class="icon-login grey-text">профиль №</i> <span class="middle"><%=  $профиль->{'логин'}  %></span>:<span class="middle"><%=  $пароль  %></span></a></h3>
   % }
     % if (!$профиль->{'id'} || !$uniq{$профиль->{'id'}}++) {
   <h3 class="chip-000 right padd-0-05"><span class="chip padd-0-05  white-text <%= $r->{'%больше70'} ? 'green' : '' %> darken-3 bold"><i class="material-icons padd-0-05 ">thumb_up</i><%= $r->{'%больше70'} // '?' %></span> из <span><%= $r->{"всего сессий"}  %></span></h3>
