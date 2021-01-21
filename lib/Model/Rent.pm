@@ -379,6 +379,7 @@ sub реестр_актов {
   });
   unshift @bind, $param->{'месяц'}, $param->{'месяц2'} || $param->{'месяц'}, $param->{'счет или акт'} eq 'акт' ? 929979 : 0;# отключить обеспечит предоплата для актов, $param->{'присвоить номера'} ? $param->{"договоры"} : [], $param->{uid};
   
+  $self->dbh->do(qq|select "номера счетов/аренда помещений"(?::date[], ?::int[], ?::int)|, undef, [$param->{'месяц'}, $param->{'месяц'}], undef, $param->{uid});
   $self->dbh->do(qq|select "номера актов/аренда помещений"(?::date[], ?::int[], ?::int)|, undef, [$param->{'месяц'}, $param->{'месяц'}], undef, $param->{uid});
   
   $self->dbh->selectall_arrayref($self->sth('счета и акты', счет_или_акт=>'акт', безнал_или_всего=>1,  select=>$param->{select}, where=>$where, 'order_by'=>$param->{order_by}), {Slice=>{}}, @bind);
