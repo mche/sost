@@ -477,7 +477,8 @@
           </tr>
         </tbody>
       </table>
-      <div v-if="!formEmail['отправлено']" class="card padd-05 purple lighten-4"><!-- произвольное письмо -->
+      <!-- произвольное письмо >
+      <div v-if="!formEmail['отправлено']" class="card padd-05 purple lighten-4">
         <h2>Или отправить произвольное письмо указанным арендаторам</h2>
         <div>
           <h4>Тема письма</h4>
@@ -487,13 +488,13 @@
           <h4>Текст письма</h4>
           <div class="input-field card padd-0-05 grey lighten-3"><textarea v-model.trim="formEmail['сообщение']" class="materialize-textarea padd-0 fs8" style="min-height: 4rem;"></textarea></div>
         </div>
-        <div>
-          <h4>Файл письма</h4>
-          <div class="input-field">
-            <!--input type="text" v-model="formEmail['файл']" -->
-            <v-uploads :parent="formEmail" ></v-uploads>
-            <!--div class="pre-wrap fs8">{{ formEmail._uploads }}</div-->
-          </div>
+      </div-->
+      <div>
+        <h4>Еще файлы</h4>
+        <div class="input-field">
+          <!--input type="text" v-model="formEmail['файл']" -->
+          <v-uploads :parent="formEmail" ></v-uploads>
+          <!--div class="pre-wrap fs8">{{ formEmail._uploads }}</div-->
         </div>
       </div>
     </div>

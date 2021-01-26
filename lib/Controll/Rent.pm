@@ -718,8 +718,9 @@ sub на_емайл {# счета и акты, создать pdf файлы д�
   return $c->render(json=>{error=>"Не найдено счетов/актов или адресов почты"})
     unless @$data && $data->[0]{'@документы/json'};
     
-  return $c->произвольное_письмо($param, $data)
-    if $param->{'отправить'} && $param->{'письмо'} && $param->{'письмо'}{'тема'} && $param->{'письмо'}{'сообщение'};
+  #~ return $c->произвольное_письмо($param, $data) СПАМ!!!
+    #~ if $param->{'отправить'} && $param->{'письмо'} && $param->{'письмо'}{'тема'} && $param->{'письмо'}{'сообщение'};
+    
   #~ $param->{docx} = sprintf("%s-%s.docx", $param->{'счет или акт'}, $c->auth_user->{id});
   my $docx_template_file = sprintf("templates/аренда/%s.template.docx", $param->{'счет или акт'},);
   
@@ -788,7 +789,6 @@ sub отправить_письмо {
             body_str => $c->render_to_string('аренда/письмо арендатору', format => 'html', docs=>$docs, param=>$param), #$c->model->dict->{'письмо аренда помещений'}->render(data=>$docs, param=>$param), #"<h1>Тест 2!</h1>\n",
           ),
           Email::MIME->create(
-            #~ body => io("static/tmp/счет-1732-1044957-2020-09-30.pdf")->binary->all,
             body=> Mojo::Asset::File->new(path => "static/tmp/$data->{file}")->slurp,
             attributes => {
                 filename => "$param->{'счет или акт'}.pdf",
@@ -798,6 +798,19 @@ sub отправить_письмо {
                 #~ encoding     => "quoted-printable",
             },
          ),
+        $param->{'письмо'} && $param->{'письмо'}{_uploads} 
+          ? map {
+            Email::MIME->create(
+            body=> Mojo::Asset::File->new(path => sprintf("static/u/%s/%s", $_->{parent_id} || 0, $_->{id}) )->slurp,
+            attributes => {
+                filename => $_->{names}[0],
+                content_type => $_->{content_type},
+                charset=>'UTF-8',
+                encoding => 'Base64',
+                #~ encoding     => "quoted-printable",
+            },
+         )} @{$param->{'письмо'}{_uploads} || []}
+        : (),
     ]
   );
   my $sent = eval { $mailer->send_message($message)->{message} };
@@ -827,25 +840,27 @@ sub произвольное_письмо {
         #~ "Sender" => 'John Doe <John.Doe@gmail.com>',# Sender or From header address rejected: not owned by authorized user
       ],
       parts => [
+        Email::MIME->create(
+          attributes => {
+                  encoding => 'quoted-printable',
+                  charset  => 'UTF-8',
+                  content_type => 'text/html',
+          },
+          body_str => $param->{'письмо'}{'сообщение'}#$c->render_to_string('аренда/письмо арендатору', format => 'html', docs=>$docs, param=>$param), #$c->model->dict->{'письмо аренда помещений'}->render(data=>$docs, param=>$param), #"<h1>Тест 2!</h1>\n",
+        ),
+        $param->{'письмо'} && $param->{'письмо'}{_uploads} 
+          ? map {
             Email::MIME->create(
-              attributes => {
-                      encoding => 'quoted-printable',
-                      charset  => 'UTF-8',
-                      content_type => 'text/html',
-              },
-              body_str => $param->{'письмо'}{'сообщение'}#$c->render_to_string('аренда/письмо арендатору', format => 'html', docs=>$docs, param=>$param), #$c->model->dict->{'письмо аренда помещений'}->render(data=>$docs, param=>$param), #"<h1>Тест 2!</h1>\n",
-            ),
-            Email::MIME->create(
-              #~ body => io("static/tmp/счет-1732-1044957-2020-09-30.pdf")->binary->all,
-              body=> Mojo::Asset::File->new(path => "static/u/$param->{'письмо'}{_uploads}[0]{parent_id}/$param->{'письмо'}{_uploads}[0]{id}")->slurp,
-              attributes => {
-                  filename => $param->{'письмо'}{_uploads}[0]{names}[0],
-                  content_type => $param->{'письмо'}{_uploads}[0]{content_type},
-                  charset=>'UTF-8',
-                  encoding => 'Base64',
-                  #~ encoding     => "quoted-printable",
-              },
-           ),
+            body=> Mojo::Asset::File->new(path => sprintf("static/u/%s/%s", $_->{parent_id} || 0, $_->{id}) )->slurp,
+            attributes => {
+                filename => $_->{names}[0],
+                content_type => $_->{content_type},
+                charset=>'UTF-8',
+                encoding => 'Base64',
+                #~ encoding     => "quoted-printable",
+            },
+         )} @{$param->{'письмо'}{_uploads} || []}
+        : (),
       ]
     );
     $r->{'статус отправки письма'}  = $mailer->send_message($message)->{message};
