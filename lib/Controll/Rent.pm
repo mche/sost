@@ -4,6 +4,7 @@ use Util;
 
 has model => sub { $_[0]->app->models->{'Аренда'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
 has model_contragent => sub { $_[0]->app->models->{'Contragent'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
+has model_uploader => sub { $_[0]->app->models->{'Uploader'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
 
 has email => sub {
   #~ require Mojolicious::Plugin::RoutesAuthDBI::Util;
@@ -716,6 +717,9 @@ sub на_емайл {# счета и акты, создать pdf файлы д�
     unless ref $data;
   return $c->render(json=>{error=>"Не найдено счетов/актов или адресов почты"})
     unless @$data && $data->[0]{'@документы/json'};
+    
+  return $c->произвольное_письмо($param, $data)
+    if $param->{'отправить'} && $param->{'письмо'} && $param->{'письмо'}{'тема'} && $param->{'письмо'}{'сообщение'};
   #~ $param->{docx} = sprintf("%s-%s.docx", $param->{'счет или акт'}, $c->auth_user->{id});
   my $docx_template_file = sprintf("templates/аренда/%s.template.docx", $param->{'счет или акт'},);
   
@@ -766,7 +770,7 @@ sub отправить_письмо {
   #~ $c->log->error($c->dumper($docs->[0]{'$арендодатель/json'}));
   #~ $c->log->error(Mojo::Asset::File->new(path => "static/tmp/$data->{file}")->slurp);
   my $mailer = $c->email;# has
- my $message = Email::MIME->create(
+  my $message = Email::MIME->create(
     header_str => [
       From    => $mailer->smtp_user,
       To      =>  sprintf("Арендатору <%s>", $docs->[0]{'$контрагент/json'}{'реквизиты'}{'email'}),#
@@ -802,6 +806,53 @@ sub отправить_письмо {
     unless $sent;
   #~ $c->log->error($c->dumper($sent));
   return $sent;
+}
+
+sub произвольное_письмо {
+  my ($c,$param, $data) = @_;
+  my $mailer = $c->email;# has
+  for my $r (@$data) {# по одному договору
+    my $docs = $c->app->json->decode($r->{'@документы/json'});
+  #~ $c->log->error($c->dumper($docs->[0]{'$арендодатель/json'}));
+  #~ $c->log->error(Mojo::Asset::File->new(path => "static/tmp/$data->{file}")->slurp);
+    $param->{'письмо'}{_uploads}[0]{parent_id} ||= 0;
+    #~ $c->log->error($c->dumper($param->{'письмо'}{_uploads}[0]));
+    
+    my $message = Email::MIME->create(
+      header_str => [
+        From    => sprintf("Аренда Стахановская 54 Г <%s>", $mailer->smtp_user),# 
+        To      =>  sprintf("Арендатору <%s>", $docs->[0]{'$контрагент/json'}{'реквизиты'}{'email'}),#
+        Subject => $param->{'письмо'}{'тема'},#" Аренда помещений $docs->[0]{'объект'} ",
+        $docs->[0]{'$арендодатель/json'}{'реквизиты'} && $docs->[0]{'$арендодатель/json'}{'реквизиты'}{'email'} ? ("Reply-To"=> $docs->[0]{'$арендодатель/json'}{'реквизиты'}{'email'}) : (), #'John Doe <John.Doe@gmail.com>',
+        #~ "Sender" => 'John Doe <John.Doe@gmail.com>',# Sender or From header address rejected: not owned by authorized user
+      ],
+      parts => [
+            Email::MIME->create(
+              attributes => {
+                      encoding => 'quoted-printable',
+                      charset  => 'UTF-8',
+                      content_type => 'text/html',
+              },
+              body_str => $param->{'письмо'}{'сообщение'}#$c->render_to_string('аренда/письмо арендатору', format => 'html', docs=>$docs, param=>$param), #$c->model->dict->{'письмо аренда помещений'}->render(data=>$docs, param=>$param), #"<h1>Тест 2!</h1>\n",
+            ),
+            Email::MIME->create(
+              #~ body => io("static/tmp/счет-1732-1044957-2020-09-30.pdf")->binary->all,
+              body=> Mojo::Asset::File->new(path => "static/u/$param->{'письмо'}{_uploads}[0]{parent_id}/$param->{'письмо'}{_uploads}[0]{id}")->slurp,
+              attributes => {
+                  filename => $param->{'письмо'}{_uploads}[0]{names}[0],
+                  content_type => $param->{'письмо'}{_uploads}[0]{content_type},
+                  charset=>'UTF-8',
+                  encoding => 'Base64',
+                  #~ encoding     => "quoted-printable",
+              },
+           ),
+      ]
+    );
+    $r->{'статус отправки письма'}  = $mailer->send_message($message)->{message};
+  }
+  # удалить файл
+  $c->model_uploader->_удалить_файлы([$param->{'письмо'}{_uploads}[0]{id}], $c->auth_user->{id});
+  $c->render(json=>{data=>$data, });
 }
 
 1;

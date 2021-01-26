@@ -450,7 +450,7 @@
                 <span class="chip padd-0-05 nowrap" :title=" item['@документы'][0]['$договор']['дата1'] "><span class="fs8 grey-text">c </span><span class="bold">{{ item['@документы'][0]['$договор'].$дата1.day }}</span> <span class="fs8">{{ item['@документы'][0]['$договор'].$дата1['мес'] }}</span><span v-show="(new Date).getYear()+1900 != item['@документы'][0]['$договор'].$дата1.year"> {{ item['@документы'][0]['$договор'].$дата1.year }}</span></span>
               </h5>
             </td>
-            <td class="padd-05 vtop" style="width:1%;">
+            <td v-if="!formEmail['тема'] && !formEmail['сообщение']" class="padd-05 vtop" style="width:1%;">
               <div v-for="doc in  item['@документы']">
                 <div v-for="pos in  doc['@позиции']" class="nowrap right-align">
                   <span class="fw100"><span v-for="n in pos['номенклатура']">{{ n }}</span></span>
@@ -458,7 +458,12 @@
                 </div>
               </div>
             </td>
-            <td style="width:1%;"><a v-if="!!item.file" @click="iframeFile = {src: appRoutes.urlFor('аренда/счет#docx', item.file) + '?inline=1&cleanup=0', content_type:'application/pdf' }" href="javascript:" class="btn-flat padd-05"><svg  xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 56 56" style="height: 2.7rem;"><use xlink:href="/fonts/icons.svg#pdf-file"></use></svg></a></td>
+            <td v-else>
+              <!--h3>{{ formEmail['тема'] }}</h3>
+              <div class="card pre-wrap padd-0-05 fs8 grey lighten-3">{{ formEmail['сообщение'] }}</div-->
+            </td>
+            <td v-if="!formEmail['тема'] && !formEmail['сообщение']" style="width:1%;"><a v-if="!!item.file" @click="iframeFile = {src: appRoutes.urlFor('аренда/счет#docx', item.file) + '?inline=1&cleanup=0', content_type:'application/pdf' }" href="javascript:" class="btn-flat padd-05"><svg  xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 56 56" style="height: 2.7rem;"><use xlink:href="/fonts/icons.svg#pdf-file"></use></svg></a></td>
+            <td v-else></td>
             <td>
               <!-- статус отправки -->
                 <div class="pre-wrap">{{ item['статус отправки письма'] }}</div>
@@ -466,10 +471,29 @@
           </tr>
         </tbody>
       </table>
+      <div v-if="!formEmail['отправлено']" class="card padd-05 purple lighten-4"><!-- произвольное письмо -->
+        <h2>Или отправить произвольное письмо указанным арендаторам</h2>
+        <div>
+          <h4>Тема письма</h4>
+          <div class="input-field chip width-100"><input type="text" v-model="formEmail['тема']" ></div>
+        </div>
+        <div>
+          <h4>Текст письма</h4>
+          <div class="input-field card padd-0-05 grey lighten-3"><textarea v-model.trim="formEmail['сообщение']" class="materialize-textarea padd-0 fs8" style="min-height: 4rem;"></textarea></div>
+        </div>
+        <div>
+          <h4>Файл письма</h4>
+          <div class="input-field">
+            <!--input type="text" v-model="formEmail['файл']" -->
+            <v-uploads :parent="formEmail" ></v-uploads>
+            <!--div class="pre-wrap fs8">{{ formEmail._uploads }}</div-->
+          </div>
+        </div>
+      </div>
     </div>
     <div class="modal-footer center">
     <v-progress-indeterminate v-show=" httpProcess " :color=" 'teal' " :message=" 'Отправляется...' "></v-progress-indeterminate>
-    <a @click=" SendMail(payMonth, payMonth2, true) " href="javascript:" class="modal-action waves-effect waves-green btn-flat z-depth-1 purple lighten-3 purple-text text-darken-3" style="float:none;"><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0  490 490" class="purple-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/rent.svg?20200929#email"></use></svg><span>Выполнить отправку писем</span></a>
+    <a v-if="!formEmail['отправлено'] || !httpProcess " @click=" SendMail(payMonth, payMonth2, true) " href="javascript:" class="modal-action waves-effect waves-green btn-flat z-depth-1 purple lighten-3 purple-text text-darken-3" style="float:none;"><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0  490 490" class="purple-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/rent.svg?20200929#email"></use></svg><span>Выполнить отправку писем</span></a>
     <a  href="javascript:" class="modal-action modal-close waves-effect waves-red btn-flat z-depth-1 red lighten-3 red-text text-darken-3"><i class="material-icons">cancel</i><span>Отмена</span></a>
   </div>
   

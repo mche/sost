@@ -43,7 +43,7 @@ const methods = {/*методы*/
 
 Uploads(){///список сохраненных файлов
   var vm = this;
-  return $http.get(appRoutes.urlFor('файлы', [vm.parent.id])).then(
+  if (vm.parent.id)  return $http.get(appRoutes.urlFor('файлы', [vm.parent.id])).then(
     function(resp){
       vm.uploads.splice(0);
       vm.uploads.push(...resp.data);
@@ -57,6 +57,13 @@ Uploads(){///список сохраненных файлов
       Materialize.toast('Ошибка получения файлов', 10000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
     }
   );
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      vm.TopFolders();
+      vm.ready = true;
+      resolve();
+    });
+  });
 },
   
 InitUploader(){

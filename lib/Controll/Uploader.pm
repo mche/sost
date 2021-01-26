@@ -74,20 +74,11 @@ sub удалить_файлы {
   my $c = shift;
   my $data=$c->req->json;
   #~ $c->app->log->error($data);
-  my @r;
-  for my $r (@{$c->model->файлы( ids=>$data)}) {
-    push @r, {error=>"Чужой файл @{[ $r->{names} ]}"}
-      and next
-      unless $r->{uid} eq $c->auth_user->{id};
-    my $parent_dir = Mojo::File->new("static/u/$r->{parent_id}/$r->{id}")->remove->dirname;
-    $parent_dir->remove_tree
-      unless @{$parent_dir->list};
-    #~ $c->model->удалить_файл($r->{id})
-    $c->model->_удалить_строку('файлы', $r->{id});
-    push @r, {success=>$r->{id}};
-  };
-  $c->render(json=>\@r); 
+  my $r = $c->model->_удалить_файлы($data, $c->auth_user->{id});
+  $c->render(json=>$r); 
 }
+
+
 
 sub файл_прикрепление {
   shift->_файл();
@@ -104,7 +95,7 @@ sub _файл {
     or die "Нет ид файла";
   my $r = $c->model->файлы( sha1=>$sha1)->[0]
     or die "Нет файла";
-  
+  $r->{parent_id} ||= 0;
   #~ $c->log->error($c->dumper($r));
   
   $c->render_file(

@@ -14,9 +14,9 @@
 */
 let moduleName = "Аренда::Договоры::Таблица";
 try {angular.module(moduleName); return;} catch(e) { } 
-let module = angular.module(moduleName, [ 'Аренда::Договор::Форма', 'Компонент::Выбор объекта', 'Компонент::Выбор в списке', 'Файлы::Просмотр']);//'UploaderCommon'
+let module = angular.module(moduleName, [ 'Аренда::Договор::Форма', 'Компонент::Выбор объекта', 'Компонент::Выбор в списке', 'Файлы::Просмотр',  'Uploader::Файлы', ]);//'UploaderCommon'
 
-module.factory('$КомпонентАрендаДоговорыТаблица', function(/*$templateCache,*/ $http, appRoutes, /*$timeout, $rootScope, /**$compile, , */ $EventBus, Util, $Список, $КомпонентАрендаДоговорФорма, $КомпонентВыборОбъекта, $КомпонентВыборВСписке, $КомпонентПросмотрФайла) {// $UploaderViewIframeMixins
+module.factory('$КомпонентАрендаДоговорыТаблица', function(/*$templateCache,*/ $http, appRoutes, /*$timeout, $rootScope, /**$compile, , */ $EventBus, Util, $Список, $КомпонентАрендаДоговорФорма, $КомпонентВыборОбъекта, $КомпонентВыборВСписке, $КомпонентПросмотрФайла, $КомпонентФайлы) {// $UploaderViewIframeMixins
 
 var projectList = new $Список(appRoutes.url_for('список проектов'));
 projectList.Load();
@@ -310,13 +310,15 @@ SendMail(month, month2, send){/// без send выйдет просмотр та
     vm.checkedItems.map((item)=>{ return item.id; });
   vm.httpProcess = true;
   vm.dataEmail = undefined;
-  return $http.post(appRoutes.urlFor('аренда/емайл'), {"месяц": month, "месяц2":month2, "договоры": ids, "присвоить номера": vm.payNums, "счет или акт": vm.radioAccAct,  "безнал или всего": vm.radioNalBezNal, "pdf формат": vm.payPDF, "отправить":send,}).then(function(resp){
+  if (!send) vm.formEmail['отправлено'] = false;
+  return $http.post(appRoutes.urlFor('аренда/емайл'), {"месяц": month, "месяц2":month2, "договоры": ids, "присвоить номера": vm.payNums, "счет или акт": vm.radioAccAct,  "безнал или всего": vm.radioNalBezNal, "pdf формат": vm.payPDF, "отправить":send, "письмо": vm.formEmail,}).then(function(resp){
     vm.httpProcess  = false;
     $('#modal-pay', $(vm.$el)).modal('close');
     if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 border fw500  animated zoomInUp');
     if (resp.data.data) {
       vm.dataEmail = resp.data.data;
       $('#modal-email', $(vm.$el)).modal('open');
+      vm.formEmail['отправлено'] = send;
     }
     //~ if (resp.data.data) console.log("счет", resp.data.data);///отладка
     //~ window.location.href = appRoutes.urlFor('тмц/накладная.docx', $c.data.id);
@@ -522,6 +524,7 @@ const  data = function(){
     "elWidth": undefined,/// будет при resizeObserver
      "iframeFile": undefined,/// 
     "dataEmail": undefined, /// модальная таблица рассылки на почту
+    "formEmail":{},/// рассылка этого сообщения
     };
   //);
 };///конец data
@@ -568,6 +571,7 @@ const $Конструктор = function (/*data, $c, $scope*/){
   $Компонент.components['v-object-select'] = new $КомпонентВыборОбъекта();
   $Компонент.components['v-select'] = new $КомпонентВыборВСписке();
   $Компонент.components['v-view-file-iframe'] = new $КомпонентПросмотрФайла();
+  $Компонент.components['v-uploads'] = new $КомпонентФайлы();
   //~ $Компонент.components['v-test'] = new Vue(тест);
 
   return $Компонент;

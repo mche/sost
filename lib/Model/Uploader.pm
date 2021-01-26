@@ -77,4 +77,22 @@ sub переименовать_файл {
   $self->обновить_или_вставить($self->{template_vars}{schema}, 'файлы', ["id"], $file);
 }
 
+sub _удалить_файлы {
+  my ($self, $ids, $uid) = @_;
+  my @r;
+  for my $r (@{$self->файлы( ids=>$ids)}) {
+    push @r, {error=>"Чужой файл @{[ $r->{names} ]}"}
+      and next
+      unless $r->{uid} eq $uid;
+    $r->{parent_id} ||= 0;
+    my $parent_dir = Mojo::File->new("static/u/$r->{parent_id}/$r->{id}")->remove->dirname;
+    $parent_dir->remove_tree
+      unless @{$parent_dir->list};
+    #~ $c->model->удалить_файл($r->{id})
+    $self->_удалить_строку('файлы', $r->{id});
+    push @r, {success=>$r->{id}};
+  };
+  return \@r;
+}
+
 1;

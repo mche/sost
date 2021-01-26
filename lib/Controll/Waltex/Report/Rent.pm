@@ -105,6 +105,7 @@ sub движение_ДС_xlsx {
     $worksheet->write_row($n, 2, [ @$_{qw(расход/num)}], $workbook->add_format( num_format=> $num_format, size=>13, bottom=>4, right=>1, %{$color{минус}}));#, bg_color=>$_->{'приход/num'} ? $color{плюс}{bg_color} : $color{минус}{bg_color}
     $worksheet->write_row($n, 3, [join(', ', @{$_->{'категория'}})], $workbook->add_format(bottom=>4, right=>1,) );#$workbook->add_format(bg_color=>$_->{'приход/num'} ? $color{плюс}{bg_color} : $color{минус}{bg_color})
     $worksheet->write_row($n, 4, [ @$_{qw(примечание)}], $workbook->add_format(bottom=>4, right=>1,) );#$workbook->add_format( size => 8)  # , $workbook->add_format(bg_color=>$_->{'приход/num'} ? $color{плюс}{bg_color} : $color{минус}{bg_color})
+    $worksheet->write_row($n, 5, [ @$_{qw(договор/id)}], $workbook->add_format(bottom=>4, right=>1,) );
     $n++;
     #~ $worksheet->conditional_formatting( 'A1:A4',
     #~ {
