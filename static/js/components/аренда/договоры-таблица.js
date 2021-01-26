@@ -97,10 +97,12 @@ ProjectData(){/// проекты - арендодатели
 
 LoadData(){
   var vm = this;
-  
-  return $http.post(appRoutes.urlFor('аренда/договоры/список'), {})
+  vm._loader = new $Список(appRoutes.urlFor('аренда/договоры/список'));
+  //~ return $http.post(appRoutes.urlFor('аренда/договоры/список'), {})
+  return vm._loader.Load()
     .then(function(resp){
-      vm.data.push(...resp.data);
+      //~ vm.data.push(...resp.data);
+       vm.data = vm._loader.Data();
       return vm.data;
     });
 },
@@ -462,6 +464,13 @@ LabelProlongClick(){/// третье состояние радио продле�
 
 ModalComplete(){
   this.iframeFile=undefined;
+},
+
+//~ FindItem(id){
+  //~ return this.checkedItems.find((item)=>item ? item.id == id : false);
+//~ },
+Xor(a,b){
+  return (a || b) && !(a && b);
 },
 
 }; ///конец methods
