@@ -205,10 +205,11 @@ Print(){
   /// вернет урл для скачивания
   return $http.post(appRoutes.urlFor('аренда/расходы#docx', '-'/*обязательно что-нибудь*/), Object.assign({}, vm.param, vm.form)).then(function(resp){
     if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 border fw500  animated zoomInUp');
-    if (resp.data.docx) {
-      let url = appRoutes.urlFor('аренда/расходы#docx', resp.data.docx);
+    if (resp.data.file) {
+      //~ let url = appRoutes.urlFor('аренда/расходы#docx', resp.data.docx);
+      let url = appRoutes.urlFor('временный файл', resp.data.file+'?filename='+(resp.data.filename || ''));
       //~ console.log("Print", vm.form['pdf формат'], url);
-      if (vm.form['pdf формат']) return vm.iframeFile = {"src": url+'?inline=1', "content_type":'application/pdf' };
+      if (vm.form['pdf формат']) return vm.iframeFile = {"src": url+'&inline=1', "content_type":'application/pdf' };
       window.location.href = url;
     }
     if (resp.data.data) console.log("счет", resp.data.data);///отладка

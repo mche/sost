@@ -468,7 +468,7 @@
               <!--h3>{{ formEmail['тема'] }}</h3>
               <div class="card pre-wrap padd-0-05 fs8 grey lighten-3">{{ formEmail['сообщение'] }}</div-->
             </td>
-            <td v-if="!formEmail['тема'] && !formEmail['сообщение']" style="width:1%;"><a v-if="!!item.file" @click="iframeFile = {src: appRoutes.urlFor('аренда/счет#docx', item.file) + '?inline=1&cleanup=0', content_type:'application/pdf' }" href="javascript:" class="btn-flat padd-05"><svg  xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 56 56" style="height: 2.7rem;"><use xlink:href="/fonts/icons.svg#pdf-file"></use></svg></a></td>
+            <td v-if="!formEmail['тема'] && !formEmail['сообщение']" style="width:1%;"><a v-if="!!item.file" @click="iframeFile = {src: appRoutes.urlFor('временный файл', item.file)+'?filename='+radioAccAct+ '&inline=1&cleanup=0', content_type:'application/pdf' }" href="javascript:" class="btn-flat padd-05"><svg  xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 56 56" style="height: 2.7rem;"><use xlink:href="/fonts/icons.svg#pdf-file"></use></svg></a></td>
             <td v-else></td>
             <td>
               <!-- статус отправки -->
@@ -490,7 +490,7 @@
         </div>
       </div-->
       <div>
-        <h4>Еще файлы</h4>
+        <h4 class="center">Еще файлы каждому арендатору</h4>
         <div class="input-field">
           <!--input type="text" v-model="formEmail['файл']" -->
           <v-uploads :parent="formEmail" ></v-uploads>

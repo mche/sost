@@ -447,16 +447,16 @@ sub удалить_расход {
 sub счет_оплата_docx {# сделать docx во врем папке и вернуть урл
   my $c = shift;
   
-  my $docx = $c->stash('docx'); # имя файла
+  #~ my $docx = $c->stash('docx'); # имя файла
   #~ $c->app->log->error($docx);
-  return $c->render_file(
-    'filepath' => "static/tmp/$docx",
-    'format'   => ($c->param('format') || $docx =~ /pdf/) ? 'pdf' : 'docx',
-    #~ 'format'   => 'pdf',                 # will change Content-Type "application/x-download" to "application/pdf"
-    #~ 'content_disposition' => 'inline',   # will change Content-Disposition from "attachment" to "inline"
-    $c->param('inline') ? ('content_disposition' => 'inline') : (),
-    defined $c->param('cleanup') ? ('cleanup'  => $c->param('cleanup')) : ( 'cleanup'  => 1),# delete file after completed
-  )  if $c->req->method eq 'GET';#$docx;
+  #~ return $c->render_file(
+    #~ 'filepath' => "static/tmp/$docx",
+    #~ 'format'   => ($c->param('format') || $docx =~ /pdf/) ? 'pdf' : 'docx',
+    #~ ##~ 'format'   => 'pdf',                 # will change Content-Type "application/x-download" to "application/pdf"
+    #~ ##~ 'content_disposition' => 'inline',   # will change Content-Disposition from "attachment" to "inline"
+    #~ $c->param('inline') ? ('content_disposition' => 'inline') : (),
+    #~ defined $c->param('cleanup') ? ('cleanup'  => $c->param('cleanup')) : ( 'cleanup'  => 1),# delete file after completed
+  #~ )  if $c->req->method eq 'GET';#$docx;
   
   my $param =  $c->req->json || {};
   return $c->render(json=>{error=>'не указан месяц'})
@@ -482,8 +482,10 @@ sub счет_оплата_docx {# сделать docx во врем папке �
   
   #~ return $c->render(json=>{data=>$data});
   #~ my $tmp = Mojo::File::tempfile->basename;
-  my $file = sprintf("%s-%s.%s", $param->{'счет или акт'}, $c->auth_user->{id}, $param->{'pdf формат'} ? 'pdf' : 'docx');#
-  my $out_file = "static/tmp/$file";
+  #~ my $file = sprintf("%s-%s.%s", $param->{'счет или акт'}, $c->auth_user->{id}, $param->{'pdf формат'} ? 'pdf' : 'docx');#
+  #~ my $out_file = "static/tmp/$file";
+  my $out_file = Mojo::File::tempfile(DIR=>'static/tmp');
+  $$out_file .= $param->{'pdf формат'} ? '.pdf' : '.docx';
   #~ my $err_file = "$data->{docx_out_file}.error";
   my $err_file = "$out_file.error";
   my $pdf_conv_pipe = $param->{'pdf формат'} ? sprintf(" | doc2pdf -M Title='%s' -M Author='%s' -M Subject='%s' -n --stdin --stdout ", $param->{'счет или акт'}, '', '') : '';
@@ -509,22 +511,23 @@ sub счет_оплата_docx {# сделать docx во врем папке �
   unlink $err_file;
   
   #~ $c->render(json=>{data=>$data});
-  $c->render(json=>{docx=>$file});# $c->render(json=>{docx=>$data->{docx}})
+  $c->render(json=>{file=>$out_file->basename, filename => $param->{'счет или акт'}.($param->{'pdf формат'} ? '.pdf' : '.docx'),});# $c->render(json=>{docx=>$data->{docx}})
 }
 
 sub счет_расходы_docx {# сделать docx во врем папке и вернуть урл
   my $c = shift;
   
-  my $docx = $c->stash('docx'); # имя файла
+  #~ my $docx = $c->stash('docx'); # имя файла
   #~ $c->app->log->error($docx);
-  return $c->render_file(
-    'filepath' => "static/tmp/$docx",
-    'format'   => ($c->param('format') || $docx) =~ /pdf/ ? 'pdf' : 'docx',
-    $c->param('inline') ? ('content_disposition' => 'inline') : (),
-    #~ 'format'   => 'pdf',                 # will change Content-Type "application/x-download" to "application/pdf"
-    #~ 'content_disposition' => 'inline',   # will change Content-Disposition from "attachment" to "inline"
-    'cleanup'  => 1,                     # delete file after completed
-  )  if $c->req->method eq 'GET';#$docx;
+  #~ return $c->render_file(
+    #~ 'filepath' => "static/tmp/$docx",
+    #~ ##~ 'filename' => 'report.pdf',
+    #~ 'format'   => ($c->param('format') || $docx) =~ /pdf/ ? 'pdf' : 'docx',
+    #~ $c->param('inline') ? ('content_disposition' => 'inline') : (),
+    #~ ##~ 'format'   => 'pdf',                 # will change Content-Type "application/x-download" to "application/pdf"
+    #~ ##~ 'content_disposition' => 'inline',   # will change Content-Disposition from "attachment" to "inline"
+    #~ 'cleanup'  => 1,                     # delete file after completed
+  #~ )  if $c->req->method eq 'GET';#$docx;
   
   my $param =  $c->req->json || {};
   return $c->render(json=>{error=>'не указан месяц'})
@@ -570,8 +573,10 @@ sub счет_расходы_docx {# сделать docx во врем папке
   #~ $c->render(json=>{url=>$data->{docx_out_file}});
   $c->render(json=>{docx=>$docx});
 =cut
-  my $file = sprintf("%s-%s.%s", $param->{'счет или акт'}, $c->auth_user->{id}, $param->{'pdf формат'} ? 'pdf' : 'docx');#
-  my $out_file = "static/tmp/$file";
+  #~ my $file = sprintf("%s-%s.%s", $param->{'счет или акт'}, $c->auth_user->{id}, $param->{'pdf формат'} ? 'pdf' : 'docx');#
+  #~ my $out_file = "static/tmp/$file";
+  my $out_file = Mojo::File::tempfile(DIR=>'static/tmp');
+  $$out_file .= $param->{'pdf формат'} ? '.pdf' : '.docx';
   #~ my $err_file = "$data->{docx_out_file}.error";
   my $err_file = "$out_file.error";
   my $pdf_conv_pipe = $param->{'pdf формат'} ? sprintf(" | doc2pdf -M Title='%s' -M Author='%s' -M Subject='%s' -n --stdin --stdout ", $param->{'счет или акт'}, '', '') : '';
@@ -597,7 +602,7 @@ sub счет_расходы_docx {# сделать docx во врем папке
   unlink $err_file;
   
   #~ $c->render(json=>{data=>$data});
-  $c->render(json=>{docx=>$file});# $c->render(json=>{docx=>$data->{docx}})
+  $c->render(json=>{file=>$out_file->basename, filename => $param->{'счет или акт'}.($param->{'pdf формат'} ? '.pdf' : '.docx'),});# $c->render(json=>{docx=>$data->{docx}})
 
 }
 
@@ -726,10 +731,14 @@ sub на_емайл {# счета и акты, создать pdf файлы д�
   
   for my $r (@$data) {# по одному договору
     
+    eval { Mojo::File->new("static/tmp/$r->{file}")->remove }
+      if $r->{file};
     #~ my $data = $c->app->json->decode($r->{jsonb_agg});
 
-    my $file = sprintf("%s-%s-%s-%s.%s", $param->{'счет или акт'}, $c->auth_user->{id}, $r->{'договор/id'}, $param->{'месяц'}, $param->{'pdf формат'} ? 'pdf' : 'docx');#
-    my $out_file = "static/tmp/$file";
+    #~ my $file = sprintf("%s-%s-%s-%s.%s", $param->{'счет или акт'}, $c->auth_user->{id}, $r->{'договор/id'}, $param->{'месяц'}, $param->{'pdf формат'} ? 'pdf' : 'docx');#
+    #~ my $out_file = "static/tmp/$file";
+    my $out_file = Mojo::File::tempfile(DIR=>'static/tmp');
+    $$out_file .= $param->{'pdf формат'} ? '.pdf' : '.docx';
     #~ my $err_file = "$data->{docx_out_file}.error";
     my $err_file = "$out_file.error";
     my $pdf_conv_pipe = $param->{'pdf формат'} ? sprintf(" | doc2pdf -M Title='%s' -M Author='%s' -M Subject='%s' -n --stdin --stdout 2>'$err_file' ", $param->{'счет или акт'}, '', '') : '';
@@ -754,13 +763,15 @@ sub на_емайл {# счета и акты, создать pdf файлы д�
     
     unlink $err_file;
     #~ @$r{keys %$data} = values %$data;
-    $r->{file} = $file;
+    $r->{file} = $out_file->basename;
     $r->{'статус отправки письма'} = $c->отправить_письмо($param, $r)
-      and unlink $out_file
-      and delete $r->{file}
+      and $out_file->remove
+      #~ and Mojo::File->new("static/tmp/$r->{file}")->remove
       if $param->{'отправить'};
     
   }
+  $c->model_uploader->_удалить_файлы([$_->{id}], $c->auth_user->{id})
+    for @{ $param->{'письмо'}{_uploads} || [] };
   #~ $c->log->error($c->dumper($data));
   $c->render(json=>{data=>$data, });#from=>$c->app->config->{'Email'}
 }
@@ -771,6 +782,7 @@ sub отправить_письмо {
   #~ $c->log->error($c->dumper($docs->[0]{'$арендодатель/json'}));
   #~ $c->log->error(Mojo::Asset::File->new(path => "static/tmp/$data->{file}")->slurp);
   my $mailer = $c->email;# has
+  my $file = Mojo::File->new("static/tmp/$data->{file}");
   my $message = Email::MIME->create(
     header_str => [
       From    => $mailer->smtp_user,
@@ -789,7 +801,7 @@ sub отправить_письмо {
             body_str => $c->render_to_string('аренда/письмо арендатору', format => 'html', docs=>$docs, param=>$param), #$c->model->dict->{'письмо аренда помещений'}->render(data=>$docs, param=>$param), #"<h1>Тест 2!</h1>\n",
           ),
           Email::MIME->create(
-            body=> Mojo::Asset::File->new(path => "static/tmp/$data->{file}")->slurp,
+            body=> $file->slurp,
             attributes => {
                 filename => "$param->{'счет или акт'}.pdf",
                 content_type => 'application/pdf',
@@ -799,17 +811,21 @@ sub отправить_письмо {
             },
          ),
         $param->{'письмо'} && $param->{'письмо'}{_uploads} 
-          ? map {
-            Email::MIME->create(
-            body=> Mojo::Asset::File->new(path => sprintf("static/u/%s/%s", $_->{parent_id} || 0, $_->{id}) )->slurp,
-            attributes => {
+          ? grep defined, map {
+            my $file = Mojo::File->new(sprintf("static/u/%s/%s", $_->{parent_id} || 0, $_->{id}) );
+            $file->stat && Email::MIME->create(
+            body=> $file->slurp,
+              attributes => {
                 filename => $_->{names}[0],
                 content_type => $_->{content_type},
                 charset=>'UTF-8',
                 encoding => 'Base64',
                 #~ encoding     => "quoted-printable",
-            },
-         )} @{$param->{'письмо'}{_uploads} || []}
+              },
+            );
+            #~ $c->model_uploader->_удалить_файлы([$_->{id}], $c->auth_user->{id});
+            #~ $part;
+         } @{$param->{'письмо'}{_uploads} || []}
         : (),
     ]
   );
@@ -818,6 +834,7 @@ sub отправить_письмо {
     and $c->log->error($sent)
     unless $sent;
   #~ $c->log->error($c->dumper($sent));
+  #~ $file->remove;
   return $sent;
 }
 
@@ -863,7 +880,10 @@ sub произвольное_письмо {
         : (),
       ]
     );
-    $r->{'статус отправки письма'}  = $mailer->send_message($message)->{message};
+    $r->{'статус отправки письма'}  = eval { $mailer->send_message($message)->{message} };
+    $r->{'статус отправки письма'} = ($@ =~ /^(.+?)\n/)[0]
+      #~ and $c->log->error($sent)
+      unless $r->{'статус отправки письма'};
   }
   # удалить файл
   $c->model_uploader->_удалить_файлы([$param->{'письмо'}{_uploads}[0]{id}], $c->auth_user->{id});

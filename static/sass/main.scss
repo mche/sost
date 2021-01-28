@@ -321,6 +321,9 @@ sup.chip {
   transition: box-shadow .25s;
   box-shadow: inset 0px 0px 1rem rgba(0,0,0,0.5);
 }
+.box-shadow-left-5px {
+  box-shadow: 5px 0px 5px -5px rgba(0, 0, 0, 0.15) inset;
+}
 
 
 .bold {

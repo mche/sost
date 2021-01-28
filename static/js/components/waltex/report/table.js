@@ -213,6 +213,28 @@ var Component = function  ($scope, $timeout, $http, $q, $element, appRoutes, Uti
     */
   };
   
+  $c.ToXLS = function(){
+    //~ 
+    return $http.post(appRoutes.urlFor($c.param.urlFor['данные отчета ДС'] || 'данные отчета ДС'), {"data":$c.data, "param":$c.param,}/*, {"timeout": $c.cancelerHttp.promise}*/)
+      .then(function(resp){
+        //~ $c.cancelerHttp.resolve();
+        //~ delete $c.cancelerHttp;
+        
+        if(resp.data.error) {
+          $c.error = resp.data.error;
+          return;
+        }
+        if (resp.data.file) {
+          let url = appRoutes.urlFor('временный файл', resp.data.file+'?filename='+(resp.data.filename || ''));
+          //~ if (resp.data.filename)  url = ur;
+          //~ if (vm.payPDF) return vm.iframeFile = {"src": url+'?inline=1', "content_type":'application/pdf' };
+          window.location.href = url;/// а это get-запрос
+        }
+        //~ console.log("ToXLS", resp.data);
+        
+      });
+  };
+  
   
 };
 

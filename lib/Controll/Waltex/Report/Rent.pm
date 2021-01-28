@@ -12,7 +12,7 @@ sub index {#пока нет
   my $c = shift;
   return $c->render('waltex/report/аренда.html.ep',
     handler=>'ep',
-    'header-title' => 'Отчпет по аренде',
+    'header-title' => 'Отчет по аренде',
     assets=>["деньги/отчет/аренда.js",],
     );
   
@@ -21,6 +21,9 @@ sub index {#пока нет
 sub data {
   my $c = shift;
   my $param = $c->req->json;
+  #~ return $c->to_xls($param)
+    #~ if $param->{'data'} || $param->{'строки'} || $param->{'колонки'};
+  
   delete $param->{'все контрагенты'};
   $param->{'контрагенты'} = $c->model_report_rent->контрагенты();
   $param->{'аренда'}  = 1;

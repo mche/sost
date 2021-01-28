@@ -166,15 +166,15 @@ Remove(file){
     function(resp){
       vm.cancelerHttp = undefined;
       if (resp.data.error) return Materialize.toast(resp.data.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
-      resp.data.map(function(r){
-        if (r.error) return Materialize.toast(r.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
-        else {
+      //~ resp.data.map(function(r){
+        //~ if (r.error) return Materialize.toast(r.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
+        //~ else {
           Materialize.toast('Удалено успешно', 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
           vm.uploads.removeOf(file);///props
           vm.TopFolders();
           if (file.names.length > 1) vm.topFolder = vm.FindTopFolder(file.names[0]);
-        }
-      });
+        //~ }
+      //~ });
       //~ vm.$emit('on-', resp.data.success);
     },
     function(resp){

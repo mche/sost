@@ -36,6 +36,8 @@ sub data {
   my $c = shift;
   $c->inactivity_timeout(10*60);
   my $param =  $c->req->json;
+  return $c->to_xls($param)
+    if $param->{'data'} || $param->{'строки'} || $param->{'колонки'};
   return $c->все_кошельки
     if $param->{'все кошельки'};
   return $c->все_кассы
@@ -629,6 +631,37 @@ sub все_пустое_движение {# как интервалы по ст�
   
   $c->render(json=>$data);
   
+}
+
+sub to_xls {# выгрузка строк таблицы отчета в ексцель
+  my ($c, $data) = @_;
+  $c->log->error($c->dumper($data));
+  #~ return $c->render(json=>$data);
+  
+  require Excel::Writer::XLSX;
+  my $tmp = Mojo::File::tempfile(DIR=>'static/tmp');
+  $$tmp .= '.xlsx';
+  #~ open my $xfh, '>', \my $fdata or die "Failed to open filehandle: $!";
+  open my $xfh, '>', $tmp->to_string
+    or die "Failed to open filehandle: $!";
+  my $workbook  = Excel::Writer::XLSX->new( $xfh );
+  my $worksheet = $workbook->add_worksheet();
+  
+  my ($row, $col) = (0,0);
+  $worksheet->write($row, 0, 'Проект');
+  $worksheet->write($row++, 1, $data->{param}{'проект'}{name} || 'все');
+   #~ if $data->{param}{'проект'} && $data->{param}{'проект'}{name};
+  
+  $worksheet->write($row++, 0, 'Период');
+  $worksheet->write($row, 0, 'От', $workbook->add_format( align=>'right'));
+  $worksheet->write($row++, 1, $data->{param}{'дата'}{'формат'}[0]);
+  $worksheet->write($row, 0, 'До', $workbook->add_format( align=>'right'));
+  $worksheet->write($row++, 1, $data->{param}{'дата'}{'формат'}[1]);
+  
+  
+  $workbook->close();
+  #~ $c->render_file('data' => $fdata, format=>'xlsx');
+  return $c->render(json=>{file=>$tmp->basename, filename => 'отчет.xlsx', format=>'xlsx', });
 }
 
 1;

@@ -245,9 +245,10 @@ PrintPay(month, month2){/// счета и акты
     vm.httpProcess  = false;
     modal.modal('close');
     if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 border fw500  animated zoomInUp');
-    if (resp.data.docx) {
-      let url = appRoutes.urlFor('аренда/счет#docx', resp.data.docx);
-      if (vm.payPDF) return vm.iframeFile = {"src": url+'?inline=1', "content_type":'application/pdf' };
+    if (resp.data.file) {
+      //~ let url = appRoutes.urlFor('аренда/счет#docx', resp.data.docx);
+      let url = appRoutes.urlFor('временный файл', resp.data.file+'?filename='+(resp.data.filename || ''));
+      if (vm.payPDF) return vm.iframeFile = {"src": url+'&inline=1', "content_type":'application/pdf' };
       window.location.href = url;/// а это get-запрос
     }
     if (resp.data.data) console.log("счет", resp.data.data);///отладка
@@ -320,7 +321,7 @@ SendMail(month, month2, send){/// без send выйдет просмотр та
     if (resp.data.data) {
       vm.dataEmail = resp.data.data;
       $('#modal-email', $(vm.$el)).modal('open');
-      vm.formEmail['отправлено'] = send;
+      vm.formEmail = {"отправлено": send};
     }
     //~ if (resp.data.data) console.log("счет", resp.data.data);///отладка
     //~ window.location.href = appRoutes.urlFor('тмц/накладная.docx', $c.data.id);

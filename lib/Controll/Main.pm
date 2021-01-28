@@ -17,6 +17,25 @@ sub index {
     #~ if $c->is_user_authenticated;
 }
 
+sub static_tmp {
+  my $c = shift;
+  my $file = $c->stash('file'); # имя файла
+  my $filename = $c->param('filename');
+  my $format = $c->param('format') || ($file =~ /\.(\w+?)$/)[0];
+  my $inline = $c->param('inline');
+  my $cleanup = $c->param('cleanup') // 1;
+  
+  return $c->render_file(
+    'filepath' => "static/tmp/$file",
+    $filename ? ('filename' => $filename) : (),
+    $format ? ('format'   => $format) : (),
+    $inline ? ('content_disposition' => 'inline') : (),
+    #~ 'format'   => 'pdf',                 # will change Content-Type "application/x-download" to "application/pdf"
+    #~ 'content_disposition' => 'inline',   # will change Content-Disposition from "attachment" to "inline"
+    'cleanup'  => $cleanup,                     # delete file after completed
+  )
+}
+
 sub php {# умри
   my $c = shift;
   #~ open(my $fh, "-|", "dd if=/dev/urandom count=1 bs=10 |")#sprintf("dd if=/dev/urandom count=1 bs=%i |", (rand =~ /(\d{4})/)[0]))
@@ -137,6 +156,12 @@ sub _wav_info {
   #~ $details->{metadata}=$info->get_info;
 
   return $details;
+}
+
+sub hash_inc {
+  my $c = shift;
+  $c->render(json=>\%INC);
+  
 }
 
 1;

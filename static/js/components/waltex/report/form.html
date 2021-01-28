@@ -118,8 +118,8 @@
   
   </div><!-- row -->
   <!--div class="divider"></div-->
-  <div class="row center">
-    <a ng-click="$c.Refresh()" href="javascript:" class="btn btn-large teal-text000">Получить отчет</a>
+  <div ng-show="$c.ready" class="row center">
+    <a ng-click="$c.Refresh()" href="javascript:" class="btn-large">Получить отчет</a>
   </div>
   <!--div>{{$c.param | json}}</div-->
 
