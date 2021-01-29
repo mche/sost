@@ -60,7 +60,7 @@
           <span>Объект</span>
         </h4>
         <object-address ng-if=" $c.param['объект'] && $c.param['объект']['проект'] && $c.param['объект']['проект'].ready && !$c.param['все объекты'] " ng-init=" param = {'фильтр объектов0000': $c.FilterObj,'только объекты': true, 'без проекта': true, placeholder:'объект', 'inputClass4Object': 'maroon-text', autocompleteClass4Object: 'maroon-text', 'не изменять': false } " data-data=" $c.param['объект'] " data-param=" param " data-on-select="$c.SelectItems('объект')" data-on-focus="" ></object-address>
-        <div class="input-field">
+        <div class="input-field chip">
           <input type="checkbox" id="all-obj" ng-model="$c.param['все объекты']" ng-change="$c.ChangeAllCheckbox('все объекты')">
           <label for="all-obj" class="before-yellow-lighten-4 maroon-text hover-shadow3d"><h4 class="maroon-text">Все объекты</h4></label>
         </div>
@@ -72,7 +72,7 @@
           <span>Сотрудник</span>
         </h4>
         <profile-item ng-if="!$c.param['все профили']" ng-init=" param = {autocompleteClass:'blue-text text-darken-2', inputClass:'blue-text text-darken-2'} " data-param=" param " data-item="$c.param['профиль']" data-on-select="$c.SelectItems('профиль')"></profile-item>
-        <div class="input-field">
+        <div class="input-field chip">
           <input type="checkbox" id="all-profiles" ng-model="$c.param['все профили']" ng-change="$c.ChangeAllCheckbox('все профили')" >
           <label for="all-profiles" class="before-yellow-lighten-4 blue-text text-darken-2 hover-shadow3d"><h4 class="blue-text text-darken-2">Все сотрудники</h4></label>
         </div>
@@ -88,7 +88,7 @@
           <span>Кошелек перемещения</span>
         </h4>
         <wallet-item ng-if="$c.param['кошелек2'] && !$c.param['все кошельки2']" data-data="$c.param['кошелек2']" data-on-select="$c.SelectItems('кошелек2')"></wallet-item>
-        <div class="input-field">
+        <div class="input-field chip">
           <input type="checkbox" id="all-wallets2" ng-model="$c.param['все кошельки2']"  ng-change="$c.ChangeAllCheckbox('все кошельки2')" >
           <label for="all-wallets2" class="before-yellow-lighten-4 red-text text-darken-4 hover-shadow3d" ><h4 class="red-text text-darken-4">Все кошельки</h4></label>
         </div>
@@ -100,7 +100,7 @@
           <span>Контрагент</span>
         </h4>
         <contragent-item ng-if="!$c.param['все контрагенты']" data-item="$c.param['контрагент']" data-on-select="$c.SelectItems('контрагент')"></contragent-item>
-        <div class="input-field">
+        <div class="input-field chip white">
           <input type="checkbox" id="all-contragents" ng-model="$c.param['все контрагенты']" ng-change="$c.ChangeAllCheckbox('все контрагенты')">
           <label for="all-contragents" class="before-yellow-lighten-4 green-text text-darken-4 hover-shadow3d"><h4 class="green-text text-darken-4">Все контрагенты</h4></label>
         </div>

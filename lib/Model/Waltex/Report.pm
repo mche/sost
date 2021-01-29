@@ -187,7 +187,12 @@ sub движение_все_профили {
 
 sub движение_итого_интервалы {
   my $self = shift;
-  $self->dbh->selectall_arrayref($self->sth('движение итого/интервалы', temp_view_name=>$self->temp_view_name), {Slice=>{}}, );# $param->{'проект'}, @{$param->{'даты'}},
+  $self->dbh->selectall_arrayref($self->sth('движение итого/интервалы', temp_view_name=>$self->temp_view_name), {Slice=>{}}, );
+}
+
+sub движение_итого_интервалы_хэш {
+  my $self = shift;
+  $self->dbh->selectall_hashref($self->sth('движение итого/интервалы', temp_view_name=>$self->temp_view_name), 'id', );
 }
 
 sub всего {

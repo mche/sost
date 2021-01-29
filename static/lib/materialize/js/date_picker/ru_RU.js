@@ -27,7 +27,7 @@ jQuery.extend( jQuery.fn.pickadate.defaults, {
     //~ min: new Date(),
     hiddenName: true,
     //~ klass: {opened: prefix + '--opened 123'},
-     klass: Object.assign(jQuery.fn.pickadate.defaults.klass, {frame: 'picker__frame animated fadeIn fast'}),
+     klass: Object.assign(jQuery.fn.pickadate.defaults.klass, {frame: 'picker__frame animated fadeIn fast', year_display:'picker__year-display hover-shadow3d'}),
 });
 
 jQuery.extend( jQuery.fn.pickatime.defaults, {

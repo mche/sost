@@ -1319,7 +1319,7 @@ return _.node(
             )+
             _.node(
                 // Div for Day
-                'div',  _.node('div', settings.monthOnly ? 'месяц' : _.node('a', createDayLabel(), 'white-text', 'href="javascript:" '+'data-pick=' + highlightedObject.pick) , settings.monthOnly ? settings.klass.weekday_display : settings.klass.day_display )
+                'div',  _.node('div', settings.monthOnly ? 'месяц' : _.node('a', createDayLabel(), 'white-text hover-shadow3d', 'href="javascript:" '+'data-pick=' + highlightedObject.pick) , settings.monthOnly ? settings.klass.weekday_display : settings.klass.day_display )
                 //~ +  _.node('div', createMonthNav() + createMonthNav( 1 ), settings.klass.header)
             )+
             _.node(
