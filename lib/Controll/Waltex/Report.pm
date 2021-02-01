@@ -104,6 +104,7 @@ sub _по_столбцам {
       push @{$data->{'строки'}}, $r;
     }
     $data->{'строки'}[-1]{'колонки'}{$_->{"интервал"}} = $_->{sum};
+    $data->{'строки'}[-1]{'колонки'}{$_->{"код интервала"}} = $_->{sum};
     
   } @{$c->model->движение_интервалы_столбцы()};
   
@@ -206,6 +207,7 @@ sub _строка_по_столбцам {
       and $_->{'всего'} = $total->{$_->{"категория"}}{sum}
       unless @data && $data[-1]{title} eq  $_->{title};
     $data[-1]{'колонки'}{$_->{"интервал"}} = $_->{sum};
+    $data[-1]{'колонки'}{$_->{"код интервала"}} = $_->{sum};
   } @{$c->model->строка_отчета_интервалы_столбцы($param)};
   
   return \@data;
@@ -652,6 +654,10 @@ sub to_xls {# выгрузка строк таблицы отчета в екс�
   my $worksheet = $workbook->add_worksheet();
   
   my ($row, $col) = (0,0);
+  $worksheet->set_column( 0, 0, 50 );
+  $worksheet->set_column( 1, 4+(scalar @{ $data->{data}{'колонки'} }), 20 );
+  
+  
   $worksheet->write($row, 0, 'Проект');
   $worksheet->write($row++, 1, $data->{param}{'проект'}{name} || 'все');
    #~ if $data->{param}{'проект'} && $data->{param}{'проект'}{name};
@@ -662,10 +668,71 @@ sub to_xls {# выгрузка строк таблицы отчета в екс�
   $worksheet->write($row, 0, 'До', $workbook->add_format( align=>'right'));
   $worksheet->write($row++, 1, $data->{param}{'дата'}{'формат'}[1]);
   
+  my $num_format = '# ##0.00 [$₽-419];[RED]-# ##0.00 [$₽-419]'; #$workbook->add_format( num_format=> '# ##0.00 [$₽-419];[RED]-# ##0.00 [$₽-419]');
+  my %колонки = ();
+  $worksheet->set_row($row, 30);
+  $worksheet->write($row++, 0, [
+    'Интервалы / Категории',
+    "Сальдо на\n$data->{param}{'дата'}{'формат'}[0]",
+    (map {$колонки{$_->{id}} = $_; $c->_title_format($_->{title});} @{ $data->{data}{'колонки'} }),
+    "Всего",
+    "Сальдо на\n$data->{param}{'дата'}{'формат'}[1]",
+  ], $workbook->add_format(bottom=>1, align=>'center', bold=>1, bg_color=>'#B2DFDB',));
+  #$data->{data}{'сальдо'}{'начало'}
+  
+  my $parent_title = '';
+  for my $r (@{$data->{data}{'строки'}}) {
+    next
+      unless !defined($r->{show}) || !!$r->{show} ;
+    #~ $parent_title = ''
+      #~ unless $_->{level};
+    my $title = $r->{level} ? "$parent_title/".$r->{title} : $r->{title};
+    $worksheet->write($row++, 0, [
+      $c->_title_format($title),
+      undef,
+      (map {$c->_money($r->{'колонки'}{$_}) } sort keys %колонки),#
+      $c->_money($r->{'всего'}),
+    ],
+    $workbook->add_format(num_format=> $num_format, right=>4, bottom=>4, $r->{level} ? (align=>'right') :() , text_wrap=>1,)
+    );
+    $worksheet->set_row($row, 30)
+      if length($title) > 25;
+    $parent_title = $title;
+    
+  }
+  
+  $worksheet->set_row($row, 20);
+  $worksheet->write($row++, 0, [
+      'ИТОГО',
+      $c->_money($data->{data}{'сальдо'}{'начало'}),
+      (map {$c->_money($data->{data}{'итого'}{'колонки'}{$_}{sum}) } sort keys %колонки),#
+      $c->_money($data->{data}{'итого'}{'всего'}),
+      $c->_money($data->{data}{'сальдо'}{'конец'}),
+    ],
+    $workbook->add_format(num_format=> $num_format, right=>4, top=>1, align=>'right', size=>14, bold=>1,)
+  );
   
   $workbook->close();
   #~ $c->render_file('data' => $fdata, format=>'xlsx');
   return $c->render(json=>{file=>$tmp->basename, filename => 'отчет.xlsx', format=>'xlsx', });
+}
+
+sub _title_format {
+  my ($c, $title) = @_;
+  $title =~ s/ря(\s+\d+)$/"рь$1"/ier
+    =~ s/ля(\s+\d+)$/"ль$1"/ier
+    =~ s/марта(\s+\d+)$/"март$1"/ier
+    =~ s/мая(\s+\d+)$/"май$1"/ier
+    =~ s/марта(\s+\d+)$/"март$1"/ier
+    =~ s/июня(\s+\d+)$/"июнь$1"/ier
+    =~ s/августа(\s+\d+)$/"август$1"/ier
+}
+
+sub _money {
+  my ($c, $num) = @_;
+  $num =~ s/(\d+)\s+(\d+)/"$1$2"/egr
+    =~ s/\s+|₽//gr
+    =~ s/,/./r
 }
 
 1;
