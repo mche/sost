@@ -43,7 +43,7 @@ var Component = function  ($scope, $timeout, $http, $q, $element, appRoutes, Uti
   
   $c.RowsFilter = function(tr){
     //~ console.log("RowsFilter"/*!tr['колонки'].hasOwnProperty('-1')*/);
-    if (!$c.chbNonEmptyRows) return true;
+    if (!$c.param['непустое движение'] ) return true;
     return $c.IsVertTable() &&  tr['колонки'] && !!(tr['колонки'][1] ||  tr['колонки'][-1]);
   };
   

@@ -659,21 +659,30 @@ sub to_xls {# выгрузка строк таблицы отчета в екс�
   
   
   $worksheet->set_row($row, 20);
-  $worksheet->write($row, 0, 'Проект');
-  $worksheet->write($row++, 1, ($data->{param}{'проект'} && $data->{param}{'проект'}{name}) || 'все', $workbook->add_format(bold=>1, color=>'purple', size=>14,));
+  $worksheet->write($row, 0, 'Проект', $workbook->add_format( size=>'14',  align=>'right',));
+  $worksheet->write($row++, 1, ($data->{param}{'проект'} && $data->{param}{'проект'}{name}) || 'все', $workbook->add_format(bold=>1, color=>'purple', bg_color=>'#BA68C8', size=>14,));
    #~ if $data->{param}{'проект'} && $data->{param}{'проект'}{name};
+  $worksheet->set_row($row, 20);
+   $worksheet->write($row, 0, 'Объект', $workbook->add_format( size=>'14', align=>'right',));
+   $worksheet->write($row++, 1, ($data->{param}{'объект'} && $data->{param}{'объект'}{title}) || 'все', $workbook->add_format(bold=>1, color=>'#800000', bg_color=>'#EAD5D5', size=>14,));
   
+   if ($data->{param}{'все контрагенты'} || $data->{param}{'контрагент'} && $data->{param}{'контрагент'}{title}) {
+     $worksheet->set_row($row, 20);
+     $worksheet->write($row, 0, 'Контрагент', $workbook->add_format( size=>'14', align=>'right',));
+     $worksheet->write($row++, 1, ($data->{param}{'контрагент'} && $data->{param}{'контрагент'}{title}) || 'все', $workbook->add_format(bold=>1, color=>'#008000', bg_color=>'#E8F5E9', size=>14,));
+    }
   
-  $worksheet->write($row++, 0, 'Период');
-  $worksheet->write($row, 0, 'От', $workbook->add_format( align=>'right'));
+  $worksheet->write($row++, 0, 'Период', $workbook->add_format( size=>'14', align=>'right',));
+  $worksheet->write($row, 0, 'От', $workbook->add_format( align=>'right', size=>'13'));
   $worksheet->write($row++, 1, $data->{param}{'дата'}{'формат'}[0], $workbook->add_format(bold=>1, bg_color=>'#CCFFCC'));
-  $worksheet->write($row, 0, 'До', $workbook->add_format( align=>'right'));
+  $worksheet->write($row, 0, 'До', $workbook->add_format( align=>'right', size=>'13'));
   $worksheet->write($row++, 1, $data->{param}{'дата'}{'формат'}[1], $workbook->add_format(bold=>1, bg_color=>'#CCFFCC'));
   
   my $num_format = '# ##0.00 [$₽-419];[RED]-# ##0.00 [$₽-419]'; #$workbook->add_format( num_format=> '# ##0.00 [$₽-419];[RED]-# ##0.00 [$₽-419]');
   my %колонки = ();
   $row++;
   $worksheet->set_row($row, 30);
+  #~ my $data_row = $row;# для автофильтра
   $worksheet->write($row++, 0, [
     'Интервалы / Категории',
     "Сальдо на\n$data->{param}{'дата'}{'формат'}[0]",
@@ -683,7 +692,7 @@ sub to_xls {# выгрузка строк таблицы отчета в екс�
   ], $workbook->add_format(top=>1, bottom=>1, align=>'center', bold=>1, bg_color=>'#B2DFDB', size=>13,));
   #$data->{data}{'сальдо'}{'начало'}
   
-  my $parent_title = '';
+  my @parent_title = ();
   my $level = 0;
   my $ncol = scalar keys %колонки;
   for my $r (@{$data->{data}{'строки'}}) {
@@ -692,6 +701,8 @@ sub to_xls {# выгрузка строк таблицы отчета в екс�
     #~ $parent_title = ''
       #~ unless $_->{level};
     $r->{level} //= 0;
+    @parent_title = ()
+      unless $r->{level};
     
     if ($r->{id}){# финальная запись
       $row--;
@@ -715,31 +726,38 @@ sub to_xls {# выгрузка строк таблицы отчета в екс�
         #~ $workbook->add_format(bg_color=>'#DDDDDD'),
       #~ );
       #~ $worksheet->set_row($row, 50);
-      
+    
+    } elsif ($data->{param}{'непустое движение'} && !eval $c->_money($r->{'всего'})) {
+      $row--;
     } else {
-      my $title = !$r->{level} ? $r->{title} : $level eq $r->{level} ? $parent_title || $r->{title} :  $r->{title};#"$parent_title/".
-      $worksheet->write($row, 0, $c->_title_format(($r->{level} ? "       " x $r->{level} : '').$title), $workbook->add_format( text_wrap=>1,bottom=>4, !$r->{level} ? (top=>1, bold=>1, size=>12,) :(bg_color => $r->{sign} eq 1 ? '#A5D6A7' : '#FFCC80'),));
+      my $title = ref $r->{title} ? "$r->{title}[0][0]:$r->{title}[0][1]" : $r->{title};
+      push @parent_title, $title;
+      #~ $title = !$r->{level} ? $title : $level eq $r->{level} ? $parent_title || $title :  $title;#"$parent_title/".
+      $worksheet->write($row, 0,
+        $c->_title_format(($r->{level} ? "       " x $r->{level} : '').$title),
+        $workbook->add_format( text_wrap=>1,bottom=>4, !$r->{level} ? (top=>1, bold=>1, size=>12,) : (bg_color => ($parent_title[0] ne 'расход') && (defined $r->{'всего'} ? $r->{'всего'} !~ /^-/ : $r->{sign} eq 1) ? '#A5D6A7' : '#FFCC80',),)
+      );
       $worksheet->write($row, 1, [
         #~ $c->_title_format(($r->{level} ? "   " x $r->{level} : '').$title),
         $r->{'сальдо1'} && $c->_money($r->{'сальдо1'}),
         (map {
-          $r->{'колонки'}{$_} && $c->_money($r->{'колонки'}{$_})
+          $r->{'колонки'}{$_} && $c->_money(($_ eq '-1' || $parent_title[0] eq 'расход' ? '-' : '').$r->{'колонки'}{$_})
         } sort {($a<0 ? (-1*$a).'000' : $a) cmp ($b<0 ?  (-1*$b).'000' : $b)} keys %колонки),#
-        $r->{'всего'} && $c->_money($r->{'всего'}),
+        $r->{'всего'} && ($parent_title[0] eq 'расход' ? '-' : '').$c->_money($r->{'всего'}),
         $r->{'сальдо2'} && $c->_money($r->{'сальдо2'}),
       ],
-      $workbook->add_format(num_format=> $num_format, right=>4, bottom=>4, !$r->{level} ? (align=>'center', top=>1, size=>12,) :(bg_color=> $r->{sign} eq 1 ? '#A5D6A7' : '#FFCC80',),)# 
+      $workbook->add_format(num_format=> $num_format, right=>4, bottom=>4, !$r->{level} ? (align=>'center', top=>1, size=>12,) :(bg_color => ($parent_title[0] ne 'расход') &&  (defined $r->{'всего'} ? $r->{'всего'} !~ /^-/ : $r->{sign} eq 1) ? '#A5D6A7' : '#FFCC80',),)# 
       );
-      $worksheet->set_row($row, 30)
-        if length($title) > 35;
+      #~ $worksheet->set_row($row, 30) wrap!!!
+        #~ if length($title) > 35;
     }
     
-    #~ $parent_title = $title
-      #~ if $level ne $r->{level};
     $level = $r->{level} // 0;
     $row++;
   }
-  
+  #~ $worksheet->autofilter( $data_row, 0, $row, 10 )
+    #~ if $data->{param}{'место интервалов'} eq 'строки';
+
   $worksheet->set_row($row, 20);
   $worksheet->write($row++, 0, [
       'ИТОГО',
