@@ -678,7 +678,7 @@ sub to_xls {# выгрузка строк таблицы отчета в екс�
   $worksheet->write($row, 0, 'До', $workbook->add_format( align=>'right', size=>'13'));
   $worksheet->write($row++, 1, $data->{param}{'дата'}{'формат'}[1], $workbook->add_format(bold=>1, bg_color=>'#CCFFCC'));
   
-  my $num_format = '# ##0.00 [$₽-419];[RED]-# ##0.00 [$₽-419]'; #$workbook->add_format( num_format=> '# ##0.00 [$₽-419];[RED]-# ##0.00 [$₽-419]');
+  my $num_format = '[BROWN]# ##0.00 [$₽-419];[RED]-# ##0.00 [$₽-419]'; #$workbook->add_format( num_format=> '# ##0.00 [$₽-419];[RED]-# ##0.00 [$₽-419]');
   my %колонки = ();
   $row++;
   $worksheet->set_row($row, 30);
