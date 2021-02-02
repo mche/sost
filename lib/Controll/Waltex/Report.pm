@@ -98,7 +98,7 @@ sub _по_столбцам {
   my %cols = ();
   $data->{'строки'} = [];
   map {
-    $cols{$_->{'код интервала'}} ||= {title=>$_->{"интервал"}, id=>$_->{'код интервала'}};
+    $cols{$_->{'код интервала'}} ||= {title=>$_->{"интервал"}, id=>$_->{'код интервала'}, key=>$_->{'код интервала'},};
     unless ($data->{'строки'}[-1] && $data->{'строки'}[-1]{title} eq  $_->{title}) { # новая базовая строка
       my $r = {title=> $_->{title}, sign=>$_->{sign}, 'категория'=>3, 'всего'=>$data->{$_->{title}}{'всего'}, };
       push @{$data->{'строки'}}, $r;
@@ -112,7 +112,7 @@ sub _по_столбцам {
   
   map {
     $data->{'сальдо'}{'колонки'}{$_->{"интервал"}} = $_->{sum};
-    
+    $data->{'сальдо'}{'колонки'}{$_->{"код интервала"}} = $_->{sum};
   } @{$c->model->движение_итого_интервалы()};
   #~ $c->log->error($c->dumper($data));
   return $data;
@@ -641,7 +641,7 @@ sub все_пустое_движение {# как интервалы по ст�
 
 sub to_xls {# выгрузка строк таблицы отчета в ексцель
   my ($c, $data) = @_;
-  $c->log->error($c->dumper($data));
+  #~ $c->log->error($c->dumper($data));
   #~ return $c->render(json=>$data);
   
   require Excel::Writer::XLSX;
@@ -658,58 +658,97 @@ sub to_xls {# выгрузка строк таблицы отчета в екс�
   $worksheet->set_column( 1, 4+(scalar @{ $data->{data}{'колонки'} }), 20 );
   
   
+  $worksheet->set_row($row, 20);
   $worksheet->write($row, 0, 'Проект');
-  $worksheet->write($row++, 1, $data->{param}{'проект'}{name} || 'все');
+  $worksheet->write($row++, 1, ($data->{param}{'проект'} && $data->{param}{'проект'}{name}) || 'все', $workbook->add_format(bold=>1, color=>'purple', size=>14,));
    #~ if $data->{param}{'проект'} && $data->{param}{'проект'}{name};
+  
   
   $worksheet->write($row++, 0, 'Период');
   $worksheet->write($row, 0, 'От', $workbook->add_format( align=>'right'));
-  $worksheet->write($row++, 1, $data->{param}{'дата'}{'формат'}[0]);
+  $worksheet->write($row++, 1, $data->{param}{'дата'}{'формат'}[0], $workbook->add_format(bold=>1, bg_color=>'#CCFFCC'));
   $worksheet->write($row, 0, 'До', $workbook->add_format( align=>'right'));
-  $worksheet->write($row++, 1, $data->{param}{'дата'}{'формат'}[1]);
+  $worksheet->write($row++, 1, $data->{param}{'дата'}{'формат'}[1], $workbook->add_format(bold=>1, bg_color=>'#CCFFCC'));
   
   my $num_format = '# ##0.00 [$₽-419];[RED]-# ##0.00 [$₽-419]'; #$workbook->add_format( num_format=> '# ##0.00 [$₽-419];[RED]-# ##0.00 [$₽-419]');
   my %колонки = ();
+  $row++;
   $worksheet->set_row($row, 30);
   $worksheet->write($row++, 0, [
     'Интервалы / Категории',
     "Сальдо на\n$data->{param}{'дата'}{'формат'}[0]",
-    (map {$колонки{$_->{id}} = $_; $c->_title_format($_->{title});} @{ $data->{data}{'колонки'} }),
+    (map {$_->{'номер колонки'}++; $колонки{$_->{key}} = $_; $c->_title_format($_->{title});} @{ $data->{data}{'колонки'} }),
     "Всего",
     "Сальдо на\n$data->{param}{'дата'}{'формат'}[1]",
-  ], $workbook->add_format(bottom=>1, align=>'center', bold=>1, bg_color=>'#B2DFDB',));
+  ], $workbook->add_format(top=>1, bottom=>1, align=>'center', bold=>1, bg_color=>'#B2DFDB', size=>13,));
   #$data->{data}{'сальдо'}{'начало'}
   
   my $parent_title = '';
+  my $level = 0;
+  my $ncol = scalar keys %колонки;
   for my $r (@{$data->{data}{'строки'}}) {
     next
       unless !defined($r->{show}) || !!$r->{show} ;
     #~ $parent_title = ''
       #~ unless $_->{level};
-    my $title = $r->{level} ? "$parent_title/".$r->{title} : $r->{title};
-    $worksheet->write($row++, 0, [
-      $c->_title_format($title),
-      undef,
-      (map {$c->_money($r->{'колонки'}{$_}) } sort keys %колонки),#
-      $c->_money($r->{'всего'}),
-    ],
-    $workbook->add_format(num_format=> $num_format, right=>4, bottom=>4, $r->{level} ? (align=>'right') :() , text_wrap=>1,)
-    );
-    $worksheet->set_row($row, 30)
-      if length($title) > 25;
-    $parent_title = $title;
+    $r->{level} //= 0;
     
+    if ($r->{id}){# финальная запись
+      $row--;
+      #~ my $n = $колонки{$r->{'код интервала'}}{'номер колонки'};
+      #~ $worksheet->write($row, 0, [
+          #~ undef,
+          #~ undef,
+          #~ $n ? ((undef) x ($n)) : (),
+        #~ ],
+        #~ $workbook->add_format(bg_color=>'#DDDDDD'),
+      #~ );
+      #~ $worksheet->write($row, 2+$n, 
+        #~ join("\n", ($r->{sign} eq 1 ? '' : '-').$r->{sum}, $r->{дата_формат}, "$r->{'кошельки'}[1][0]:$r->{'кошельки'}[1][1]", "$r->{'кошельки'}[0][0]:$r->{'кошельки'}[0][1]", $r->{'примечание'}),# "кошельки" => [["С.В.", "касса"],["Гарантия","--- расходы по объектам" ]],
+        #~ $workbook->add_format(valign => 'top',),
+      #~ );
+      #~ $worksheet->write($row, 3+$n, [
+          #~ ($n+1)<$ncol ? ((undef) x ($ncol-$n-1)) : (),
+          #~ undef,
+          #~ undef,
+        #~ ],
+        #~ $workbook->add_format(bg_color=>'#DDDDDD'),
+      #~ );
+      #~ $worksheet->set_row($row, 50);
+      
+    } else {
+      my $title = !$r->{level} ? $r->{title} : $level eq $r->{level} ? $parent_title || $r->{title} :  $r->{title};#"$parent_title/".
+      $worksheet->write($row, 0, $c->_title_format(($r->{level} ? "       " x $r->{level} : '').$title), $workbook->add_format( text_wrap=>1,bottom=>4, !$r->{level} ? (top=>1, bold=>1, size=>12,) :(bg_color => $r->{sign} eq 1 ? '#A5D6A7' : '#FFCC80'),));
+      $worksheet->write($row, 1, [
+        #~ $c->_title_format(($r->{level} ? "   " x $r->{level} : '').$title),
+        $r->{'сальдо1'} && $c->_money($r->{'сальдо1'}),
+        (map {
+          $r->{'колонки'}{$_} && $c->_money($r->{'колонки'}{$_})
+        } sort {($a<0 ? (-1*$a).'000' : $a) cmp ($b<0 ?  (-1*$b).'000' : $b)} keys %колонки),#
+        $r->{'всего'} && $c->_money($r->{'всего'}),
+        $r->{'сальдо2'} && $c->_money($r->{'сальдо2'}),
+      ],
+      $workbook->add_format(num_format=> $num_format, right=>4, bottom=>4, !$r->{level} ? (align=>'center', top=>1, size=>12,) :(bg_color=> $r->{sign} eq 1 ? '#A5D6A7' : '#FFCC80',),)# 
+      );
+      $worksheet->set_row($row, 30)
+        if length($title) > 35;
+    }
+    
+    #~ $parent_title = $title
+      #~ if $level ne $r->{level};
+    $level = $r->{level} // 0;
+    $row++;
   }
   
   $worksheet->set_row($row, 20);
   $worksheet->write($row++, 0, [
       'ИТОГО',
       $c->_money($data->{data}{'сальдо'}{'начало'}),
-      (map {$c->_money($data->{data}{'итого'}{'колонки'}{$_}{sum}) } sort keys %колонки),#
+      (map {$data->{data}{'сальдо'}{'колонки'} ? $c->_money($data->{data}{'сальдо'}{'колонки'}{$_}) : $c->_money($data->{data}{'итого'}{'колонки'}{$_}{sum}) } sort {($a<0 ? (-1*$a).'000' : $a) cmp ($b<0 ?  (-1*$b).'000' : $b)}  keys %колонки),#
       $c->_money($data->{data}{'итого'}{'всего'}),
       $c->_money($data->{data}{'сальдо'}{'конец'}),
     ],
-    $workbook->add_format(num_format=> $num_format, right=>4, top=>1, align=>'right', size=>14, bold=>1,)
+    $workbook->add_format(num_format=> $num_format, right=>4, top=>1, bottom=>1, align=>'center', size=>14, bold=>1, bg_color=>'#B2DFDB',)
   );
   
   $workbook->close();
@@ -734,5 +773,10 @@ sub _money {
     =~ s/\s+|₽//gr
     =~ s/,/./r
 }
+
+#~ sub _финальная_запись {
+  #~ my ($c, $workbook, $worksheet, $row, $r) = @_;
+  
+#~ }
 
 1;

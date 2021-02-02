@@ -284,7 +284,7 @@ group by "title", "key"
 @@ движение/интервалы/столбцы
 -- гориз таблица
 -- колонки
-select case when "sign" > 0 then 'приход' else 'расход' end as "title", "sign", "интервал", "код интервала", sum("сумма" * "sign") as sum
+select case when "sign" > 0 then 'приход' else 'расход' end as "title", "sign", "интервал", "код интервала", /*"код интервала" as "key",*/ sum("сумма" * "sign") as sum
 from "tmp"."{%= $temp_view_name %}"
 group by "sign", "интервал", "код интервала"
 order by "sign" desc, "код интервала"
