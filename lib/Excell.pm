@@ -262,8 +262,10 @@ sub медкол_результаты_цепочки ($param, $data) {
   my $workbook  = Excel::Writer::XLSX->new( $xfh );
   my $worksheet = $workbook->add_worksheet('Результаты');
   
-  my @names = ('номер акта', 'дата акта', 'договор/номер','договор/дата начала', 'договор/дата завершения', 'контрагент/title', 'ИНН', 'объект', 'сумма/num');
+  $worksheet->set_column( 1, 1, 50 );
+  $worksheet->set_column( 2, 2, 30 );
   my $n = 0;
+  
   for my $r (@$data) {
     next unless $r->{'%больше70'};
     my $t = $json->decode($r->{'последняя сессия/ts/json'});
@@ -271,7 +273,11 @@ sub медкол_результаты_цепочки ($param, $data) {
     my $профиль = $r->{'$профиль'} ? $json->decode($r->{'$профиль'}) : {};
     my $пароль = $профиль->{'пароль'} || substr($профиль->{'ts/sha1/d'} || '', 0, 4);
     my $i = -1;
-    $worksheet->write_row($n++,0, ["профиль № $профиль->{'логин'}:$пароль", (undef) x 3, "$r->{'%больше70'} из $r->{'всего сессий'}"]);
+    $worksheet->write($n++,0,
+      ["профиль № $профиль->{'логин'}:$пароль", (undef) x 3, "$r->{'%больше70'} из $r->{'всего сессий'}", undef],
+      $workbook->add_format(right=>4, top=>1, bg_color=>'#B2DFDB',)
+    );
+
     for my $percent (@{$r->{'%'} || []}) {
       $i++;
       next
@@ -281,16 +287,20 @@ sub медкол_результаты_цепочки ($param, $data) {
       my $t = $json->decode($r->{'сессия/ts/json'}[$i]);
       my $check = $json->decode($r->{'сессия/дата проверки/json'}[$i])
         if $r->{'сессия/дата проверки'}[$i];
-      #~ $worksheet->write_row($n++,0, \@names);
-      #~ $worksheet->write_row($n++,0, [@$_{@names}])
-      $worksheet->write_row($n++,0, [
-        $профиль->{'логин'} || "$r->{'сессия/id'}[0]",
-        join(' • ', @{$r->{'@тест/название/родители'}[$i] || []}, $r->{'тест/название'}[$i]),
-        "$t->{'день нед'}, $t->{'day'} $t->{'месяца'} $t->{'year'} @{[ (length($t->{'hour'}) eq 1 ? '0' : '').$t->{'hour'} ]}:@{[ (length($t->{'minute'}) eq 1 ? '0' : '').$t->{'minute'} ]}",
-        sprintf('%.1f', $percent),
-        substr($r->{'сессия/sha1'}[$i], 0,4).($check ? '☑' : '□'),
-        #~ $check ? '✓проверено' : '',
-      ]);
+      #~ warn @{$r->{'тест/название'}};
+      my $parents = $json->decode($r->{'@тест/название/родители'}[$i]);
+      $worksheet->set_row($n, 30);
+      $worksheet->write($n++,0, [
+          $r->{'сессия/id'}[0], #$профиль->{'логин'} || 
+          join(' • ', @$parents, $r->{'тест/название'}[$i]),#@{$r->{'@тест/название/родители'}[$i] || []},
+          "$t->{'день нед'}, $t->{'day'} $t->{'месяца'} $t->{'year'} @{[ (length($t->{'hour'}) eq 1 ? '0' : '').$t->{'hour'} ]}:@{[ (length($t->{'minute'}) eq 1 ? '0' : '').$t->{'minute'} ]}",
+          sprintf('%.1f%', $percent),
+          substr($r->{'сессия/sha1'}[$i], 0,4),
+          $check ? ' ☑ ' : ' □ ',
+          #~ $check ? '✓проверено' : '',
+        ],
+        $workbook->add_format(num_format => '@', right=>4, text_wrap=>1, valign=>'top',)
+      );
     }
   }
   $workbook->close();
