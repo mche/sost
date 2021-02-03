@@ -382,50 +382,9 @@ sub результаты_цепочки {# все
 
 sub результаты_цепочки_xlsx {
   my ($c, $param, $data) = @_;
-  require Excel::Writer::XLSX;
-  
-  
-  my @names = ('номер акта', 'дата акта', 'договор/номер','договор/дата начала', 'договор/дата завершения', 'контрагент/title', 'ИНН', 'объект', 'сумма/num');
-  #~ my $filename=sprintf("static/tmp/%s-реестр-актов.xlsx", $c->auth_user->{id}, $month);
-  
-  open my $xfh, '>', \my $fdata or die "Failed to open filehandle: $!";
-  my $workbook  = Excel::Writer::XLSX->new( $xfh );
-  my $worksheet = $workbook->add_worksheet();
-  my $n = 0;
-  for my $r (@$data) {
-    next unless $r->{'%больше70'};
-    my $t = $c->app->json->decode($r->{'последняя сессия/ts/json'});
-    $t->{'сек.'} = ($t->{'second'} =~ /^(\d+)\.?/)[0];
-    my $профиль = $r->{'$профиль'} ? $c->app->json->decode($r->{'$профиль'}) : {};
-    my $пароль = $профиль->{'пароль'} || substr($профиль->{'ts/sha1/d'} || '', 0, 4);
-    my $i = -1;
-    $worksheet->write_row($n++,0, ["профиль № $профиль->{'логин'}:$пароль", (undef) x 3, "$r->{'%больше70'} из $r->{'всего сессий'}"]);
-    for my $percent (@{$r->{'%'} || []}) {
-      $i++;
-      next
-        if $param->{'успехов'} && $percent < 70;
-      next
-        if defined($param->{'sha1'}) && $param->{'sha1'} ne '' && defined($param->{'тест'}) && $param->{'тест'} ne '' && $r->{'тест/id'}[$i] ne $param->{'тест'}; # фильтр теста здесь, не в запросе, если выставлен код сессии
-      my $t = $c->app->json->decode($r->{'сессия/ts/json'}[$i]);
-      my $check = $c->app->json->decode($r->{'сессия/дата проверки/json'}[$i])
-        if $r->{'сессия/дата проверки'}[$i];
-      #~ $worksheet->write_row($n++,0, \@names);
-      #~ $worksheet->write_row($n++,0, [@$_{@names}])
-      $worksheet->write_row($n++,0, [
-        $профиль->{'логин'} || "$r->{'сессия/id'}[0]",
-        join(' • ', @{$r->{'@тест/название/родители'}[$i] || []}, $r->{'тест/название'}[$i]),
-        "$t->{'день нед'}, $t->{'day'} $t->{'месяца'} $t->{'year'} @{[ (length($t->{'hour'}) eq 1 ? '0' : '').$t->{'hour'} ]}:@{[ (length($t->{'minute'}) eq 1 ? '0' : '').$t->{'minute'} ]}",
-        sprintf('%.1f', $percent),
-        substr($r->{'сессия/sha1'}[$i], 0,4).($check ? '☑' : '□'),
-        #~ $check ? '✓проверено' : '',
-      ]);
-    }
-  }
-  $workbook->close();
-  #~ return $fdata;
-  #~ $c->render(data=>$fdata, format=>'xlsx');
-  # Render data from memory as file
-  $c->render_file('data' => $fdata, 'filename' => 'Результаты тестов(выгрузка).xlsx', format=>'xlsx');
+  require Excell;
+  my $tmp = Excell::медкол_результаты_цепочки($param, $data);
+  $c->render_file(filepath => $tmp, filename => 'Результаты тестов.xlsx', format=>'xlsx', cleanup=>1,);
 }
 
 sub сохранить_проверку_результата {

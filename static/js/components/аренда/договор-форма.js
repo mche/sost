@@ -427,7 +427,8 @@ MoneyXLS(){/// выписка по арендатору
     vm.httpProcess  = false;
     //~ modal.modal('close');
     if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 border fw500  animated zoomInUp');
-    if (resp.data.xlsx) window.location.href = appRoutes.urlFor('аренда/движение по арендатору#xlsx', resp.data.xlsx);/// а это get-запрос
+    //~ if (resp.data.xlsx) window.location.href = appRoutes.urlFor('аренда/движение по арендатору#xlsx', resp.data.xlsx);/// а это get-запрос
+    if (resp.data.file) window.location.href = appRoutes.urlFor('временный файл', resp.data.file+'?filename='+(resp.data.filename || ''));
     if (resp.data.data) console.log("счет", resp.data.data);///отладка
     //~ window.location.href = appRoutes.urlFor('тмц/накладная.docx', $c.data.id);
   });
