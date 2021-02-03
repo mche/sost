@@ -374,6 +374,7 @@ const Component = function($scope, $rootScope, $element, $timeout, $http, $q, ap
     $c.data['копия/id'] = (data && data.id) || $c.data.id;
     $c.data.id = undefined;
     $c.data.uid = undefined;
+    delete $c.data['@id2'];
     
   },
   
