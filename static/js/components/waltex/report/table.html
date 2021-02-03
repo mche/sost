@@ -313,8 +313,11 @@
   </tbody>
 </table>
 
-<div class="center">
-  <a ng-click="$c.ToXLS()" href="javascript:" class="btn btn-large ">Выгрузить в Excell</a>
+<div ng-show="$c.data && $c.data['колонки']" class="center">
+  <a ng-click="$c.ToXLS()" href="javascript:" class=" btn-large green-text text-darken-4 ">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="green-fill-darken-4 padd-0-05" style="height: 2rem;"><use xlink:href="/fonts/icons.svg?2021-02-03#excel"></use></svg>
+    Выгрузить в Excell
+  </a>
 </div>
 
  <!-- Modal Structure -->
