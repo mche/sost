@@ -243,7 +243,7 @@ sub list {
   $c->inactivity_timeout(10*60);
   $param->{select}=' row_to_json(m) ';
   my $data = $c->model->список($projct, $param);# || $@;
-  #~ $c->app->log->error($@)
+  #~ $c->app->log->error($param);
     #~ and return $c->render(json => {error=>"Ошибка: $@"})
     #~ unless ref $data;
   

@@ -97,7 +97,8 @@ select distinct
   ---pr.name as "проект", pr.id as "проект/id",---проект нельзя, один объект в разных проектах!!!
   text2numeric(t."коммент")::money as "сумма",
   (date_trunc('month', t."дата"+interval '1 month') - interval '1 day')::date as "дата",
-  array_to_string(coalesce(c."примечание", array[]::text[]), E'\n') || ' (' || to_char(t."дата", 'TMMon YYYY') || ': ' || og.name || ')' as "примечание"
+  array_to_string(coalesce(c."примечание", array[]::text[]), E'\n') || ' (' || to_char(t."дата", 'TMMon YYYY') || ': ' || og.name || ')' as "примечание",
+  t.uid
 from
 ---  {%###= $st->dict->render('табель/join') %}
   "табель" t
@@ -166,7 +167,8 @@ select
   array_to_string(p.names, ' ') as "профиль",
   text2numeric(t."коммент")::money as "сумма",
   (date_trunc('month', t."дата"+interval '1 month') - interval '1 day')::date as "дата",
-  '('::text || to_char(t."дата", 'TMMon YYYY') || ': переработка сверх 12 часов)'::text as "примечание"
+  '('::text || to_char(t."дата", 'TMMon YYYY') || ': переработка сверх 12 часов)'::text as "примечание",
+  t.uid
 from
   "табель" t
   join refs rp on t.id=rp.id2 -- на профили
@@ -185,7 +187,8 @@ select
   array_to_string(p.names, ' ') as "профиль",
   text2numeric(t."коммент")::money as "сумма",
   (date_trunc('month', t."дата"+interval '1 month') - interval '1 day')::date as "дата",
-  '('::text || to_char(t."дата", 'TMMon YYYY') || ': суточные)'::text as "примечание"
+  '('::text || to_char(t."дата", 'TMMon YYYY') || ': суточные)'::text as "примечание",
+  t.uid
 from
   "табель" t
   join refs rp on t.id=rp.id2 -- на профили
@@ -204,7 +207,8 @@ select
   array_to_string(p.names, ' ') as "профиль",
   text2numeric(t."коммент")::money as "сумма",
   (date_trunc('month', t."дата"+interval '1 month') - interval '1 day')::date as "дата",
-  '('::text || to_char(t."дата", 'TMMon YYYY') || ': отпускные)'::text as "примечание"
+  '('::text || to_char(t."дата", 'TMMon YYYY') || ': отпускные)'::text as "примечание",
+  t.uid
 from
   "табель" t
   join refs rp on t.id=rp.id2 -- на профили

@@ -148,13 +148,13 @@ sub позиция {
 
 
 my %type = ("дата"=>'date', "сумма"=>'money', "примечание"=>'text');
-my %KEY = ("дата"=>' m."дата" ', "контрагент"=>' coalesce(ca.id, rent."контрагент/id") ', "профиль"=>' pp.id ', "объект"=>' ob.id ', "кошелек"=>' w.id ', "проект" => ' p.id ');
+my %KEY = ("дата000"=>' m."дата" ', "контрагент"=>' "контрагент/id" ', "профиль"=>' "профиль/id" ', "объект"=>' "объект/id" ', "кошелек"=>' "кошелек/id" ', "проект" => ' "проект/id" ');
 
 sub список {
   my ($self, $project, $param) = @_;
   
   my $where = {# условия
-    ' p.id '=>$project,
+    ' "проект/id" '=>$project,
   };
   while (my ($key, $value) = each %{$param->{table} || {}}) {
     next
@@ -163,7 +163,7 @@ sub список {
     if ($key eq 'категория') {
       #~ $where .= ($where ? " and " :  "where ").qq\ "$key/id" in (select id from "категории/родители"() where ?=any(parents_id||id)) \;
       #~ push @bind, $value->{id};
-      $where->{' ? /*категория*/ '} = \['= any(cat.parents_id||cat.id)', $value->{id},];
+      $where->{' ? /*категория*/ '} = \['= any("категории/id")', $value->{id},];
       next;
     }
     
@@ -208,18 +208,18 @@ sub список {
     if ($param->{move}{id} eq 1){ # внешние контрагенты
       #~ my $w2 = '"кошелек2/id" is null and "профиль/id" is null';
       #~ $where .= $where ? "\n and $w2" : "where $w2";
-      $where->{qq{ w2.id }} = undef;
-      $where->{qq{ pp.id }} = undef;
+      $where->{qq{ "кошелек2/id" }} = undef;
+      $where->{qq{ "профиль/id" }} = undef;
     }
     elsif ($param->{move}{id} eq 2){ # внутр кошельки
       #~ my $w2 = '"кошелек2/id" is not null';
       #~ $where .= $where ? "\n and $w2" : "where $w2";
-      $where->{qq{ w2.id }} = {'!=' => undef};
+      $where->{qq{ "кошелек2/id" }} = {'!=' => undef};
     }
     elsif ($param->{move}{id} eq 3){ # сотрудники
       #~ my $w2 = '"профиль/id" is not null';
       #~ $where .= $where ? "\n and $w2" : "where $w2";
-      $where->{qq{ pp.id }} = {'!=' => undef};
+      $where->{qq{ "профиль/id" }} = {'!=' => undef};
     }
   } else {# все платежи
     
@@ -232,7 +232,7 @@ sub список {
   
   #~ $self->app->log->error($where);
   
-  my $r = $self->dbh->selectall_arrayref($self->sth('список или позиция', select => $param->{select} || '*',  where=>$where, order_by=>$param->{order_by} || 'order by m."дата" desc, m.id desc', limit_offset=>$limit_offset), {Slice=>{}}, @bind);
+  my $r = $self->dbh->selectall_arrayref($self->sth('список или позиция', select => $param->{select} || '*',  where=>$where, order_by=>$param->{order_by} || 'order by m."дата" desc, m.id desc', limit_offset=>$limit_offset, ), {Slice=>{}}, @bind);#$param->{move} && $param->{move}{id} eq 3 ? (union=>['список или позиция/union/начисления сотрудникам']) : ()
   
 }
 
@@ -258,7 +258,8 @@ sub расчеты_по_профилю {# история начислений и
     if $param->{table} && $param->{table}{"профили"};
   
   my $where = "";
-  my @bind = (($profile) x 2, ($param->{"проект"}{id}) x 2,) x 2;
+  my @bind = (($profile) x 2, ($param->{"проект"} &&  $param->{"проект"}{id}) x 2, 
+    ($profile) x 2,);# для начислений нет проекта
   
   #~ $self->app->log->error($self->app->dumper($param->{table}));
   while (my ($key, $value) = each %{$param->{table} || {}}) {

@@ -1056,7 +1056,7 @@ select m.id, m.ts, m."дата", m."сумма",
   array_to_string(pp.names, ' ') as "профиль", pp.id as "профиль/id",
   array[[w."проект", w.title]]::text[][] as "кошельки",
   array[[w."проект/id", w.id]]::int[][] as "кошельки/id",
-  m."примечание"
+  m."примечание", m.uid
   ---'(' || w."проект" || ': ' || w.title || ') ' || coalesce(m."примечание", ''::text) as "примечание"
 from 
   {%= $dict->render('движение по сотрудникам/from') %}
@@ -1083,7 +1083,7 @@ select t.id, t.ts, t."дата", t."сумма",
   array[[/*"проект"*/ null, "объект"]]::text[][] as "кошельки", --- проект+объект, ... ---проект нельзя, один объект в разных проектах!!!
   array[[/*"проект/id"*/ null, "объект/id"]]::int[][] as "кошельки/id",  --- проект+объект, ... ---проект нельзя, один объект в разных проектах!!!
   ---'(' || "проект" || ': ' || "объект" || ') ' || coalesce("примечание", ''::text) as "примечание"
-  "примечание"
+  "примечание", uid
 from 
   "табель/начисления/объекты" t,-- view  в модели Model::TimeWork.pm
   ---(select array_agg("id" order by level desc) as "@id", (array_agg("title" order by level desc))[2:] as "@title" from "категории/родители узла"(123439::int, true)) cc
@@ -1105,7 +1105,7 @@ select t.id, t.ts, t."дата", t."сумма",
   ---! вместо проект+кошелек  - проект+объект
   null, ---array[[null, null]]::text[][] as "кошельки", --- проект+объект, ...
   null, ---array[[0, 0]]::int[][] as "кошельки/id",  --- проект+объект, ...
-  "примечание"
+  "примечание", uid
 from 
   "табель/начисления/переработка" t,-- view  в модели Model::TimeWork.pm
   --- (select array_agg("id" order by level desc) as "@id", (array_agg("title" order by level desc))[2:] as "@title" from "категории/родители узла"(123441::int, true)) cc
@@ -1127,7 +1127,7 @@ select t.id, t.ts, t."дата", t."сумма",
   ---! вместо проект+кошелек  - проект+объект
   null, ---array[[null, null]]::text[][] as "кошельки", --- проект+объект, ...
   null, ---array[[0, 0]]::int[][] as "кошельки/id",  --- проект+объект, ...
-  "примечание"
+  "примечание", uid
 from 
   "табель/начисления/суточные" t,-- view  в модели Model::TimeWork.pm
   --- (select array_agg("id" order by level desc) as "@id", (array_agg("title" order by level desc))[2:] as "@title" from "категории/родители узла"(57541::int, true)) cc
@@ -1149,7 +1149,7 @@ select t.id, t.ts, t."дата", t."сумма",
   ---! вместо проект+кошелек  - проект+объект
   null, ---array[[null, null]]::text[][] as "кошельки", --- проект+объект, ...
   null, ---array[[0, 0]]::int[][] as "кошельки/id",  --- проект+объект, ...
-  "примечание"
+  "примечание", uid
 from 
   "табель/начисления/отпускные" t,-- view  в модели Model::TimeWork.pm
   ---(select array_agg("id" order by level desc) as "@id", (array_agg("title" order by level desc))[2:] as "@title" from "категории/родители узла"(104845::int, true)) cc
@@ -1194,7 +1194,7 @@ select m.id, m.ts, m."дата", m."сумма",
   array_to_string(p.names, ' ') as "профиль", p.id as "профиль/id",
   null, ---array[[null, null]]::text[][] as "кошельки", --- проект+объект, ...
   array[[pr.id, null]]::int[][] as "кошельки/id",  --- проект 0 -- запись для всех проектов
-  m."примечание"
+  m."примечание", m.uid
 
 from "движение денег" m
   join refs rc on m.id=rc.id2

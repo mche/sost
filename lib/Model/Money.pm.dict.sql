@@ -116,7 +116,7 @@ select m.*,
   "формат даты"(m."дата") as "дата формат",
   timestamp_to_json(m."дата"::timestamp) as "$дата/json",
   ----to_char(m."дата", 'TMdy, DD TMmon' || (case when date_trunc('year', now())=date_trunc('year', m."дата") then '' else ' YYYY' end)) as "дата формат",
-  cat.id as "категория/id", /*"категории/родители узла/title"(c.id, false) as*/ cat.parents_title[2:]||cat.title as "категории",
+  cat.id as "категория/id", cat.parents_id[2:]||cat.id as "категории/id", /*"категории/родители узла/title"(c.id, false) as*/ cat.parents_title[2:]||cat.title as "категории", 
   coalesce(ca.id, rent."контрагент/id") as "контрагент/id", coalesce(ca.title, rent."контрагент/title") as "контрагент", rent."договор аренды/id",
   coalesce(ob.id, rent."@объекты/id"[1]) as "объект/id", coalesce(ob.name, rent."@объекты/name"[1]) as "объект",
   w2.id as "кошелек2/id", w2.title as "кошелек2",
@@ -161,15 +161,37 @@ from  "{%= $schema %}"."{%= $tables->{main} %}" m
     group by r.id1
   ) m2 on m.id=m2.id1
 
-{%= $where || '' %}
-{%= $order_by || '' %}
----order by m."дата" desc, m.id desc
-{%= $limit_offset || '' %}
----where (::int is null or m.id =)
---  and p.id=20962 -- все проекты или проект
+
+%# if ($union && @$union) {
+%#  union all
+%#  {%= join qq'\n union all \n', map($dict->render($_), @$union) %}
+%# }
+
 ) m
 
+{%= $where || '' %}
+{%= $order_by || '' %} ---order by m."дата" desc, m.id desc
+{%= $limit_offset || '' %}
+
 ;
+
+@@ 00000список или позиция/union/начисления сотрудникам
+select
+  null as id, -- не редактировать в форме
+  ts, "сумма", "дата", "примечание", uid,
+  "формат даты"("дата") as "дата формат",
+  timestamp_to_json("дата"::timestamp) as "$дата/json",
+  "категории"[2] as "категория/id", "категории"[2:] as "категории/id", "категория" as "категории",
+  null as "контрагент/id", null as "контрагент", null as "договор аренды/id",
+  "объект/id", "объект", ---"$объект/json",
+  null as "кошелек2/id", null as "кошелек2",
+   "профиль/id", "профиль",
+  null as "кошелек", null as "кошелек/id",
+  null as "проект/id", null as "проект",
+  /*row_to_json(u)::jsonb || timestamp_to_json(m.ts)::jsonb*/ null as "$создатель/json",
+  null as "@id1", null as "@id2"
+from "движение ДС/начисления сотрудникам" -- движение ДС/начисления по табелю view только  приходы по табелю
+
 
 @@ контрагент
 -- подзапрос
@@ -275,7 +297,7 @@ select
   "примечание", "профиль/id", "профиль", true as "начислено"
 from "движение ДС/начисления сотрудникам" -- движение ДС/начисления по табелю view только  приходы по табелю
 where (? is null or "профиль/id"=any(?))
-  and (coalesce(?::int, 0) = 0 or "кошельки/id"[1][1]=?) -- проект
+  ---and (coalesce(::int, 0) = 0 or "кошельки/id"[1][1]=) -- проекта нет для начислений
 ) u
 
 {%= $where || '' %}
