@@ -97,12 +97,12 @@
         </div>
       </td>
       <td ng-repeat=" td in $c.data['колонки'] " class="box-shadow-left-5px" ng-class="{'right-align': !tr['колонки'][td.key || td.title].id}" style="display: table-cell;" title="{{ tr['примечание'] }}">
-        <div ng-if="!tr['колонки'][td.key || td.title].id" ng-init=" m = $c.MoneySplit(tr['колонки'][td.key || td.title]) " ng-class="{'orange-text text-darken-4': !$c.IsVertTable() && tr.sign < 0, 'green-text text-darken-4': !$c.IsVertTable() && tr.sign > 0}" class="nowrap"><!--{{ Util.money() }}-->
+        <div ng-if="!( tr['колонки'][td.key] ||  tr['колонки'][td.title] ).id" ng-init=" m = $c.MoneySplit(tr['колонки'][td.key || td.title]) " ng-class="{'orange-text text-darken-4': !$c.IsVertTable() && tr.sign < 0, 'green-text text-darken-4': !$c.IsVertTable() && tr.sign > 0}" class="nowrap"><!--{{ Util.money() }}-->
           <span>{{ m[0] }}</span>
           <span class="fs7 fw100" ng-class-000="{'transparent-text-000': m[1] == '00'}"> {{ m[1] }}</span>
         </div>
         <!-- финальная позиция -->
-        <div ng-if=" tr['колонки'][td.key || td.title].id" ng-init=" m = $c.MoneySplit(tr['колонки'][td.key || td.title].sum) " class="card white right-000 animated zoomIn"  style="padding: 0rem 0.3rem; margin:0; /*width:100%;*/">
+        <div ng-if=" ( tr['колонки'][td.key] ||  tr['колонки'][td.title] ).id" ng-init=" m = $c.MoneySplit(( tr['колонки'][td.key] ||  tr['колонки'][td.title] ).sum) " class="card white right-000 animated zoomIn"  style="padding: 0rem 0.3rem; margin:0; /*width:100%;*/">
           <div class="right bold nowrap" style="padding-left:1rem;" ng-class="{'orange-text text-darken-4': parseInt(tr.sign) < 0, 'green-text text-darken-4': parseInt(tr.sign) > 0}">
             <i ng-show="parseInt(tr.sign) > 0" class="material-icons fs8 ">add_circle_outline</i>
             <i ng-show="parseInt(tr.sign) < 0" class="material-icons fs8 ">remove_circle_outline</i>
@@ -111,7 +111,7 @@
             <span class="fs7 fw100" ng-class-000="{'transparent-text-000': m[1] == '00'}"> {{ m[1] }}</span>
           </div>
           <a ng-click-000="$c.ShowItem(tr['колонки'][td.key || td.title])" href="javascript:" class="fs8-000">
-            <div>{{ tr['колонки'][td.key || td.title]['дата_формат'] }}</div>
+            <div>{{ ( tr['колонки'][td.key] ||  tr['колонки'][td.title] )['дата_формат'] }}</div>
             <!-- направление платежа приход-->
             <div ng-if="parseInt(td.sign || tr.sign) > 0 && !tr['профиль']" class="clearfix" style-000="vertical-align: top;">
               <div>

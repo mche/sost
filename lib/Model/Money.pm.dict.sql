@@ -168,8 +168,6 @@ from  "{%= $schema %}"."{%= $tables->{main} %}" m
 ---where (::int is null or m.id =)
 --  and p.id=20962 -- все проекты или проект
 ) m
-%#{%= $where || '' %}
-
 
 ;
 

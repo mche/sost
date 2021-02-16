@@ -6,6 +6,9 @@ has model => sub { $_[0]->app->models->{'Аренда'}->uid($_[0]->auth_user &&
 has model_contragent => sub { $_[0]->app->models->{'Contragent'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
 has model_uploader => sub { $_[0]->app->models->{'Uploader'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
 
+#~ warn "Controll::Rent ", $ENV{MOJO_ARGV} || '---';
+#~ warn "Controll::Rent ", map "$_\t$ENV{$_}\n", keys %ENV;
+
 has email => sub {
   #~ require Mojolicious::Plugin::RoutesAuthDBI::Util;
     #~ and Mojolicious::Plugin::RoutesAuthDBI::Util->import('load_class');
