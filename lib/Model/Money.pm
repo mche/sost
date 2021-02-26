@@ -154,7 +154,8 @@ sub список {
   my ($self, $project, $param) = @_;
   
   my $where = {# условия
-    ' "проект/id" '=>$project,
+    -or => {' "проект/id" ' => $project,
+                ' "проект2/id" ' => $project,},
   };
   while (my ($key, $value) = each %{$param->{table} || {}}) {
     next

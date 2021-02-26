@@ -119,7 +119,7 @@ select m.*,
   cat.id as "категория/id", cat.parents_id[2:]||cat.id as "категории/id", /*"категории/родители узла/title"(c.id, false) as*/ cat.parents_title[2:]||cat.title as "категории", 
   coalesce(ca.id, rent."контрагент/id") as "контрагент/id", coalesce(ca.title, rent."контрагент/title") as "контрагент", rent."договор аренды/id",
   coalesce(ob.id, rent."@объекты/id"[1]) as "объект/id", coalesce(ob.name, rent."@объекты/name"[1]) as "объект",
-  w2.id as "кошелек2/id", w2.title as "кошелек2",
+  w2.id as "кошелек2/id", w2.title as "кошелек2", w2."проект/id" as "проект2/id",
   pp.id as "профиль/id", array_to_string(pp.names, ' ') as "профиль",
   w.id as "кошелек/id", w.title as "кошелек",
   ---w."проект", w."проект/id" -- надо
@@ -250,9 +250,10 @@ from
 
 @@ кошелек2
   -- обратная связь с внутренним перемещением
-select distinct w.id, p.name || ':' || w.title as title, m.id as "движение денег/id"
+select distinct w.id, p.id as "проект/id", p.name || ':' || w.title as title, m.id as "движение денег/id"
 from
-  "проекты" p
+  ---"проекты" p
+  "roles" p
   join refs r on p.id=r.id1
   join "кошельки" w on w.id=r.id2
   join refs rm on w.id=rm.id2 -- к деньгам

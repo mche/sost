@@ -235,14 +235,14 @@ sub data {# одна строка
 sub list {
   my $c = shift;
   
-  my $projct = $c->vars('project') # 0 - все проекты (для зп)
+  my $project = $c->vars('project') // $c->vars('проект') # 0 - все проекты (для зп)
     // return $c->render(json => {error=>"Не указан проект"});
   
   my $param =  $c->req->json;
   
   $c->inactivity_timeout(10*60);
   $param->{select}=' row_to_json(m) ';
-  my $data = $c->model->список($projct, $param);# || $@;
+  my $data = $c->model->список($project, $param);# || $@;
   #~ $c->app->log->error($param);
     #~ and return $c->render(json => {error=>"Ошибка: $@"})
     #~ unless ref $data;

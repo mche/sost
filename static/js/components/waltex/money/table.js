@@ -168,8 +168,23 @@ const Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, 
     delete it["приход"];
     delete it["расход"];
     
-    if(sum > 0) it["приход"] = Util.money(it['сумма']);//$c.FormatMoney(it['сумма']);
-    else it["расход"] = Util.money(it['сумма'].replace(/-/g, ""));//$c.FormatMoney(it['сумма'].replace(/-/g, ""));
+    if (it['проект/id'] != ($c.param['проект'].id || $c.param['проект'])) {/// внутренние перемещения
+      let w1 = it['кошелек/id'],
+          w2 = it['кошелек2/id'];
+      it['кошелек/id'] = w2;
+      it['кошелек2/id'] = w1;
+      
+      //наоборот сумма
+      if(sum > 0) it["расход"] = Util.money(it['сумма']);//$c.FormatMoney(it['сумма']);
+      else it["приход"] = Util.money(it['сумма'].replace(/-/g, ""));//$c.FormatMoney(it['сумма'].replace(/-/g, ""));
+      
+    } else {
+      if(sum > 0) it["приход"] = Util.money(it['сумма']);//$c.FormatMoney(it['сумма']);
+      else it["расход"] = Util.money(it['сумма'].replace(/-/g, ""));//$c.FormatMoney(it['сумма'].replace(/-/g, ""));
+      
+    }
+    
+    
     
     if (it["приход"]) it["приход"] = it["приход"].split(/[,.]/);
     if (it["расход"]) it["расход"] = it["расход"].split(/[,.]/);
