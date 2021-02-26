@@ -48,7 +48,7 @@ const Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, 
       $c.data.splice(idx, 1);
       Object.keys(data).map(function(key){ row[key] = data[key]; });
       //~ row['обновить'] = true;///передернуть
-      $c.InitRow(row);
+      //~ $c.InitRow(row);
       $timeout(() => {
         $c.data.splice(idx, 0, row);
       });
