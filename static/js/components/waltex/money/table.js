@@ -259,8 +259,14 @@ const Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, 
     var sum = [0.0, 0.0];
     $c.data.map(function(it){
       var s = parseFloat(Util.numeric(it['сумма']));
-      if (s > 0) sum[0] += s;
-      else        sum[1] += s;
+      if (it['проект/id'] != ($c.param['проект'].id || $c.param['проект'])) {//внутр перемещения -- нужно перевернуть знак
+        if (s > 0) sum[1] += s*(-1);
+        else        sum[0] += s*(-1);
+      } else {
+        if (s > 0) sum[0] += s;
+        else        sum[1] += s;
+      }
+      
     });
     return sum;
   };
