@@ -122,6 +122,7 @@
       <h4 class="fw500"><a href="javascript:" data-target="wallet-select" class="hover-shadow3d">
         <i class="material-icons blue-text000">account_balance</i>
         <span>Кошелек</span>
+        <span  class="chip padd-0-05 teal shadow-inset-10  white-text  ">{{ $c.param['проект'].name }}</span>
         <span ng-if="$c.param.table['кошелек'].ready && $c.param.table['кошелек'].id" class="fs8 br truncate">
           <!--i class="material-icons">filter_list</i-->
           <span class="chip shadow-inset-10 black-text">{{$c.param.table['кошелек'].title}}</span>
