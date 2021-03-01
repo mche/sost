@@ -27,7 +27,8 @@ var routes = {
   "файл-инлайн": '/файл-инлайн/:sha1',///uploader#файл_инлайн
   "удалить файлы": '/файлы+удалить',///uploader#удалить_файлы
   "файлы/переименовать": '/файлы/переименовать/переместить',///Uploader#/переименовать
-  "временный файл": '/_static_/tmp/*file',///Main#static_tmp
+  "временный файл": '/tmp/*file',///Main#static_tmp
+  "удалить временный файл": '/remove/tmp/*file',///Main#static_tmp_remove
   
   //~ "поиск категории": 'js/c/category/search.json',
   //~ "дерево категорий": 'js/c/category/tree.json',

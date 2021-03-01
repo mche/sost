@@ -36,6 +36,14 @@ sub static_tmp {
   )
 }
 
+sub static_tmp_remove {
+  my $c = shift;
+  my $file = $c->stash('file'); # имя файла
+  unlink "static/tmp/$file"
+    or return $c->render(json=>{error=>$!});
+  $c->render(json=>{success=>'ok'});
+}
+
 sub php {# умри
   my $c = shift;
   #~ open(my $fh, "-|", "dd if=/dev/urandom count=1 bs=10 |")#sprintf("dd if=/dev/urandom count=1 bs=%i |", (rand =~ /(\d{4})/)[0]))

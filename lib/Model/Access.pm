@@ -237,13 +237,13 @@ sub закачка_маршрута {
   return {error=>"Не указан request (get post put head route)"}
     unless $route->{request};
   
-  if (my $over = delete $route->{over}) {
-    my $access  =delete $over->{access};
+  if (my $requires = delete $route->{requires}) {
+    my $access  =delete $requires->{access};
     my $auth = delete $access->{auth}
       if $access;
     $route->{auth} = $auth
       if $auth;
-    my $host = delete($over->{host}) || delete($over->{host_re});
+    my $host = delete($requires->{host}) || delete($requires->{host_re});
     require Data::Dumper
       and $route->{host_re} = Data::Dumper::Dumper($host) =~ s/(^\$.+=\s*'*|'*;\n*$)//gr
       if $host;
