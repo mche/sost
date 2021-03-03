@@ -84,7 +84,8 @@
     
     <th ng-if="$c.param.move.id === 0 || $c.param.move.id == 2" ng-class000="{'light-green lighten-4': $c.param.move.id === 0}" class="red lighten-3 width1">
       <h4 class="fw500"><a href="javascript:" data-target="wallet2-select" class="red-text text-darken-2 hover-shadow3d">
-        <i class="material-icons">account_balance</i>
+        <!-- i class="material-icons">account_balance</i -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="red-fill-darken-2" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg?2020-12-11#wallet"></use></svg>
         <span>Кошелек</span>
         <i class="material-icons">swap_horiz</i>
         <span ng-if="$c.param.table['кошелек2'].ready && $c.param.table['кошелек2'].id" class="fs8 br truncate">
@@ -120,7 +121,8 @@
     
     <th class="width1">
       <h4 class="fw500"><a href="javascript:" data-target="wallet-select" class="hover-shadow3d">
-        <i class="material-icons blue-text000">account_balance</i>
+        <!-- i class="material-icons blue-text000">account_balance</i -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="teal-fill-darken-3" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg?2020-12-11#wallet"></use></svg>
         <span>Кошелек</span>
         <span  class="chip padd-0-05 teal shadow-inset-10  white-text  ">{{ $c.param['проект'].name }}</span>
         <span ng-if="$c.param.table['кошелек'].ready && $c.param.table['кошелек'].id" class="fs8 br truncate">
