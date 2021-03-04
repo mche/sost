@@ -168,7 +168,7 @@ const Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, 
     delete it["приход"];
     delete it["расход"];
     
-    if (it['проект/id'] != ($c.param['проект'].id || $c.param['проект'])) {/// внутренние перемещения
+    if (it['проект/id'] && it['проект/id'] != ($c.param['проект'].id || $c.param['проект'])) {/// внутренние перемещения
       let w1 = it['кошелек/id'],
           w2 = it['кошелек2/id'];
       it['кошелек/id'] = w2;
@@ -259,7 +259,7 @@ const Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, 
     var sum = [0.0, 0.0];
     $c.data.map(function(it){
       var s = parseFloat(Util.numeric(it['сумма']));
-      if (it['проект/id'] != ($c.param['проект'].id || $c.param['проект'])) {//внутр перемещения -- нужно перевернуть знак
+      if (it['проект/id'] && it['проект/id'] != ($c.param['проект'].id || $c.param['проект'])) {//внутр перемещения -- нужно перевернуть знак
         if (s > 0) sum[1] += s*(-1);
         else        sum[0] += s*(-1);
       } else {
