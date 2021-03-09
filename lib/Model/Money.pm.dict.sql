@@ -252,8 +252,7 @@ from
   -- обратная связь с внутренним перемещением
 select distinct w.id, p.id as "проект/id", p.name || ':' || w.title as title, m.id as "движение денег/id"
 from
-  ---"проекты" p
-  "roles" p
+  "проекты" p --- КОСЯК !!! "roles" p
   join refs r on p.id=r.id1
   join "кошельки" w on w.id=r.id2
   join refs rm on w.id=rm.id2 -- к деньгам

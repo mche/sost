@@ -33,8 +33,7 @@ CREATE EXTENSION IF NOT EXISTS intarray;
 @@ проект/кошелек
 select w.*, p.id as "проект/id", p.name as "проект", rm.id2 as _ref
 from
- ----"проекты" p
- "roles" p
+  "проекты" p --- КОСЯК!!! "roles" p
   join refs rp on p.id=rp.id1
   join "кошельки" w on w.id=rp.id2
   join refs rm on w.id=rm.id1 -- к деньгам
@@ -43,8 +42,7 @@ from
   -- обратная связь с внутренним перемещением
   select /*distinct*/ w.*, rm.id1 as _ref, p.name as "проект", p.id as "проект/id"
   from 
-  ---"проекты" p
-    "roles" p
+    "проекты" p --- КОСЯК!!! "roles" p
     join refs r on p.id=r.id1
     join "кошельки" w on w.id=r.id2
     join refs rm on w.id=rm.id2 -- к деньгам
@@ -320,8 +318,7 @@ from "tmp"."{%= $temp_view_name %}" m
   join (
   select /*distinct*/ w.*, p.id as "проект/id", p.name as "проект"
   from 
-  ---"проекты" p
-  "roles" p
+    "проекты" p --- КОСЯК!!! "roles" p
     join refs r on p.id=r.id1
     join "кошельки" w on w.id=r.id2
   ) w2 on m."кошелек2"=w2.id
@@ -498,8 +495,7 @@ from
   join (---перемещения
   select /*distinct*/ w.*, p.id as "проект/id", p.name as "проект"
   from 
-    ----"проекты" p
-    "roles" p
+    "проекты" p --- КОСЯК!!! "roles" p
     join refs r on p.id=r.id1
     join "кошельки" w on w.id=r.id2
   ) w2 on o."кошелек2"=w2.id
@@ -1208,8 +1204,7 @@ from "движение денег" m
   left join (
     select /*distinct*/  p.id, /*p."контрагент/id",*/ r.id2
     from 
-    ---"проекты" p
-    "roles" p
+      "проекты" p ---- КОСЯК!!!  "roles" p
       join refs r on p.id=r.id1
   ) pr on p.id=pr.id2
   
