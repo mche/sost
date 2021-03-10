@@ -244,19 +244,30 @@
 
 <div ng-show="$c.error" class="card-content center red-text" style="padding:0rem 1rem;">{{$c.error | json}}</div>
 
-
-
 </div></div>
 
 <!-- Modal Structure -->
 <div id="delete-confirm" class="card modal" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated zoomInDown" data-modal-out="animated zoomOutUp"  style="top:10%;">
   <div class="modal-content">
-    <h3 class="red-text">Удалить запись?</h3>
+    <h2 class="red-text center">Уверены удалить запись?</h2>
     <!--p class="center fs14">Точно удалить?</p-->
   </div>
   <div class="modal-footer teal-lighten-5">
     <a href="javascript:" class="modal-action modal-close  btn-flat white z-depth-1 red-text fs14 float-none">Отмена</a>
     <a ng-click="$c.DeleteBtn()" href="javascript:" class="modal-action modal-close  btn-flat white z-depth-1 green-text fs14">Да</a>
+    
+  </div>
+</div>
+
+<!-- Modal Structure -->
+<div id="save-confirm" class="card modal" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated zoomInDown" data-modal-out="animated zoomOutUp"  style="top:10%;">
+  <div class="modal-content">
+    <h2 class="center">Уверены сохранить изменения в записи?</h2>
+    <!--p class="center fs14">Точно удалить?</p-->
+  </div>
+  <div class="modal-footer teal-lighten-5">
+    <a href="javascript:" class="modal-action modal-close  btn-flat white z-depth-1 red-text fs14 float-none">Отмена</a>
+    <a ng-click="$c.SaveBtn({confirm: true})" href="javascript:" class="modal-action modal-close  btn-flat white z-depth-1 green-text fs14">Да</a>
     
   </div>
 </div>

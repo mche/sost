@@ -241,8 +241,7 @@ const Component = function($scope, $rootScope, $element, $timeout, $http, $q, ap
     if(!$c.data["проект/id"]) $c.data["проект/id"] = $c.param["проект"].id || $c.param["проект"];
     $c.data.move = $c.param.move;
     
-    //~ console.log($c.data);
-    //~ return;
+    if (!!$c.data.id && !param.confirm) return $('#save-confirm', $element[0]).modal('open');///;
     
     //~ if ($c.cancelerHttp) $c.cancelerHttp.resolve();
     //~ $c.cancelerHttp = $q.defer();
