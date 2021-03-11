@@ -51,7 +51,7 @@ const Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, 
       //~ $c.InitRow(row);
       $timeout(() => {
         $c.data.splice(idx, 0, row);
-      });
+      }, 100);
     } else {///новая
       data._new = true;
       $c.data.unshift(data);
