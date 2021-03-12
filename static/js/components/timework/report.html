@@ -187,7 +187,7 @@
       <th style="width:1%;">
         <div class="green-text text-darken-3">Начислено?</div>
         <div class="blue-text text-darken-3"><i class="material-icons">local_post_office</i>Расчет?</div>
-        <div class="blue-text text-darken-3 tborder">в конверт</div>
+        <!--div class="blue-text text-darken-3 tborder">в конверт</div-->
       </th>
       <th style="width:1%;">Примечание</th>
     </tr></thead>
@@ -416,6 +416,11 @@
             {{ ($c.DataSumTotal('Сумма', row) + (row._row2 && row._row2['Начислено'][0] ? (parseFloat(Util.numeric(row._row2['Сумма'][0]) || 0)) : 0) ).toLocaleString('ru-RU') }}
           </div>
           
+          <!-- ИТОГОВЫЙ расчет -->
+          <div ng-if="Math.abs(parseFloat(row['РасчетЗП/флажок'])) >= 0 " class="nowrap fs12 blue-text text-darken-3 bold right-align" style="border-top: 1px solid;" title="{{ FIO }}&#10;Расчетная сумма в конверт">
+                <i class="material-icons" style="padding-right:0.5rem;">local_post_office</i>
+                <span class="">{{ (parseFloat(Util.numeric(row['РасчетЗП'] || 0)) + (row._row2 ? (parseFloat(Util.numeric(row._row2['РасчетЗП']) || 0)) : 0) ).toLocaleString('ru-RU') }}</span>
+          </div>
           
         </td>
         
@@ -466,11 +471,8 @@
             <label for="{{'крыжик выплаты двойника ' + row.$$hashKey }}" class=" before-yellow-lighten-4 middle " ng-class="{'through grey-text': !parseFloat(row._row2['Сумма'][0]),'green-text text-darken-3': !!parseFloat(row._row2['Сумма'][0]) && !(Math.abs(parseFloat(row._row2['РасчетЗП/флажок']))>=0)  && !(Math.abs(parseFloat(row['РасчетЗП/флажок'])) >= 0), 'blue-text text-darken-3': (Math.abs(parseFloat(row._row2['РасчетЗП/флажок'])) >= 0 || Math.abs(parseFloat(row['РасчетЗП/флажок'])) >= 0), 'strike-through': Math.abs(parseFloat(row['РасчетЗП/флажок'])) >= 0 && !row._row2[name][0],}">Да</label>
           </div>
           
-          <div ng-if="Math.abs(parseFloat(row['РасчетЗП/флажок'])) >= 0 " class="nowrap fs12 blue-text text-darken-3 bold right-align" style="border-top: 1px solid;" title="{{ FIO }}&#10;Расчетная сумма в конверт">
-              <!---к выплате   -->
-              <i class="material-icons" style="padding-right:0.5rem;">local_post_office</i>
-              <span class="">{{ (parseFloat(Util.numeric(row['РасчетЗП'] || 0)) + (row._row2 ? (parseFloat(Util.numeric(row._row2['РасчетЗП']) || 0)) : 0) ).toLocaleString('ru-RU') }}</span>
-          </div>
+          <!---к выплате перенес в начисления  -->
+
           
         </td><!--- конец крыжиков начислений--->
         
@@ -489,8 +491,8 @@
         <!--td></td>
         <td></td-->
         <!--td ng-if="$c.param['общий список'] || $c.param['общий список бригад'] || $c.param['бригада']"></td-->
-        <td title="общая сумма часов по списку"><div  class="fs14 green-text text-darken-3">{{ $c.DataSumTotal('всего часов', obj).toLocaleString('ru-RU') }}</div></td>
-        <td title="общая сумма смен по списку"><div class="fs14 green-text text-darken-3">{{ $c.DataSumTotal('всего смен', obj).toLocaleString('ru-RU') }}</div></td>
+        <td title="общая сумма часов по списку"><div  class="fs14 green-text text-darken-3 center">{{ $c.DataSumTotal('всего часов000', obj).toLocaleString('ru-RU') }}</div></td>
+        <td title="общая сумма смен по списку"><div class="fs14 green-text text-darken-3 center">{{ $c.DataSumTotal('всего смен000', obj).toLocaleString('ru-RU') }}</div></td>
         <td></td>
         <td></td>
         <!--td ng-if="$c.param['общий список'] || $c.param['общий список бригад'] || $c.param['бригада']"> <!--- Ставка суточ></td-->
@@ -499,7 +501,8 @@
           <div class="fs14 green-text text-darken-3 right-align" title="ИТОГО начислено">{{ $c.DataSumTotal('Сумма', obj).toLocaleString('ru-RU') }}</div>
         </td>
         <td>
-          <div ng-if="$c.param['общий список'] || $c.param['общий список бригад']"  class="fs14 blue-text text-darken-3 right-align" title="ИТОГО к выплате">{{ $c.DataSumTotal('РасчетЗП', obj).toLocaleString('ru-RU') }}</div>
+          <!-- ЛДИ убрал -->
+          <!-- div ng-if="$c.param['общий список'] || $c.param['общий список бригад']"  class="fs14 blue-text text-darken-3 right-align" title="ИТОГО к выплате">{{ $c.DataSumTotal('РасчетЗП', obj).toLocaleString('ru-RU') }}</div -->
         </td>
         <td></td>
       </tr>

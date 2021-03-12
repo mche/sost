@@ -321,12 +321,15 @@ return function /*конструктор*/($c, $scope, $element){
           //~ if(!val || (name == 'Сумма' /*&& row['РасчетЗП']*/ && !row['Начислено'][idx])) return;
           //~ else if (ifField !== undefined && !row[ifField][idx]) return;
           if (row_or_obj && !($c.param['общий список'] || $c.param['бригада'] || $c.param['общий список бригад'] || row['объекты'][idx] == row_or_obj.id)) return;
-          else if (val && (!!row['Начислено'][idx] || name=='Сумма' || name=="всего часов" || name=="всего смен")) sum += parseFloat(Util.numeric(val)) || 0;//val.replace(text2numRE, '').replace(/,/, '.')
+          else if (val && (!!row['Начислено'][idx] || name=='Сумма' )) sum +=  parseFloat(Util.numeric(row['РасчетЗП'])) || parseFloat(Util.numeric(val)) || 0;/*ЛДИ*/
+          else if (val && (!!row['Начислено'][idx] /*|| name=='Сумма' */|| name=="всего часов" || name=="всего смен")) sum += parseFloat(Util.numeric(val)) || 0;//val.replace(text2numRE, '').replace(/,/, '.')
           if ( name=='Сумма' && row['Доп. часы замстрой/начислено'] && row['Доп. часы замстрой/начислено'][idx]) sum += parseFloat(Util.numeric(row['Доп. часы замстрой/сумма'][idx] || 0));
         });
         //~ else if (ifField !== undefined && !row[ifField]) sum += 0;
         else if (row_or_obj &&  !($c.param['общий список'] || $c.param['бригада'] || $c.param['общий список бригад'] ||  row['объекты'].some(function(oid){ return oid == row_or_obj.id; })) ) return;
-        else if ( (name=='Сумма' || name=="всего часов" || name=="всего смен")) sum += parseFloat(Util.numeric(row[name])) || 0;//row[name].replace(text2numRE, '').replace(/,/, '.')
+        /*ЛДИ*/
+        else if (name=='Сумма' ) sum += parseFloat(Util.numeric(row['РасчетЗП'])) || parseFloat(Util.numeric(row[name])) || 0;
+        else if (name=="всего часов" || name=="всего смен") sum += parseFloat(Util.numeric(row[name])) || 0;//row[name].replace(text2numRE, '').replace(/,/, '.')
         else if (name == 'РасчетЗП' && Math.abs(parseFloat(row['РасчетЗП/флажок'])) >= 0) sum += parseFloat(Util.numeric(row[name])) || 0;
 
         if (name == 'Сумма' /*&& !!row['Суточные/сумма']*/) {
@@ -346,13 +349,9 @@ return function /*конструктор*/($c, $scope, $element){
 
   $c.ShowDetailOnSaveMoney = function(data){
     //~ console.log("ShowDetailOnSaveMoney", data);
-    /*$scope.add_money = undefined;
-    $timeout(function(){
-      $scope.add_money = true;
-    });*/
-    // обновить
     $c['Закрытие расчета']();
   };
+  
   /**Расчетный лист**/
   $c['Закрытие расчета'] = function(item){
     //~ console.log("Закрытие расчета", item);
