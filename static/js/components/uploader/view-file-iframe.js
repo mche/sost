@@ -48,10 +48,11 @@ CallbackWaitIframeLoad(){/// из
   var vm = this;
   var iframe = vm.$el.getElementsByTagName('iframe')[0];
   if (!iframe) return console.log("CallbackWaitIframeLoad просмотр закрыт");
+
   if (vm.iframe.timeouts.length > 50 /* 30*100 мсек = 3000 сек общее ожидание вызова просмотра*/)
     return console.log("CallbackWaitIframeLoad: нет просмотра по timeouts", Materialize.toast("Файл не просматривается, он скачался ", 3000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast'));///, vm.modal.modal('close'))
   
-  if (!iframe.contentDocument || iframe.contentDocument.URL/*contentWindow.document.URL*/ != 'about:blank') 
+  //~ if (!iframe.contentDocument || iframe.contentDocument.URL/*contentWindow.document.URL*/ != 'about:blank') 
     return vm.modal.modal('open');
   
   vm.iframe.timeouts.push(setTimeout(vm.CallbackWaitIframeLoad, 100));
