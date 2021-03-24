@@ -372,7 +372,7 @@ sub реестр_актов {
   #~ $self->app->log->error($self->app->dumper($param));
   
   my ($where, @bind) = $self->SqlAb->where({
-    $param->{"договоры"} ? (' d.id ' => \[ ' = any(?) ', $param->{"договоры"} ]) : (),
+    $param->{"договоры/id"} ? (' d.id ' => \[ ' = any(?) ', $param->{"договоры/id"} ]) : (),
     #~ q| not coalesce((coalesce(k."реквизиты",'{}'::jsonb)->'физ. лицо'), 'false')::boolean |=>\[],
     $param->{'проект/id'} ? (' pr."проект/id" ' => $param->{'проект/id'}) : (),
  #    ' dp."объект/id" ' => \[ ' = any(?) ', $param->{"объекты"} ],

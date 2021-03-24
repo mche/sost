@@ -638,8 +638,8 @@ sub реестр_актов_xlsx {
   my $c = shift;
   require Excell;
   
-  my ($month, $month2, $project) = split /:/, $c->param('month');
-  my $data = $c->model->реестр_актов("месяц"=>$month, "месяц2"=>$month2, "проект/id"=>$project, "счет или акт"=>'акт', "uid"=>$c->auth_user->{id});
+  my ($month, $month2, $project, $contract_ids) = split /:/, $c->param('month');
+  my $data = $c->model->реестр_актов("месяц"=>$month, "месяц2"=>$month2, "проект/id"=>$project, $contract_ids ? ("договоры/id"=>[split(/,/, $contract_ids)]) : (), "счет или акт"=>'акт', "uid"=>$c->auth_user->{id});
   my $tmp = Excell::реестр_актов($data);
   $c->render_file(filepath => $tmp, filename => 'реестр-актов.xlsx', format=>'xlsx', cleanup=>1,);
 }

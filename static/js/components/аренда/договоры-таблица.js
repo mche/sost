@@ -98,11 +98,10 @@ ProjectData(){/// проекты - арендодатели
 LoadData(){
   var vm = this;
   vm._loader = new $Список(appRoutes.urlFor('аренда/договоры/список'));
-  //~ return $http.post(appRoutes.urlFor('аренда/договоры/список'), {})
   return vm._loader.Load()
     .then(function(resp){
-      //~ vm.data.push(...resp.data);
-       vm.data = vm._loader.Data();
+      vm.data = vm._loader.Data();
+      vm.$договоры = vm._loader.$Data();
       return vm.data;
     });
 },
@@ -279,27 +278,13 @@ PrintPay(month, month2){/// счета и акты
 Reestr(month, month2){
   var vm = this;
   var modal = $('#modal-pay', $(vm.$el));
-
-  //~ return $http.get(appRoutes.url_for('аренда/реестр актов.xlsx', month)).then(function(resp){
-    //~ var copy = copyTextToClipboard(resp.data.join('\n'));
-    //~ var success = function(msg){
-      //~ Materialize.toast('Скопировано! ', 2000, 'blue-text text-darken-3 blue lighten-5 fw500 border animated zoomInUp fast');
-    //~ };
-    //~ setTimeout(function(){
-      //~ if (copy.then) copy.then(success);
-      //~ if (copy == 'success') success(copy);
-      ///console.log('CopyQuestions', copy);
-    //~ }, 10);
-    
-    //~ vm.UpdateClipboard(resp.data.join('\n'));
-    
-    //~ vm.clipBoard = resp.data.join('\n');
-    //~ setTimeout(function(){
-      //~ vm.CopyClipBoard();
-    //~ });
-  //~ });
+  var ids = ///vm.data.filter((item)=>{ return !!item['крыжик']; })
+    vm.checkedItems.map((item)=>{ return item.id; }).join();
   vm.httpProcess  = true;
-  window.location.href = appRoutes.url_for('аренда/реестр актов.xlsx', month+ ':'+(month2 || '')+':'+(vm.filters['арендодатель'] ? vm.filters['арендодатель'].id : ''));
+  window.location.href = appRoutes.url_for('аренда/реестр актов.xlsx',
+    month+ ':'+(month2 || '')
+    +':'+(vm.filters['арендодатель'] ? vm.filters['арендодатель'].id : '')
+    +':'+ (ids || ''));
   setTimeout(()=>{
     vm.httpProcess  = false;
     modal.modal('close');
@@ -519,6 +504,7 @@ const  data = function(){
     //{/// src
     "ready": false,
     //~ "data": [],
+    //~ "$договоры":{},/// хэш договоров по id
     "filteredData":[],
     "newContract": undefined,
     "selectedContract": undefined,
