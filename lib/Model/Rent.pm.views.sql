@@ -137,7 +137,7 @@ group by d.id, /*dop."дата1",*/ dop."сумма нал", dop.id
 DROP FUNCTION IF EXISTS "аренда/договоры/id/@даты"();
 DROP FUNCTION IF EXISTS "аренда/договоры/доп.согл/id/даты"() CASCADE;
 CREATE OR REPLACE FUNCTION "аренда/договоры/доп.согл/id/даты"()
-RETURNS TABLE("договор/id" int, "доп.согл./id" int, "дата1" date, "дата2" date, "дней оплаты первого месяца" int, "номер доп.согл." int)
+RETURNS TABLE("договор/id" int, "доп.согл./id" int, "дата1" date, "дата2" date, "дней оплаты первого месяца" int, "дней оплаты последнего месяца" int, "номер доп.согл." int)
 AS $func$
 /*
 ** мощная развязка договоров с доп. согл. по границам дат действия
@@ -184,6 +184,9 @@ select d1."договор/id", d1."@доп.согл./id"[o1.n1-1] as "доп.с�
   case when date_trunc('month', o1.d1)=date_trunc('month', o2.d2) then o2.d2 - o1.d1+1---- косяк??
     when d1."@доп.согл./id"[o1.n1-1] is not null then extract(day from date_trunc('month', o1.d1::date + interval '1 month')-o1.d1::date)::int
   else null::int end,--*-- количество дней для первого месяца (когда в первом месяце договора сразу доп соглашение)
+  case when (date_trunc('month', o2.d2::date + interval '1 month')-interval '1 day')::date=o2.d2::date then null::int 
+    else  extract(day from o2.d2::date - date_trunc('month', o2.d2::date))::int --- +1 день?
+  end as "дней оплаты последнего месяца", --- (когда в последнем месяце договора еще доп соглашение)
   (o1.n1-1)::int
 from agg d1, unnest(d1."@даты") with ordinality o1(d1, n1),
   agg d2, unnest(d2."@даты") with ordinality o2(d2, n2)
@@ -240,14 +243,15 @@ from
         
       from (
         select d.*, m."дата", m."@категории/id", m."@категории/title",
-          coalesce(case when date_trunc('month', m."дата"::date)=date_trunc('month', d."дата1") then d."дней оплаты первого месяца" else null::int end, m."дней оплаты", 
+          coalesce(case when date_trunc('month', m."дата"::date)=date_trunc('month', d."дата1") then d."дней оплаты первого месяца" else null::int end,
+          ---m."дней оплаты", 
           case 
             when date_trunc('month', m."дата"::date)=date_trunc('month', d."дата1") and date_trunc('month', m."дата"::date)=date_trunc('month',  d."дата2")
               then d."дата2"-d."дата1"
-            when date_trunc('month', m."дата"::date)=date_trunc('month',  d."дата2")
-              then d."дата2"-m."дата"::date
             when date_trunc('month', m."дата"::date)=date_trunc('month',  d."дата1")
               then (m."дата"+interval '1 month')::date-d."дата1"
+            when date_trunc('month', m."дата"::date)=date_trunc('month',  d."дата2")
+              then coalesce(d."дней оплаты последнего месяца", d."дата2"-m."дата"::date)
             else
                extract(day FROM date_trunc('month', m."дата"::date)+interval '1 month - 1 day' )
             end

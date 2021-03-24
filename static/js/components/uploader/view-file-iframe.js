@@ -46,31 +46,31 @@ ViewIframe(file){///
 
 CallbackWaitIframeLoad(){/// из
   var vm = this;
-  //~ vm.modal.modal('open');
+  vm.modal.modal('open');
   var iframe = vm.$el.getElementsByTagName('iframe')[0];
   if (!iframe) {
     vm.modal.modal('close');
     return console.log("CallbackWaitIframeLoad просмотр закрыт");
   }
   
-  try {
-    if (!!iframe.contentWindow.document.body && !!iframe.contentWindow.document.body.childElementCount) 
-      return vm.modal.modal('open');
-  } catch (e) {
-    return vm.modal.modal('open');
-  }
+  //~ try {
+    //~ if (!!iframe.contentWindow.document.body && !!iframe.contentWindow.document.body.childElementCount) 
+      //~ return vm.modal.modal('open');
+  //~ } catch (e) {
+    //~ return vm.modal.modal('open');
+  //~ }
   
 
-  if (vm.iframe.timeouts.length < 30 /* 30*100 мсек = 3000 сек общее ожидание вызова просмотра*/)
-    return vm.iframe.timeouts.push(setTimeout(vm.CallbackWaitIframeLoad, 100));///return vm.modal.modal('close');
-    //~ return console.log("CallbackWaitIframeLoad: нет просмотра по timeouts", Materialize.toast("Файл не просматривается, он скачался ", 3000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast'));///, vm.modal.modal('close'))
+  //~ if (vm.iframe.timeouts.length < 30 /* 30*100 мсек = 3000 сек общее ожидание вызова просмотра*/)
+    //~ return vm.iframe.timeouts.push(setTimeout(vm.CallbackWaitIframeLoad, 100));///return vm.modal.modal('close');
+    
+  
+  //~ return console.log("CallbackWaitIframeLoad: нет просмотра по timeouts", Materialize.toast("Файл не просматривается, он скачался ", 3000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast'));///, vm.modal.modal('close'))
    
   
   //~ if (!iframe.contentDocument || iframe.contentDocument.URL/*contentWindow.document.URL*/ != 'about:blank') {
   
-  console.log("CallbackWaitIframeLoad: нет просмотра по timeouts", Materialize.toast("Файл не просматривается, он скачался ", 3000, 'orange-text text-darken-3 orange lighten-4 fw500 border animated flash fast'));
-  //~ vm.modal.modal('close');
-  //~ vm.iframe = undefined;
+  //~ console.log("CallbackWaitIframeLoad: нет просмотра по timeouts", Materialize.toast("Файл не просматривается, он скачался ", 3000, 'orange-text text-darken-3 orange lighten-4 fw500 border animated flash fast'));
 
     
     
