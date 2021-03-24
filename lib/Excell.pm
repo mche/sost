@@ -56,8 +56,8 @@ sub сальдовка ($data) {# движение арендатора
         #~ format   => $format,
     #~ }
 #~ );
-    $sum[0] += $_->{'приход/num'};
-    $sum[1] += $_->{'расход/num'};
+    $sum[0] += $_->{'приход/num'} || 0;
+    $sum[1] += $_->{'расход/num'} || 0;
   }
   # подвал
   $worksheet->write_row($n, 0, [ 'Всего',], $workbook->add_format( bold => 1, size=>14, align=>'right', top=>1));

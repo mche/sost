@@ -430,6 +430,7 @@ MoneyXLS(){/// выписка по арендатору
     //~ if (resp.data.xlsx) window.location.href = appRoutes.urlFor('аренда/движение по арендатору#xlsx', resp.data.xlsx);/// а это get-запрос
     if (resp.data.file) window.location.href = appRoutes.urlFor('временный файл', resp.data.file+'?filename='+(resp.data.filename || ''));
     if (resp.data.data) console.log("счет", resp.data.data);///отладка
+    if (resp.data['балансы']) vm['балансы'] = resp.data['балансы'];
     //~ window.location.href = appRoutes.urlFor('тмц/накладная.docx', $c.data.id);
   });
 },
@@ -514,6 +515,7 @@ const data = function() {
     "projectData": undefined,
     "httpProcess": undefined,
     "valid":undefined,
+    "балансы": undefined,
     //~ "uploads": [],
   };
   //);

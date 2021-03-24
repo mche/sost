@@ -69,12 +69,26 @@ sub движение_ДС_xlsx {
   require Excell;
   
   my $data = $c->model_report_rent->движение_арендатора($param);
+  #~ $c->log->error("движение_арендатора", $c->dumper($data));
+  # короч, посчитать баланс без обеспечительного платежа
+  my $r = {'сальдо'=>0, 'обеспечительный платеж'=>0};
+  map {
+    if ($_->{"категории"}[-1] eq 929979) {#~ "категории" => [3,121952, 929979], это обеспечительный платеж
+      $r->{'обеспечительный платеж'} += $_->{"приход/num"} || 0;
+      $r->{'обеспечительный платеж'} -= $_->{"расход/num"} || 0;
+    } else {
+      $r->{'сальдо'} += $_->{"приход/num"} || 0;
+      $r->{'сальдо'} -= $_->{"расход/num"} || 0;
+    }
+    
+  } @$data;
+      
   my $tmp = Excell::сальдовка($data);
   #~ return $fdata;
   #~ $c->render(json=>{'xlsx'=>$xlsx});
   # Render data from memory as file
   #~ $c->render_file('filepath' => "static/$xlsx", 'filename' => 'выписка по арендатору.xlsx', format=>'xlsx');
-  return $c->render(json=>{file=>$tmp->basename, filename => 'выписка по арендатору.xlsx', format=>'xlsx', });
+  return $c->render(json=>{file=>$tmp->basename, filename => 'выписка по арендатору.xlsx', format=>'xlsx', "балансы"=>$r, });
 }
 
 
