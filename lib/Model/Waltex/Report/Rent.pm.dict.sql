@@ -5,9 +5,7 @@ from
   join refs r on d.id=r.id2
   join "контрагенты" k on k.id=r.id1
   
-
-@@ движение арендатора
-select {%= $select || '*' %} from (
+@@ движение
 select m.*,
   -------------------------------------------------
   timestamp_to_json(m."дата") as "$дата",
@@ -58,7 +56,12 @@ union all
         join "аренда/договоры" d on d.id=rr.id1
     
     ) d on d."аренда/расходы/id"=r.id
+--- без ;
 
+
+@@ движение арендатора
+select {%= $select || '*' %} from (
+  {%= $dict->render('движение') %}
 ) a
 {%= $where || '' %}
 {%= $order_by || '' %}

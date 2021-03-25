@@ -6,7 +6,7 @@ use Mojo::Base 'Controll::Waltex::Report';
 #~ has model_wallet => sub {shift->app->models->{'Wallet'}};
 #~ has model_waltex => sub {shift->app->models->{'Waltex::Report'}};
 #~ has controll_report => sub { Controll::Waltex::Report->new(app=>shift->app); };
-has model_report_rent => sub { $_[0]->app->models->{'Waltex::Report::Rent'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
+has model => sub { $_[0]->app->models->{'Waltex::Report::Rent'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
 
 sub index {#пока нет
   my $c = shift;
@@ -25,7 +25,7 @@ sub data {
     #~ if $param->{'data'} || $param->{'строки'} || $param->{'колонки'};
   
   delete $param->{'все контрагенты'};
-  $param->{'контрагенты'} = $c->model_report_rent->контрагенты();
+  $param->{'контрагенты'} = $c->model->контрагенты();
   $param->{'аренда'}  = 1;
   #~ $param->{'все проекты'} = 1;
   #~ $param->{'проект'} = {"id"=>0};
@@ -53,22 +53,11 @@ sub строка {
 sub движение_ДС_xlsx {
   my $c = shift;
 
-  #~ my $xlsx = $c->stash('xlsx'); # имя файла
-  #~ return $c->render_file(
-    #~ 'filepath' => "static/tmp/$xlsx",
-    #~ 'filename' => 'выписка по арендатору.xlsx',
-     #~ format=>'xlsx',
-    #~ ##~ 'format'   => 'pdf',                 # will change Content-Type "application/x-download" to "application/pdf"
-    #~ ##~ 'content_disposition' => 'inline',   # will change Content-Disposition from "attachment" to "inline"
-    #~ 'cleanup'  => 1,                     # delete file after completed
-  #~ )  if $c->req->method eq 'GET';#$docx;
-  
-  # вресенный файл-выписка по POST
   my $param =  $c->req->json || {};
 
   require Excell;
   
-  my $data = $c->model_report_rent->движение_арендатора($param);
+  my $data = $c->model->движение_арендатора($param);
   #~ $c->log->error("движение_арендатора", $c->dumper($data));
   # короч, посчитать баланс без обеспечительного платежа
   my $r = {'сальдо'=>0, 'обеспечительный платеж'=>0};
@@ -89,6 +78,15 @@ sub движение_ДС_xlsx {
   # Render data from memory as file
   #~ $c->render_file('filepath' => "static/$xlsx", 'filename' => 'выписка по арендатору.xlsx', format=>'xlsx');
   return $c->render(json=>{file=>$tmp->basename, filename => 'выписка по арендатору.xlsx', format=>'xlsx', "балансы"=>$r, });
+}
+
+sub долги_xls {
+  my $c = shift;
+  my $param =  $c->req->json || {};
+  require Excell;
+  my $data = $c->model->долги($param);
+  my $file = Excell::долги_по_аренде($data);
+  return $c->render(json=>{file=>$file->basename, filename => 'реестр долгов.xlsx', format=>'xlsx', });
 }
 
 

@@ -59,9 +59,9 @@
       </div>
       <div v-if="this['балансы']"><!-- подгрузил расчет задолженности с вычленением обеспечительного платежа -->
         <ul>
-          <li class="right-align">Обеспечительный платеж: <span class="chip bold z-depth-1 green-text text-darken-2 light-green lighten-3"><span>{{  ParseNum(this['балансы']['обеспечительный платеж']).toLocaleString({"currency": 'RUB', "minimumFractionDigits":2,}) || 'нет' }}</span> <span class="grey-text">₽</span></span></li>
-          <li v-show=" this['балансы']['сальдо'] > 0" class="right-align ">Переплата арендатора: <span class="chip bold z-depth-1 green-text text-darken-2 light-green lighten-3"><span>{{ ParseNum(this['балансы']['сальдо']).toLocaleString({"currency": 'RUB', "minimumFractionDigits":2,}) }}</span> <span class="grey-text">₽</span></span></li>
-          <li v-show=" this['балансы']['сальдо'] < 0" class="right-align ">Задолженность арендатора: <span class="chip bold z-depth-1 purple-text text-darken-2 purple lighten-4"><span>{{ ParseNum(this['балансы']['сальдо']).toLocaleString({"currency": 'RUB', "minimumFractionDigits":2,}) }}</span> <span class="grey-text">₽</span></span></li>
+          <li class="right-align">Обеспечительный платеж: <span class="chip bold z-depth-1 green-text text-darken-2 light-green lighten-3"><span>{{  this['балансы']['обеспечительный платеж'].toLocaleString({"currency": 'RUB', "minimumFractionDigits":2,}) || 'нет' }}</span> <span class="grey-text">₽</span></span></li>
+          <li v-show=" this['балансы']['сальдо'] > 0" class="right-align ">Переплата арендатора: <span class="chip bold z-depth-1 green-text text-darken-2 light-green lighten-3"><span>{{ this['балансы']['сальдо'].toLocaleString({"currency": 'RUB', "minimumFractionDigits":2,}) }}</span> <span class="grey-text">₽</span></span></li>
+          <li v-show=" this['балансы']['сальдо'] < 0" class="right-align ">Задолженность арендатора: <span class="chip bold z-depth-1 purple-text text-darken-2 purple lighten-4"><span>{{ this['балансы']['сальдо'].toLocaleString({"currency": 'RUB', "minimumFractionDigits":2,}) }}</span> <span class="grey-text">₽</span></span></li>
         </ul>
       </div>
     </div>
