@@ -150,39 +150,28 @@
       <!--div class="chip padd-0-05"><a @click="AllChbsChange(!allChbs)" href="javascript:" class="hover-shadow3d">договоров {{ filteredData.length }}</a></div-->
     </td>
     <td class="padd-05 relative" style="width:calc(30vw);">
+        <div class="relative"><a @click=" ReestrBalance() " href="javascript:" :disabled="!filters['арендодатель'] || !filters['арендодатель'].id" class="btn" :class=" [!filters['арендодатель'] || !filters['арендодатель'].id ? 'grey lighten-3 grey-text' : 'red-text text-accent-4 white'] " style="position: absolute;  right: 0; z-index: 1;"  title="без обеспечительного платежа!"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 511 511" class="" :class="[!filters['арендодатель'] || !filters['арендодатель'].id ? 'grey-fill ': ' red-fill-accent-4 ']" style="height: 1.5rem;"><use xlink:href="/fonts/rent.svg?2021-03-26#time-bomb"></use></svg><!--i class="material-icons">receipt</i--> <span>Долги</span></a></div>
+<!-- фильтр по объекту :data-list=" rentObjects "-->
+        <div v0000-if=" rentObjects.length " class="">
+          <h6 v-show="!!filters['объект']" class="iblock" >Договоры по объекту</h6>
+          <v-object-select :key="keys['объект']" :select=" {/*не нужен*/} " :param="{placeholder: 'Договоры по объекту','без поля поиска': true, ulDropDownClass: 'striped blue lighten-4'}" @on-select-object=" SelectObjectFilter "></v-object-select>
+        </div>
 
 
-      <table>
+      <!--table>
         <thead >
           <tr class="line-height-10-000">
-            <th class="vbottom">
-              <!-- фильтр по объекту :data-list=" rentObjects "-->
-              <div v0000-if=" rentObjects.length " class="">
-                <h6 v-show="!!filters['объект']">Договоры по объекту</h6>
-                <v-object-select :key="keys['объект']" :select=" {/*не нужен*/} " :param="{placeholder: 'Договоры по объекту','без поля поиска': true, ulDropDownClass: 'striped blue lighten-4'}" @on-select-object=" SelectObjectFilter "></v-object-select>
-                <!--v-select :select=" filters['объект'] " :items=" rentObjects " :param=" {'без поля поиска': true} " @on-select=" SelectObjectFilter ">
-                  <template v-slot:selected="{ selected }">
-                    <h5 class="fw500 blue-text text-darken-3 animated fadeIn slow hover-bottom-shadow-blue-darken-3" style="">{{ (selected && selected.$item && selected.$item.name) || 'По объекту' }}</h5>
-                  </template>
-                  <template v-slot:listItem="{ listItem, selected }">
-                    <h4 class0000=" ItemClass(obj) " class=" blue-text text-darken-3 relative"  :class="{'bold': listItem === selected}"  style="">
-                        <span>★ {{ listItem.$item.name }}</span>
-                        <span class="grey-text fs7" style="position:absolute; right:0; bottom:0;">#{{ listItem.id }}</span>
-                    </h4>
-                  </template>
-                </v-select--->
-              </div>
-            </th>
+            <th class="vbottom"></th>
             <!--th class="vbottom" style="width:1%;"></th>
             <th class="vbottom" style="width:1%;"></th>
             <th class="vbottom" style="width:1%;"><h6 class="bold" style="width: calc(5vw);">Площадь</h6></th>
             <th class="vbottom right-align" style="width:1%;"><h6 class="bold nowrap" style="width: calc(5vw);">₽ за м²/мес.</h6></th>
             <th class="vbottom right-align" style="width:1%;"><h6 class="bold nowrap" style="width: calc(5vw);">₽/мес.</h6></th>
             <th style="width:1%;"></th--><!--Примеч.-->
-            <th colspan="6"></th>
+            <!--th colspan="6"></th>
           </tr>
         </thead>
-      </table>
+      </table--->
     </td>
   </tr>
 </thead>
@@ -198,6 +187,11 @@
           <span> {{ item['$контрагент'].title }} </span>
         </a>
       </h5>
+      
+      <div v-if="item['долг контрагента']" class="chip bold nowrap " :class="[ParseNum(item['долг контрагента']['сумма/numeric']) < 0 ? 'red-text text-accent-4' : 'green-text text-accent-4']">
+        <svg v-show="ParseNum(item['долг контрагента']['сумма/numeric']) < 0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 511 511" class="red-fill-accent-4 " style="height: 1rem;"><use xlink:href="/fonts/rent.svg?2021-03-26#time-bomb"></use></svg>
+        {{ item['долг контрагента']['сумма'] }}
+      </div>
       
       <transition leave-active-class="animated zoomOutUp">
         <div v-if=" item._edit " style="position: absolute; z-index:1; " :style="EditItemStyle">
@@ -426,7 +420,7 @@
     <a @click=" PrintPay(payMonth, payMonth2) " href="javascript:" class="modal-action waves-effect waves-green btn-flat z-depth-1 blue lighten-4 black-text text-darken-4" style="float:none;"><!-- svg ng-hide="$c.cancelerHttp" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 50 50" class="blue-fill " style="height: 1.7rem;"><use xlink:href="/fonts/icons.svg#ms-word" class=""></use></svg --><i class="material-icons">print</i> <span>Получить распечатку</span></a>
     <a @click=" Reestr(payMonth, payMonth2) " href="javascript:" class="modal-action waves-effect waves-green btn-flat z-depth-1 green lighten-4 green-text text-darken-4" style="float:none;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="green-fill-darken-4 padd-0-05" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg?2021-02-03#excel"></use></svg><!--i class="material-icons">receipt</i--> <span>Реестр счетов и актов</span></a>
     <a @click=" SendMail(payMonth, payMonth2) " href="javascript:" class="modal-action waves-effect waves-green btn-flat z-depth-1 purple lighten-3 purple-text text-darken-3" style="float:none;"><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0  490 490" class="purple-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/rent.svg?20200929#email"></use></svg><span>Отправить на почту</span></a>
-    <a  href="javascript:" class="modal-action modal-close waves-effect waves-red btn-flat z-depth-1 red lighten-3 red-text text-darken-3" style="float:none;"><i class="material-icons">cancel</i><span>Отмена</span></a>
+    <a  href="javascript:" class="modal-action modal-close waves-effect waves-red btn-flat z-depth-1 red lighten-3 red-text text-darken-3" style=""><i class="material-icons">cancel</i><span>Закрыть</span></a>
   </div>
 
 </div>

@@ -101,7 +101,7 @@ LoadData(){
   return vm._loader.Load()
     .then(function(resp){
       vm.data = vm._loader.Data();
-      vm.$договоры = vm._loader.$Data();
+      //~ vm.$договоры = vm._loader.$Data();
       return vm.data;
     });
 },
@@ -287,10 +287,46 @@ Reestr(month, month2){
     +':'+ (ids || ''));
   setTimeout(()=>{
     vm.httpProcess  = false;
-    modal.modal('close');
+    //~ modal.modal('close');
   }, 2000);
   
 },
+
+//~ _ForEachDebt(item, debt){ if (item.$контрагент.id === debt['контрагент/id']) vm.$set(item, 'долг контрагента', debt); },
+
+ReestrBalance(){/// реестр долгов (пока в целом контрагенту, без разделения договоров)
+  var vm = this;
+  var modal = $('#modal-pay', $(vm.$el));
+  var ids = ///vm.data.filter((item)=>{ return !!item['крыжик']; })
+    vm.checkedItems.map((item)=>{ return item.$контрагент.id; });
+    
+  vm.httpProcess = true;
+  /// вернет урл для GET-запроса
+  return $http.post(appRoutes.urlFor('аренда/реестр долгов.xlsx'), {"арендодатель": vm.filters['арендодатель'].id, "контрагенты/id": ids,}).then(function(resp){
+    vm.httpProcess  = false;
+    //~ modal.modal('close');
+    if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 border fw500  animated zoomInUp');
+    //~ if (resp.data.xlsx) window.location.href = appRoutes.urlFor('аренда/движение по арендатору#xlsx', resp.data.xlsx);/// а это get-запрос
+    //~ if (resp.data.file) window.location.href = appRoutes.urlFor('временный файл', resp.data.file+'?filename='+(resp.data.filename || ''));
+    if (resp.data.data) {//
+      const debt = function(item) {  if (item.$контрагент.id === this['контрагент/id']) vm.$set(item, 'долг контрагента', this); };
+      for (let idx = 0, len = resp.data.data.length; idx < len; ++idx) {
+        (vm.checkedItems && vm.checkedItems.length ?  vm.checkedItems : vm.data).forEach(debt, resp.data.data[idx]);///отладка
+      }
+    }
+    //~ window.location.href = appRoutes.urlFor('тмц/накладная.docx', $c.data.id);
+  });
+},
+    
+  //~ window.location.href = appRoutes.url_for('аренда/реестр долгов.xlsx',
+    //~ month+ ':'+(month2 || '')
+    //~ +':'+(vm.filters['арендодатель'] ? vm.filters['арендодатель'].id : '')
+    //~ +':'+ (ids || ''));
+  //~ setTimeout(()=>{
+    //~ vm.httpProcess  = false;
+    //~ modal.modal('close');
+  //~ }, 2000);
+
 
 SendMail(month, month2, send){/// без send выйдет просмотр таблички
   let vm = this;

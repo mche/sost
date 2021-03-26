@@ -65,3 +65,15 @@ select {%= $select || '*' %} from (
 ) a
 {%= $where || '' %}
 {%= $order_by || '' %}
+
+
+@@ долги
+select m.*
+from (
+  select "контрагент/id", sum("сумма") as "сумма", sum("сумма"::numeric) as "сумма/numeric"
+  from ({%= $dict->render('движение арендатора', where=>$where) %}) m
+  group by "контрагент/id"
+) m
+  --~ join "контрагенты" k on k.id=m."контрагент/id"
+%#  {%= $where || '' %}
+{%= $order_by || '' %}

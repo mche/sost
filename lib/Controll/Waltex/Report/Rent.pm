@@ -80,13 +80,15 @@ sub движение_ДС_xlsx {
   return $c->render(json=>{file=>$tmp->basename, filename => 'выписка по арендатору.xlsx', format=>'xlsx', "балансы"=>$r, });
 }
 
-sub долги_xls {
+sub реестр_долгов_xls {
   my $c = shift;
   my $param =  $c->req->json || {};
-  require Excell;
+  #~ my ($month, $month2, $project, $contract_ids) = split /:/, $c->param('args');
+  #~ require Excell;
   my $data = $c->model->долги($param);
-  my $file = Excell::долги_по_аренде($data);
-  return $c->render(json=>{file=>$file->basename, filename => 'реестр долгов.xlsx', format=>'xlsx', });
+  #~ my $file = Excell::долги_по_аренде($data);
+  #~ return $c->render(json=>{file=>$file->basename, filename => 'реестр долгов.xlsx', format=>'xlsx', });
+  return $c->render(json=>{data=>$data});
 }
 
 
