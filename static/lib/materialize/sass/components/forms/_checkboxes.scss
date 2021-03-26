@@ -102,8 +102,10 @@ form p:last-child {
     //height: 22px;
     border-top: 2px solid transparent;
     border-left: 2px solid transparent;
-    border-right: $radio-border;
-    border-bottom: $radio-border;
+    ///border-right: $radio-border+1;
+    ///border-bottom: $radio-border;
+    border-right: 3px solid;
+    border-bottom: 2px solid;
     transform: rotate(40deg);
     backface-visibility: hidden;
     transform-origin: 100% 100%;

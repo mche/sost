@@ -144,8 +144,8 @@
       <!-- все крыжики-->
       <div class="input-field chip  hoverable nowrap">
         <input type="checkbox" id="все крыжики" v-model="allChbs" @change="AllChbsChange">
-        <label for="все крыжики" class="hover-shadow3d chip hoverable                  before-yellow-lighten-4 orange-text yellow lighten-4" style="padding-left: 16px;"></label>
-        <label for="все крыжики"><h6 class="orange-text text-darken-4" :class="{'bold000': allChbs}"> <span class="chip white padd-0-05 bold z-depth-1 ">{{ checkedItems.length }}</span> из <span class="chip white padd-0-05 bold z-depth-1 ">{{ filteredData.length }}</span></h6></label>
+        <label for="все крыжики" class="hover-shadow3d chip hoverable                  before-yellow-lighten-4 teal-text-darken-3 yellow lighten-4 shadow-inset-05" style="padding-left: 16px;"></label>
+        <label for="все крыжики"><h6 class="orange-text-000-text-darken-4" :class="{'bold000': allChbs}"> <span class="chip white padd-0-05 bold z-depth-1 ">{{ checkedItems.length }}</span> из <span class="chip white padd-0-05 bold z-depth-1 ">{{ filteredData.length }}</span></h6></label>
       </div>
       <!--div class="chip padd-0-05"><a @click="AllChbsChange(!allChbs)" href="javascript:" class="hover-shadow3d">договоров {{ filteredData.length }}</a></div-->
     </td>
@@ -188,7 +188,7 @@
         </a>
       </h5>
       
-      <div v-if="item['долг контрагента']" class="chip bold nowrap " :class="[ParseNum(item['долг контрагента']['сумма/numeric']) < 0 ? 'red-text text-accent-4' : 'green-text text-accent-4']">
+      <div v-if="item['долг контрагента']" class="chip bold nowrap shadow-inset-10" :class="[ParseNum(item['долг контрагента']['сумма/numeric']) < 0 ? 'red-text text-accent-4' : 'green-text text-accent-4']">
         <svg v-show="ParseNum(item['долг контрагента']['сумма/numeric']) < 0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 511 511" class="red-fill-accent-4 " style="height: 1rem;"><use xlink:href="/fonts/rent.svg?2021-03-26#time-bomb"></use></svg>
         {{ item['долг контрагента']['сумма'] }}
       </div>
@@ -205,7 +205,7 @@
         <!-- крыжик -->
         <!--div class="input-field"-->
           <input type="checkbox" :id="`крыжик-${item.id}`" :value="item" v-model=" checkedItems ">
-          <label :for="`крыжик-${item.id}`" class="hover-shadow3d chip hoverable                  before-yellow-lighten-4 orange-text yellow lighten-4" :class000="!{'before-yellow-lighten-4 orange-text yellow lighten-4': !filters['архивные договоры'], 'before-maroon-lighten-5 maroon-text maroon lighten-5': filters['архивные договоры']}" style="position:absolute; right:0; top: 0; padding-left:16px;" ></label>
+          <label :for="`крыжик-${item.id}`" class="hover-shadow3d chip hoverable                  before-yellow-lighten-4 teal-text-darken-3 yellow lighten-4 shadow-inset-05" :class000="!{'before-yellow-lighten-4 orange-text yellow lighten-4': !filters['архивные договоры'], 'before-maroon-lighten-5 maroon-text maroon lighten-5': filters['архивные договоры']}" style="position:absolute; right:0; top: 0; padding-left:16px;" ></label>
         <!--/div-->
       </div>
       <div class="relative line-height-10" style="">
