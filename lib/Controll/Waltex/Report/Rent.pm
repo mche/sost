@@ -84,11 +84,13 @@ sub реестр_долгов_xls {
   my $c = shift;
   my $param =  $c->req->json || {};
   #~ my ($month, $month2, $project, $contract_ids) = split /:/, $c->param('args');
-  #~ require Excell;
+  require Excell;
   my $data = $c->model->долги($param);
-  #~ my $file = Excell::долги_по_аренде($data);
-  #~ return $c->render(json=>{file=>$file->basename, filename => 'реестр долгов.xlsx', format=>'xlsx', });
-  return $c->render(json=>{data=>$data});
+  my $p = $c->model->проект($param->{'арендодатель'});
+  #~ $c->log->error($c->dumper($c->app->json->decode($p->{'$now'})));
+  my $file = &Excell::долги_по_аренде($data, $p, $c->app->json->decode($p->{'$now'}));
+  return $c->render(json=>{file=>$file->basename, filename => 'реестр долгов.xlsx', format=>'xlsx', data=>$data});
+  #~ return $c->render(json=>{data=>$data});
 }
 
 

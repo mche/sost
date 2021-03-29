@@ -16,7 +16,7 @@ sub сальдовка ($data) {# движение арендатора
   my $workbook  = Excel::Writer::XLSX->new( $xfh );
   my $worksheet = $workbook->add_worksheet('Все договоры');
   
-  my @names = ('дата', 'оплата (приход)', 'счета/акты',  'категория', 'примечание');
+  my @columns = ('дата', 'оплата (приход)', 'счета/акты',  'категория', 'примечание');
   
   my %color = (
     'плюс'=>{color => 'green'},#, bg_color=>'#C8E6C9',
@@ -35,7 +35,7 @@ sub сальдовка ($data) {# движение арендатора
 
   my $n = 5;
   $worksheet->set_row($n, 20);
-  $worksheet->write_row($n++, 0, \@names, $workbook->add_format( bold => 1, bottom=>1, align=>'center', bg_color=>'#B2DFDB',));#
+  $worksheet->write_row($n++, 0, \@columns, $workbook->add_format( bold => 1, bottom=>1, align=>'center', bg_color=>'#B2DFDB',));#
   my @sum  = (0, 0);
   $worksheet->set_column( 0, 0, 15 );
   $worksheet->set_column( 1, 2, 15 );
@@ -303,6 +303,47 @@ sub медкол_результаты_цепочки ($param, $data) {
       );
     }
   }
+  $workbook->close();
+  return $tmp;
+}
+
+sub долги_по_аренде ($data, $project, $now) {
+  my $tmp = Mojo::File::tempfile(DIR=>'static/tmp');
+  $$tmp .= '.xlsx';
+  #~ open my $xfh, '>', \my $fdata or die "Failed to open filehandle: $!";
+  open my $xfh, '>', $tmp->to_string
+    or die "Failed to open filehandle: $!";
+  my $workbook  = Excel::Writer::XLSX->new( $xfh );
+  my $worksheet = $workbook->add_worksheet('Долги по аренде');
+  
+  my %color = (
+    'плюс'=>{color => 'green'},#, bg_color=>'#C8E6C9',
+    'минус'=>{color => 'purple'},#, bg_color=>'#E1BEE7',
+  );
+  
+  $worksheet->set_column( 0, 0, 40 );
+  $worksheet->set_column( 1, 1, 30 );
+  #~ $worksheet->set_column( 2, 3, 40 );
+  #~ $worksheet->set_column( 3, 4, 30 );
+  
+  $worksheet->set_row(0, 20);
+  $worksheet->set_row(1, 20);
+  $worksheet->set_row(2, 20);
+  
+  $worksheet->write_row(0, 0, ['Долги по аренде',], $workbook->add_format(size=>16, align=>'center', bold=>1));
+  $worksheet->write_row(1, 0, ['На дату',], $workbook->add_format(align=>'right', size=>14,));
+  $worksheet->write_row(1, 1, [sprintf('%s %s %s г. %s:%s', @$now{qw(day месяца year hour minute)})], $workbook->add_format(size=>14,));
+  $worksheet->write_row(2, 0, ['Арендодатель',], $workbook->add_format(align=>'right', size=>14, bottom=>1,));
+  $worksheet->write_row(2, 1, [$project->{'проект'}], $workbook->add_format( bold => 1, size=>14, %{$color{минус}}, bg_color=>'#E1BEE7', bottom=>1));
+  
+  my $n = 4;
+  my $num_format = '# ##0.00 [$₽-419];[RED]-# ##0.00 [$₽-419]';
+  for (@$data) {
+    $worksheet->write_row($n, 0, [$_->{'контрагент'}], $workbook->add_format(bg_color=>'#C8E6C9', bottom=>4));#$workbook->add_format(%{$color{плюс}})
+    $worksheet->write_row($n++, 1, [$_->{'сумма/numeric'}], $workbook->add_format(align=>'right', num_format=>$num_format, bottom=>4));#, bg_color=>$_->{'приход/num'} ? $color{плюс}{bg_color} : $color{минус}{bg_color}
+    
+  }
+  
   $workbook->close();
   return $tmp;
 }

@@ -4,7 +4,13 @@ from
   "аренда/договоры" d
   join refs r on d.id=r.id2
   join "контрагенты" k on k.id=r.id1
-  
+
+@@ проекты/контрагенты
+select *, timestamp_to_json(now()) as "$now"
+from "контрагенты/проекты"
+{%= $where || '' %}
+{%= $order_by || '' %}
+
 @@ движение
 select m.*,
   -------------------------------------------------
@@ -68,12 +74,12 @@ select {%= $select || '*' %} from (
 
 
 @@ долги
-select m.*
+select k.title as "контрагент", m.*
 from (
   select "контрагент/id", sum("сумма") as "сумма", sum("сумма"::numeric) as "сумма/numeric"
   from ({%= $dict->render('движение арендатора', where=>$where) %}) m
   group by "контрагент/id"
 ) m
-  --~ join "контрагенты" k on k.id=m."контрагент/id"
+  join "контрагенты" k on k.id=m."контрагент/id"
 %#  {%= $where || '' %}
 {%= $order_by || '' %}

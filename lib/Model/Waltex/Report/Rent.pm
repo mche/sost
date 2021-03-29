@@ -1,5 +1,6 @@
 package Model::Waltex::Report::Rent;
 use Mojo::Base 'Model::Base';
+use feature qw(signatures);
 #~ use Util;
 
 our $DATA = ['Rent.pm.dict.sql'];
@@ -29,6 +30,14 @@ sub долги {# пока по всему контрагенту общий д�
     ' not ?::int /*не обесп платеж*/ ' => \['= any("категории")', '929979',],
   });
   $self->dbh->selectall_arrayref($self->sth('долги',  where=>$where, order_by=>' '), {Slice=>{}}, @bind);
+}
+
+sub проект ($self, $id) {
+  #~ $self->app->log->error($self->app->dumper($id));
+  my ($where, @bind) = $self->SqlAb->where({
+    ' "проект/id" ' => $id,
+  });
+  $self->dbh->selectrow_hashref($self->sth('проекты/контрагенты',  where=>$where), undef, @bind);
 }
 
 1;

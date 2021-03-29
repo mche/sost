@@ -3,6 +3,7 @@ use Mojo::Base 'DBIx::Mojo::Model';
 use SQL::Abstract;
 use experimental 'smartmatch';
 
+
 has [qw(app)], undef, weak=>1;
 has [qw(sth_cached uid)];# тотально для всех запросов
 has SqlAb => sub { SQL::Abstract->new };
