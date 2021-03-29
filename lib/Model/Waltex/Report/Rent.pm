@@ -29,7 +29,7 @@ sub долги {# пока по всему контрагенту общий д�
     ' "дата" ' => { '<' => \"now()" },
     ' not ?::int /*не обесп платеж*/ ' => \['= any("категории")', '929979',],
   });
-  $self->dbh->selectall_arrayref($self->sth('долги',  where=>$where, order_by=>' '), {Slice=>{}}, @bind);
+  $self->dbh->selectall_arrayref($self->sth('долги',  where=>$where, order_by=>' order by "сумма" '), {Slice=>{}}, @bind);
 }
 
 sub проект ($self, $id) {
