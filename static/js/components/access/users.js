@@ -283,7 +283,8 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes, Util
     var re = $c.filterProfileRE;// ? new RegExp($c.filterProfile,"i") : undefined;
     var filterProfile = re ? (re.test(item.names.join(' ')) || item.tel.some(FilterTel, {"re": re})) : !0;
     
-    return checked && filterProfile && !item.disable === !tab;
+    let last_disable = item['@приемы-увольнения'][item['@приемы-увольнения'].length -2];
+    return checked && filterProfile && !/*item.disable*/(last_disable && last_disable['дата увольнения'])  === !tab;
   };
   
   $c._FilterChecked = function(item){return item._checked;};
