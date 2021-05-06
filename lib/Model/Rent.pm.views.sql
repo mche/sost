@@ -185,7 +185,7 @@ with agg as (
 select d1."договор/id", d1."@доп.согл./id"[o1.n1-1] as "доп.согл./id", o1.d1, o2.d2,
 
   case
-    when date_trunc('month', o1.d1) <> o1.d1 or d1."@доп.согл./id"[o1.n1-1] is not null then extract(day from date_trunc('month', o1.d1::date + interval '1 month')-o1.d1::date)::int
+    when date_trunc('month', o1.d1) <> o1.d1 /*or d1."@доп.согл./id"[o1.n1-1] is not null*/ then extract(day from date_trunc('month', o1.d1::date + interval '1 month')-o1.d1::date)::int+1
     when date_trunc('month', o1.d1)=date_trunc('month', o2.d2) then o2.d2 - o1.d1+1---- косяк??
     else null::int end,--*-- количество дней для первого месяца (когда в первом месяце договора сразу доп соглашение)
     
