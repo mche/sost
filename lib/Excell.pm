@@ -330,7 +330,7 @@ sub долги_по_аренде ($data, $project, $now) {
   $worksheet->set_row(1, 20);
   $worksheet->set_row(2, 20);
   
-  $worksheet->write_row(0, 0, ['Долги по аренде (без обеспечительного платежа)',], $workbook->add_format(size=>16, align=>'center', bold=>1));
+  $worksheet->write_row(0, 0, ['Долги по аренде (без обеспечительного платежа)',], $workbook->add_format(size=>16, bold=>1));
   $worksheet->write_row(1, 0, ['На дату',], $workbook->add_format(align=>'right', size=>14,));
   $worksheet->write_row(1, 1, [sprintf('%s %s %s г. %s:%s', @$now{qw(day месяца year hour minute)})], $workbook->add_format(size=>14,));
   $worksheet->write_row(2, 0, ['Арендодатель',], $workbook->add_format(align=>'right', size=>14, bottom=>1,));

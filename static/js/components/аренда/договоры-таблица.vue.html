@@ -205,7 +205,7 @@
         <!-- крыжик -->
         <!--div class="input-field"-->
           <input type="checkbox" :id="`крыжик-${item.id}`" :value="item" v-model=" checkedItems ">
-          <label :for="`крыжик-${item.id}`" class="hover-shadow3d chip hoverable                  before-yellow-lighten-4 teal-text-darken-3 yellow lighten-4 shadow-inset-05" :class000="!{'before-yellow-lighten-4 orange-text yellow lighten-4': !filters['архивные договоры'], 'before-maroon-lighten-5 maroon-text maroon lighten-5': filters['архивные договоры']}" style="position:absolute; right:0; top: 0; padding-left:16px;" ></label>
+          <label :for="`крыжик-${item.id}`" class="hover-shadow3d chip hoverable                  before-yellow-lighten-4  yellow lighten-4 shadow-inset-05" :class="{'teal-text-darken-3': !filters['архивные договоры'], 'maroon-text': filters['архивные договоры']}" style="position:absolute; right:0; top: 0; padding-left:16px;" ></label>
         <!--/div-->
       </div>
       <div class="relative line-height-10" style="">

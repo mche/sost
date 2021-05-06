@@ -244,8 +244,8 @@ from
       from (
         select d.*, m."дата", m."@категории/id", m."@категории/title",
           coalesce(case when date_trunc('month', m."дата"::date)=date_trunc('month', d."дата1") then d."дней оплаты первого месяца" else null::int end,
-          ---m."дней оплаты", 
-          case 
+          m."дней оплаты", 
+          /*case 
             when date_trunc('month', m."дата"::date)=date_trunc('month', d."дата1") and date_trunc('month', m."дата"::date)=date_trunc('month',  d."дата2")
               then d."дата2"-d."дата1"
             when date_trunc('month', m."дата"::date)=date_trunc('month',  d."дата1")
@@ -255,7 +255,7 @@ from
             else
                extract(day FROM date_trunc('month', m."дата"::date)+interval '1 month - 1 day' )
             end
-            ) as "дней оплаты",
+            ) as "дней оплаты",*/
             extract(day FROM date_trunc('month', m."дата"::date)+interval '1 month - 1 day' ) as "дней в месяце",
             sum."@объекты/id", sum."@помещения-номера", sum."сумма безнал", sum."сумма"
             ---
