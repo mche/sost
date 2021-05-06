@@ -160,8 +160,10 @@ with agg as (
     d.id as "договор/id",
     d."дата1"
     || dop."@доп.согл./дата1"
-    || case when d."дата расторжения" is null and not coalesce(d."продление срока", false) then d."дата2"
-          else d."дата расторжения" end as "@даты",--- с продлением тут нулл
+    || case
+          when d."дата расторжения" is null and not coalesce(d."продление срока", false) then d."дата2"
+          else d."дата расторжения"
+          end as "@даты",--- с продлением тут нулл
     dop."@доп.согл./id"
   from "аренда/договоры" d
     left join (
@@ -181,16 +183,21 @@ with agg as (
 )
 
 select d1."договор/id", d1."@доп.согл./id"[o1.n1-1] as "доп.согл./id", o1.d1, o2.d2,
-  case when date_trunc('month', o1.d1)=date_trunc('month', o2.d2) then o2.d2 - o1.d1+1---- косяк??
-    when d1."@доп.согл./id"[o1.n1-1] is not null then extract(day from date_trunc('month', o1.d1::date + interval '1 month')-o1.d1::date)::int
-  else null::int end,--*-- количество дней для первого месяца (когда в первом месяце договора сразу доп соглашение)
-  case when (date_trunc('month', o2.d2::date + interval '1 month')-interval '1 day')::date=o2.d2::date then null::int 
+
+  case
+    when date_trunc('month', o1.d1) <> o1.d1 or d1."@доп.согл./id"[o1.n1-1] is not null then extract(day from date_trunc('month', o1.d1::date + interval '1 month')-o1.d1::date)::int
+    when date_trunc('month', o1.d1)=date_trunc('month', o2.d2) then o2.d2 - o1.d1+1---- косяк??
+    else null::int end,--*-- количество дней для первого месяца (когда в первом месяце договора сразу доп соглашение)
+    
+  case
+    when (date_trunc('month', o2.d2::date + interval '1 month')-interval '1 day')::date=o2.d2::date then null::int 
     else  extract(day from o2.d2::date - date_trunc('month', o2.d2::date))::int --- +1 день?
   end as "дней оплаты последнего месяца", --- (когда в последнем месяце договора еще доп соглашение)
   (o1.n1-1)::int
 from agg d1, unnest(d1."@даты") with ordinality o1(d1, n1),
   agg d2, unnest(d2."@даты") with ordinality o2(d2, n2)
-where d1."договор/id"=d2."договор/id" /*and d1."@границы дат"[1]!=o1*/ /*and o1.d1 < coalesce(o2.d2, now())*/ and o2.n2-o1.n1=1
+where d1."договор/id"=d2."договор/id" /*and d1."@границы дат"[1]!=o1*/ /*and o1.d1 < coalesce(o2.d2, now())*/
+  and o2.n2-o1.n1=1
 ---order by "договор/id"--, o1.d1, o2.d2
 
 ;
@@ -205,6 +212,8 @@ CREATE OR REPLACE VIEW "движение ДС/аренда/счета" as
 select d.id  as "договор/id", d.ts as "договор/ts", sum."дата",
   /*-1::numeric**/sum."сумма"*(sum."дней оплаты"/sum."дней в месяце")*(1-sum."% скидки"/100) as "сумма",
   sum."сумма безнал"*(sum."дней оплаты"/sum."дней в месяце")*(1-sum."% скидки"/100) as "сумма безнал",
+  sum."сумма" as "вся сумма", --- без дней неполных месяцев и скидок
+  sum."сумма безнал" as "вся сумма безнал",--- без дней неполных месяцев и скидок
   sum."доп.согл./id", sum."номер доп.согл.",
   --~ -1::numeric as "sign", --- счет-расход
   sum."@категории/id" as "категории",
@@ -244,8 +253,8 @@ from
       from (
         select d.*, m."дата", m."@категории/id", m."@категории/title",
           coalesce(case when date_trunc('month', m."дата"::date)=date_trunc('month', d."дата1") then d."дней оплаты первого месяца" else null::int end,
-          m."дней оплаты", 
-          /*case 
+          ---m."дней оплаты", 
+          case 
             when date_trunc('month', m."дата"::date)=date_trunc('month', d."дата1") and date_trunc('month', m."дата"::date)=date_trunc('month',  d."дата2")
               then d."дата2"-d."дата1"
             when date_trunc('month', m."дата"::date)=date_trunc('month',  d."дата1")
@@ -255,7 +264,7 @@ from
             else
                extract(day FROM date_trunc('month', m."дата"::date)+interval '1 month - 1 day' )
             end
-            ) as "дней оплаты",*/
+            ) as "дней оплаты",
             extract(day FROM date_trunc('month', m."дата"::date)+interval '1 month - 1 day' ) as "дней в месяце",
             sum."@объекты/id", sum."@помещения-номера", sum."сумма безнал", sum."сумма"
             ---
