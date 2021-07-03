@@ -130,8 +130,9 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes, Util
         var container = $('ul.users', $($element[0]));
         var el = $('.card.edit', container);
         container.animate({scrollTop: el.offset().top - container.offset().top + container.scrollTop()}, 1500);
-        n.login='';
-        n.pass='';
+        $timeout(function(){
+          $c.DeleteLogin(n);
+        });
       });
     });
     
