@@ -130,9 +130,6 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes, Util
         var container = $('ul.users', $($element[0]));
         var el = $('.card.edit', container);
         container.animate({scrollTop: el.offset().top - container.offset().top + container.scrollTop()}, 1500);
-        $timeout(function(){
-          $c.DeleteLogin(n);
-        }, 500);
       });
     });
     
@@ -140,12 +137,16 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes, Util
   
   
   $c.Edit = function(user){
-    if(user._edit) return $c.CloseEdit(user);
+    if (user._edit) return $c.CloseEdit(user);
     $timeout(function(){
       user._edit = angular.copy(user);
       $scope._editUser = user._edit;
-      $timeout(function(){$('textarea', $element[0]).keydown();});
-      //~ $timeout(function(){ $c.InitFileUpload($scope._editUser); });
+      $timeout(function(){
+        $('textarea', $element[0]).keydown();
+      });
+      if (!user.login) $timeout(function(){
+        $c.DeleteLogin(user);
+      }, 500);
     });
     $c.Scroll2User(user);
     $c.ToggleSelect(user, true);
@@ -260,7 +261,7 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes, Util
   
   $c.CloseEdit = function(user, idx){
     if(!user.id) $c.data.splice(idx || 0, 1);
-    $scope._editUser = user._edit = undefined;
+    /*$scope._editUser = */user._edit = undefined;
     delete $c.error;
     
   };
