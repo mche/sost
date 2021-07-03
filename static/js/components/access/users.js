@@ -132,7 +132,7 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes, Util
         container.animate({scrollTop: el.offset().top - container.offset().top + container.scrollTop()}, 1500);
         $timeout(function(){
           $c.DeleteLogin(n);
-        });
+        }, 500);
       });
     });
     
