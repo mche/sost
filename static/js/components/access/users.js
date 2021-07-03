@@ -116,8 +116,12 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes, Util
     //~ if(names === undefined) names = [];
     $c.showBtnNewUser = false;
     $c.filterChecked = false;
-    var n = {"names":[$c.filterProfile],};///$c.searchtField.val()
-    if ($c.data[0] && $c.data[0].hasOwnProperty('login')) {n.login=''; n.pass='';}
+    var n = {
+      "names":[$c.filterProfile],
+      "login":'',
+      "pass":'',
+    };///$c.searchtField.val()
+    //if ($c.data[0] && $c.data[0].hasOwnProperty('login')) {n.login=''; n.pass='';}
     $c.data.unshift(n);
     $timeout(function(){
       $c.Edit(n);
@@ -274,7 +278,6 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes, Util
   const re2Num = /\D/g;
   const FilterTel = function(tel){ return this.re.test(tel.replace(re2Num, '')); };
   $c.FilterData = function (item) {//ng-repeat
-    //~ console.log("FilterTab", this);
     var tab = $c.tab;
     if (this !== undefined) tab = this;// это подсчет
     if (tab  === undefined ) return false;
@@ -283,7 +286,7 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes, Util
     var re = $c.filterProfileRE;// ? new RegExp($c.filterProfile,"i") : undefined;
     var filterProfile = re ? (re.test(item.names.join(' ')) || item.tel.some(FilterTel, {"re": re})) : !0;
     
-    let last_disable = item['@приемы-увольнения'][item['@приемы-увольнения'].length -2];
+    let last_disable = item['@приемы-увольнения'] && item['@приемы-увольнения'][item['@приемы-увольнения'].length -2];
     return checked && filterProfile && !/*item.disable*/(last_disable && last_disable['дата увольнения'])  === !tab;
   };
   

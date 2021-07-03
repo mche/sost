@@ -75,31 +75,30 @@ use Mojo::Base qw(-strict -signatures);
       return 1
         if $url->scheme eq 'https' || $url->port;
       $url->scheme('https');
-      #~ $url->host('uniost.ru');
       $c->res->code('301');
       $c->redirect_to($url);
     },
-    #~ sub {#шаблоны и статика домена (лучше around_dispatch ниже)
-      #~ my $c = shift;
-      #~ my $home = $c->app->home;
-      #~ my $s = $c->app->static->paths;
-      #~ my $t = $c->app->renderer->paths;
+    sub {#шаблоны и статика домена (лучше around_dispatch ниже - нет)
+      my $c = shift;
+      my $home = $c->app->home;
+      my $s = $c->app->static->paths;
+      my $t = $c->app->renderer->paths;
       
-      #~ # сначала почикать предыдущие
-      #~ ($t->[$_] // '') =~ /\/templates@/
-        #~ and splice(@$t, $_, 1)
-        #~ for (0..$#$t);
+      # сначала почикать предыдущие
+      ($t->[$_] // '') =~ /\/templates@/
+        and splice(@$t, $_, 1)
+        for (0..$#$t);
         
-      #~ ($s->[$_] // '') =~ /\/static@/
-        #~ and splice(@$s, $_, 1)
-        #~ for (0..$#$s);
+      ($s->[$_] // '') =~ /\/static@/
+        and splice(@$s, $_, 1)
+        for (0..$#$s);
       
-      #~ # теперь этот хост
-      #~ my $host = $c->req->url->to_abs->host;
-      #~ unshift @$t, $home->rel_file('templates@'.$host);
-      #~ unshift @$s, $home->rel_file('static@'.$host);
-      #~ $c->log->info(@$s, $host, @$t);
-    #~ },
+      # теперь этот хост
+      my $host = $c->req->url->to_abs->host;
+      unshift @$t, $home->rel_file('templates@'.$host);
+      unshift @$s, $home->rel_file('static@'.$host);
+      $c->log->info(@$s, $host, @$t);
+    },
   ],
   "after_dispatch" => [],
   "after_static" => [
@@ -110,22 +109,22 @@ use Mojo::Base qw(-strict -signatures);
     },
   ],
   
-  "around_dispatch" => [
-    sub ($next, $c) {#шаблоны и статика домена
-      state $s = $c->app->static->paths;
-      state $t = $c->app->renderer->paths;
-      state $home = $c->app->home;
+  #"around_dispatch" => [
+  #   sub ($next, $c) {#шаблоны и статика домена
+  #     state $s = $c->app->static->paths;
+  #     state $t = $c->app->renderer->paths;
+  #     state $home = $c->app->home;
       
-      my $host = $c->req->url->to_abs->host;
-      unshift @$t, $home->rel_file('templates@'.$host);
-      unshift @$s, $home->rel_file('static@'.$host);
-      #~ $c->log->info("\n", @$s, $host, @$t);
-      $next->();
+  #     my $host = $c->req->url->to_abs->host;
+  #     unshift @$t, $home->rel_file('templates@'.$host);
+  #     unshift @$s, $home->rel_file('static@'.$host);
+  #     #~ $c->log->info("\n", @$s, $host, @$t);
+  #     $next->();
       
-      shift @$s;
-      shift @$t;
-      #~ $c->log->info("\n", @$s, $host, @$t);
-    }
-  ],# end around_dispatch's
+  #     shift @$s;
+  #     shift @$t;
+  #     #~ $c->log->info("\n", @$s, $host, @$t);
+  #   }
+  # ],# end around_dispatch's
 
 };
