@@ -96,6 +96,7 @@
 	left: 0;
 	position: fixed;
 	width: 100%;
+	border: 5px double black;
 }
 
 .close-btn {
