@@ -966,7 +966,7 @@ sub map_grep_mode {
         js/c/отпуск/отпуск-календарь.html
         )],
         
-         #~ ['terminal.js' => grep !/^--/, qw(
+         #~ ['terminal.js' => grep !/^--/, qw( не катит пакер
          #~ lib/terminal/js/term.js
          #~ lib/terminal/js/addons/fit/fit.js
          #~ lib/terminal/js/app.js
