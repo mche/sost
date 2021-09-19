@@ -10,7 +10,7 @@
 <script>
   document.addEventListener('DOMContentLoaded', function(){
     document.getElementById('newtab').addEventListener('click', () => {
-        Terminal.Init("Terminal", "<%= url_for('terminal websocket')->to_abs->scheme('ws') %>");
+        Terminal.Init("Terminal", "<%= url_for('terminal websocket')->to_abs->scheme('wss') %>");
       });
       document.getElementById('newtab').click()
   });
