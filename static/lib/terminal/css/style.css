@@ -28,7 +28,7 @@
 	user-select: none;
 	position: initial;
 	top: 10px;
-	padding: 10px;
+	/*padding: 10px;*/
 	height: 16px;
 	width: 75px;
 	color: white;
@@ -63,7 +63,7 @@
 	position: initial;
 	top: 10px;
 	background-color: rgb(37, 37, 39);
-	padding: 10px;
+	/*padding: 10px;*/
 	border-bottom: 2px;
 	border-bottom-color: #59FF00;
 	border-bottom-style: solid;
@@ -132,6 +132,7 @@
 	font-size: 28px;
 	left: 105%;
 	top: -8px;
+	padding: 0 10px;
 }
 
 #newtab:hover {
