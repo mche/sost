@@ -17,7 +17,7 @@ sub index {
         template => 'terminal/index',
         handler=>'ep',
         'header-title' => 'Консоль /bin/bash',
-        assets=>["terminal.js", "terminal.css",]
+        assets=>["terminal.css",]
     );
 };
 
