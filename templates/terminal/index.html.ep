@@ -8,8 +8,11 @@
 <div id="window"></div>
 
 <script>
+  document.addEventListener('DOMContentLoaded', function(){
     document.getElementById('newtab').addEventListener('click', () => {
-      Session.Init("Terminal", "<%= url_for('terminal websocket')->to_abs->scheme('ws') %>");
-    });
-    document.getElementById('newtab').click()
+        Terminal.Init("Terminal", "<%= url_for('terminal websocket')->to_abs->scheme('ws') %>");
+      });
+      document.getElementById('newtab').click()
+  });
+    
 </script>
