@@ -19,7 +19,7 @@ sub index {
         'header-title' => 'Консоль /bin/bash',
         assets => ["terminal.css",],# terminal.js не катит пакер
         javascripts => [qw(
-        /lib/terminal/js/term.js
+        /lib/terminal/js/xterm.js
         /lib/terminal/js/addons/fit/fit.js
         /lib/terminal/js/app.js
         )],
