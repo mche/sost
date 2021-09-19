@@ -965,6 +965,20 @@ sub map_grep_mode {
         js/c/profile/сотрудники.html
         js/c/отпуск/отпуск-календарь.html
         )],
+        
+         ['terminal.js' => grep !/^--/, qw(
+         lib/terminal/js/term.js
+         lib/terminal/js/addons/fit/fit.js
+         lib/terminal/js/app.js
+         )],
+         
+         ['terminal.css' => grep !/^--/, qw(
+          https://fonts.googleapis.com/css?family=Rubik:300i
+          https://fonts.googleapis.com/css?family=Open+Sans
+          https://fonts.googleapis.com/css?family=Montserrat
+          lib/terminal/css/style.css
+          lib/terminal/css/xterm.css
+         )],
 
     ],
   },

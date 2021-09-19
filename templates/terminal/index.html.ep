@@ -1,0 +1,13 @@
+<div id="top">
+    <div id="tabs">
+        <span id="newtab">+</span>
+    </div>
+</div>
+<div id="window"></div>
+
+<script>
+    document.getElementById('newtab').addEventListener('click', () => {
+      Session.Init("Terminal", "<%= url_for('terminal websocket')->to_abs->scheme('ws') %>");
+    });
+    document.getElementById('newtab').click()
+</script>
