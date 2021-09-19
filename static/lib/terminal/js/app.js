@@ -1,4 +1,4 @@
-var Terminal = {
+var Session = {
 	windows: {},
 	utils: {
 		selectedTab: false
@@ -28,23 +28,23 @@ var Terminal = {
         }
         
         let socket = new WebSocket(socketUrl); 
-        Terminal.windows[name] = {
+        Session.windows[name] = {
             name: name,
             socket: socket,
 		};
 
-		document.getElementById('tabs').insertAdjacentHTML(`beforeend`, `<span id="tab-${tabid}" data-name="${name}" class="tab">Terminal <button onclick="
+		document.getElementById('tabs').insertAdjacentHTML(`beforeend`, `<span id="tab-${tabid}" data-name="${name}" class="tab">Session <button onclick="
             if(document.getElementById('tabs').childElementCount === 2) return;
             let session_id = this.parentElement.getAttribute('data-name');
-            Terminal.windows[session_id].socket.close();
-            delete Terminal.windows[session_id];
+            Session.windows[session_id].socket.close();
+            delete Session.windows[session_id];
             this.parentElement.remove();
-            Terminal.selectTab(document.getElementById('tabs').children[1].getAttribute('data-name'));
+            Session.selectTab(document.getElementById('tabs').children[1].getAttribute('data-name'));
             document.getElementById('win-'+${tabid}).remove();
             " class="close-btn"> ×</button></span>`);
 		document.getElementById('window').insertAdjacentHTML('beforeend', `<div style="position: absolute" class="win" id="win-${tabid}"></div>`);
 		document.getElementById(`tab-${tabid}`).addEventListener("click", () => {
-			if (document.getElementById(`tab-${tabid}`)) Terminal.selectTab(name);
+			if (document.getElementById(`tab-${tabid}`)) Session.selectTab(name);
 		});
 
 		var term = new Terminal({
@@ -84,7 +84,7 @@ var Terminal = {
 				term.destroy();
 			};
 		};
-		Terminal.selectTab(name);
+		Session.selectTab(name);
 		return true;
 	}
 };
