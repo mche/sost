@@ -92,7 +92,7 @@
 }
 #window {
 	top: 102px;
-	height: calc(102vh-102px); 
+	height: 100%; 
 	left: 0;
 	position: fixed;
 	width: 100%;
