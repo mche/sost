@@ -1,3 +1,5 @@
+% layout 'wide';
+
 <div id="top">
     <div id="tabs">
         <span id="newtab">+</span>
