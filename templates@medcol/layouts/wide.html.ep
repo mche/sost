@@ -1,0 +1,15 @@
+% $c->tx->res->headers->cache_control('private, max-age=0, no-cache, no-store');
+
+<!DOCTYPE html>
+<html>
+%= include 'head'
+<body class="white">
+%= include 'header';
+<main class="wide"><div class="container clearfix"><%= content %></div></main>
+
+% for my $asset (@{ stash('assets') || []}) {
+  <%= asset Mojo::Util::encode('UTF-8', $asset) %>
+% }
+
+</body>
+</html>

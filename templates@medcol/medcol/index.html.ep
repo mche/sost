@@ -1,4 +1,4 @@
-% layout 'medcol';
+% layout 'wide';
 % my $list = stash('список тестов') || [];
 % my $res = stash('результаты') || [];
 % my $sess = stash('сессия');
