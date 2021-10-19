@@ -141,7 +141,7 @@
           % $cnt[2] = $r->{'тест/id'}[$i]; # конец блока счета по темам
       </td>
       <td class="right-align padd-0-05" style="width:30%;">
-        <span class="" style="" title="<%= $r->{'сессия/ts'}[$i] %>"><%= $t->{'день нед'} %>, <%= $t->{'day'} %> <%= $t->{'месяца'} %> <%= $t->{'year'} %> <%= (length($t->{'hour'}) eq 1 ? '0' : '').$t->{'hour'} %>:<%= (length($t->{'minute'}) eq 1 ? '0' : '').$t->{'minute'} %></span>
+        <span class="" style="" title="<%= $r->{'сессия/ts'}[$i] %>"><%= $t->{'день нед'} %>, <%= $t->{'day'} %> <%= $t->{'месяца'} %> <%= $t->{'year'} %> <%= $t->{'HH'} %>:<%= $t->{'MI'} %></span>
       </td>
       <td class="right-align padd-05 bold <%= $percent >= 70 ? 'green darken-3 white-text ' : 'white grey-text' %>" style="width:1%;">
         <span class=""><%= sprintf('%.1f', $percent)  %></span>
@@ -150,7 +150,7 @@
       <td class="padd-0-05">
         <div class="input-field">
           <input type="checkbox" id="крыжик-дата проверки-<%= $r->{'сессия/id'}[$i] %>" name="дата проверки" value="<%= $r->{'сессия/sha1'}[$i] %>" <%= !!$r->{'сессия/дата проверки'}[$i] ? 'checked' : '' %> class="" style="height: auto;"  >
-          <label for="крыжик-дата проверки-<%= $r->{'сессия/id'}[$i] %>" class="before-green before-lighten-4 green-text text-darken-4 hover-shadow3d nowrap" title="<%= $check ? sprintf("%s %s %s %s:%s", @$check{qw(day мес year minute second)}) : 'сохранить проверку' %>"><!--i class="material-icons"></i--></label>
+          <label for="крыжик-дата проверки-<%= $r->{'сессия/id'}[$i] %>" class="before-green before-lighten-4 green-text text-darken-4 hover-shadow3d nowrap" title="<%= $check ? sprintf("%s %s %s %s:%s:%s", @$check{qw(day мес year HH MI SS)}) : 'сохранить проверку' %>"><!--i class="material-icons"></i--></label>
         </div>
         <div class="preloader-wrapper small active hide"><div class="spinner-layer red-border border-darken-3"><div class="circle-clipper left"><div class="circle"></div></div><div class="gap-patch"><div class="circle"></div></div><div class="circle-clipper right"><div class="circle"></div></div></div></div>
       </td>

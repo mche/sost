@@ -3,7 +3,7 @@
 % my $res = stash('результаты') || [];
 % my $sess = stash('сессия');
 % $sess->{'старт сессии'} = $c->app->json->decode($sess->{'старт сессии'}) if $sess->{'старт сессии'};
-% $sess->{'старт сессии'}{'секунды'}  = ($sess->{'старт сессии'}{'second'} =~ /^(\d+)\.?/)[0] if $sess->{'старт сессии'};
+%# $sess->{'старт сессии'}{'секунды'}  = ($sess->{'старт сессии'}{'second'} =~ /^(\d+)\.?/)[0] if $sess->{'старт сессии'};
 
 <div class="row ">
 %#<div class="chip right" style=""><%= $sess->{'id'} %></div>
@@ -32,7 +32,7 @@
 </tr></thead>
 <tbody>
 % for my $r (@$res) {
-<tr >
+<tr>
 
   <td class="padd-05"><h5 class="fw500 line-height-12"><a class=" hover-shadow3d blue-text-darken-3 " href="<%= url_for('МедКол/детальный результат', 'sess_sha1'=>$r->{'сессия/sha1'}) %>" title="<%= $r->{'сессия/id-000'} %>">
     % for (grep defined, @{$r->{'@тест/название/родители'} || $r->{'@название теста/родители'} || []}) {
@@ -41,12 +41,12 @@
     <span class="breadcrumb"><%= $r->{'тест/название'} %></span>
   </a></h5></td>
 % my $t = $c->app->json->decode($r->{'старт сессии'});
-% my $sec = ($t->{'second'} =~ /^(\d+)\.?/)[0];
-  <td class="right-align nowrap" style="padding: 0 0.5rem;" title="<%= $r->{'сессия/ts'} %>"><%= $t->{'день нед'} %>, <%= $t->{'day'} %> <%= $t->{'месяца'} %> <%= (length($t->{'hour'}) eq 1 ? '0' : '').$t->{'hour'} %>:<%= (length($t->{'minute'}) eq 1 ? '0' : '').$t->{'minute'} %></td>
+%# my $sec = ($t->{'second'} =~ /^(\d+)\.?/)[0];
+  <td class="right-align nowrap" style="padding: 0 0.5rem;" title="<%= $r->{'сессия/ts'} %>"><%= $t->{'день нед'} %>, <%= $t->{'day'} %> <%= $t->{'месяца'} %> <%= $t->{'HH'} %>:<%= $t->{'MI'} %></td>
 %# :<%= (length($sec) eq 1 ? '0' : '').$sec %>
-% $sec = ($r->{'время тестирования/секунды'}  =~ /^(\d+)\.?/)[0];
+% my $sec = ($r->{'время тестирования/секунды'}  =~ /^(\d+)\.?/)[0];
   <td class="right-align orange-text-darken-3" style="padding: 0 0.5rem;" >
-    <span class=""><%= length($r->{'время тестирования/часы'}) eq 1 ? '' : '' %><%= $r->{'время тестирования/часы'} || '00' %>:</span><span class=""><%= length($r->{'время тестирования/минуты'}) eq 1 && $r->{'время тестирования/минуты'} ne '0' ? '0' : '' %><%= $r->{'время тестирования/минуты'} || '00' %>:</span><span class=""><%= length($sec) eq 1 ? '0' : '' %><%= $sec %></span>
+    <span class=""><%= $r->{'время тестирования/часы'} || '' %><%= $r->{'время тестирования/часы'})  ? ':' : '' %><%= length($r->{'время тестирования/минуты'}) eq 1 && $r->{'время тестирования/минуты'} ne '0' ? '0' : '' %><%= $r->{'время тестирования/минуты'} || '00' %>:<%= length($sec) eq 1 ? '0' : '' %><%= $sec %></span>
   </td>
   <td class="right-align-000 center" style="padding: 0 0.5rem;"><%= $r->{'задано вопросов'} %></td>
   <td class="right-align-000 center green-text text-darken-3 bold" style="padding: 0 0.5rem;"><%= $r->{'правильных ответов'} %></td>
@@ -72,7 +72,7 @@
     % }
     <span class="breadcrumb fw500"><%= $sess->{'название'} || $sess->{'название теста'} || $sess->{'тест/название'} %></span>
   </span>
-  <span class="chip black-text"><%= $sess->{'старт сессии'}{'день недели'} %>, <%= $sess->{'старт сессии'}{'day'} %> <%= $sess->{'старт сессии'}{'месяца'} %> <%= (length($sess->{'старт сессии'}{'hour'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'hour'} %>:<%= (length($sess->{'старт сессии'}{'minute'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'minute'} %>:<%= (length($sess->{'старт сессии'}{'секунды'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'секунды'} %></span></a></h3>
+  <span class="chip black-text"><%= $sess->{'старт сессии'}{'день недели'} %>, <%= $sess->{'старт сессии'}{'day'} %> <%= $sess->{'старт сессии'}{'месяца'} %> <%= $sess->{'старт сессии'}{'HH'} %>:<%= $sess->{'старт сессии'}{'MI'} %>:<%= $sess->{'старт сессии'}{'SS'} %></span></a></h3>
  
 % } else {
 
