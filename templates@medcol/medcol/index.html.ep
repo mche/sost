@@ -11,7 +11,7 @@
 
 %# <div class="chip right" style="margin-top:-4rem;">Пароль: <%= substr($res->[-1]{'сессия/sha1'}, 0, 5) %></div>
 
-<div class="col s12 m12 <%= $sess->{'название теста'} || @$list ? 'l8' : '' %>">
+<div class="col s12 m12 <%= $sess->{'название теста'} || @$list ? 'l9' : '' %>">
 <a href="#test_list" class="hide-on-large-only right hover-shadow3d btn-flat00">Выбор теста</a>
 <h2 class="">Мои результаты <span class="chip padd-0-05 shadow-inset-10 fw500"><%= scalar grep $_->{'%'}>=70, @$res %> из <%= scalar @$res %></span>
 % if (@$res > 12) {
@@ -62,7 +62,7 @@
 </div>
 % }
 
-<div id="test_list" class="col s12 m12  <%= @$res ? 'l4' : 'l6' %>">
+<div id="test_list" class="col s12 m12  <%= @$res ? 'l3' : 'l8' %>">
 % if ($sess->{'название теста'}) {# && $sess->{'получено ответов'}
 <h3 class=""><a href="<%= $c->url_for('вопрос') %>" class=" hover-shadow3d ">
   Продолжить незавершенный тест:  
