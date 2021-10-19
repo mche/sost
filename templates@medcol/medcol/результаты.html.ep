@@ -90,7 +90,11 @@
   </td>
 % my $t = $c->app->json->decode($r->{'старт сессии'});
 %# <%= $t->{'день нед'} %>, 
-  <td class="center" title="<%= $r->{'сессия/ts'} %>"><span class="nowrap"><%= $t->{'DD'} %>.<%= $t->{'MM'} %>.<%= $t->{'YY'} %></span><br><span class="grey-text nowrap"><%= $t->{'HH'} %>:<%= $t->{'MI'} %>:<%= $t->{'SS'} %></span></td>
+  <td class="center" title="<%= $r->{'сессия/ts'} %>">
+    <span class="nowrap"><%= $t->{'DD'} %>.<%= $t->{'MM'} %>.<%= $t->{'YY'} %></span>
+    <br>
+    <span class="grey-text nowrap"><%= $t->{'HH'} %>:<%= $t->{'MI'} %>:<%= $t->{'SS'} %></span>
+  </td>
 % my $sec = ($r->{'время тестирования/секунды'}  =~ /^(\d+)\.?/)[0];
   <td class="center purple-text">
     <span class=""><%= length($r->{'время тестирования/часы'}) eq 1 ? '' : '' %><%= $r->{'время тестирования/часы'} || '00' %>:</span><span class=""><%= length($r->{'время тестирования/минуты'}) eq 1 && $r->{'время тестирования/минуты'} ne '0' ? '0' : '' %><%= $r->{'время тестирования/минуты'} || '00' %>:</span><span class=""><%= length($sec) eq 1 ? '0' : '' %><%= $sec %></span>
