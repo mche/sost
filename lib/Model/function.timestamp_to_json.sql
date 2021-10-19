@@ -4,6 +4,7 @@ select row_to_json(d) from (
   select 
   ---date_part('century', $1) as century,
   date_part('day', $1) as day,
+  to_char($1, 'DD') as "DD",
   ---date_part('decade', $1) as decade,
   ---date_part('dow', $1) as dow,
   ---date_part('doy', $1) as doy,
@@ -24,6 +25,7 @@ select row_to_json(d) from (
 ---  date_part('timezone_minute', $1) as timezone_minute,
   date_part('week', $1) as week,
   date_part('year', $1) as year,
+  to_char($1, 'YY') as "YY",
   to_char($1, 'TMday') as "день недели", ---полное название дня недели в нижнем регистре (дополненное пробелами до 9 символов)
   to_char($1, 'TMdy') as "день нед",---сокращённое название дня недели в нижнем регистре (3 буквы в английском; в других языках длина может меняться)
   to_char($1, 'TMmon') as "мес",
@@ -43,6 +45,7 @@ select row_to_json(d) from (
   select 
   ---date_part('century', $1) as century,
   date_part('day', $1) as day,
+  to_char($1, 'DD') as "DD",
   ---date_part('decade', $1) as decade,
   ---date_part('dow', $1) as dow,
   ---date_part('doy', $1) as doy,
@@ -63,6 +66,7 @@ select row_to_json(d) from (
 ---  date_part('timezone_minute', $1) as timezone_minute,
   date_part('week', $1) as week,
   date_part('year', $1) as year,
+  to_char($1, 'YY') as "YY",
   to_char($1, 'TMday') as "день недели", ---полное название дня недели в нижнем регистре (дополненное пробелами до 9 символов)
   to_char($1, 'TMdy') as "день нед",---сокращённое название дня недели в нижнем регистре (3 буквы в английском; в других языках длина может меняться)
   to_char($1, 'TMmon') as "мес",
