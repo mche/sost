@@ -686,6 +686,9 @@ sub на_емайл {# счета и акты, создать pdf файлы д�
   #~ return $c->произвольное_письмо($param, $data) СПАМ!!!
     #~ if $param->{'отправить'} && $param->{'письмо'} && $param->{'письмо'}{'тема'} && $param->{'письмо'}{'сообщение'};
     
+  $param->{garantia} = $c->model_contragent->позиция(971);
+  $param->{garantia}{реквизиты} = $c->app->json->decode($param->{garantia}{реквизиты});
+    
   #~ $param->{docx} = sprintf("%s-%s.docx", $param->{'счет или акт'}, $c->auth_user->{id});
   my $docx_template_file = sprintf("templates/аренда/%s.template.docx", $param->{'счет или акт'},);
   
