@@ -28,7 +28,7 @@ select date_trunc('month', d."дата1"+interval '1 month')+make_interval(month
   --null, null
 from
   "категории/родители"() cat,
-  (select age(date_trunc('month', coalesce(d."дата расторжения", case when d."продление срока" then (now()+interval '1 year')::date else d."дата2" end)), date_trunc('month', d."дата1"+interval '2 month')) as "age") a
+  (select age(date_trunc('month', coalesce(d."дата расторжения"+interval '1 day', case when d."продление срока" then (now()+interval '1 year')::date else d."дата2" end)), date_trunc('month', d."дата1"+interval '2 month')) as "age") a
   join lateral (
     select generate_series(0, (extract(year from a."age")*12 + extract(month from a."age"))::int/*колич полных месяцев*/, 1) as m
   ) m on true
@@ -36,9 +36,9 @@ where cat.id=121952--- аренда офисов
 
 union all
 --- тут один  последний месяц договора (возможно неполный)
-select  date_trunc('month', coalesce(d."дата расторжения", case when d."продление срока" then (now()+interval '1 year')::date else d."дата2" end)),
+select  date_trunc('month', coalesce(d."дата расторжения"+interval '1 day', case when d."продление срока" then (now()+interval '1 year')::date else d."дата2" end)),
   ---extract(day FROM coalesce(d."дата расторжения", d."дата2")/* тут важно до какой даты включительно- interval '1 day'*/)/extract(day FROM date_trunc('month', coalesce(d."дата расторжения", d."дата2")) + interval '1 month - 1 day'),--- доля дней в последнем месяце
-  extract(day FROM coalesce(d."дата расторжения", case when d."продление срока" then (now()+interval '1 year')::date else d."дата2" end)/* тут важно до какой даты включительно- interval '1 day'*/), --- дней оплаты
+  extract(day FROM coalesce(d."дата расторжения"+interval '1 day', case when d."продление срока" then (now()+interval '1 year')::date else d."дата2" end)/* тут важно до какой даты включительно- interval '1 day'*/), --- дней оплаты
   ---' за ' || extract(day FROM coalesce(d."дата расторжения", d."дата2")/* тут важно до какой даты включительно- interval '1 day'*/)::text || ' дн. неполн. мес.' as "коммент", 
   --null, null
   cat.parents_id||cat.id as "@категории/id", cat.parents_title[2:]||cat.title as "@категории/title"
