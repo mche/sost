@@ -162,7 +162,7 @@ with agg as (
     || dop."@доп.согл./дата1"
     || case
           when d."дата расторжения" is null and not coalesce(d."продление срока", false) then d."дата2"
-          else d."дата расторжения"
+          else d."дата расторжения"+interval '1 day'
           end as "@даты",--- с продлением тут нулл
     dop."@доп.согл./id"
   from "аренда/договоры" d
