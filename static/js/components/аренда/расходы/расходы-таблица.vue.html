@@ -58,11 +58,14 @@
             <span class="fs8">Печать</span>
             <sup class="chip white">{{ checkedData.length }}</sup>
           </a>
-          <!--a  @click="Print({'счет или акт':'акт'})" href="javascript:" :disabled="!checkedData.length" class="btn-flat  z-depth-1 orange lighten-4 black-text">
-            <i class="material-icons">print</i>
-            <span class="fs8">Печать актов</span>
-            <sup class="chip white">{{ checkedData.length }}</sup>
-          </a-->
+
+          <a @click=" SendMail() " href="javascript:" class="btn-flat z-depth-1 purple lighten-3 purple-text text-darken-3" style="float:none;" :disabled="!checkedData.length || !form['счет или акт']">
+            <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0  490 490" class="purple-fill fill-darken-3" style="height: 1.2rem;">
+              <use xlink:href="/fonts/rent.svg?20200929#email"></use>
+            </svg>
+            <span>Отправить на почту</span>
+          </a>
+          
         </div>
         
       </div>
