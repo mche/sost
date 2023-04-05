@@ -1,7 +1,7 @@
 package Controll::Main;
 use Mojo::Base 'Mojolicious::Controller';
-use Expect;
-use Audio::Wav;
+#use Expect;
+#use Audio::Wav;
 
 has model => sub { $_[0]->app->models->{'Main'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
 

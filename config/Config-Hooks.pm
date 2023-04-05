@@ -62,7 +62,7 @@ use Mojo::Base qw(-strict -signatures);
     },
     sub {# redirector
       my $c = shift;
-      #~ return 1;
+      
       my $url = $c->req->url->to_abs;
       #~ $c->app->log->debug($url->path->to_route);
       #~ return $c->redirect_to('ТМЦ объекты')
@@ -80,6 +80,7 @@ use Mojo::Base qw(-strict -signatures);
     },
     sub {#шаблоны и статика домена (лучше around_dispatch ниже - нет)
       my $c = shift;
+#return 1;
       my $home = $c->app->home;
       my $s = $c->app->static->paths;
       my $t = $c->app->renderer->paths;
