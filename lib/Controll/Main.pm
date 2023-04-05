@@ -80,6 +80,7 @@ sub keepalive {
   $c->render(json=>{"version"=>$c->app->config->{'версия'}});
 }
 
+=pod
 sub sip_wav {
   my $c = shift;
   my @cmd = ('linphonec',);# '-c', '../.linphonerc5062');# конфиг файл нужен для параллельных звонков
@@ -165,6 +166,7 @@ sub _wav_info {
 
   return $details;
 }
+=cut
 
 sub hash_inc {
   my $c = shift;
