@@ -97,6 +97,9 @@ sub _файл {
     or die "Нет файла";
   $r->{parent_id} ||= 0;
   #~ $c->log->error($c->dumper($r));
+
+  return $c->render(json=>{'ошибка'=> "файл не найден/не восстановлен"})
+    unless -f "static/u/$r->{parent_id}/$r->{id}";
   
   $c->render_file(
     'filepath' => "static/u/$r->{parent_id}/$r->{id}",
